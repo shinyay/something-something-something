@@ -1,0 +1,681 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="dark"><head><meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Microsoft Build 2026 — GitHub 関連発表まとめ</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme = param || (window.matchMedia("(prefers-color-scheme: light)").matches ? "light" : "dark");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+  /* ===== GitHub Primer themed palette ===== */
+  :root {
+    color-scheme: dark;
+    --gh-canvas: #0d1117;
+    --gh-canvas-inset: #010409;
+    --gh-canvas-subtle: #161b22;
+    --gh-surface: #161b22;
+    --gh-surface-2: #1c2128;
+    --gh-border: #30363d;
+    --gh-border-muted: #21262d;
+    --gh-fg: #e6edf3;
+    --gh-fg-muted: #9198a1;
+    --gh-fg-subtle: #6e7681;
+    --gh-accent: #2f81f7;
+    --gh-accent-fg: #58a6ff;
+    --gh-accent-emphasis: #1f6feb;
+    --gh-success-fg: #3fb950;
+    --gh-success-emphasis: #238636;
+    --gh-done: #a371f7;
+    --gh-done-emphasis: #8957e5;
+    --gh-attention-fg: #d29922;
+    --gh-attention-emphasis: #9e6a03;
+    --gh-danger-fg: #f85149;
+    --gh-neutral-emphasis: #6e7681;
+    --gh-shadow: 0 8px 24px rgba(1,4,9,0.5);
+    --gh-header: rgba(13,17,23,0.8);
+  }
+  html[data-theme="light"] {
+    color-scheme: light;
+    --gh-canvas: #ffffff;
+    --gh-canvas-inset: #f6f8fa;
+    --gh-canvas-subtle: #f6f8fa;
+    --gh-surface: #ffffff;
+    --gh-surface-2: #f6f8fa;
+    --gh-border: #d1d9e0;
+    --gh-border-muted: #d8dee4;
+    --gh-fg: #1f2328;
+    --gh-fg-muted: #59636e;
+    --gh-fg-subtle: #818b98;
+    --gh-accent: #0969da;
+    --gh-accent-fg: #0969da;
+    --gh-accent-emphasis: #0969da;
+    --gh-success-fg: #1a7f37;
+    --gh-success-emphasis: #1f883d;
+    --gh-done: #8250df;
+    --gh-done-emphasis: #8250df;
+    --gh-attention-fg: #9a6700;
+    --gh-attention-emphasis: #bf8700;
+    --gh-danger-fg: #cf222e;
+    --gh-neutral-emphasis: #818b98;
+    --gh-shadow: 0 8px 24px rgba(140,149,159,0.2);
+    --gh-header: rgba(255,255,255,0.85);
+  }
+
+  * { box-sizing: border-box; }
+  html { font-size: 18px; scroll-behavior: smooth; scroll-padding-top: 84px; }
+  body {
+    margin: 0;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Hiragino Kaku Gothic ProN",
+      "Hiragino Sans", "Yu Gothic", Meiryo, "Noto Sans JP", Helvetica, Arial, sans-serif;
+    background: var(--gh-canvas);
+    color: var(--gh-fg);
+    line-height: 1.75;
+    -webkit-font-smoothing: antialiased;
+  }
+  code, .mono {
+    font-family: ui-monospace, SFMono-Regular, "SF Mono", Menlo, Consolas, "Liberation Mono", monospace;
+    font-size: 0.92em;
+    background: var(--gh-surface-2);
+    border: 1px solid var(--gh-border-muted);
+    border-radius: 6px;
+    padding: 0.12em 0.42em;
+    color: var(--gh-fg);
+  }
+  a { color: var(--gh-accent-fg); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+
+  /* ===== Header ===== */
+  header.site {
+    position: sticky; top: 0; z-index: 50;
+    backdrop-filter: saturate(180%) blur(8px);
+    background: var(--gh-header);
+    border-bottom: 1px solid var(--gh-border);
+  }
+  .header-inner {
+    max-width: 1080px; margin: 0 auto; padding: 12px 24px;
+    display: flex; align-items: center; gap: 14px;
+  }
+  .brand { display: flex; align-items: center; gap: 11px; font-weight: 700; font-size: 1.15rem; }
+  .brand svg { fill: var(--gh-fg); width: 30px; height: 30px; flex: none; }
+  .brand .sep { color: var(--gh-fg-subtle); font-weight: 400; }
+  .brand .tag { color: var(--gh-fg-muted); font-weight: 600; font-size: 0.98rem; }
+  .header-spacer { flex: 1; }
+  .theme-toggle {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--gh-surface-2); color: var(--gh-fg);
+    border: 1px solid var(--gh-border); border-radius: 8px;
+    padding: 8px 13px; font-size: 0.92rem; font-weight: 600; cursor: pointer;
+    font-family: inherit;
+  }
+  .theme-toggle:hover { border-color: var(--gh-fg-subtle); }
+  .theme-toggle svg { width: 17px; height: 17px; fill: currentColor; }
+
+  /* ===== Sub nav (chips) ===== */
+  nav.chips {
+    position: sticky; top: 59px; z-index: 40;
+    background: var(--gh-canvas);
+    border-bottom: 1px solid var(--gh-border);
+    overflow-x: auto;
+  }
+  .chips-inner {
+    max-width: 1080px; margin: 0 auto; padding: 11px 24px;
+    display: flex; gap: 9px; white-space: nowrap;
+  }
+  .chip {
+    font-size: 0.9rem; font-weight: 600; color: var(--gh-fg-muted);
+    background: var(--gh-surface-2); border: 1px solid var(--gh-border);
+    border-radius: 999px; padding: 6px 14px; cursor: pointer;
+    transition: all .15s ease;
+  }
+  .chip:hover { color: var(--gh-fg); border-color: var(--gh-fg-subtle); text-decoration: none; }
+  .chip.active { color: #fff; background: var(--gh-accent-emphasis); border-color: var(--gh-accent-emphasis); }
+  html[data-theme="light"] .chip.active { color: #fff; }
+
+  /* ===== Layout ===== */
+  main { max-width: 1080px; margin: 0 auto; padding: 0 24px 80px; }
+
+  /* ===== Hero ===== */
+  .hero { padding: 64px 0 40px; border-bottom: 1px solid var(--gh-border); }
+  .eyebrow {
+    display: inline-flex; align-items: center; gap: 9px;
+    font-size: 0.95rem; font-weight: 700; letter-spacing: .04em; text-transform: uppercase;
+    color: var(--gh-accent-fg); margin-bottom: 20px;
+  }
+  .eyebrow .dot { width: 9px; height: 9px; border-radius: 50%; background: var(--gh-success-fg);
+    box-shadow: 0 0 0 4px color-mix(in srgb, var(--gh-success-fg) 22%, transparent); }
+  .hero h1 {
+    font-size: clamp(2.3rem, 5.2vw, 3.55rem); line-height: 1.15; margin: 0 0 22px;
+    letter-spacing: -0.02em; font-weight: 800;
+  }
+  .hero h1 .accent {
+    background: linear-gradient(90deg, var(--gh-accent-fg), var(--gh-done));
+    -webkit-background-clip: text; background-clip: text; -webkit-text-fill-color: transparent;
+  }
+  .hero p.lead { font-size: clamp(1.15rem, 2.2vw, 1.4rem); color: var(--gh-fg-muted); max-width: 760px; margin: 0 0 26px; }
+  .hero-meta { display: flex; flex-wrap: wrap; gap: 12px; }
+  .meta-pill {
+    display: inline-flex; align-items: center; gap: 8px;
+    background: var(--gh-surface); border: 1px solid var(--gh-border);
+    border-radius: 8px; padding: 9px 15px; font-size: 0.98rem; font-weight: 600;
+  }
+  .meta-pill svg { width: 17px; height: 17px; fill: var(--gh-fg-muted); }
+
+  /* ===== Stats ===== */
+  .stats { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px, 1fr)); gap: 16px; margin: 44px 0 8px; }
+  .stat {
+    background: var(--gh-surface); border: 1px solid var(--gh-border); border-radius: 14px;
+    padding: 26px 24px; position: relative; overflow: hidden;
+  }
+  .stat::before { content:""; position:absolute; inset:0 auto 0 0; width:4px; background: var(--gh-accent-emphasis); }
+  .stat .num { font-size: 2.5rem; font-weight: 800; line-height: 1.05; letter-spacing: -0.02em; }
+  .stat .num small { font-size: 1.2rem; font-weight: 700; color: var(--gh-fg-muted); }
+  .stat .label { color: var(--gh-fg-muted); font-size: 1.02rem; margin-top: 8px; font-weight: 500; }
+
+  /* ===== Section ===== */
+  section.block { padding: 56px 0 8px; }
+  .section-head { display: flex; align-items: center; gap: 14px; margin-bottom: 10px; }
+  .section-head .ico {
+    width: 46px; height: 46px; border-radius: 12px; flex: none;
+    display: grid; place-items: center; background: var(--gh-surface-2); border: 1px solid var(--gh-border);
+  }
+  .section-head .ico svg { width: 24px; height: 24px; }
+  h2.section-title { font-size: clamp(1.7rem, 3.2vw, 2.2rem); margin: 0; letter-spacing: -0.01em; font-weight: 800; }
+  .section-sub { color: var(--gh-fg-muted); font-size: 1.12rem; margin: 6px 0 30px; max-width: 820px; }
+
+  /* ===== Cards ===== */
+  .card {
+    background: var(--gh-surface); border: 1px solid var(--gh-border); border-radius: 14px;
+    padding: 28px 30px; margin-bottom: 20px; box-shadow: var(--gh-shadow);
+  }
+  .card-top { display: flex; align-items: flex-start; gap: 14px; flex-wrap: wrap; margin-bottom: 6px; }
+  .card h3 { font-size: 1.42rem; margin: 0; font-weight: 700; letter-spacing: -0.01em; flex: 1; min-width: 240px; }
+  .card p { font-size: 1.12rem; color: var(--gh-fg); margin: 14px 0 0; }
+  .card p.muted { color: var(--gh-fg-muted); }
+
+  .badges { display: flex; gap: 8px; flex-wrap: wrap; }
+  .badge {
+    font-size: 0.82rem; font-weight: 700; padding: 4px 11px; border-radius: 999px;
+    border: 1px solid transparent; white-space: nowrap; letter-spacing: .01em;
+  }
+  .badge.ga { color: var(--gh-success-fg); border-color: color-mix(in srgb, var(--gh-success-fg) 40%, transparent);
+    background: color-mix(in srgb, var(--gh-success-fg) 12%, transparent); }
+  .badge.preview { color: var(--gh-accent-fg); border-color: color-mix(in srgb, var(--gh-accent-fg) 40%, transparent);
+    background: color-mix(in srgb, var(--gh-accent-fg) 12%, transparent); }
+  .badge.tech { color: var(--gh-done); border-color: color-mix(in srgb, var(--gh-done) 40%, transparent);
+    background: color-mix(in srgb, var(--gh-done) 12%, transparent); }
+  .badge.attn { color: var(--gh-attention-fg); border-color: color-mix(in srgb, var(--gh-attention-fg) 40%, transparent);
+    background: color-mix(in srgb, var(--gh-attention-fg) 12%, transparent); }
+
+  ul.feat { list-style: none; padding: 0; margin: 18px 0 0; }
+  ul.feat li {
+    position: relative; padding: 7px 0 7px 30px; font-size: 1.1rem; color: var(--gh-fg);
+    border-top: 1px solid var(--gh-border-muted);
+  }
+  ul.feat li:first-child { border-top: none; }
+  ul.feat li::before {
+    content: ""; position: absolute; left: 4px; top: 15px; width: 9px; height: 9px;
+    border-radius: 2px; background: var(--gh-accent-emphasis); transform: rotate(45deg);
+  }
+  ul.feat li b { font-weight: 700; }
+  .cmd { color: var(--gh-done); font-weight: 700; }
+
+  blockquote.quote {
+    margin: 20px 0 0; padding: 14px 20px; border-left: 4px solid var(--gh-border-strong, var(--gh-accent-emphasis));
+    background: var(--gh-canvas-inset); border-radius: 0 10px 10px 0; color: var(--gh-fg-muted);
+    font-size: 1.05rem; font-style: italic;
+  }
+  blockquote.quote .src { display: block; margin-top: 8px; font-style: normal; font-size: 0.92rem; color: var(--gh-fg-subtle); }
+
+  .callout {
+    display: flex; gap: 13px; align-items: flex-start;
+    background: color-mix(in srgb, var(--gh-attention-fg) 9%, transparent);
+    border: 1px solid color-mix(in srgb, var(--gh-attention-fg) 35%, transparent);
+    border-radius: 12px; padding: 18px 20px; margin: 30px 0;
+  }
+  .callout svg { width: 22px; height: 22px; fill: var(--gh-attention-fg); flex: none; margin-top: 2px; }
+  .callout p { margin: 0; font-size: 1.05rem; color: var(--gh-fg); }
+
+  .two-col { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-top: 18px; }
+  .mini {
+    background: var(--gh-canvas-inset); border: 1px solid var(--gh-border-muted);
+    border-radius: 12px; padding: 18px 20px;
+  }
+  .mini h4 { margin: 0 0 8px; font-size: 1.12rem; display: flex; align-items: center; gap: 8px; }
+  .mini h4 svg { width: 18px; height: 18px; }
+  .mini p { margin: 0; font-size: 1.04rem; color: var(--gh-fg-muted); }
+
+  .partners { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 16px; }
+  .partner-tag {
+    font-size: 0.95rem; font-weight: 600; padding: 6px 13px; border-radius: 8px;
+    background: var(--gh-surface-2); border: 1px solid var(--gh-border); color: var(--gh-fg);
+  }
+
+  /* ===== Footer ===== */
+  footer.site { border-top: 1px solid var(--gh-border); margin-top: 60px; padding-top: 36px; }
+  footer .src-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 14px; }
+  footer .src-card {
+    background: var(--gh-surface); border: 1px solid var(--gh-border); border-radius: 12px; padding: 18px 20px;
+  }
+  footer .src-card .k { font-size: 0.85rem; font-weight: 700; color: var(--gh-fg-subtle); text-transform: uppercase; letter-spacing: .05em; }
+  footer .src-card a { font-size: 1.04rem; font-weight: 600; display: inline-block; margin-top: 6px; word-break: break-all; }
+  .foot-note { color: var(--gh-fg-subtle); font-size: 0.96rem; margin-top: 28px; padding-bottom: 40px; }
+
+  .reveal { opacity: 0; transform: translateY(16px); transition: opacity .6s ease, transform .6s ease; }
+  .reveal.in { opacity: 1; transform: none; }
+
+  @media (max-width: 680px) {
+    html { font-size: 16.5px; }
+    .header-inner, .chips-inner, main { padding-left: 16px; padding-right: 16px; }
+    .card { padding: 22px 20px; }
+    .two-col { grid-template-columns: 1fr; }
+    .brand .tag { display: none; }
+  }
+</style>
+</head>
+<body>
+
+<header class="site">
+  <div class="header-inner">
+    <div class="brand">
+      <svg viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+      <span>GitHub</span><span class="sep">/</span><span class="tag">Build 2026</span>
+    </div>
+    <div class="header-spacer"></div>
+    <button class="theme-toggle" id="themeToggle" aria-label="テーマ切替">
+      <svg class="ico-moon" viewBox="0 0 16 16"><path d="M9.598 1.591a.749.749 0 0 1 .785-.175 7.001 7.001 0 1 1-8.967 8.967.75.75 0 0 1 .961-.96 5.5 5.5 0 0 0 7.046-7.046.75.75 0 0 1 .175-.786Z"></path></svg>
+      <span id="themeLabel">ライト</span>
+    </button>
+  </div>
+</header>
+
+<nav class="chips">
+  <div class="chips-inner" id="chipNav">
+    <a class="chip active" href="#vision">ビジョン</a>
+    <a class="chip" href="#copilot-app">Copilot アプリ</a>
+    <a class="chip" href="#canvas">Canvas</a>
+    <a class="chip" href="#sandbox">サンドボックス</a>
+    <a class="chip" href="#code-review">コードレビュー</a>
+    <a class="chip" href="#sdk">SDK</a>
+    <a class="chip" href="#cli">CLI</a>
+    <a class="chip" href="#automation">自動化・メモリ</a>
+    <a class="chip" href="#partners">パートナー</a>
+    <a class="chip" href="#model">モデル</a>
+    <a class="chip" href="#security">セキュリティ</a>
+    <a class="chip" href="#modernize">モダナイゼーション</a>
+  </div>
+</nav>
+
+<main>
+
+  <!-- HERO -->
+  <div class="hero">
+    <div class="eyebrow"><span class="dot"></span>Microsoft Build 2026 · 2026年6月2日</div>
+    <h1>GitHub 関連発表<br><span class="accent">完全まとめ</span></h1>
+    <p class="lead">Build 2026 のキーワードは <b>"agentic frontier"（エージェント時代）</b>。GitHub Copilot を中心に、複数の AI エージェントを「本番ソフトウェアと同じ作り方」で構築・運用するための新基盤が一挙に発表されました。</p>
+    <div class="hero-meta">
+      <span class="meta-pill"><svg viewBox="0 0 16 16"><path d="M4.75 0a.75.75 0 0 1 .75.75V2h5V.75a.75.75 0 0 1 1.5 0V2h1.25c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25V3.75C0 2.784.784 2 1.75 2H3V.75A.75.75 0 0 1 3.75 0Zm-3 7v7.25c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V7Z"></path></svg>開催: 2026年6月2日</span>
+      <span class="meta-pill"><svg viewBox="0 0 16 16"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg>テーマ: エージェントネイティブ開発</span>
+      <span class="meta-pill"><svg viewBox="0 0 16 16"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25Z"></path></svg>出典: GitHub Blog / 公式 Index</span>
+    </div>
+
+    <div class="stats">
+      <div class="stat"><div class="num">14<small>億+ /月</small></div><div class="label">GitHub の月間コミット数（前年比ほぼ2倍）</div></div>
+      <div class="stat"><div class="num">20<small>億+ /週</small></div><div class="label">GitHub Actions の週間実行分</div></div>
+      <div class="stat"><div class="num">6<small>言語</small></div><div class="label">Copilot SDK が一般提供（GA）された言語</div></div>
+      <div class="stat"><div class="num">9<small>社</small></div><div class="label">提供開始したパートナー製エージェントアプリ</div></div>
+    </div>
+  </div>
+
+  <!-- VISION -->
+  <section class="block reveal in" id="vision">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-accent-fg)"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM5.5 7.75a.75.75 0 0 0 0 1.5h5a.75.75 0 0 0 0-1.5Z"></path></svg></div>
+      <h2 class="section-title">全体ビジョン — "Build in GitHub"</h2>
+    </div>
+    <p class="section-sub">「エージェントも本番ソフトウェアと同じ方法で作るべき」。GitHub はエージェント開発の<b>ライフサイクル基盤</b>として位置づけられました。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>エージェント開発のライフサイクルを GitHub が標準化</h3>
+        <div class="badges"><span class="badge preview">ビジョン</span></div>
+      </div>
+      <p>Microsoft Agent Platform 全体の中で、GitHub は <b>「エージェントを構築する場所」</b>として明確に定義されました。エージェントは <span class="mono">source → test → deploy → observe → improve</span> というライフサイクルに従う必要があり、GitHub はこの流れと、初日から必要となるガバナンス制御を提供します。</p>
+      <ul class="feat">
+        <li><b>構築は GitHub で:</b> 「GitHub Copilot でコードを書いて速く動く」。エージェントを GitHub で構築し、<b>Microsoft Foundry にデプロイ</b>し、最適なモデルで自動最適化する流れ。</li>
+        <li><b>単一システムの一部:</b> Azure / Microsoft IQ / Fabric / Foundry / Windows / Security / Microsoft 365 と並び、エンタープライズ規模でエージェントを展開する「単一の統合システム」を構成。</li>
+        <li><b>すべて一箇所で:</b> このシステムのために作られた「新しいアプリ（＝GitHub Copilot アプリ）」上で、これら全部を実行可能。</li>
+      </ul>
+      <blockquote class="quote">"Agents must follow a lifecycle: source, test, deploy, observe, and improve. GitHub sets up that lifecycle and provides the necessary controls from day one."<span class="src">— Microsoft Build 2026 公式アナウンス Index</span></blockquote>
+    </div>
+  </section>
+
+  <!-- COPILOT APP -->
+  <section class="block reveal in" id="copilot-app">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-done)"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25V2.75C0 1.784.784 1 1.75 1ZM1.5 2.75v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Zm5.28 1.72 2.25 2.25a.75.75 0 0 1 0 1.06l-2.25 2.25-1.06-1.06L7.44 7 5.72 5.28Z"></path></svg></div>
+      <h2 class="section-title">GitHub Copilot アプリ <span style="font-size:1rem;color:var(--gh-fg-muted);font-weight:600;">（最大の目玉）</span></h2>
+    </div>
+    <p class="section-sub">複数エージェントを並列に「指揮」するための、<b>エージェントネイティブなデスクトップ体験</b>。GitHub の上に構築された新しいコントロールセンターです。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>"My Work" ビュー — 全リポジトリの稼働を一望</h3>
+        <div class="badges"><span class="badge tech">テクニカルプレビュー</span></div>
+      </div>
+      <p>単一の <b>My Work</b> ビューから、接続したリポジトリ横断で「稼働中のセッション・Issue・PR・バックグラウンド自動化」を一望できます。アイデア／既存の Issue／PR から開始し、<b>複数のエージェントセッションを並列にオーケストレーション</b>しながら、変更をレビュー・CI・マージへと進められます。</p>
+      <ul class="feat">
+        <li><b>git worktree で完全分離:</b> 各セッションは独立した git worktree（ブランチの実体コピー）上で動作。並列エージェントが互いに干渉しません。worktree の作成・後片付け・ブランチ管理は<b>アプリが全自動</b>で処理。</li>
+        <li><b>対象プラン:</b> 既存の Copilot <b>Pro / Pro+ / Business / Enterprise</b> ユーザー向けにテクニカルプレビューで提供開始。</li>
+      </ul>
+      <blockquote class="quote">"The new GitHub Copilot app is the agent-native desktop experience built on GitHub … you can see work in motion across connected repositories: active sessions, issues, pull requests, and background automations."<span class="src">— GitHub Blog（Mario Rodriguez, CPO）</span></blockquote>
+    </div>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>Agent Merge — PR をマージまで運ぶ</h3>
+        <div class="badges"><span class="badge tech">テクニカルプレビュー</span></div>
+      </div>
+      <p><b>Agent Merge</b> は、プルリクエストをレビュー・チェック・マージまで自動で運びます。CI を監視し、必須レビュアーを追跡し、失敗したチェックに対応し、すべての条件が満たされるまで待機します。</p>
+      <ul class="feat">
+        <li><b>自動化の度合いを選べる:</b> 「CI を green に戻すまで」「フィードバックに対応するまで」「条件を満たしたらマージ」など、Copilot にどこまで任せるかは開発者が決定。何を有効化し何を出荷するかは人間が制御。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- CANVAS -->
+  <section class="block reveal in" id="canvas">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-accent-fg)"><path d="M1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0 1 14.25 13H8.06l-2.573 2.573A1.458 1.458 0 0 1 3 14.543V13H1.75A1.75 1.75 0 0 1 0 11.25v-9.5C0 .784.784 0 1.75 0Z"></path></svg></div>
+      <h2 class="section-title">Canvas — 意図を「検証可能な作業」に</h2>
+    </div>
+    <p class="section-sub">チャットは指示や曖昧さの解消には強いものの、作業が進むとログと判断の長いスクロールになります。Canvas はそれを解決する<b>双方向の作業面</b>です。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>人とエージェントが同じ面で協働する "AX" の始まり</h3>
+        <div class="badges"><span class="badge tech">テクニカルプレビュー</span></div>
+      </div>
+      <p>Canvas は<b>人とエージェントの双方向な作業面（bidirectional work surface）</b>です。プラン、PR、ブラウザセッション、ターミナル、デプロイ、ダッシュボード、ワークフロー状態などを表示できます。</p>
+      <ul class="feat">
+        <li><b>リアルタイム協働:</b> エージェントは作業に応じて Canvas を更新し、開発者は<b>同じ面上で編集・並べ替え・承認・軌道修正</b>できる。</li>
+        <li><b>役割分担:</b> チャットは「指示・議論・曖昧さの推論」の場、Canvas は「その意図が、検証・操舵できる可視化された作業になる」場。これが <b>Agent Experience（AX）</b> の出発点。</li>
+      </ul>
+      <blockquote class="quote">"Canvases are bidirectional work surfaces for humans and agents. A canvas might show a plan, pull request, browser session, terminal, deployment, dashboard, or workflow state."<span class="src">— Microsoft Build 2026 公式アナウンス Index</span></blockquote>
+    </div>
+  </section>
+
+  <!-- SANDBOX -->
+  <section class="block reveal in" id="sandbox">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-success-fg)"><path d="M8 0c.5 0 .99.06 1.46.17a.75.75 0 0 1-.34 1.46 5.5 5.5 0 1 0 4.25 4.25.75.75 0 0 1 1.46-.34A8 8 0 1 1 8 0Zm3.78 3.22 1 1a.75.75 0 0 1 0 1.06l-5.5 5.5a.75.75 0 0 1-1.06 0l-2.5-2.5 1.06-1.06L6.75 9.19l4.97-4.97a.75.75 0 0 1 1.06 0Z"></path></svg></div>
+      <h2 class="section-title">Cloud &amp; Local サンドボックス</h2>
+    </div>
+    <p class="section-sub">エージェントが「コードを実行し、結果を検証し、反復する」ための<b>境界付き環境</b>。本番に触れずに安全に動かせます。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>実行場所をローカル／クラウドから選択</h3>
+        <div class="badges"><span class="badge preview">プレビュー</span></div>
+      </div>
+      <p>Copilot を<b>ローカルマシン</b>と<b>クラウド</b>のどちらで動かすかを選べます。セキュリティとエンタープライズのポリシー強制を優先しながら、エージェント駆動のワークフローを解放します。</p>
+      <div class="two-col">
+        <div class="mini">
+          <h4><svg viewBox="0 0 16 16" fill="var(--gh-accent-fg)"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 13H1.75A1.75 1.75 0 0 1 0 11.25Z"></path></svg>ローカルサンドボックス</h4>
+          <p>マシン上の隔離環境で動作。ファイルシステム・ネットワーク接続・システム機能へのアクセスを制限。ポリシーは<b>中央で構成・強制</b>可能。</p>
+        </div>
+        <div class="mini">
+          <h4><svg viewBox="0 0 16 16" fill="var(--gh-done)"><path d="M4.5 6a3.5 3.5 0 1 1 6.78 1.22A3.001 3.001 0 0 1 11 13H4.5a3.5 3.5 0 0 1-.93-6.876A3.51 3.51 0 0 1 4.5 6Z"></path></svg>クラウドサンドボックス</h4>
+          <p>GitHub がホストする<b>完全隔離・短命（ephemeral）の Linux 環境</b>。組織が独自ポリシーを定義。任意のデバイスからセッションを引き継ぎ、リモート操作できる。</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CODE REVIEW -->
+  <section class="block reveal in" id="code-review">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-done)"><path d="M1.5 3.25a2.25 2.25 0 1 1 3 2.122v5.256a2.251 2.251 0 1 1-1.5 0V5.372A2.25 2.25 0 0 1 1.5 3.25Zm5.677-.177L9.573.677A.25.25 0 0 1 10 .854V2.5h1A2.5 2.5 0 0 1 13.5 5v5.628a2.251 2.251 0 1 1-1.5 0V5a1 1 0 0 0-1-1h-1v1.646a.25.25 0 0 1-.427.177L7.177 3.427a.25.25 0 0 1 0-.354Z"></path></svg></div>
+      <h2 class="section-title">Copilot コードレビューの進化</h2>
+    </div>
+    <p class="section-sub">エージェントが大量の PR を生むほど、レビューの圧力は増大します。Copilot コードレビューは<b>適応的・エージェント的</b>にノイズを濾し取ります。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>自社基準を反映する拡張性と Medium tier</h3>
+        <div class="badges"><span class="badge preview">機能追加</span><span class="badge ga">/rubberduck は GA</span></div>
+      </div>
+      <ul class="feat">
+        <li><b>自社流に拡張:</b> <b>カスタムエージェントスキル</b>・<b>MCP サーバ連携</b>・<b>構成可能な Actions ワークフロー</b>で、社内基準・社内システム・エンジニアリング文脈をレビューに反映。</li>
+        <li><b>Medium tier review:</b> PR を<b>より高推論のモデル</b>にルーティングし、precision / recall を向上。管理者はリポジトリ単位で <span class="mono">low</span> / <span class="mono">medium</span> を設定でき、低リスクには軽量・低コストモデル、高影響リポジトリには高性能モデルを割り当て可能。</li>
+        <li><b><span class="cmd">/security-review</span> スキル:</b> セキュリティ評価に特化した専用経路を提供。</li>
+        <li><b><span class="cmd">/rubberduck</span> スキル（一般提供）:</b> 複数のモデルファミリで実装を批評し、新規の問題を発見。</li>
+        <li><b>Azure DevOps ネイティブ対応:</b> Azure DevOps 上でも、ワンクリックレビュー・インラインコメント・コミット可能な修正提案をそのまま利用可能。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- SDK -->
+  <section class="block reveal in" id="sdk">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-accent-fg)"><path d="M4.72 3.22a.75.75 0 0 1 1.06 1.06L2.06 8l3.72 3.72a.75.75 0 1 1-1.06 1.06L.47 8.53a.75.75 0 0 1 0-1.06Zm6.56 0a.75.75 0 0 1 1.06 0l4.25 4.25a.75.75 0 0 1 0 1.06l-4.25 4.25a.75.75 0 0 1-1.06-1.06L13.94 8l-3.72-3.72a.75.75 0 0 1 0-1.06Z"></path></svg></div>
+      <h2 class="section-title">GitHub Copilot SDK が一般提供</h2>
+    </div>
+    <p class="section-sub">Copilot アプリを動かしているのと<b>同じエージェントランタイム</b>を、自分のアプリに組み込める形で公開しました。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>「ひとつのランタイム、多数の接地面」</h3>
+        <div class="badges"><span class="badge ga">一般提供 (GA)</span></div>
+      </div>
+      <p>GitHub Copilot SDK は <b>Node.js / TypeScript・Python・Go・.NET・Rust・Java</b> の6言語で一般提供（GA）に。社内コード解析ツール、独自のリリースノート生成、サポートワークフローに埋め込むエージェントなどを、寄せ集めの独自スタックではなく<b>同じ基盤の上に構築</b>できます。</p>
+      <div class="partners">
+        <span class="partner-tag">Node.js / TypeScript</span>
+        <span class="partner-tag">Python</span>
+        <span class="partner-tag">Go</span>
+        <span class="partner-tag">.NET</span>
+        <span class="partner-tag">Rust</span>
+        <span class="partner-tag">Java</span>
+      </div>
+      <blockquote class="quote">"Now generally available in Node.js/TypeScript, Python, Go, .NET, Rust, and Java, it exposes the same agentic runtime that powers the Copilot app."<span class="src">— GitHub Blog</span></blockquote>
+    </div>
+  </section>
+
+  <!-- CLI -->
+  <section class="block reveal in" id="cli">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-success-fg)"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25Zm3.53 2.22 2.5 2.5a.75.75 0 0 1 0 1.06l-2.5 2.5L2.47 9.97 4.44 8 2.47 6.03Zm4.97 4.28a.75.75 0 0 0 0 1.5H11a.75.75 0 0 0 0-1.5Z"></path></svg></div>
+      <h2 class="section-title">Copilot CLI の強化</h2>
+    </div>
+    <p class="section-sub">ターミナル派の開発者がそこに留まり続けられるよう、CLI が大きく刷新されました。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>TUI 刷新・音声入力・スケジュール・ローカル委譲</h3>
+        <div class="badges"><span class="badge preview">プレビュー / 実験</span></div>
+      </div>
+      <ul class="feat">
+        <li><b>再設計された TUI（<span class="cmd">/experimental</span> モード）:</b> PR・Issue・Gist にタブでアクセスできる新ターミナル UI。</li>
+        <li><b>ボイスモード:</b> <b>オンデバイス</b>の音声認識を使用。音声がマシンの外に出ることはありません。</li>
+        <li><b><span class="cmd">/every</span>:</b> 繰り返しのプロンプトとバックグラウンドタスクをスケジュール実行。</li>
+        <li><b><span class="cmd">/fleet</span>（ローカルタスク委譲）:</b> ローカルモデルのサブエージェントへ選択的に委譲。クラウド上の主エージェントがプランを立て、各タスクの複雑度を評価し、モデルのサイズと能力に応じて適切なものをローカルへ振り分け。</li>
+        <li><b>MXC プロセス分離を採用:</b> Microsoft Execution Container（MXC）のプロセス分離を採用し、動的に生成・実行されるコードの権限を制約。エージェント実行をユーザーのデスクトップ・クリップボード・入力デバイスから隔離。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- AUTOMATION -->
+  <section class="block reveal in" id="automation">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-attention-fg)"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM8 2.5a.75.75 0 0 0-.75.75v4.19l-2.72 2.72a.75.75 0 1 0 1.06 1.06l3-3A.75.75 0 0 0 8.75 7.5V3.25A.75.75 0 0 0 8 2.5Z"></path></svg></div>
+      <h2 class="section-title">クラウド自動化・クラウドエージェント・メモリ</h2>
+    </div>
+    <p class="section-sub">「コードを書く」だけでなく、Issue を立て、議論を始め、レビュアーに返信する——その全工程をエージェントが担えるようになります。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>許可制から autopilot へ、そして時間を超える記憶</h3>
+        <div class="badges"><span class="badge preview">プレビュー</span></div>
+      </div>
+      <ul class="feat">
+        <li><b>クラウド自動化:</b> エージェントをスケジュール実行、GitHub イベントに反応、Issue を作成、コメントを残す。<b>既定では書き込み操作のたびに許可を求め</b>、信頼が築けたら autopilot に切替。</li>
+        <li><b>Copilot クラウドエージェント:</b> Issue の起票、議論の開始、レビュアーへの返信まで、エンジニアリングの全ステップを処理可能に。</li>
+        <li><b>Memory++ と <span class="cmd">/chronicle</span>:</b> デバイス間・時間をまたいだ<b>継続性</b>を Copilot に付与。アプリ・CLI・VS Code・GitHub 上で始めたセッションの文脈を後から参照できる。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- PARTNERS -->
+  <section class="block reveal in" id="partners">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-done)"><path d="M5.5 3.5a2 2 0 1 1 4 0 2 2 0 0 1-4 0ZM2 12c0-2.2 1.8-4 4-4h.5A3.5 3.5 0 0 1 10 11.5V13H2Zm10.5-8.5a2 2 0 1 1 0 4 2 2 0 0 1 0-4ZM11 13v-1.5c0-.9-.26-1.74-.7-2.45A3.49 3.49 0 0 1 14 12.5V13Z"></path></svg></div>
+      <h2 class="section-title">パートナー製エージェントアプリ</h2>
+    </div>
+    <p class="section-sub">サードパーティ製のエージェントアプリが GitHub Copilot と統合。お気に入りのツールから離れずにタスクを自動化できます。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>Issue を好みのエージェントに割り当て</h3>
+        <div class="badges"><span class="badge ga">提供開始</span><span class="badge attn">持ち込みはウェイトリスト</span></div>
+      </div>
+      <p>パートナー製エージェントアプリは GitHub Copilot と統合し、タスク自動化・コード生成・文脈解析・アクション実行を支援します。Issue を、自分のワークフローに合う<b>新しいエージェントに割り当て</b>られます。自社のエージェントアプリを GitHub に持ち込むにはウェイトリストに参加。</p>
+      <div class="partners">
+        <span class="partner-tag">LaunchDarkly</span>
+        <span class="partner-tag">Bright</span>
+        <span class="partner-tag">Amplitude</span>
+        <span class="partner-tag">Sonar</span>
+        <span class="partner-tag">Endor Labs</span>
+        <span class="partner-tag">Octopus Deploy</span>
+        <span class="partner-tag">Packfiles</span>
+        <span class="partner-tag">PagerDuty</span>
+        <span class="partner-tag">Miro</span>
+      </div>
+    </div>
+  </section>
+
+  <!-- MODEL -->
+  <section class="block reveal in" id="model">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-accent-fg)"><path d="M8 0a.75.75 0 0 1 .67.41l1.94 3.93 4.34.63a.75.75 0 0 1 .41 1.28l-3.14 3.06.74 4.32a.75.75 0 0 1-1.09.79L8 12.6l-3.88 2.04a.75.75 0 0 1-1.09-.79l.74-4.32L.63 6.45a.75.75 0 0 1 .41-1.28l4.34-.63L7.33.41A.75.75 0 0 1 8 0Z"></path></svg></div>
+      <h2 class="section-title">MAI-Code-1 モデル</h2>
+    </div>
+    <p class="section-sub">Microsoft 独自の MAI モデル群から、コーディング特化モデルが Copilot に登場しました。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>GitHub 向けにチューニングされた高効率コーディングモデル</h3>
+        <div class="badges"><span class="badge ga">Copilot / VS Code で提供</span></div>
+      </div>
+      <p><b>MAI-Code-1</b> は「推論効率の高い（inference efficient）、GitHub 向けにチューニングされたコーディングモデル」で、<b>Copilot と VS Code で利用可能</b>になりました。Build 2026 で発表された7つの新 MAI モデル（画像・音声・文字起こし・コーディング・推論にまたがる）のうち、コーディング領域を担うモデルです。</p>
+      <div class="callout">
+        <svg viewBox="0 0 16 16"><path d="M8 1.5a6.5 6.5 0 1 0 0 13 6.5 6.5 0 0 0 0-13ZM0 8a8 8 0 1 1 16 0A8 8 0 0 1 0 8Zm6.5-.25A.75.75 0 0 1 7.25 7h1a.75.75 0 0 1 .75.75v2.75h.25a.75.75 0 0 1 0 1.5h-2a.75.75 0 0 1 0-1.5h.25v-2h-.25a.75.75 0 0 1-.75-.75ZM8 6a1 1 0 1 1 0-2 1 1 0 0 1 0 2Z"></path></svg>
+        <p><b>事実確認メモ:</b> 一部のニュース集約サイトは「Project Polaris が GPT-4 を置き換える」と報じましたが、Microsoft / GitHub の<b>公式アナウンス Index には該当記述はなく</b>、公式に名前が挙がっているコーディングモデルは <b>MAI-Code-1</b> です。本資料は公式一次情報を優先しています。</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- SECURITY -->
+  <section class="block reveal in" id="security">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-success-fg)"><path d="M7.467.133a1.748 1.748 0 0 1 1.066 0l5.25 1.68A1.75 1.75 0 0 1 15 3.48V7c0 1.566-.32 3.182-1.303 4.682-.983 1.498-2.585 2.813-5.032 3.855a1.7 1.7 0 0 1-1.33 0c-2.447-1.042-4.049-2.357-5.032-3.855C1.32 10.182 1 8.566 1 7V3.48a1.75 1.75 0 0 1 1.217-1.667Z"></path></svg></div>
+      <h2 class="section-title">セキュリティ — Defender × GitHub Code Security</h2>
+    </div>
+    <p class="section-sub">エージェントが生むコードを安全に届けるため、ランタイムの文脈を開発ワークフローへ取り込みます。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>Microsoft Defender と GitHub Code Security の統合が GA</h3>
+        <div class="badges"><span class="badge ga">一般提供 (GA)</span></div>
+      </div>
+      <p>Microsoft Defender と <b>GitHub Code Security</b>（旧 GitHub Advanced Security スイートの一部）の統合が一般提供になりました。<b>ランタイムの文脈</b>を開発・セキュリティのワークフローに取り込むことで、チームはリスクを早期に優先付け・対処でき、人的リソースへの影響を最小化できます。</p>
+      <ul class="feat">
+        <li><b>GitHub Copilot CLI の MXC 採用:</b> 動的に生成・実行されるコードができることを Microsoft Execution Container のプロセス分離で制約。</li>
+        <li><b>Security の GitHub Enterprise ネイティブ対応:</b> インシデントを Issue → 調査 → PR → 修復プランへと、<b>統治されたサービスID（governed service identity）</b>のもとで進められる。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- MODERNIZE -->
+  <section class="block reveal in" id="modernize">
+    <div class="section-head">
+      <div class="ico"><svg viewBox="0 0 16 16" fill="var(--gh-attention-fg)"><path d="M11.93 8.5a4.002 4.002 0 0 1-7.86 0H.75a.75.75 0 0 1 0-1.5h3.32a4.002 4.002 0 0 1 7.86 0h3.32a.75.75 0 0 1 0 1.5Z"></path></svg></div>
+      <h2 class="section-title">GitHub Copilot モダナイゼーションエージェント</h2>
+    </div>
+    <p class="section-sub">レガシー資産の刷新を、ポートフォリオ全体でスケールさせるエージェントが一般提供になりました。</p>
+
+    <div class="card">
+      <div class="card-top">
+        <h3>IT と開発者を束ねる、初のエンドツーエンド・モダナイゼーション</h3>
+        <div class="badges"><span class="badge ga">一般提供 (GA)</span></div>
+      </div>
+      <p><b>GitHub Copilot modernization agent</b> が一般提供に。アプリ所有者・アーキテクト・開発者が、<b>アプリケーションポートフォリオ全体</b>でモダナイゼーションをスケールできます。</p>
+      <ul class="feat">
+        <li><b>Azure Copilot migration agent（パブリックプレビュー）と連携:</b> 発見・評価から依存関係マッピング、ROI 分析、ウェーブ計画まで、数ヶ月の手作業を数分に短縮。</li>
+        <li><b>初の統合型ソリューション:</b> 両エージェントが組み合わさり、<b>IT と開発者のワークフローを統合する初のエージェント型エンドツーエンド・モダナイゼーション</b>を実現。</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer class="site">
+    <h2 class="section-title" style="font-size:1.5rem;margin-bottom:18px;">出典・一次情報</h2>
+    <div class="src-grid">
+      <div class="src-card">
+        <div class="k">GitHub Blog（一次情報）</div>
+        <a href="https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience/" target="_blank" rel="noopener">GitHub Copilot app: The agent-native desktop experience</a>
+      </div>
+      <div class="src-card">
+        <div class="k">公式アナウンス Index</div>
+        <a href="https://github.com/microsoft/Build26-news" target="_blank" rel="noopener">github.com/microsoft/Build26-news</a>
+      </div>
+      <div class="src-card">
+        <div class="k">Microsoft 公式ブログ</div>
+        <a href="https://blogs.microsoft.com/blog/2026/06/02/microsoft-build-2026-be-yourself-at-work/" target="_blank" rel="noopener">Microsoft Build 2026 — Be yourself at work</a>
+      </div>
+      <div class="src-card">
+        <div class="k">継続更新</div>
+        <a href="https://github.blog/changelog/" target="_blank" rel="noopener">GitHub Changelog</a>
+      </div>
+    </div>
+    <p class="foot-note">本資料は Microsoft Build 2026（2026年6月2日）の <b>GitHub 関連発表</b>を、GitHub Blog および Microsoft 公式の構造化アナウンス Index（exact wording 抽出）に基づき整理したものです。引用（"..."）は原文ママ。提供形態（GA / プレビュー / テクニカルプレビュー）は発表時点のものです。デザインは GitHub Primer のカラーシステムに準拠。</p>
+  </footer>
+
+</main>
+
+<script>
+  // Theme toggle
+  const root = document.documentElement;
+  const btn = document.getElementById('themeToggle');
+  const label = document.getElementById('themeLabel');
+  function syncLabel(){ label.textContent = root.getAttribute('data-theme') === 'dark' ? 'ライト' : 'ダーク'; }
+  syncLabel();
+  btn.addEventListener('click', () => {
+    root.setAttribute('data-theme', root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark');
+    syncLabel();
+  });
+
+  // Scroll reveal
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting){ e.target.classList.add('in'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.reveal').forEach(el => io.observe(el));
+
+  // Active chip on scroll
+  const chips = [...document.querySelectorAll('#chipNav .chip')];
+  const sections = chips.map(c => document.querySelector(c.getAttribute('href')));
+  const spy = new IntersectionObserver((entries) => {
+    entries.forEach(e => {
+      if (e.isIntersecting) {
+        const id = '#' + e.target.id;
+        chips.forEach(c => c.classList.toggle('active', c.getAttribute('href') === id));
+      }
+    });
+  }, { rootMargin: '-45% 0px -50% 0px', threshold: 0 });
+  sections.forEach(s => s && spy.observe(s));
+</script>
+
+
+</body></html>
