@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light" data-lang="ja"
+      data-title-ja="体験ガイド 04 — Canvas（キャンバス） | Copilot App v1.0.12"
+      data-title-en="Hands-on 04 — Canvas | Copilot App v1.0.12">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>体験ガイド 04 — Canvas（キャンバス） | Copilot App v1.0.12</title>
+<script>
+(function(){
+  var t;try{t=localStorage.getItem('cp-theme');}catch(e){}
+  if(!t){var p=new URLSearchParams(location.search).get('scoutTheme');t=p||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+  document.documentElement.setAttribute('data-theme',t);
+  var l;try{l=localStorage.getItem('cp-lang');}catch(e){}
+  document.documentElement.setAttribute('data-lang',l==='en'?'en':'ja');
+})();
+</script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-in">
+    <svg class="logo" height="24" viewBox="0 0 16 16" width="24" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+    <span class="crumb"><a href="index.html"><span class="ja">体験ガイド</span><span class="en">Hands-on</span></a><svg height="12" viewBox="0 0 16 16" width="12" aria-hidden="true"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06Z"></path></svg><span>04 · <span class="ja">Canvas（キャンバス）</span><span class="en">Canvas</span></span></span>
+    <span class="spacer"></span>
+    <button class="lang-toggle" id="langToggle" aria-label="Switch to English">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg>
+      <span id="langLabel">EN</span>
+    </button>
+    <button class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zm8-5a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0zm9.193 1.061a.75.75 0 01-1.06 0l-1.061-1.06a.75.75 0 011.06-1.061l1.061 1.06a.75.75 0 010 1.061zM4.464 4.465a.75.75 0 01-1.06 0L2.343 3.404a.75.75 0 011.06-1.06l1.06 1.06a.75.75 0 010 1.06z"></path></svg>
+      <span id="themeLabel">テーマ</span>
+    </button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-in">
+    <span class="kicker"><span class="dot"></span><span class="num">04 / 15</span><span class="ja">&nbsp;体験ガイド</span><span class="en">&nbsp;Hands-on guide</span></span>
+    <h1><span class="ja">Canvas（キャンバス）を体験する</span><span class="en">Experience Canvas</span></h1>
+    <p class="lead"><span class="ja">人とエージェントが同じ作業面を見ながら、プラン・PR・ターミナル・ブラウザー・ワークフロー状態をその場で更新し、編集・承認・軌道修正できます。</span><span class="en">A shared work surface where people and agents see plans, PRs, terminals, browsers, and workflow state together, then update, edit, approve, and course-correct in place.</span></p>
+  </div>
+</div>
+
+<main class="wrap">
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0Zm3.78 5.97a.75.75 0 00-1.06 0L6.75 9.94 5.28 8.47a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5a.75.75 0 000-1.06Z"></path></svg><span class="ja">この機能でできること</span><span class="en">What you'll experience</span></div>
+    <h2><span class="ja">体験のゴール</span><span class="en">Your goal</span></h2>
+    <p><span class="ja">このガイドを終えると、セッション中に Canvas を開き、エージェントの進行を見ながらプランを編集し、次の一手をその場で承認できるようになります。</span><span class="en">By the end of this guide you'll be able to open Canvas during a session, watch an agent progress, edit its plan, and approve the next move in place.</span></p>
+  </div>
+  <div class="exp-grid">
+    <div class="exp" style="--accent:var(--gh-accent)"><h4><span class="dot"></span><span class="ja">双方向の作業面</span><span class="en">A two-way work surface</span></h4><p><span class="ja">人とエージェントが同じ Canvas 上で計画、実行状況、判断ポイントを共有します。</span><span class="en">People and agents share plans, execution state, and decision points on the same Canvas.</span></p></div>
+    <div class="exp" style="--accent:var(--gh-accent)"><h4><span class="dot"></span><span class="ja">ライブに更新される状態</span><span class="en">Live-updating state</span></h4><p><span class="ja">プラン、PR、ブラウザー、ターミナル、デプロイ、ダッシュボード、ワークフロー状態の変化を追えます。</span><span class="en">Track changes across plans, PRs, browsers, terminals, deployments, dashboards, and workflow state.</span></p></div>
+    <div class="exp" style="--accent:var(--gh-accent)"><h4><span class="dot"></span><span class="ja">その場で介入</span><span class="en">Intervene in place</span></h4><p><span class="ja">項目の編集・並べ替え・承認・軌道修正を、別画面に移らず実行します。</span><span class="en">Edit, reorder, approve, and course-correct without switching away.</span></p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM0 8a8 8 0 1116 0A8 8 0 010 8Zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75ZM8 6a1 1 0 100-2 1 1 0 000 2Z"></path></svg><span class="ja">前提</span><span class="en">Prerequisites</span></div>
+    <h2><span class="ja">始める前に</span><span class="en">Before you begin</span></h2>
+  </div>
+  <div class="gbox prereq">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM0 8a8 8 0 1116 0A8 8 0 010 8Zm11.78-1.72a.75.75 0 00-1.06-1.06L7 8.94 5.28 7.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.06 0Z"></path></svg><span class="ja">用意するもの</span><span class="en">What you need</span></h3>
+    <ul>
+      <li><span class="ja">GitHub Copilot App v1.0.12 をインストール済み（Windows / macOS / Linux）</span><span class="en">GitHub Copilot App v1.0.12 installed (Windows / macOS / Linux)</span></li>
+      <li><span class="ja">有効な有料 Copilot サブスクリプション（Pro / Pro+ / Max / Business / Enterprise）でサインイン済み</span><span class="en">Signed in with an active paid Copilot subscription (Pro / Pro+ / Max / Business / Enterprise)</span></li>
+      <li><span class="ja">少なくとも 1 つの GitHub リポジトリへのアクセス（Issue や PR がいくつかあると体験しやすい）</span><span class="en">Access to at least one GitHub repository (a few issues or PRs make it easier to experience)</span></li>
+      <li><span class="ja">ローカルでコードを動かす場合は Git がインストール済み</span><span class="en">Git installed if you plan to run code locally</span></li>
+      <li><span class="ja">Canvas を表示できるセッション、またはエージェントに任せたい小さな作業があること</span><span class="en">A session that can show Canvas, or a small task you want to hand to an agent</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V2.75C0 1.784.784 1 1.75 1ZM4.75 4a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5Zm0 3.25a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5Zm0 3.25a.75.75 0 000 1.5h3.5a.75.75 0 000-1.5Z"></path></svg><span class="ja">ハンズオン手順</span><span class="en">Step-by-step</span></div>
+    <h2><span class="ja">Canvas を実際に使ってみる</span><span class="en">Put Canvas to work</span></h2>
+    <p><span class="ja">上から順に進めてください。各ステップは数分で完了します。</span><span class="en">Follow the steps in order &mdash; each takes just a few minutes.</span></p>
+  </div>
+  <ol class="steps" style="--accent:var(--gh-accent)">
+    <li><div class="st">
+      <span class="tag"><span class="ja">開始</span><span class="en">Start</span></span>
+      <h4><span class="ja">セッションを開いて Canvas を表示する</span><span class="en">Open a session and show Canvas</span></h4>
+      <p><span class="ja">Copilot App でリポジトリのセッションを開き、エージェントの作業状況を見られる Canvas を表示します。表示位置や呼び出し方は環境で異なるため、セッション内の作業面として開きます。</span><span class="en">Open a repository session in Copilot App and show the Canvas surface where agent work can be viewed. Placement can vary, so open it as the session's working surface.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">観察</span><span class="en">Observe</span></span>
+      <h4><span class="ja">エージェントが作るプランやビューを見る</span><span class="en">Watch the plan and views the agent populates</span></h4>
+      <p><span class="ja">小さな修正や調査を依頼し、Canvas にプラン、PR の状態、ターミナル出力、ブラウザー確認などが追加・更新される様子を見ます。</span><span class="en">Ask for a small fix or investigation and watch Canvas populate or update with a plan, PR state, terminal output, browser checks, and related views.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">編集</span><span class="en">Edit</span></span>
+      <h4><span class="ja">項目を編集・並べ替える</span><span class="en">Edit and reorder items</span></h4>
+      <p><span class="ja">プランの順序が意図と違う場合は、Canvas 上で項目の文言や順序を調整します。エージェントに先に確認してほしいステップを上に移します。</span><span class="en">If the plan order does not match your intent, adjust wording or ordering directly on Canvas. Move the step you want checked first to the top.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">承認</span><span class="en">Approve</span></span>
+      <h4><span class="ja">提案された次のステップを承認する</span><span class="en">Approve the proposed next step</span></h4>
+      <p><span class="ja">エージェントが実行前に確認を求めたら、内容を読み、問題なければ承認します。危険そうな操作や範囲が広い操作は、より小さい単位に分けるよう指示します。</span><span class="en">When the agent asks before acting, read the proposal and approve it if it looks right. For risky or broad changes, instruct it to split the work into smaller steps.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">修正</span><span class="en">Course-correct</span></span>
+      <h4><span class="ja">その場で軌道修正する</span><span class="en">Course-correct in place</span></h4>
+      <p><span class="ja">途中で目的がずれたら、Canvas 上の現在地を見ながら、期待する結果・除外したい範囲・確認方法を短く追記します。</span><span class="en">If the work drifts, use the current Canvas state to add a brief correction: expected outcome, scope to avoid, and how to verify.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">共有</span><span class="en">Share</span></span>
+      <h4><span class="ja">ライブの共有面として使う</span><span class="en">Use it as a live shared surface</span></h4>
+      <p><span class="ja">レビューやペア作業では、Canvas を見ながら「どこまで進んだか」「何を承認待ちか」をそろえます。ガイド 08 のコードレビュー結果も同じ文脈で扱えます。</span><span class="en">During review or pairing, use Canvas to align on what is done and what is waiting for approval. Results from guide 08 code review fit the same context.</span></p>
+    </div></li>
+  </ol>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.751.751 0 01.018-1.042.751.751 0 011.042-.018L6 10.94l6.72-6.72a.75.75 0 011.06 0Z"></path></svg><span class="ja">確認ポイント</span><span class="en">What you should see</span></div>
+    <h2><span class="ja">うまくいったサイン</span><span class="en">Signs it worked</span></h2>
+  </div>
+  <div class="gbox result">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.751.751 0 01.018-1.042.751.751 0 011.042-.018L6 10.94l6.72-6.72a.75.75 0 011.06 0Z"></path></svg><span class="ja">チェックリスト</span><span class="en">Checklist</span></h3>
+    <ul>
+      <li><span class="ja">Canvas 上にプランや作業状態が表示され、エージェントの進行に合わせて更新される。</span><span class="en">Canvas shows a plan and work state that update as the agent progresses.</span></li>
+      <li><span class="ja">プラン項目の文言や順序を変更し、その変更が以後の作業に反映される。</span><span class="en">You can change plan wording or ordering, and the change is reflected in later work.</span></li>
+      <li><span class="ja">エージェントの提案ステップを承認、またはより安全な手順へ軌道修正できる。</span><span class="en">You can approve an agent proposal or steer it toward a safer sequence.</span></li>
+      <li><span class="ja">PR、ターミナル、ブラウザー、ワークフロー状態などを一つの作業面で参照できる。</span><span class="en">You can reference PR, terminal, browser, and workflow state from one work surface.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 01-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 00-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.318 3.184-.095.115-.184.22-.268.32-.207.245-.383.463-.541.68-.208.3-.33.565-.37.847a.751.751 0 01-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 010-1.5ZM6 15.25a.75.75 0 01.75-.75h2.5a.75.75 0 010 1.5h-2.5a.75.75 0 01-.75-.75Z"></path></svg><span class="ja">ヒント・応用</span><span class="en">Tips &amp; variations</span></div>
+    <h2><span class="ja">もう一歩使いこなす</span><span class="en">Go a little further</span></h2>
+  </div>
+  <div class="gbox tip">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 01-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 00-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.318 3.184-.095.115-.184.22-.268.32-.207.245-.383.463-.541.68-.208.3-.33.565-.37.847a.751.751 0 01-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 010-1.5ZM6 15.25a.75.75 0 01.75-.75h2.5a.75.75 0 010 1.5h-2.5a.75.75 0 01-.75-.75Z"></path></svg><span class="ja">試してみる</span><span class="en">Things to try</span></h3>
+    <ul>
+      <li><span class="ja">大きな依頼は、Canvas 上で「調査」「変更」「検証」「PR」のように段階へ分けるとレビューしやすくなります。</span><span class="en">For larger requests, split the Canvas plan into phases such as investigation, change, verification, and PR.</span></li>
+      <li><span class="ja">ターミナルやブラウザーの結果だけで判断せず、PR 差分やテスト結果も同じ Canvas 上で確認します。</span><span class="en">Do not decide from terminal or browser results alone; check PR diffs and test results on the same Canvas.</span></li>
+      <li><span class="ja">CLI での操作と組み合わせたい場合は、ガイド 10 の Copilot CLI と見比べると役割分担が分かります。</span><span class="en">If you want to combine it with CLI work, compare guide 10 Copilot CLI to understand the division of labor.</span></li>
+    </ul>
+  </div>
+  <div class="note">
+    <svg height="16" viewBox="0 0 16 16" width="16" aria-hidden="true"><path d="M0 8a8 8 0 1116 0A8 8 0 010 8Zm8-6.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM6.5 7.75A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75ZM8 6a1 1 0 100-2 1 1 0 000 2Z"></path></svg>
+    <div><span class="ja">Canvas は AX（Agent Experience）への第一歩です。人がエージェントを監督するための「見える場所」を作ることが価値の中心です。</span><span class="en">Canvas is a first step toward AX (Agent Experience): its core value is giving people a visible place to supervise agents.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0Z"></path></svg><span class="ja">関連する体験ガイド</span><span class="en">Related guides</span></div>
+    <h2><span class="ja">次に試すなら</span><span class="en">Try next</span></h2>
+  </div>
+  <div class="rel-grid">
+    <a class="rel" href="08-code-review.html" style="--accent:var(--gh-accent)"><span class="rn">08</span><span class="rt"><span class="ja">Copilot コードレビュー</span><span class="en">Copilot code review</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+    <a class="rel" href="10-cli.html" style="--accent:var(--gh-done)"><span class="rn">10</span><span class="rt"><span class="ja">Copilot CLI</span><span class="en">Copilot CLI</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+    <a class="rel" href="index.html" style="--accent:var(--gh-accent)"><span class="rn"><svg height="15" viewBox="0 0 16 16" width="15"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0114.25 16H1.75A1.75 1.75 0 010 14.25Zm7 12.75h7.25a.25.25 0 00.25-.25V1.75a.25.25 0 00-.25-.25H7Z"></path></svg></span><span class="rt"><span class="ja">一覧に戻る</span><span class="en">Back to index</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="f-in">
+    <nav class="fnav">
+      <a href="03-cloud-sessions.html"><span class="ja">前: 03 クラウドセッション ←</span><span class="en">Prev: 03 Cloud sessions ←</span></a>
+      <a href="05-automations.html"><span class="ja">次: 05 Automations（自動化） →</span><span class="en">Next: 05 Automations →</span></a>
+      <a href="../copilot-app-v1.0.12/"><span class="ja">機能ガイド（全体）</span><span class="en">Full feature guide</span></a>
+    </nav>
+    <h4><span class="ja">出典</span><span class="en">Sources</span></h4>
+    <div class="src">
+      <a href="https://github.com/github/app/blob/main/changelog.md" target="_blank" rel="noopener"><span class="ja">公式チェンジログ（github/app）</span><span class="en">Official changelog (github/app)</span></a>
+      <a href="https://github.com/github/app" target="_blank" rel="noopener">github/app README</a>
+      <a href="https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience/" target="_blank" rel="noopener">GitHub Blog: The agent-native desktop experience</a>
+    </div>
+    <div class="disc"><span class="ja">本ページは GitHub Copilot App v1.0.12 の公開情報に基づく非公式のハンズオン手順です。UI の名称・配置・手順はリリースにより変わる場合があります。GitHub および Copilot は GitHub, Inc. の商標です。</span><span class="en">This page is an unofficial hands-on walkthrough based on public information about GitHub Copilot App v1.0.12. UI names, placement, and steps may change between releases. GitHub and Copilot are trademarks of GitHub, Inc.</span></div>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

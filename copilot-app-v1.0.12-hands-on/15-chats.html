@@ -1,0 +1,176 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light" data-lang="ja"
+      data-title-ja="体験ガイド 15 — Chats | Copilot App v1.0.12"
+      data-title-en="Hands-on 15 — Chats | Copilot App v1.0.12">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>体験ガイド 15 — Chats | Copilot App v1.0.12</title>
+<script>
+(function(){
+  var t;try{t=localStorage.getItem('cp-theme');}catch(e){}
+  if(!t){var p=new URLSearchParams(location.search).get('scoutTheme');t=p||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+  document.documentElement.setAttribute('data-theme',t);
+  var l;try{l=localStorage.getItem('cp-lang');}catch(e){}
+  document.documentElement.setAttribute('data-lang',l==='en'?'en':'ja');
+})();
+</script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-in">
+    <svg class="logo" height="24" viewBox="0 0 16 16" width="24" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+    <span class="crumb"><a href="index.html"><span class="ja">体験ガイド</span><span class="en">Hands-on</span></a><svg height="12" viewBox="0 0 16 16" width="12" aria-hidden="true"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06Z"></path></svg><span>15 · <span class="ja">Chats</span><span class="en">Chats</span></span></span>
+    <span class="spacer"></span>
+    <button class="lang-toggle" id="langToggle" aria-label="Switch to English">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg>
+      <span id="langLabel">EN</span>
+    </button>
+    <button class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zm8-5a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0zm9.193 1.061a.75.75 0 01-1.06 0l-1.061-1.06a.75.75 0 011.06-1.061l1.061 1.06a.75.75 0 010 1.061zM4.464 4.465a.75.75 0 01-1.06 0L2.343 3.404a.75.75 0 011.06-1.06l1.06 1.06a.75.75 0 010 1.06z"></path></svg>
+      <span id="themeLabel">テーマ</span>
+    </button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-in">
+    <span class="kicker"><span class="dot"></span><span class="num">15 / 15</span><span class="ja">&nbsp;体験ガイド</span><span class="en">&nbsp;Hands-on guide</span></span>
+    <h1><span class="ja">Chats（旧 Quick Chats）を体験する</span><span class="en">Experience Chats (formerly Quick Chats)</span></h1>
+    <p class="lead"><span class="ja">リポジトリを選ばずにチャットセッションを開始し、<code>/yolo</code> や <code>/allow-all-tools</code>、セッションのフォーク、コードセッション相当の機能を試します。</span><span class="en">Start a chat session without choosing a repository, then try <code>/yolo</code>, <code>/allow-all-tools</code>, session forking, and code-session-level capabilities.</span></p>
+  </div>
+</div>
+
+<main class="wrap">
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0Zm3.78 5.97a.75.75 0 00-1.06 0L6.75 9.94 5.28 8.47a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5a.75.75 0 000-1.06Z"></path></svg><span class="ja">この機能でできること</span><span class="en">What you'll experience</span></div>
+    <h2><span class="ja">体験のゴール</span><span class="en">Your goal</span></h2>
+    <p><span class="ja">このガイドを終えると、リポジトリ未選択の状態から Chats を始め、必要に応じてツール承認やフォークを使い分けられるようになります。</span><span class="en">By the end of this guide you'll be able to start Chats without selecting a repository, then use tool approval and forks when they fit the conversation.</span></p>
+  </div>
+  <div class="exp-grid">
+    <div class="exp" style="--accent:var(--gh-accent)"><h4><span class="dot"></span><span class="ja">すぐ話し始める</span><span class="en">Start immediately</span></h4><p><span class="ja">リポジトリを決める前に、調査、設計相談、作業分解などの会話を開始します。</span><span class="en">Begin research, design discussion, or task breakdown before choosing a repository.</span></p></div>
+    <div class="exp" style="--accent:var(--gh-accent)"><h4><span class="dot"></span><span class="ja">承認を調整する</span><span class="en">Tune approvals</span></h4><p><span class="ja"><code>/yolo</code> と <code>/allow-all-tools</code> を使い、ツール利用の承認を会話の目的に合わせて調整します。</span><span class="en">Use <code>/yolo</code> and <code>/allow-all-tools</code> to align tool approvals with the conversation goal.</span></p></div>
+    <div class="exp" style="--accent:var(--gh-accent)"><h4><span class="dot"></span><span class="ja">会話を分岐する</span><span class="en">Fork the conversation</span></h4><p><span class="ja">セッションフォークで別案を試し、元の会話を壊さずに方向性を比較します。</span><span class="en">Fork a session to try an alternative direction without disrupting the original conversation.</span></p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM0 8a8 8 0 1116 0A8 8 0 010 8Zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75ZM8 6a1 1 0 100-2 1 1 0 000 2Z"></path></svg><span class="ja">前提</span><span class="en">Prerequisites</span></div>
+    <h2><span class="ja">始める前に</span><span class="en">Before you begin</span></h2>
+  </div>
+  <div class="gbox prereq">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM0 8a8 8 0 1116 0A8 8 0 010 8Zm11.78-1.72a.75.75 0 00-1.06-1.06L7 8.94 5.28 7.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.06 0Z"></path></svg><span class="ja">用意するもの</span><span class="en">What you need</span></h3>
+    <ul>
+      <li><span class="ja">GitHub Copilot App v1.0.12 をインストール済み（Windows / macOS / Linux）</span><span class="en">GitHub Copilot App v1.0.12 installed (Windows / macOS / Linux)</span></li>
+      <li><span class="ja">有効な有料 Copilot サブスクリプション（Pro / Pro+ / Max / Business / Enterprise）でサインイン済み</span><span class="en">Signed in with an active paid Copilot subscription (Pro / Pro+ / Max / Business / Enterprise)</span></li>
+      <li><span class="ja">リポジトリを選ばずに相談したい調査テーマ、設計課題、または作業メモ</span><span class="en">A research topic, design question, or work note you want to discuss before selecting a repository</span></li>
+      <li><span class="ja">ローカルでコードを動かす場合は Git がインストール済み</span><span class="en">Git installed if you plan to run code locally</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V2.75C0 1.784.784 1 1.75 1ZM4.75 4a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5Zm0 3.25a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5Zm0 3.25a.75.75 0 000 1.5h3.5a.75.75 0 000-1.5Z"></path></svg><span class="ja">ハンズオン手順</span><span class="en">Step-by-step</span></div>
+    <h2><span class="ja">リポジトリなしで Chats を始める</span><span class="en">Start Chats without a repository</span></h2>
+    <p><span class="ja">上から順に進めてください。各ステップは数分で完了します。</span><span class="en">Follow the steps in order &mdash; each takes just a few minutes.</span></p>
+  </div>
+  <ol class="steps" style="--accent:var(--gh-accent)">
+    <li><div class="st">
+      <span class="tag"><span class="ja">開始</span><span class="en">Start</span></span>
+      <h4><span class="ja">リポジトリを選ばずにチャットを作る</span><span class="en">Create a chat without choosing a repository</span></h4>
+      <p><span class="ja">Copilot App で新しいチャットセッションを開始します。最初にリポジトリを選ぶ必要はありません。調査したいこと、設計したいこと、整理したい作業をそのまま入力します。</span><span class="en">In the Copilot App, start a new chat session. You do not need to choose a repository first. Enter the research question, design topic, or work you want to organize.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">相談</span><span class="en">Discuss</span></span>
+      <h4><span class="ja">通常のコードセッションと同じように依頼する</span><span class="en">Ask as you would in a code session</span></h4>
+      <p><span class="ja">要件整理、実装方針、コマンドの検討、ファイル操作を伴う作業の計画などを依頼します。必要になったら、後からリポジトリやファイルの文脈を追加します。</span><span class="en">Ask for requirements clarification, implementation planning, command planning, or a plan for work that may involve files. Add repository or file context later when you need it.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">承認</span><span class="en">Approve</span></span>
+      <h4><span class="ja"><code>/yolo</code> で承認の手間を減らす</span><span class="en">Use <code>/yolo</code> to reduce approval friction</span></h4>
+      <p><span class="ja">信頼できる範囲の作業で、ツール利用の確認を減らしたい場合は <code>/yolo</code> を入力します。影響範囲が大きい作業では、実行前に内容を確認できる運用に戻します。</span><span class="en">For trusted work where you want fewer tool-use confirmations, enter <code>/yolo</code>. For higher-impact work, switch back to a workflow where you review actions before they run.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">許可</span><span class="en">Allow</span></span>
+      <h4><span class="ja"><code>/allow-all-tools</code> を必要な場面だけ使う</span><span class="en">Use <code>/allow-all-tools</code> only when needed</span></h4>
+      <p><span class="ja">複数のツールをまとめて使う調査や検証では <code>/allow-all-tools</code> が役立つ場合があります。安全性が気になる会話では、許可する範囲を狭く保ちます。</span><span class="en">For research or validation that needs several tools, <code>/allow-all-tools</code> can help. In conversations where safety matters, keep the allowed scope narrower.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">分岐</span><span class="en">Fork</span></span>
+      <h4><span class="ja">セッションをフォークして別案を試す</span><span class="en">Fork the session to try another path</span></h4>
+      <p><span class="ja">会話の途中で別の方針を試したくなったら、セッションをフォークします。元の流れを残したまま、新しいチャットで別案、別の制約、別の実装方針を比較できます。</span><span class="en">When you want to try a different direction, fork the session. The original flow stays intact while a new chat explores another option, constraint, or implementation strategy.</span></p>
+    </div></li>
+  </ol>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.751.751 0 01.018-1.042.751.751 0 011.042-.018L6 10.94l6.72-6.72a.75.75 0 011.06 0Z"></path></svg><span class="ja">確認ポイント</span><span class="en">What you should see</span></div>
+    <h2><span class="ja">うまくいったサイン</span><span class="en">Signs it worked</span></h2>
+  </div>
+  <div class="gbox result">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.751.751 0 01.018-1.042.751.751 0 011.042-.018L6 10.94l6.72-6.72a.75.75 0 011.06 0Z"></path></svg><span class="ja">チェックリスト</span><span class="en">Checklist</span></h3>
+    <ul>
+      <li><span class="ja">リポジトリを選ばずにチャットセッションを開始できた。</span><span class="en">You started a chat session without selecting a repository.</span></li>
+      <li><span class="ja"><code>/yolo</code> または <code>/allow-all-tools</code> を入力し、ツール承認の挙動を調整できた。</span><span class="en">You entered <code>/yolo</code> or <code>/allow-all-tools</code> and adjusted tool-approval behavior.</span></li>
+      <li><span class="ja">会話の途中からセッションをフォークし、別案を独立して試せた。</span><span class="en">You forked the session mid-conversation and tried an alternative independently.</span></li>
+      <li><span class="ja">必要に応じてコードセッションと同等の相談・計画・実行支援ができることを確認できた。</span><span class="en">You confirmed that Chats can support discussion, planning, and execution assistance comparable to a code session when needed.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 01-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 00-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.318 3.184-.095.115-.184.22-.268.32-.207.245-.383.463-.541.68-.208.3-.33.565-.37.847a.751.751 0 01-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 010-1.5ZM6 15.25a.75.75 0 01.75-.75h2.5a.75.75 0 010 1.5h-2.5a.75.75 0 01-.75-.75Z"></path></svg><span class="ja">ヒント・応用</span><span class="en">Tips &amp; variations</span></div>
+    <h2><span class="ja">もう一歩使いこなす</span><span class="en">Go a little further</span></h2>
+  </div>
+  <div class="gbox tip">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 01-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 00-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.318 3.184-.095.115-.184.22-.268.32-.207.245-.383.463-.541.68-.208.3-.33.565-.37.847a.751.751 0 01-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 010-1.5ZM6 15.25a.75.75 0 01.75-.75h2.5a.75.75 0 010 1.5h-2.5a.75.75 0 01-.75-.75Z"></path></svg><span class="ja">試してみる</span><span class="en">Things to try</span></h3>
+    <ul>
+      <li><span class="ja">リポジトリがまだ決まっていない調査、提案文の下書き、実装方針の比較は Chats から始めると速く進みます。</span><span class="en">For research before a repository is chosen, proposal drafts, or implementation tradeoffs, starting in Chats is often faster.</span></li>
+      <li><span class="ja">長期的に残したい知見は Memory++ と組み合わせると便利です。詳しくはガイド 12 を確認してください。</span><span class="en">For knowledge you want to keep over time, combine Chats with Memory++; see guide 12.</span></li>
+      <li><span class="ja">最終的に具体的なコード変更へ進む場合は、会話で整理した要件をリポジトリ付きのセッションへ渡すと手戻りを減らせます。</span><span class="en">When you move into concrete code changes, pass the clarified requirements into a repository-backed session to reduce rework.</span></li>
+    </ul>
+  </div>
+  <div class="note">
+    <svg height="16" viewBox="0 0 16 16" width="16" aria-hidden="true"><path d="M0 8a8 8 0 1116 0A8 8 0 010 8Zm8-6.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM6.5 7.75A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75ZM8 6a1 1 0 100-2 1 1 0 000 2Z"></path></svg>
+    <div><span class="ja">Chats は「リポジトリを選ぶ前の入口」です。素早く始め、必要になった時点で承認範囲、フォーク、コード文脈を足していくと使いやすくなります。</span><span class="en">Chats are the entry point before you choose a repository. Start quickly, then add approval scope, forks, and code context only when you need them.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0Z"></path></svg><span class="ja">関連する体験ガイド</span><span class="en">Related guides</span></div>
+    <h2><span class="ja">次に試すなら</span><span class="en">Try next</span></h2>
+  </div>
+  <div class="rel-grid">
+    <a class="rel" href="01-my-work.html" style="--accent:var(--gh-accent)"><span class="rn">01</span><span class="rt"><span class="ja">My Work（マイワーク）</span><span class="en">My Work</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+    <a class="rel" href="12-memory.html" style="--accent:var(--gh-accent)"><span class="rn">12</span><span class="rt"><span class="ja">Memory++ と /chronicle</span><span class="en">Memory++ and /chronicle</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+    <a class="rel" href="index.html" style="--accent:var(--gh-accent)"><span class="rn"><svg height="15" viewBox="0 0 16 16" width="15"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0114.25 16H1.75A1.75 1.75 0 010 14.25Zm7 12.75h7.25a.25.25 0 00.25-.25V1.75a.25.25 0 00-.25-.25H7Z"></path></svg></span><span class="rt"><span class="ja">一覧に戻る</span><span class="en">Back to index</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="f-in">
+    <nav class="fnav">
+      <a href="14-extensibility.html"><span class="ja">← 前: 14 拡張性（MCP / Skills / Plugins）</span><span class="en">← Previous: 14 Extensibility (MCP / Skills / Plugins)</span></a>
+      <a href="index.html"><span class="ja">体験ガイド一覧へ →</span><span class="en">Back to all guides →</span></a>
+      <a href="../copilot-app-v1.0.12/"><span class="ja">機能ガイド（全体）</span><span class="en">Full feature guide</span></a>
+    </nav>
+    <h4><span class="ja">出典</span><span class="en">Sources</span></h4>
+    <div class="src">
+      <a href="https://github.com/github/app/blob/main/changelog.md" target="_blank" rel="noopener"><span class="ja">公式チェンジログ（github/app）</span><span class="en">Official changelog (github/app)</span></a>
+      <a href="https://github.com/github/app" target="_blank" rel="noopener">github/app README</a>
+      <a href="https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience/" target="_blank" rel="noopener">GitHub Blog: The agent-native desktop experience</a>
+    </div>
+    <div class="disc"><span class="ja">本ページは GitHub Copilot App v1.0.12 の公開情報に基づく非公式のハンズオン手順です。UI の名称・配置・手順はリリースにより変わる場合があります。GitHub および Copilot は GitHub, Inc. の商標です。</span><span class="en">This page is an unofficial hands-on walkthrough based on public information about GitHub Copilot App v1.0.12. UI names, placement, and steps may change between releases. GitHub and Copilot are trademarks of GitHub, Inc.</span></div>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light" data-lang="ja"
+      data-title-ja="体験ガイド 08 — コードレビュー | Copilot App v1.0.12"
+      data-title-en="Hands-on 08 — Code review | Copilot App v1.0.12">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>体験ガイド 08 — コードレビュー | Copilot App v1.0.12</title>
+<script>
+(function(){
+  var t;try{t=localStorage.getItem('cp-theme');}catch(e){}
+  if(!t){var p=new URLSearchParams(location.search).get('scoutTheme');t=p||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+  document.documentElement.setAttribute('data-theme',t);
+  var l;try{l=localStorage.getItem('cp-lang');}catch(e){}
+  document.documentElement.setAttribute('data-lang',l==='en'?'en':'ja');
+})();
+</script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-in">
+    <svg class="logo" height="24" viewBox="0 0 16 16" width="24" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+    <span class="crumb"><a href="index.html"><span class="ja">体験ガイド</span><span class="en">Hands-on</span></a><svg height="12" viewBox="0 0 16 16" width="12" aria-hidden="true"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06Z"></path></svg><span>08 · <span class="ja">コードレビュー</span><span class="en">Code review</span></span></span>
+    <span class="spacer"></span>
+    <button class="lang-toggle" id="langToggle" aria-label="Switch to English">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg>
+      <span id="langLabel">EN</span>
+    </button>
+    <button class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zm8-5a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0zm9.193 1.061a.75.75 0 01-1.06 0l-1.061-1.06a.75.75 0 011.06-1.061l1.061 1.06a.75.75 0 010 1.061zM4.464 4.465a.75.75 0 01-1.06 0L2.343 3.404a.75.75 0 011.06-1.06l1.06 1.06a.75.75 0 010 1.06z"></path></svg>
+      <span id="themeLabel">テーマ</span>
+    </button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-in">
+    <span class="kicker"><span class="dot"></span><span class="num">08 / 15</span><span class="ja">&nbsp;体験ガイド</span><span class="en">&nbsp;Hands-on guide</span></span>
+    <h1><span class="ja">Copilot コードレビューを体験する</span><span class="en">Experience Copilot code review</span></h1>
+    <p class="lead"><span class="ja">エージェント的なレビューでノイズを減らし、medium tier、<code>/security-review</code>、<code>/rubberduck</code> を使って重要な指摘に集中します。</span><span class="en">Use agentic review to filter noise, then focus on important findings with medium tier, <code>/security-review</code>, and <code>/rubberduck</code>.</span></p>
+  </div>
+</div>
+
+<main class="wrap">
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0Zm3.78 5.97a.75.75 0 00-1.06 0L6.75 9.94 5.28 8.47a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5a.75.75 0 000-1.06Z"></path></svg><span class="ja">この機能でできること</span><span class="en">What you'll experience</span></div>
+    <h2><span class="ja">体験のゴール</span><span class="en">Your goal</span></h2>
+    <p><span class="ja">このガイドを終えると、PR に Copilot レビューを依頼し、高推論モデル・セキュリティ特化レビュー・複数モデル批評を使い分けられるようになります。</span><span class="en">By the end of this guide you will be able to request Copilot review on a PR and choose among higher-reasoning, security-focused, and multi-model critique passes.</span></p>
+  </div>
+  <div class="exp-grid">
+    <div class="exp" style="--accent:var(--gh-accent)"><h4><span class="dot"></span><span class="ja">ノイズを減らすレビュー</span><span class="en">Noise-filtered review</span></h4><p><span class="ja">重要度の低い指摘に埋もれず、修正判断が必要な箇所に集中する。</span><span class="en">Avoid getting buried in low-value comments and focus on findings that need a decision.</span></p></div>
+    <div class="exp" style="--accent:var(--gh-accent)"><h4><span class="dot"></span><span class="ja">高推論モデルの活用</span><span class="en">Higher-reasoning review</span></h4><p><span class="ja">medium tier で精度と再現性を高めたレビューを試す。</span><span class="en">Try medium tier review for better accuracy and reproducibility.</span></p></div>
+    <div class="exp" style="--accent:var(--gh-accent)"><h4><span class="dot"></span><span class="ja">専門パスの追加</span><span class="en">Specialized passes</span></h4><p><span class="ja"><code>/security-review</code> と <code>/rubberduck</code> で観点を切り替える。</span><span class="en">Switch review perspectives with <code>/security-review</code> and <code>/rubberduck</code>.</span></p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM0 8a8 8 0 1116 0A8 8 0 010 8Zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75ZM8 6a1 1 0 100-2 1 1 0 000 2Z"></path></svg><span class="ja">前提</span><span class="en">Prerequisites</span></div>
+    <h2><span class="ja">始める前に</span><span class="en">Before you begin</span></h2>
+  </div>
+  <div class="gbox prereq">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM0 8a8 8 0 1116 0A8 8 0 010 8Zm11.78-1.72a.75.75 0 00-1.06-1.06L7 8.94 5.28 7.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.06 0Z"></path></svg><span class="ja">用意するもの</span><span class="en">What you need</span></h3>
+    <ul>
+      <li><span class="ja">GitHub Copilot App v1.0.12 をインストール済み（Windows / macOS / Linux）</span><span class="en">GitHub Copilot App v1.0.12 installed (Windows / macOS / Linux)</span></li>
+      <li><span class="ja">有効な有料 Copilot サブスクリプション（Pro / Pro+ / Max / Business / Enterprise）でサインイン済み</span><span class="en">Signed in with an active paid Copilot subscription (Pro / Pro+ / Max / Business / Enterprise)</span></li>
+      <li><span class="ja">少なくとも 1 つの GitHub リポジトリへのアクセス（Issue や PR がいくつかあると体験しやすい）</span><span class="en">Access to at least one GitHub repository (a few issues or PRs make it easier to experience)</span></li>
+      <li><span class="ja">ローカルでコードを動かす場合は Git がインストール済み</span><span class="en">Git installed if you plan to run code locally</span></li>
+      <li><span class="ja">レビュー対象にできるプルリクエスト、または小さな変更を含むブランチがあること</span><span class="en">A pull request to review, or a branch with a small change that can be reviewed</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V2.75C0 1.784.784 1 1.75 1ZM4.75 4a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5Zm0 3.25a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5Zm0 3.25a.75.75 0 000 1.5h3.5a.75.75 0 000-1.5Z"></path></svg><span class="ja">ハンズオン手順</span><span class="en">Step-by-step</span></div>
+    <h2><span class="ja">Copilot レビューを PR で試す</span><span class="en">Try Copilot review on a PR</span></h2>
+    <p><span class="ja">上から順に進めてください。各ステップは数分で完了します。</span><span class="en">Follow the steps in order &mdash; each takes just a few minutes.</span></p>
+  </div>
+  <ol class="steps" style="--accent:var(--gh-accent)">
+    <li><div class="st">
+      <span class="tag"><span class="ja">PR</span><span class="en">PR</span></span>
+      <h4><span class="ja">レビュー対象のプルリクエストを開く</span><span class="en">Open the pull request to review</span></h4>
+      <p><span class="ja">Copilot App からレビューしたい PR を開きます。差分が大きすぎる場合は、小さな PR を選ぶと指摘の質を確認しやすくなります。</span><span class="en">Open the PR you want to review from the Copilot App. If the diff is very large, choose a smaller PR so it is easier to inspect review quality.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">依頼</span><span class="en">Request</span></span>
+      <h4><span class="ja">Copilot にレビューを依頼する</span><span class="en">Request a Copilot review</span></h4>
+      <p><span class="ja">PR の差分を対象に Copilot レビューを依頼します。UI 名称は環境で変わる可能性があるため、レビュー依頼またはエージェントレビューに相当する操作を選びます。</span><span class="en">Request a Copilot review for the PR diff. Because UI names can vary, choose the action that corresponds to requesting review or agentic review.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">推論</span><span class="en">Reason</span></span>
+      <h4><span class="ja">medium tier を選ぶ</span><span class="en">Choose medium tier</span></h4>
+      <p><span class="ja">利用できる場合は <b>medium tier</b>（高推論モデル）を選び、通常のレビューより精度と再現性が上がるかを比較します。</span><span class="en">When available, choose <b>medium tier</b> (a higher-reasoning model) and compare whether accuracy and reproducibility improve over a default review.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">安全</span><span class="en">Security</span></span>
+      <h4><span class="ja"><code>/security-review</code> を実行する</span><span class="en">Run <code>/security-review</code></span></h4>
+      <p><span class="ja">同じ PR で <code>/security-review</code> を実行し、認証、入力検証、権限、シークレット取り扱いなどセキュリティ観点に絞った指摘を確認します。</span><span class="en">On the same PR, run <code>/security-review</code> and inspect findings focused on security concerns such as auth, input validation, permissions, and secret handling.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">批評</span><span class="en">Critique</span></span>
+      <h4><span class="ja"><code>/rubberduck</code> で実装を批評する</span><span class="en">Critique the implementation with <code>/rubberduck</code></span></h4>
+      <p><span class="ja"><code>/rubberduck</code>（GA）を実行し、複数モデルによる実装批評を読みます。通常レビューと異なる観点が出るかを比べます。</span><span class="en">Run <code>/rubberduck</code> (GA) and read the multi-model critique of your implementation. Compare whether it surfaces perspectives that differ from the regular review.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">展開</span><span class="en">Extend</span></span>
+      <h4><span class="ja">Azure DevOps のサポートを確認する</span><span class="en">Note Azure DevOps support</span></h4>
+      <p><span class="ja">GitHub 以外のチームで使う場合は、Azure DevOps でもネイティブ対応していることをメモし、同じレビュー方針を展開できるか確認します。</span><span class="en">For teams outside GitHub, note that native Azure DevOps support is available and consider whether the same review approach can be rolled out there.</span></p>
+    </div></li>
+  </ol>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.751.751 0 01.018-1.042.751.751 0 011.042-.018L6 10.94l6.72-6.72a.75.75 0 011.06 0Z"></path></svg><span class="ja">確認ポイント</span><span class="en">What you should see</span></div>
+    <h2><span class="ja">うまくいったサイン</span><span class="en">Signs it worked</span></h2>
+  </div>
+  <div class="gbox result">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.751.751 0 01.018-1.042.751.751 0 011.042-.018L6 10.94l6.72-6.72a.75.75 0 011.06 0Z"></path></svg><span class="ja">チェックリスト</span><span class="en">Checklist</span></h3>
+    <ul>
+      <li><span class="ja">PR の差分に対して Copilot のレビューコメントまたは要約が表示された。</span><span class="en">Copilot review comments or a summary appeared for the PR diff.</span></li>
+      <li><span class="ja">medium tier のレビューで、重要な指摘が再現しやすく整理されていることを確認できた。</span><span class="en">The medium tier review organized important findings in a way that was easier to reproduce.</span></li>
+      <li><span class="ja"><code>/security-review</code> がセキュリティ観点に絞った別パスとして実行できた。</span><span class="en"><code>/security-review</code> ran as a separate pass focused on security.</span></li>
+      <li><span class="ja"><code>/rubberduck</code> による複数モデル批評を、通常レビューと比較できた。</span><span class="en">You compared the multi-model critique from <code>/rubberduck</code> with the regular review.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 01-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 00-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.318 3.184-.095.115-.184.22-.268.32-.207.245-.383.463-.541.68-.208.3-.33.565-.37.847a.751.751 0 01-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 010-1.5ZM6 15.25a.75.75 0 01.75-.75h2.5a.75.75 0 010 1.5h-2.5a.75.75 0 01-.75-.75Z"></path></svg><span class="ja">ヒント・応用</span><span class="en">Tips &amp; variations</span></div>
+    <h2><span class="ja">もう一歩使いこなす</span><span class="en">Go a little further</span></h2>
+  </div>
+  <div class="gbox tip">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 01-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 00-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.318 3.184-.095.115-.184.22-.268.32-.207.245-.383.463-.541.68-.208.3-.33.565-.37.847a.751.751 0 01-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 010-1.5ZM6 15.25a.75.75 0 01.75-.75h2.5a.75.75 0 010 1.5h-2.5a.75.75 0 01-.75-.75Z"></path></svg><span class="ja">試してみる</span><span class="en">Things to try</span></h3>
+    <ul>
+      <li><span class="ja">Agent Merge（ガイド 06）に渡す前に Copilot レビューを実行し、対応すべき論点を先に減らします。</span><span class="en">Run Copilot review before handing work to Agent Merge (guide 06) so there are fewer issues to resolve later.</span></li>
+      <li><span class="ja">Canvas（ガイド 04）でレビュー観点や判断メモを可視化すると、チーム内で合意しやすくなります。</span><span class="en">Use Canvas (guide 04) to visualize review criteria and decision notes so the team can align more easily.</span></li>
+      <li><span class="ja">セキュリティの指摘は、修正可否だけでなくリスク、影響範囲、テスト方法も合わせて確認します。</span><span class="en">For security findings, check not only whether you can fix them, but also risk, blast radius, and test strategy.</span></li>
+    </ul>
+  </div>
+  <div class="note">
+    <svg height="16" viewBox="0 0 16 16" width="16" aria-hidden="true"><path d="M0 8a8 8 0 1116 0A8 8 0 010 8Zm8-6.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM6.5 7.75A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75ZM8 6a1 1 0 100-2 1 1 0 000 2Z"></path></svg>
+    <div><span class="ja">Copilot コードレビューは人間のレビューを置き換えるものではなく、重要な論点を早く見つける補助線です。最終判断はチームの基準に照らして行います。</span><span class="en">Copilot code review does not replace human review; it helps surface important issues earlier. Make final decisions against your team's standards.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0Z"></path></svg><span class="ja">関連する体験ガイド</span><span class="en">Related guides</span></div>
+    <h2><span class="ja">次に試すなら</span><span class="en">Try next</span></h2>
+  </div>
+  <div class="rel-grid">
+    <a class="rel" href="06-agent-merge.html" style="--accent:var(--gh-success)"><span class="rn">06</span><span class="rt"><span class="ja">Agent Merge</span><span class="en">Agent Merge</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+    <a class="rel" href="04-canvas.html" style="--accent:var(--gh-accent)"><span class="rn">04</span><span class="rt"><span class="ja">Canvas（キャンバス）</span><span class="en">Canvas</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+    <a class="rel" href="index.html" style="--accent:var(--gh-accent)"><span class="rn"><svg height="15" viewBox="0 0 16 16" width="15"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0114.25 16H1.75A1.75 1.75 0 010 14.25Zm7 12.75h7.25a.25.25 0 00.25-.25V1.75a.25.25 0 00-.25-.25H7Z"></path></svg></span><span class="rt"><span class="ja">一覧に戻る</span><span class="en">Back to index</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="f-in">
+    <nav class="fnav">
+      <a href="07-sandboxes.html"><span class="ja">← 前: クラウド / ローカル サンドボックス</span><span class="en">← Previous: Cloud / local sandboxes</span></a>
+      <a href="09-sdk.html"><span class="ja">次: Copilot SDK →</span><span class="en">Next: Copilot SDK →</span></a>
+      <a href="../copilot-app-v1.0.12/"><span class="ja">機能ガイド（全体）</span><span class="en">Full feature guide</span></a>
+    </nav>
+    <h4><span class="ja">出典</span><span class="en">Sources</span></h4>
+    <div class="src">
+      <a href="https://github.com/github/app/blob/main/changelog.md" target="_blank" rel="noopener"><span class="ja">公式チェンジログ（github/app）</span><span class="en">Official changelog (github/app)</span></a>
+      <a href="https://github.com/github/app" target="_blank" rel="noopener">github/app README</a>
+      <a href="https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience/" target="_blank" rel="noopener">GitHub Blog: The agent-native desktop experience</a>
+    </div>
+    <div class="disc"><span class="ja">本ページは GitHub Copilot App v1.0.12 の公開情報に基づく非公式のハンズオン手順です。UI の名称・配置・手順はリリースにより変わる場合があります。GitHub および Copilot は GitHub, Inc. の商標です。</span><span class="en">This page is an unofficial hands-on walkthrough based on public information about GitHub Copilot App v1.0.12. UI names, placement, and steps may change between releases. GitHub and Copilot are trademarks of GitHub, Inc.</span></div>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

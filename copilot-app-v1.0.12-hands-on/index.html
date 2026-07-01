@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light" data-lang="ja"
+      data-title-ja="Copilot App v1.0.12 — 全機能 体験ガイド"
+      data-title-en="Copilot App v1.0.12 — Hands-on Guides">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Copilot App v1.0.12 — 全機能 体験ガイド</title>
+<script>
+(function(){
+  var t;try{t=localStorage.getItem('cp-theme');}catch(e){}
+  if(!t){var p=new URLSearchParams(location.search).get('scoutTheme');t=p||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+  document.documentElement.setAttribute('data-theme',t);
+  var l;try{l=localStorage.getItem('cp-lang');}catch(e){}
+  document.documentElement.setAttribute('data-lang',l==='en'?'en':'ja');
+})();
+</script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-in">
+    <svg class="logo" height="26" viewBox="0 0 16 16" width="26" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+    <span class="brand">GitHub Copilot <span>App</span></span>
+    <span class="ver">v1.0.12</span>
+    <span class="spacer"></span>
+    <button class="lang-toggle" id="langToggle" aria-label="Switch to English">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg>
+      <span id="langLabel">EN</span>
+    </button>
+    <button class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zm8-5a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0zm9.193 1.061a.75.75 0 01-1.06 0l-1.061-1.06a.75.75 0 011.06-1.061l1.061 1.06a.75.75 0 010 1.061zM4.464 4.465a.75.75 0 01-1.06 0L2.343 3.404a.75.75 0 011.06-1.06l1.06 1.06a.75.75 0 010 1.06z"></path></svg>
+      <span id="themeLabel">テーマ</span>
+    </button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-in">
+    <span class="kicker"><span class="dot"></span><span class="ja">ハンズオン &middot; 全 15 機能</span><span class="en">Hands-on &middot; all 15 features</span></span>
+    <h1><span class="ja">全機能 体験ガイド</span><span class="en">Hands-on guides</span></h1>
+    <p class="lead"><span class="ja">GitHub Copilot App v1.0.12 の各機能を、実際に手を動かして体験するためのステップバイステップ・ガイド集です。試したい機能のカードを選んでください。</span><span class="en">A collection of step-by-step, try-it-yourself guides for experiencing each feature of the GitHub Copilot App v1.0.12. Pick a card for the feature you want to try.</span></p>
+    <div class="chips">
+      <span class="chip"><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8 0a8 8 0 100 16A8 8 0 008 0Zm3.78 5.97a.75.75 0 00-1.06 0L6.75 9.94 5.28 8.47a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5a.75.75 0 000-1.06Z"></path></svg><span class="ja">各機能に個別ページ</span><span class="en">A page per feature</span></span>
+      <span class="chip"><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM1.5 8a6.5 6.5 0 1113 0 6.5 6.5 0 01-13 0Z"></path></svg><span class="ja">日本語 / English 切替</span><span class="en">JA / EN toggle</span></span>
+      <span class="chip"><a href="../copilot-app-v1.0.12/" style="color:inherit;display:inline-flex;align-items:center;gap:7px"><svg height="14" viewBox="0 0 16 16" width="14"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg><span class="ja">機能ガイドに戻る</span><span class="en">Back to feature guide</span></a></span>
+    </div>
+  </div>
+</div>
+
+<main class="wrap">
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0114.25 16H1.75A1.75 1.75 0 010 14.25Zm1.75-.25a.25.25 0 00-.25.25v12.5c0 .138.112.25.25.25h12.5a.25.25 0 00.25-.25V1.75a.25.25 0 00-.25-.25ZM4 5.25a.75.75 0 01.75-.75h6.5a.75.75 0 010 1.5h-6.5A.75.75 0 014 5.25Zm0 3a.75.75 0 01.75-.75h6.5a.75.75 0 010 1.5h-6.5A.75.75 0 014 8.25Zm0 3a.75.75 0 01.75-.75h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 01-.75-.75Z"></path></svg><span class="ja">体験ガイド一覧</span><span class="en">All hands-on guides</span></div>
+    <h2><span class="ja">試したい機能を選ぶ</span><span class="en">Choose a feature to try</span></h2>
+    <p><span class="ja">15 機能それぞれに、前提・ステップ・確認ポイント・ヒントをまとめた独立ページを用意しています。上から順に進めても、必要なものだけ選んでも構いません。</span><span class="en">Each of the 15 features has its own page with prerequisites, steps, what to check, and tips. Work through them in order, or jump to just the ones you need.</span></p>
+  </div>
+  <div class="idx-grid">
+
+    <a class="gcard" href="01-my-work.html" style="--accent:var(--gh-accent)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25V1.75C0 .784.784 0 1.75 0ZM1.5 1.75v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Zm7 2.5a.75.75 0 0 1 1.5 0v6.5a.75.75 0 0 1-1.5 0Zm-4 1a.75.75 0 0 1 1.5 0v5.5a.75.75 0 0 1-1.5 0Zm8 1a.75.75 0 0 1 1.5 0v3.5a.75.75 0 0 1-1.5 0Z"></path></svg></span><span class="no">01</span></div>
+      <h3><span class="ja">My Work（マイワーク）</span><span class="en">My Work</span></h3>
+      <p><span class="ja">全リポジトリのセッション・Issue・PR・自動化を一望するダッシュボードを開き、次の作業を選ぶ。</span><span class="en">Open the dashboard that spans every repo's sessions, issues, PRs, and automations, and pick your next task.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="02-parallel-agents.html" style="--accent:var(--gh-success)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M9.5 3.25a2.25 2.25 0 1 1 3 2.122V6A2.5 2.5 0 0 1 10 8.5H6a1 1 0 0 0-1 1v1.128a2.251 2.251 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.5 0v1.836A2.493 2.493 0 0 1 6 7h4a1 1 0 0 0 1-1v-.628A2.25 2.25 0 0 1 9.5 3.25Zm-6 0a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Zm8.25-.75a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM4.25 12a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z"></path></svg></span><span class="no">02</span></div>
+      <h3><span class="ja">並列エージェント開発</span><span class="en">Parallel agent development</span></h3>
+      <p><span class="ja">独立した Git worktree で複数セッションを同時に走らせ、衝突なく並行開発する。</span><span class="en">Run several sessions at once in isolated Git worktrees and develop in parallel without conflicts.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="03-cloud-sessions.html" style="--accent:var(--gh-done)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0ZM1.543 6.5H4.6a10.415 10.415 0 0 1 .965-3.532A6.517 6.517 0 0 0 1.543 6.5Zm0 3a6.517 6.517 0 0 0 4.022 3.532A10.415 10.415 0 0 1 4.6 9.5H1.543ZM8 14.5c.35 0 .98-.385 1.554-1.632.246-.533.442-1.155.579-1.868H5.867c.137.713.333 1.335.58 1.868C7.02 14.115 7.65 14.5 8 14.5Zm2.435-1.968A10.415 10.415 0 0 0 11.4 9.5h3.057a6.517 6.517 0 0 1-4.022 3.532ZM14.457 6.5H11.4a10.415 10.415 0 0 0-.965-3.532A6.517 6.517 0 0 1 14.457 6.5ZM8 1.5c-.35 0-.98.385-1.554 1.632-.246.533-.442 1.155-.579 1.868h4.266c-.137-.713-.333-1.335-.58-1.868C8.98 1.885 8.35 1.5 8 1.5Z"></path></svg></span><span class="no">03</span></div>
+      <h3><span class="ja">クラウドセッション</span><span class="en">Cloud sessions</span></h3>
+      <p><span class="ja">GitHub ホストの隔離環境でエージェントを動かし、別デバイスから引き継ぐ。</span><span class="en">Run an agent in a GitHub-hosted isolated environment and pick it up from another device.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="04-canvas.html" style="--accent:var(--gh-accent)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25Zm1.75-.25a.25.25 0 0 0-.25.25V4h13V2.75a.25.25 0 0 0-.25-.25Zm12.75 3H1.5v7.75c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25Z"></path></svg></span><span class="no">04</span></div>
+      <h3><span class="ja">Canvas（キャンバス）</span><span class="en">Canvas</span></h3>
+      <p><span class="ja">人とエージェントが双方向に編集できる作業サーフェスで、プランや PR をその場で操作する。</span><span class="en">Use the two-way work surface where people and agents edit plans and PRs together, in place.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="05-automations.html" style="--accent:var(--gh-attention)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg></span><span class="no">05</span></div>
+      <h3><span class="ja">Automations（自動化）</span><span class="en">Automations</span></h3>
+      <p><span class="ja">繰り返しのプロンプトを、CRON でスケジュール実行する自動化に変える。</span><span class="en">Turn a repetitive prompt into a CRON-scheduled automation that runs on its own.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="06-agent-merge.html" style="--accent:var(--gh-success)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M5.45 5.154A4.25 4.25 0 0 0 9.25 7.5h1.378a2.251 2.251 0 1 1 0 1.5H9.25A5.734 5.734 0 0 1 5 7.123v3.505a2.25 2.25 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.95-.218ZM4.25 13.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm8.5-4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"></path></svg></span><span class="no">06</span></div>
+      <h3>Agent Merge</h3>
+      <p><span class="ja">PR を CI 監視・レビュー対応・マージ条件充足までエージェントに任せる。</span><span class="en">Delegate a PR through CI watching, review responses, and merge conditions to the agent.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="07-sandboxes.html" style="--accent:var(--gh-done)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M7.467.133a1.748 1.748 0 0 1 1.066 0l5.25 1.68A1.75 1.75 0 0 1 15 3.48V7c0 1.566-.32 3.182-1.303 4.682-.983 1.498-2.585 2.813-5.032 3.855a1.697 1.697 0 0 1-1.33 0c-2.447-1.042-4.049-2.357-5.032-3.855C1.32 10.182 1 8.566 1 7V3.48a1.75 1.75 0 0 1 1.217-1.667Zm.61 1.429a.25.25 0 0 0-.153 0l-5.25 1.68a.25.25 0 0 0-.174.238V7c0 1.358.275 2.666 1.057 3.86.784 1.194 2.121 2.34 4.366 3.297a.196.196 0 0 0 .154 0c2.245-.956 3.582-2.104 4.366-3.298C13.225 9.666 13.5 8.36 13.5 7V3.48a.251.251 0 0 0-.174-.237l-5.25-1.68Z"></path></svg></span><span class="no">07</span></div>
+      <h3><span class="ja">クラウド / ローカル サンドボックス</span><span class="en">Cloud / local sandboxes</span></h3>
+      <p><span class="ja">本番に触れずにエージェントがコードを実行・検証できる境界環境を試す。</span><span class="en">Try the bounded environments where agents run and verify code without touching production.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="08-code-review.html" style="--accent:var(--gh-accent)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 0 1 0 1.798c-.45.677-1.367 1.931-2.637 3.022C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.83.88 9.576.43 8.898a1.62 1.62 0 0 1 0-1.798c.45-.677 1.367-1.931 2.637-3.022C4.33 2.992 6.019 2 8 2ZM8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"></path></svg></span><span class="no">08</span></div>
+      <h3><span class="ja">Copilot コードレビュー</span><span class="en">Copilot code review</span></h3>
+      <p><span class="ja">PR に Copilot レビューを依頼し、<code>/security-review</code> や <code>/rubberduck</code> を試す。</span><span class="en">Request a Copilot review on a PR and try <code>/security-review</code> and <code>/rubberduck</code>.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="09-sdk.html" style="--accent:var(--gh-success)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="m8.878.392 5.25 3.045c.54.314.872.89.872 1.514v6.098a1.75 1.75 0 0 1-.872 1.514l-5.25 3.045a1.75 1.75 0 0 1-1.756 0l-5.25-3.045A1.75 1.75 0 0 1 1 11.049V4.951c0-.624.332-1.201.872-1.514L7.122.392a1.75 1.75 0 0 1 1.756 0ZM7.875 1.69l-4.63 2.685L8 7.133l4.755-2.758-4.63-2.685a.248.248 0 0 0-.25 0ZM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432Zm6.25 8.271 4.625-2.683a.25.25 0 0 0 .125-.216V5.677L8.75 8.432Z"></path></svg></span><span class="no">09</span></div>
+      <h3>Copilot SDK</h3>
+      <p><span class="ja">アプリと同じエージェントランタイムを SDK から呼び、最初のスクリプトを動かす。</span><span class="en">Call the same agent runtime that powers the app from the SDK and run your first script.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="10-cli.html" style="--accent:var(--gh-done)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25Zm1.75-.25a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25ZM7.25 8a.75.75 0 0 1-.22.53l-2.25 2.25a.75.75 0 0 1-1.06-1.06L5.44 8 3.72 6.28a.75.75 0 0 1 1.06-1.06l2.25 2.25c.141.14.22.331.22.53Zm1.5 1.5h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5Z"></path></svg></span><span class="no">10</span></div>
+      <h3>Copilot CLI</h3>
+      <p><span class="ja">ターミナルから同じ基盤を使い、TUI・音声モード・<code>/every</code> を体験する。</span><span class="en">Use the same foundation from the terminal and try the TUI, voice mode, and <code>/every</code>.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="11-cloud-agent.html" style="--accent:var(--gh-attention)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.318 3.184-.095.115-.184.22-.268.32-.207.245-.383.463-.541.68-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg></span><span class="no">11</span></div>
+      <h3><span class="ja">クラウドエージェント</span><span class="en">Cloud agent</span></h3>
+      <p><span class="ja">スケジュールや GitHub イベントで動き、承認を挟みながら Issue に対応させる。</span><span class="en">Have it run on a schedule or GitHub event and address issues while asking for approval.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="12-memory.html" style="--accent:var(--gh-accent)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="m.427 1.927 1.215 1.215a8.002 8.002 0 1 1-1.6 5.685.75.75 0 1 1 1.493-.154 6.5 6.5 0 1 0 1.18-4.458l1.358 1.358A.25.25 0 0 1 4.297 6H.25A.25.25 0 0 1 0 5.75V1.704a.25.25 0 0 1 .427-.177ZM7.75 4a.75.75 0 0 1 .75.75v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5A.75.75 0 0 1 7.75 4Z"></path></svg></span><span class="no">12</span></div>
+      <h3><span class="ja">Memory++ と /chronicle</span><span class="en">Memory++ and /chronicle</span></h3>
+      <p><span class="ja">アプリ・CLI・VS Code をまたいだ過去セッションの文脈を横断照会する。</span><span class="en">Query context from past sessions across the app, the CLI, and VS Code.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="13-partner-agents.html" style="--accent:var(--gh-success)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 0a.75.75 0 0 1 .671.415l.792 1.736 1.736.792a.75.75 0 0 1 0 1.342l-1.736.792-.792 1.736a.75.75 0 0 1-1.342 0l-.792-1.736-1.736-.792a.75.75 0 0 1 0-1.342l1.736-.792.792-1.736A.75.75 0 0 1 8 0Zm4.5 8a.75.75 0 0 1 .671.415l.396.868.868.396a.75.75 0 0 1 0 1.342l-.868.396-.396.868a.75.75 0 0 1-1.342 0l-.396-.868-.868-.396a.75.75 0 0 1 0-1.342l.868-.396.396-.868A.75.75 0 0 1 12.5 8ZM4 9a.75.75 0 0 1 .671.415l.192.421.421.192a.75.75 0 0 1 0 1.342l-.421.192-.192.421a.75.75 0 0 1-1.342 0l-.192-.421-.421-.192a.75.75 0 0 1 0-1.342l.421-.192.192-.421A.75.75 0 0 1 4 9Z"></path></svg></span><span class="no">13</span></div>
+      <h3><span class="ja">パートナーエージェントアプリ</span><span class="en">Partner agent apps</span></h3>
+      <p><span class="ja">サードパーティのエージェントアプリを接続し、Issue を個別エージェントにアサインする。</span><span class="en">Connect third-party agent apps and assign issues to individual agents.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="14-extensibility.html" style="--accent:var(--gh-done)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 0a8.2 8.2 0 0 1 .701.031C9.444.095 9.99.645 10.16 1.29l.288 1.107c.018.066.079.158.212.224.231.114.454.243.668.386.123.082.233.09.299.071l1.103-.303c.644-.176 1.392.021 1.82.63.27.385.506.792.704 1.218.315.675.111 1.422-.364 1.891l-.814.806c-.049.048-.098.147-.088.294.016.257.016.515 0 .772-.01.147.039.246.088.294l.814.806c.475.469.679 1.216.364 1.891a7.977 7.977 0 0 1-.704 1.217c-.428.61-1.176.807-1.82.63l-1.103-.303c-.066-.019-.176-.011-.299.071a4.909 4.909 0 0 1-.668.386c-.133.066-.194.158-.212.224l-.288 1.107c-.17.646-.716 1.196-1.459 1.26a8.006 8.006 0 0 1-1.402 0c-.743-.064-1.289-.614-1.459-1.26l-.288-1.107c-.018-.066-.079-.158-.212-.224a4.909 4.909 0 0 1-.668-.386c-.123-.082-.233-.09-.299-.071l-1.103.303c-.644.176-1.392-.021-1.82-.63a7.977 7.977 0 0 1-.704-1.217c-.315-.675-.111-1.422.364-1.891l.814-.806c.049-.048.098-.147.088-.294a6.214 6.214 0 0 1 0-.772c-.01-.147-.039-.246-.088-.294l-.814-.806C.635 6.045.431 5.298.746 4.623a7.92 7.92 0 0 1 .704-1.217c.428-.61 1.176-.807 1.82-.63l1.103.303c.066.019.176.011.299-.071.214-.143.437-.272.668-.386.133-.066.194-.158.212-.224l.288-1.107C6.71.645 7.256.095 8 .031 8.233.01 8.466 0 8.7 0Z"></path></svg></span><span class="no">14</span></div>
+      <h3><span class="ja">拡張性（MCP / Skills / Plugins）</span><span class="en">Extensibility (MCP / Skills / Plugins)</span></h3>
+      <p><span class="ja">MCP サーバー接続・カスタムスキル・プラグインで、自分の文脈をエージェントに持ち込む。</span><span class="en">Bring your own context into agents with MCP servers, custom skills, and plugins.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+    <a class="gcard" href="15-chats.html" style="--accent:var(--gh-accent)">
+      <div class="top"><span class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M1.75 1h8.5c.966 0 1.75.784 1.75 1.75v5.5A1.75 1.75 0 0 1 10.25 10H7.061l-2.574 2.573A1.458 1.458 0 0 1 2 11.543V10h-.25A1.75 1.75 0 0 1 0 8.25v-5.5C0 1.784.784 1 1.75 1ZM14.5 4.75a.75.75 0 0 1 1.5 0v5.5A1.75 1.75 0 0 1 14.25 12H14v1.543a1.458 1.458 0 0 1-2.487 1.03L9.22 12.28a.749.749 0 1 1 1.06-1.06l2.22 2.22V11.25a.75.75 0 0 1 .75-.75h1a.25.25 0 0 0 .25-.25Z"></path></svg></span><span class="no">15</span></div>
+      <h3><span class="ja">Chats（旧 Quick Chats）</span><span class="en">Chats (formerly Quick Chats)</span></h3>
+      <p><span class="ja">リポジトリを選ばずにチャットを開始し、ツール承認コマンドやフォークを試す。</span><span class="en">Start a chat without picking a repo, and try tool-approval commands and forking.</span></p>
+      <div class="go"><span class="ja">体験する</span><span class="en">Try it</span><svg height="14" viewBox="0 0 16 16" width="14"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></div>
+    </a>
+
+  </div>
+
+  <div class="note">
+    <svg height="16" viewBox="0 0 16 16" width="16" aria-hidden="true"><path d="M0 8a8 8 0 1116 0A8 8 0 010 8Zm8-6.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM6.5 7.75A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75ZM8 6a1 1 0 100-2 1 1 0 000 2Z"></path></svg>
+    <div><span class="ja">各ガイドは公開情報（公式チェンジログ・README・GitHub Blog）に基づく非公式のハンズオン手順です。UI の名称や手順はリリースにより変わる場合があります。</span><span class="en">Each guide is an unofficial hands-on walkthrough based on public information (the official changelog, the README, and the GitHub Blog). UI names and steps may change between releases.</span></div>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="f-in">
+    <h4><span class="ja">出典</span><span class="en">Sources</span></h4>
+    <div class="src">
+      <a href="https://github.com/github/app/blob/main/changelog.md" target="_blank" rel="noopener"><span class="ja">公式チェンジログ（github/app）</span><span class="en">Official changelog (github/app)</span></a>
+      <a href="https://github.com/github/app" target="_blank" rel="noopener">github/app README</a>
+      <a href="https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience/" target="_blank" rel="noopener">GitHub Blog: The agent-native desktop experience</a>
+    </div>
+    <div class="disc"><span class="ja">本ページ群は GitHub Copilot App v1.0.12 の公開情報に基づく非公式のまとめです。GitHub および Copilot は GitHub, Inc. の商標です。仕様は今後のリリースで変更される可能性があります。</span><span class="en">These pages are an unofficial summary based on public information about GitHub Copilot App v1.0.12. GitHub and Copilot are trademarks of GitHub, Inc. Details may change in future releases.</span></div>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>

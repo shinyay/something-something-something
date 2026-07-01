@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light" data-lang="ja"
+      data-title-ja="体験ガイド 06 — Agent Merge | Copilot App v1.0.12"
+      data-title-en="Hands-on 06 — Agent Merge | Copilot App v1.0.12">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>体験ガイド 06 — Agent Merge | Copilot App v1.0.12</title>
+<script>
+(function(){
+  var t;try{t=localStorage.getItem('cp-theme');}catch(e){}
+  if(!t){var p=new URLSearchParams(location.search).get('scoutTheme');t=p||(matchMedia('(prefers-color-scheme: dark)').matches?'dark':'light');}
+  document.documentElement.setAttribute('data-theme',t);
+  var l;try{l=localStorage.getItem('cp-lang');}catch(e){}
+  document.documentElement.setAttribute('data-lang',l==='en'?'en':'ja');
+})();
+</script>
+<link rel="stylesheet" href="assets/style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-in">
+    <svg class="logo" height="24" viewBox="0 0 16 16" width="24" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+    <span class="crumb"><a href="index.html"><span class="ja">体験ガイド</span><span class="en">Hands-on</span></a><svg height="12" viewBox="0 0 16 16" width="12" aria-hidden="true"><path d="M6.22 3.22a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L9.94 8 6.22 4.28a.75.75 0 010-1.06Z"></path></svg><span>06 · <span class="ja">Agent Merge</span><span class="en">Agent Merge</span></span></span>
+    <span class="spacer"></span>
+    <button class="lang-toggle" id="langToggle" aria-label="Switch to English">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg>
+      <span id="langLabel">EN</span>
+    </button>
+    <button class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zm8-5a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0zm9.193 1.061a.75.75 0 01-1.06 0l-1.061-1.06a.75.75 0 011.06-1.061l1.061 1.06a.75.75 0 010 1.061zM4.464 4.465a.75.75 0 01-1.06 0L2.343 3.404a.75.75 0 011.06-1.06l1.06 1.06a.75.75 0 010 1.06z"></path></svg>
+      <span id="themeLabel">テーマ</span>
+    </button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-in">
+    <span class="kicker"><span class="dot"></span><span class="num">06 / 15</span><span class="ja">&nbsp;体験ガイド</span><span class="en">&nbsp;Hands-on guide</span></span>
+    <h1><span class="ja">Agent Merge を体験する</span><span class="en">Experience Agent Merge</span></h1>
+    <p class="lead"><span class="ja">プルリクエストをレビュー、CI、必須レビュアー、マージ条件の充足まで運び、どこまで任せるかを利用者が選べます。</span><span class="en">Carry a pull request through review, CI, required reviewers, and merge conditions while choosing how much to delegate.</span></p>
+  </div>
+</div>
+
+<main class="wrap">
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 0a8 8 0 100 16A8 8 0 008 0Zm3.78 5.97a.75.75 0 00-1.06 0L6.75 9.94 5.28 8.47a.75.75 0 00-1.06 1.06l2 2a.75.75 0 001.06 0l4.5-4.5a.75.75 0 000-1.06Z"></path></svg><span class="ja">この機能でできること</span><span class="en">What you'll experience</span></div>
+    <h2><span class="ja">体験のゴール</span><span class="en">Your goal</span></h2>
+    <p><span class="ja">このガイドを終えると、PR を Agent Merge に渡し、CI やレビューコメントを監視・対応させ、条件が整ったら自動マージへ進める流れを理解できます。</span><span class="en">By the end of this guide you'll understand how to hand a PR to Agent Merge, let it watch and address CI or review comments, and proceed to auto-merge when conditions are met.</span></p>
+  </div>
+  <div class="exp-grid">
+    <div class="exp" style="--accent:var(--gh-success)"><h4><span class="dot"></span><span class="ja">CI をグリーンへ戻す</span><span class="en">Get CI back to green</span></h4><p><span class="ja">失敗したチェックを見つけ、必要な修正と再確認をエージェントに任せます。</span><span class="en">Let the agent find failing checks, make needed fixes, and verify again.</span></p></div>
+    <div class="exp" style="--accent:var(--gh-success)"><h4><span class="dot"></span><span class="ja">レビュー対応を進める</span><span class="en">Respond to review</span></h4><p><span class="ja">レビューコメントを追い、回答やコード変更の候補を作らせます。</span><span class="en">Track review comments and have candidate replies or code changes prepared.</span></p></div>
+    <div class="exp" style="--accent:var(--gh-success)"><h4><span class="dot"></span><span class="ja">マージ条件を追跡</span><span class="en">Track merge conditions</span></h4><p><span class="ja">必須レビュアー、チェック、保護ルールを見ながら、満たされたらマージへ進めます。</span><span class="en">Watch required reviewers, checks, and protections, then move to merge once satisfied.</span></p></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM0 8a8 8 0 1116 0A8 8 0 010 8Zm6.5-.25A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75ZM8 6a1 1 0 100-2 1 1 0 000 2Z"></path></svg><span class="ja">前提</span><span class="en">Prerequisites</span></div>
+    <h2><span class="ja">始める前に</span><span class="en">Before you begin</span></h2>
+  </div>
+  <div class="gbox prereq">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M8 1.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM0 8a8 8 0 1116 0A8 8 0 010 8Zm11.78-1.72a.75.75 0 00-1.06-1.06L7 8.94 5.28 7.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.06 0Z"></path></svg><span class="ja">用意するもの</span><span class="en">What you need</span></h3>
+    <ul>
+      <li><span class="ja">GitHub Copilot App v1.0.12 をインストール済み（Windows / macOS / Linux）</span><span class="en">GitHub Copilot App v1.0.12 installed (Windows / macOS / Linux)</span></li>
+      <li><span class="ja">有効な有料 Copilot サブスクリプション（Pro / Pro+ / Max / Business / Enterprise）でサインイン済み</span><span class="en">Signed in with an active paid Copilot subscription (Pro / Pro+ / Max / Business / Enterprise)</span></li>
+      <li><span class="ja">少なくとも 1 つの GitHub リポジトリへのアクセス（Issue や PR がいくつかあると体験しやすい）</span><span class="en">Access to at least one GitHub repository (a few issues or PRs make it easier to experience)</span></li>
+      <li><span class="ja">ローカルでコードを動かす場合は Git がインストール済み</span><span class="en">Git installed if you plan to run code locally</span></li>
+      <li><span class="ja">レビューや CI チェックが有効なプルリクエストがあること</span><span class="en">A pull request with review or CI checks enabled</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0114.25 15H1.75A1.75 1.75 0 010 13.25V2.75C0 1.784.784 1 1.75 1ZM4.75 4a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5Zm0 3.25a.75.75 0 000 1.5h6.5a.75.75 0 000-1.5Zm0 3.25a.75.75 0 000 1.5h3.5a.75.75 0 000-1.5Z"></path></svg><span class="ja">ハンズオン手順</span><span class="en">Step-by-step</span></div>
+    <h2><span class="ja">Agent Merge を実際に使ってみる</span><span class="en">Put Agent Merge to work</span></h2>
+    <p><span class="ja">上から順に進めてください。各ステップは数分で完了します。</span><span class="en">Follow the steps in order &mdash; each takes just a few minutes.</span></p>
+  </div>
+  <ol class="steps" style="--accent:var(--gh-success)">
+    <li><div class="st">
+      <span class="tag"><span class="ja">対象</span><span class="en">Select</span></span>
+      <h4><span class="ja">対象の PR を Agent Merge に渡す</span><span class="en">Hand a PR to Agent Merge</span></h4>
+      <p><span class="ja">マージしたいプルリクエストを開き、Agent Merge に引き継ぎます。目的、許可する変更範囲、手動確認が必要な条件を短く伝えます。</span><span class="en">Open the pull request you want merged and hand it to Agent Merge. Briefly state the goal, allowed change scope, and conditions that require manual approval.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">委任</span><span class="en">Delegate</span></span>
+      <h4><span class="ja">任せる範囲を選ぶ</span><span class="en">Choose the delegation level</span></h4>
+      <p><span class="ja">CI の監視だけ、レビューコメントへの回答まで、条件を満たした後の自動マージまでなど、任せる深さを選びます。必要なら各段階で承認を挟みます。</span><span class="en">Choose how far to delegate: CI monitoring only, responding to review comments, or auto-merge after conditions are met. Add approval gates where needed.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">CI</span><span class="en">CI</span></span>
+      <h4><span class="ja">失敗チェックを調べてグリーンに戻す</span><span class="en">Investigate failing checks and return CI to green</span></h4>
+      <p><span class="ja">Agent Merge に CI の失敗を監視させ、ログやテスト結果から原因を絞らせます。修正案を確認し、必要な変更を行わせて再実行結果を待ちます。</span><span class="en">Let Agent Merge watch CI failures and narrow down causes from logs or test results. Review the proposed fix, let it make needed changes, and wait for the rerun.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">レビュー</span><span class="en">Review</span></span>
+      <h4><span class="ja">レビューコメントに対応する</span><span class="en">Respond to review comments</span></h4>
+      <p><span class="ja">未対応のレビューコメントを整理し、回答だけで済むものとコード変更が必要なものに分けます。ガイド 08 の Copilot コードレビュー結果も同じ PR 文脈で扱えます。</span><span class="en">Triage unresolved review comments into items that need only a reply and items requiring code changes. Results from guide 08 Copilot code review can be handled in the same PR context.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">条件</span><span class="en">Conditions</span></span>
+      <h4><span class="ja">必須レビュアーとマージ条件を追跡する</span><span class="en">Track required reviewers and merge conditions</span></h4>
+      <p><span class="ja">必須レビュアーの承認、必須チェック、ブランチ保護などを確認し、残っている条件を Agent Merge に追跡させます。</span><span class="en">Check required reviewer approvals, required checks, branch protection, and other conditions, then have Agent Merge track what remains.</span></p>
+    </div></li>
+    <li><div class="st">
+      <span class="tag"><span class="ja">マージ</span><span class="en">Merge</span></span>
+      <h4><span class="ja">条件が満たされたら自動マージする</span><span class="en">Auto-merge once conditions are met</span></h4>
+      <p><span class="ja">委任レベルで許可している場合、すべての条件が満たされた時点で自動マージへ進めます。マージ後は PR の状態と関連 Issue の更新を確認します。</span><span class="en">If your delegation level allows it, proceed to auto-merge once all conditions are met. After merge, confirm PR state and related issue updates.</span></p>
+    </div></li>
+  </ol>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.751.751 0 01.018-1.042.751.751 0 011.042-.018L6 10.94l6.72-6.72a.75.75 0 011.06 0Z"></path></svg><span class="ja">確認ポイント</span><span class="en">What you should see</span></div>
+    <h2><span class="ja">うまくいったサイン</span><span class="en">Signs it worked</span></h2>
+  </div>
+  <div class="gbox result">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M13.78 4.22a.75.75 0 010 1.06l-7.25 7.25a.75.75 0 01-1.06 0L2.22 9.28a.751.751 0 01.018-1.042.751.751 0 011.042-.018L6 10.94l6.72-6.72a.75.75 0 011.06 0Z"></path></svg><span class="ja">チェックリスト</span><span class="en">Checklist</span></h3>
+    <ul>
+      <li><span class="ja">Agent Merge が対象 PR の CI、レビュー、マージ条件を継続的に追跡している。</span><span class="en">Agent Merge continuously tracks CI, reviews, and merge conditions for the target PR.</span></li>
+      <li><span class="ja">失敗したチェックへの対応方針や修正結果が確認でき、CI がグリーンへ戻る。</span><span class="en">You can see the response plan and fix result for failing checks, and CI returns to green.</span></li>
+      <li><span class="ja">レビューコメントへの回答またはコード変更が整理され、未対応項目が減る。</span><span class="en">Review-comment replies or code changes are organized, reducing unresolved items.</span></li>
+      <li><span class="ja">必須条件を満たした後、許可した委任範囲に従ってマージへ進める。</span><span class="en">After required conditions are met, the PR can proceed to merge according to your allowed delegation scope.</span></li>
+    </ul>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 01-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 00-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.318 3.184-.095.115-.184.22-.268.32-.207.245-.383.463-.541.68-.208.3-.33.565-.37.847a.751.751 0 01-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 010-1.5ZM6 15.25a.75.75 0 01.75-.75h2.5a.75.75 0 010 1.5h-2.5a.75.75 0 01-.75-.75Z"></path></svg><span class="ja">ヒント・応用</span><span class="en">Tips &amp; variations</span></div>
+    <h2><span class="ja">もう一歩使いこなす</span><span class="en">Go a little further</span></h2>
+  </div>
+  <div class="gbox tip">
+    <h3><svg height="18" viewBox="0 0 16 16" width="18"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 01-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 00-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.318 3.184-.095.115-.184.22-.268.32-.207.245-.383.463-.541.68-.208.3-.33.565-.37.847a.751.751 0 01-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 010 1.5h-4.5a.75.75 0 010-1.5ZM6 15.25a.75.75 0 01.75-.75h2.5a.75.75 0 010 1.5h-2.5a.75.75 0 01-.75-.75Z"></path></svg><span class="ja">試してみる</span><span class="en">Things to try</span></h3>
+    <ul>
+      <li><span class="ja">最初は自動マージまで任せず、CI 修復とレビューコメント整理までに限定すると挙動を把握しやすいです。</span><span class="en">At first, stop short of auto-merge and limit delegation to CI repair and review-comment triage so behavior is easier to understand.</span></li>
+      <li><span class="ja">レビューコメントが多い PR は、ガイド 08 の Copilot コードレビューで論点を先に整理してから Agent Merge に渡すと効率的です。</span><span class="en">For PRs with many comments, use guide 08 Copilot code review to clarify issues before handing the PR to Agent Merge.</span></li>
+      <li><span class="ja">定期的にマージ待ち PR を巡回したい場合は、ガイド 05 の Automations でリマインドや要約を作ります。</span><span class="en">If you want regular sweeps of PRs waiting to merge, use guide 05 Automations for reminders or summaries.</span></li>
+    </ul>
+  </div>
+  <div class="note">
+    <svg height="16" viewBox="0 0 16 16" width="16" aria-hidden="true"><path d="M0 8a8 8 0 1116 0A8 8 0 010 8Zm8-6.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM6.5 7.75A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75ZM8 6a1 1 0 100-2 1 1 0 000 2Z"></path></svg>
+    <div><span class="ja">Agent Merge の価値は「マージボタンを押す」ことだけではなく、PR が止まりがちな CI・レビュー・必須条件を継続的に前へ進めることです。</span><span class="en">Agent Merge is not only about pressing the merge button; its value is continuously moving CI, review, and required conditions forward when PRs stall.</span></div>
+  </div>
+</section>
+
+<section>
+  <div class="sec-head">
+    <div class="eyebrow"><svg height="16" viewBox="0 0 16 16" width="16"><path d="M7.775 3.275a.75.75 0 001.06 1.06l1.25-1.25a2 2 0 112.83 2.83l-2.5 2.5a2 2 0 01-2.83 0 .75.75 0 00-1.06 1.06 3.5 3.5 0 004.95 0l2.5-2.5a3.5 3.5 0 00-4.95-4.95l-1.25 1.25Zm-4.69 9.64a2 2 0 010-2.83l2.5-2.5a2 2 0 012.83 0 .75.75 0 001.06-1.06 3.5 3.5 0 00-4.95 0l-2.5 2.5a3.5 3.5 0 004.95 4.95l1.25-1.25a.75.75 0 00-1.06-1.06l-1.25 1.25a2 2 0 01-2.83 0Z"></path></svg><span class="ja">関連する体験ガイド</span><span class="en">Related guides</span></div>
+    <h2><span class="ja">次に試すなら</span><span class="en">Try next</span></h2>
+  </div>
+  <div class="rel-grid">
+    <a class="rel" href="08-code-review.html" style="--accent:var(--gh-accent)"><span class="rn">08</span><span class="rt"><span class="ja">Copilot コードレビュー</span><span class="en">Copilot code review</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+    <a class="rel" href="05-automations.html" style="--accent:var(--gh-attention)"><span class="rn">05</span><span class="rt"><span class="ja">Automations（自動化）</span><span class="en">Automations</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+    <a class="rel" href="index.html" style="--accent:var(--gh-accent)"><span class="rn"><svg height="15" viewBox="0 0 16 16" width="15"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0114.25 16H1.75A1.75 1.75 0 010 14.25Zm7 12.75h7.25a.25.25 0 00.25-.25V1.75a.25.25 0 00-.25-.25H7Z"></path></svg></span><span class="rt"><span class="ja">一覧に戻る</span><span class="en">Back to index</span></span><svg class="ra" height="16" viewBox="0 0 16 16" width="16"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+  </div>
+</section>
+</main>
+
+<footer>
+  <div class="f-in">
+    <nav class="fnav">
+      <a href="05-automations.html"><span class="ja">前: 05 Automations（自動化） ←</span><span class="en">Prev: 05 Automations ←</span></a>
+      <a href="07-sandboxes.html"><span class="ja">次: 07 クラウド / ローカル サンドボックス →</span><span class="en">Next: 07 Cloud / local sandboxes →</span></a>
+      <a href="../copilot-app-v1.0.12/"><span class="ja">機能ガイド（全体）</span><span class="en">Full feature guide</span></a>
+    </nav>
+    <h4><span class="ja">出典</span><span class="en">Sources</span></h4>
+    <div class="src">
+      <a href="https://github.com/github/app/blob/main/changelog.md" target="_blank" rel="noopener"><span class="ja">公式チェンジログ（github/app）</span><span class="en">Official changelog (github/app)</span></a>
+      <a href="https://github.com/github/app" target="_blank" rel="noopener">github/app README</a>
+      <a href="https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience/" target="_blank" rel="noopener">GitHub Blog: The agent-native desktop experience</a>
+    </div>
+    <div class="disc"><span class="ja">本ページは GitHub Copilot App v1.0.12 の公開情報に基づく非公式のハンズオン手順です。UI の名称・配置・手順はリリースにより変わる場合があります。GitHub および Copilot は GitHub, Inc. の商標です。</span><span class="en">This page is an unofficial hands-on walkthrough based on public information about GitHub Copilot App v1.0.12. UI names, placement, and steps may change between releases. GitHub and Copilot are trademarks of GitHub, Inc.</span></div>
+  </div>
+</footer>
+<script src="assets/app.js"></script>
+</body>
+</html>
