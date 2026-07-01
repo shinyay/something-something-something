@@ -1,0 +1,559 @@
+<!DOCTYPE html>
+<html lang="ja" data-theme="light" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>GitHub Copilot App v1.0.12 — 機能ガイド</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme = param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<style>
+:root{
+  color-scheme:light;
+  --gh-canvas:#ffffff; --gh-canvas-subtle:#f6f8fa; --gh-canvas-inset:#eaeef2;
+  --gh-border:#d0d7de; --gh-border-muted:#d8dee4;
+  --gh-text:#1f2328; --gh-text-muted:#656d76; --gh-text-subtle:#6e7781;
+  --gh-accent:#0969da; --gh-accent-emphasis:#0550ae; --gh-accent-soft:rgba(9,105,218,.1);
+  --gh-success:#1a7f37; --gh-success-emphasis:#1f883d; --gh-success-soft:rgba(31,136,61,.1);
+  --gh-attention:#9a6700; --gh-attention-soft:rgba(154,103,0,.1);
+  --gh-done:#8250df; --gh-done-soft:rgba(130,80,223,.1);
+  --gh-danger:#cf222e; --gh-danger-soft:rgba(207,34,46,.1);
+  --gh-header-bg:#24292f; --gh-header-text:#ffffff; --gh-header-muted:rgba(255,255,255,.7);
+  --gh-shadow:0 1px 3px rgba(31,35,40,.12),0 8px 24px rgba(66,74,83,.12);
+  --gh-shadow-sm:0 1px 0 rgba(31,35,40,.04),0 1px 3px rgba(66,74,83,.12);
+}
+html[data-theme="dark"]{
+  color-scheme:dark;
+  --gh-canvas:#0d1117; --gh-canvas-subtle:#161b22; --gh-canvas-inset:#010409;
+  --gh-border:#30363d; --gh-border-muted:#21262d;
+  --gh-text:#e6edf3; --gh-text-muted:#8b949e; --gh-text-subtle:#6e7681;
+  --gh-accent:#2f81f7; --gh-accent-emphasis:#388bfd; --gh-accent-soft:rgba(56,139,253,.15);
+  --gh-success:#3fb950; --gh-success-emphasis:#2ea043; --gh-success-soft:rgba(63,185,80,.15);
+  --gh-attention:#d29922; --gh-attention-soft:rgba(210,153,34,.15);
+  --gh-done:#a371f7; --gh-done-soft:rgba(163,113,247,.15);
+  --gh-danger:#f85149; --gh-danger-soft:rgba(248,81,73,.15);
+  --gh-header-bg:#161b22; --gh-header-text:#e6edf3; --gh-header-muted:#8b949e;
+  --gh-shadow:0 0 0 1px rgba(0,0,0,.1),0 16px 32px rgba(1,4,9,.5);
+  --gh-shadow-sm:0 0 0 1px rgba(0,0,0,.1),0 1px 3px rgba(1,4,9,.5);
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html{scroll-behavior:smooth;scroll-padding-top:110px}
+body{
+  font-family:"Segoe UI","Yu Gothic UI",Meiryo,-apple-system,BlinkMacSystemFont,"Hiragino Kaku Gothic ProN",sans-serif;
+  background:var(--gh-canvas);color:var(--gh-text);line-height:1.7;
+  font-size:16px;-webkit-font-smoothing:antialiased;
+}
+code,.mono{font-family:Consolas,"Courier New",Courier,monospace;font-size:.88em}
+a{color:var(--gh-accent);text-decoration:none}
+a:hover{text-decoration:underline}
+/* masthead */
+.masthead{position:sticky;top:0;z-index:50;background:var(--gh-header-bg);
+  border-bottom:1px solid rgba(255,255,255,.08);box-shadow:0 1px 0 rgba(0,0,0,.2)}
+.masthead-in{max-width:1080px;margin:0 auto;padding:12px 24px;display:flex;align-items:center;gap:12px}
+.masthead svg{fill:var(--gh-header-text);flex-shrink:0}
+.masthead .brand{color:var(--gh-header-text);font-weight:600;font-size:15px}
+.masthead .brand span{color:var(--gh-header-muted);font-weight:400}
+.masthead .ver{margin-left:4px;padding:2px 8px;border-radius:2em;font-size:12px;font-weight:600;
+  background:var(--gh-success-emphasis);color:#fff;font-family:Consolas,monospace}
+.masthead .spacer{flex:1}
+.theme-toggle{background:transparent;border:1px solid rgba(255,255,255,.24);color:var(--gh-header-text);
+  border-radius:6px;padding:5px 10px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.theme-toggle:hover{background:rgba(255,255,255,.1)}
+/* hero */
+.hero{position:relative;overflow:hidden;background:
+  radial-gradient(1200px 400px at 80% -10%,rgba(47,129,247,.25),transparent),
+  linear-gradient(180deg,#24292f 0%,#0d1117 100%);
+  color:#fff;padding:64px 24px 56px;border-bottom:1px solid var(--gh-border)}
+.hero:before{content:"";position:absolute;inset:0;opacity:.4;
+  background-image:linear-gradient(rgba(255,255,255,.04) 1px,transparent 1px),
+  linear-gradient(90deg,rgba(255,255,255,.04) 1px,transparent 1px);
+  background-size:32px 32px;mask-image:radial-gradient(600px 300px at 50% 0%,#000,transparent)}
+.hero-in{max-width:1080px;margin:0 auto;position:relative}
+.hero .kicker{display:inline-flex;align-items:center;gap:8px;font-size:13px;font-weight:600;
+  color:#fff;background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.18);
+  padding:5px 12px;border-radius:2em;margin-bottom:20px}
+.hero .kicker .dot{width:8px;height:8px;border-radius:50%;background:#3fb950;box-shadow:0 0 8px #3fb950}
+.hero h1{font-size:44px;line-height:1.15;font-weight:800;letter-spacing:-.5px;margin-bottom:16px}
+.hero h1 .v{font-family:Consolas,monospace;font-weight:700;color:#79c0ff}
+.hero .lead{font-size:19px;color:rgba(255,255,255,.82);max-width:680px;margin-bottom:28px}
+.hero .chips{display:flex;flex-wrap:wrap;gap:10px}
+.chip{display:inline-flex;align-items:center;gap:7px;font-size:13px;color:rgba(255,255,255,.9);
+  background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.16);padding:7px 13px;border-radius:8px}
+.chip svg{fill:rgba(255,255,255,.85)}
+/* toc */
+.toc{position:sticky;top:57px;z-index:40;background:var(--gh-canvas-subtle);
+  border-bottom:1px solid var(--gh-border);backdrop-filter:blur(6px)}
+.toc-in{max-width:1080px;margin:0 auto;padding:10px 24px;display:flex;gap:8px;flex-wrap:wrap;overflow-x:auto}
+.toc a{font-size:13.5px;color:var(--gh-text-muted);padding:6px 12px;border-radius:2em;font-weight:500;white-space:nowrap}
+.toc a:hover{background:var(--gh-canvas);color:var(--gh-text);text-decoration:none;box-shadow:inset 0 0 0 1px var(--gh-border)}
+/* layout */
+.wrap{max-width:1080px;margin:0 auto;padding:0 24px}
+section{padding:56px 0;border-bottom:1px solid var(--gh-border-muted)}
+section:last-of-type{border-bottom:none}
+.sec-head{margin-bottom:28px}
+.sec-head .eyebrow{font-size:13px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;color:var(--gh-accent)}
+.sec-head h2{font-size:30px;font-weight:800;letter-spacing:-.4px;margin:6px 0 10px}
+.sec-head p{color:var(--gh-text-muted);max-width:760px;font-size:16.5px}
+h3{font-size:19px;font-weight:700;margin:0 0 6px}
+/* badges */
+.badge{display:inline-flex;align-items:center;gap:5px;font-size:11.5px;font-weight:700;
+  padding:2px 9px;border-radius:2em;letter-spacing:.02em;text-transform:uppercase}
+.b-new{background:var(--gh-success-soft);color:var(--gh-success-emphasis);border:1px solid var(--gh-success-soft)}
+.b-imp{background:var(--gh-accent-soft);color:var(--gh-accent);border:1px solid var(--gh-accent-soft)}
+.b-fix{background:var(--gh-done-soft);color:var(--gh-done);border:1px solid var(--gh-done-soft)}
+.b-plat{background:var(--gh-attention-soft);color:var(--gh-attention);border:1px solid var(--gh-attention-soft)}
+/* highlight cards */
+.hl-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(320px,1fr));gap:16px}
+.hl-card{background:var(--gh-canvas);border:1px solid var(--gh-border);border-radius:12px;
+  padding:20px;box-shadow:var(--gh-shadow-sm);position:relative;transition:.18s}
+.hl-card:hover{border-color:var(--gh-accent);transform:translateY(-2px);box-shadow:var(--gh-shadow)}
+.hl-card .badge{margin-bottom:10px}
+.hl-card h3{margin-bottom:8px}
+.hl-card p{font-size:14.5px;color:var(--gh-text-muted)}
+/* feature cards */
+.feat-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(330px,1fr));gap:18px}
+.feat{background:var(--gh-canvas);border:1px solid var(--gh-border);border-radius:12px;
+  padding:22px;box-shadow:var(--gh-shadow-sm);transition:.18s}
+.feat:hover{transform:translateY(-3px);box-shadow:var(--gh-shadow)}
+.feat .ico{width:40px;height:40px;border-radius:10px;display:flex;align-items:center;justify-content:center;
+  background:var(--gh-canvas-inset);margin-bottom:14px}
+.feat .ico svg{fill:var(--accent,var(--gh-accent))}
+.feat h3{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.feat p{font-size:14.5px;color:var(--gh-text-muted);margin-top:8px}
+.feat ul{margin:12px 0 0;padding-left:18px}
+.feat li{font-size:13.5px;color:var(--gh-text-muted);margin-bottom:4px}
+.feat code{background:var(--gh-canvas-inset);padding:1px 6px;border-radius:5px;color:var(--gh-text)}
+/* changelog lists */
+.cl-cols{display:grid;grid-template-columns:1fr 1fr;gap:18px;margin-top:8px}
+.cl-panel{background:var(--gh-canvas);border:1px solid var(--gh-border);border-radius:12px;padding:20px 22px;box-shadow:var(--gh-shadow-sm)}
+.cl-panel h3{display:flex;align-items:center;gap:9px;margin-bottom:14px;padding-bottom:12px;border-bottom:1px solid var(--gh-border-muted)}
+.cl-list{list-style:none}
+.cl-list li{position:relative;padding-left:22px;margin-bottom:11px;font-size:14.5px;color:var(--gh-text)}
+.cl-list li:before{content:"";position:absolute;left:2px;top:9px;width:7px;height:7px;border-radius:50%;background:var(--mk,var(--gh-accent))}
+.cl-list li b{font-weight:600}
+.cl-list li .sub{color:var(--gh-text-muted);font-size:13.5px}
+/* modes */
+.mode-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(230px,1fr));gap:14px}
+.mode{border:1px solid var(--gh-border);border-radius:10px;padding:16px 18px;background:var(--gh-canvas)}
+.mode h4{font-size:15px;margin-bottom:4px;display:flex;align-items:center;gap:8px}
+.mode h4 .sw{width:10px;height:10px;border-radius:3px;background:var(--mc)}
+.mode p{font-size:13.5px;color:var(--gh-text-muted)}
+/* timeline */
+.tl{position:relative;padding-left:34px}
+.tl:before{content:"";position:absolute;left:9px;top:6px;bottom:6px;width:2px;background:var(--gh-border)}
+.tl-item{position:relative;margin-bottom:24px}
+.tl-item:before{content:"";position:absolute;left:-30px;top:5px;width:12px;height:12px;border-radius:50%;
+  background:var(--gh-canvas);border:2px solid var(--gh-accent)}
+.tl-item.now:before{background:var(--gh-success-emphasis);border-color:var(--gh-success-emphasis);box-shadow:0 0 0 4px var(--gh-success-soft)}
+.tl-item .ver{font-family:Consolas,monospace;font-weight:700;font-size:15px;color:var(--gh-text)}
+.tl-item.now .ver{color:var(--gh-success-emphasis)}
+.tl-item ul{margin:6px 0 0;padding-left:18px}
+.tl-item li{font-size:14px;color:var(--gh-text-muted);margin-bottom:3px}
+/* callout */
+.note{display:flex;gap:12px;background:var(--gh-accent-soft);border:1px solid var(--gh-accent-soft);
+  border-radius:8px;padding:14px 18px;margin-top:20px;font-size:14px}
+.note svg{fill:var(--gh-accent);flex-shrink:0;margin-top:2px}
+/* footer */
+footer{background:var(--gh-canvas-subtle);border-top:1px solid var(--gh-border);padding:36px 24px 48px;
+  color:var(--gh-text-muted);font-size:13.5px}
+footer .f-in{max-width:1080px;margin:0 auto}
+footer h4{color:var(--gh-text);font-size:14px;margin-bottom:10px}
+footer a{color:var(--gh-accent)}
+footer .src{display:flex;flex-wrap:wrap;gap:8px 18px;margin-bottom:20px}
+footer .disc{padding-top:16px;border-top:1px solid var(--gh-border);font-size:12.5px;color:var(--gh-text-subtle)}
+@media(max-width:720px){
+  .hero h1{font-size:32px}.hero .lead{font-size:16px}
+  .cl-cols{grid-template-columns:1fr}.sec-head h2{font-size:24px}
+  section{padding:40px 0}
+}
+/* i18n language toggle */
+.en{display:none}
+html[data-lang="en"] .ja{display:none}
+html[data-lang="en"] .en{display:inline}
+.lang-toggle{background:transparent;border:1px solid rgba(255,255,255,.24);color:var(--gh-header-text);
+  border-radius:6px;padding:5px 10px;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px}
+.lang-toggle:hover{background:rgba(255,255,255,.1)}
+</style>
+</head>
+<body>
+<header class="masthead">
+  <div class="masthead-in">
+    <svg height="26" viewBox="0 0 16 16" width="26" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg>
+    <span class="brand">GitHub Copilot <span>App</span></span>
+    <span class="ver">v1.0.12</span>
+    <span class="spacer"></span>
+    <button class="lang-toggle" id="langToggle" aria-label="Switch to English">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg>
+      <span id="langLabel">EN</span>
+    </button>
+    <button class="theme-toggle" id="themeToggle" aria-label="テーマ切り替え">
+      <svg height="15" viewBox="0 0 16 16" width="15" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zm8-5a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0zm9.193 1.061a.75.75 0 01-1.06 0l-1.061-1.06a.75.75 0 011.06-1.061l1.061 1.06a.75.75 0 010 1.061zM4.464 4.465a.75.75 0 01-1.06 0L2.343 3.404a.75.75 0 011.06-1.06l1.06 1.06a.75.75 0 010 1.06z"></path></svg>
+      <span id="themeLabel">テーマ</span>
+    </button>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-in">
+    <span class="kicker"><span class="dot"></span><span class="ja">Technical Preview &middot; 最新リリース v1.0.12</span><span class="en">Technical Preview &middot; Latest release v1.0.12</span></span>
+    <h1>GitHub Copilot App <span class="v">v1.0.12</span></h1>
+    <p class="lead"><span class="ja">アイデアからプルリクエストまでを一つのコントロールセンターで。エージェントネイティブなデスクトップ体験の最新版で何ができるのか、新機能と全機能を詳しく解説します。</span><span class="en">From idea to pull request in a single control center. A detailed guide to what the latest agent-native desktop experience can do &mdash; its newest capabilities and its full feature set.</span></p>
+    <div class="chips">
+      <span class="chip"><svg height="14" viewBox="0 0 16 16" width="14"><path d="M0 1.75C0 .784.784 0 1.75 0h12.5C15.216 0 16 .784 16 1.75v9.5A1.75 1.75 0 0114.25 13H8.061l-2.574 2.573A1.458 1.458 0 013 14.543V13H1.75A1.75 1.75 0 010 11.25Z"></path></svg><span class="ja">エージェント並列実行</span><span class="en">Parallel agents</span></span>
+      <span class="chip"><svg height="14" viewBox="0 0 16 16" width="14"><path d="M2 2.5A2.5 2.5 0 014.5 0h8.75a.75.75 0 01.75.75v12.5a.75.75 0 01-.75.75h-2.5a.75.75 0 010-1.5h1.75v-2h-8a1 1 0 00-.714 1.7.75.75 0 01-1.072 1.05A2.495 2.495 0 012 11.5Z"></path></svg><span class="ja">Canvas 対応</span><span class="en">Canvas support</span></span>
+      <span class="chip"><svg height="14" viewBox="0 0 16 16" width="14"><path d="M1.643 3.143.427 1.927A.25.25 0 000 2.104V5.75c0 .138.112.25.25.25h3.646a.25.25 0 00.177-.427L2.715 4.215a6.5 6.5 0 11-1.18 4.458.75.75 0 10-1.493.154 8.001 8.001 0 101.6-5.684Z"></path></svg><span class="ja">自動化 / Agent Merge</span><span class="en">Automations / Agent Merge</span></span>
+      <span class="chip"><svg height="14" viewBox="0 0 16 16" width="14"><path d="M4.72 3.22a.75.75 0 011.06 1.06L2.06 8l3.72 3.72a.75.75 0 11-1.06 1.06L.47 8.53a.75.75 0 010-1.06Zm6.56 0a.75.75 0 10-1.06 1.06L13.94 8l-3.72 3.72a.75.75 0 101.06 1.06l4.25-4.25a.75.75 0 000-1.06Z"></path></svg>Windows / Mac / Linux</span>
+    </div>
+  </div>
+</div>
+
+<nav class="toc">
+  <div class="toc-in">
+    <a href="#new"><span class="ja">v1.0.12 の新機能</span><span class="en">What's New</span></a>
+    <a href="#about"><span class="ja">Copilot App とは</span><span class="en">About Copilot App</span></a>
+    <a href="#features"><span class="ja">全機能ガイド</span><span class="en">All Features</span></a>
+    <a href="#modes"><span class="ja">セッションモード</span><span class="en">Session Modes</span></a>
+    <a href="#setup"><span class="ja">動作要件 / 導入</span><span class="en">Requirements / Setup</span></a>
+    <a href="#history"><span class="ja">バージョン履歴</span><span class="en">Version History</span></a>
+  </div>
+</nav>
+
+<main class="wrap">
+<section id="new">
+  <div class="sec-head">
+    <div class="eyebrow">What's New</div>
+    <h2><span class="ja">v1.0.12 の新機能</span><span class="en">What's new in v1.0.12</span></h2>
+    <p><span class="ja">最新リリース v1.0.12 で追加・改善された主なポイントです。カスタムエージェントの選択、統合ブラウザーでの HTML 表示、プルリクエストパネルまわりの強化が中心となっています。</span><span class="en">The main additions and improvements in the latest release, v1.0.12 &mdash; centered on custom agent selection, HTML preview in the integrated browser, and enhancements around the pull request panel.</span></p>
+  </div>
+  <div class="hl-grid">
+    <div class="hl-card"><span class="badge b-new"><span class="ja">エージェント</span><span class="en">Agents</span></span><h3><span class="ja">エージェントピッカー</span><span class="en">Agent picker</span></h3><p><span class="ja">チャット作成ツールバーから、セッション開始前でも実行中でも<b>カスタムエージェントを選択</b>できるように。Issue や PR など、あらゆる起点から起動したセッションにも選択が引き継がれます。</span><span class="en">From the chat composer toolbar you can now <b>choose a custom agent</b> before a session starts or while one is running. The choice carries over to sessions launched from any entry point, including issues and PRs.</span></p></div>
+    <div class="hl-card"><span class="badge b-new"><span class="ja">ブラウザー</span><span class="en">Browser</span></span><h3><span class="ja">HTML を統合ブラウザーで表示</span><span class="en">Open HTML in the integrated browser</span></h3><p><span class="ja">エディターヘッダー、ファイルツリーの右クリックメニュー、チャット内のインライン参照から、<b>HTML ファイルを統合ブラウザーで直接プレビュー</b>できます。</span><span class="en">Preview <b>HTML files directly in the integrated browser</b> from the editor header, the file-tree context menu, or inline references inside chat.</span></p></div>
+    <div class="hl-card"><span class="badge b-new"><span class="ja">プルリクエスト</span><span class="en">Pull requests</span></span><h3><span class="ja">ドラフト PR のフルパネル</span><span class="en">Full panel for draft PRs</span></h3><p><span class="ja">ドラフトのプルリクエストがフル PR パネルで開き、<b>Agent Merge オプション</b>と「Ready for review」アクションに、他の PR 状態と同じ場所からアクセスできます。</span><span class="en">Draft pull requests now open in the full PR panel, so the <b>Agent Merge option</b> and the &ldquo;Ready for review&rdquo; action are reachable from the same place as any other PR state.</span></p></div>
+    <div class="hl-card"><span class="badge b-new"><span class="ja">Issue</span><span class="en">Issues</span></span><h3><span class="ja">Issue テンプレートへの追従</span><span class="en">Follows issue templates</span></h3><p><span class="ja">エージェントが Issue を作成する際、<b>リポジトリの Issue テンプレート</b>を検出して従い、見出し・セクション・HTML コメントを保持します。</span><span class="en">When the agent creates an issue, it detects and follows the <b>repository's issue templates</b>, preserving headings, sections, and HTML comments.</span></p></div>
+    <div class="hl-card"><span class="badge b-fix"><span class="ja">バグ修正</span><span class="en">Bug fix</span></span><h3><span class="ja">幻の差分バグを修正</span><span class="en">Phantom-diff bug fixed</span></h3><p><span class="ja">デフォルトブランチをリモートで改名（例: master → main）した際、作業ツリーがクリーンでも<b>数百ファイルもの巨大な差分</b>が表示される不具合を修正しました。</span><span class="en">Fixed a bug where renaming the default branch on the remote (e.g. master &rarr; main) could show a <b>huge diff of hundreds of files</b> even when the working tree was clean.</span></p></div>
+  </div>
+</section>
+<section id="new-detail">
+  <div class="sec-head">
+    <div class="eyebrow">Changelog · v1.0.12</div>
+    <h2><span class="ja">詳細な変更点</span><span class="en">Detailed changelog</span></h2>
+    <p><span class="ja">公式チェンジログに基づく v1.0.12 の全変更を、追加（Added）・変更（Changed）・修正（Fixed）に分けて掲載します。</span><span class="en">Every change in v1.0.12, based on the official changelog, grouped into Added, Changed, and Fixed.</span></p>
+  </div>
+  <div class="cl-cols">
+    <div class="cl-panel">
+      <h3><span class="badge b-new">Added</span><span class="ja"> 追加</span></h3>
+      <ul class="cl-list" style="--mk:var(--gh-success)">
+        <li><span class="ja"><b>エージェントピッカー</b> — カスタムエージェントをセッション開始前・実行中に選択。Issue や PR など各起点から生成されたセッションにも適用されます。</span><span class="en"><b>Agent picker</b> — choose a custom agent before a session starts or while it runs. It also applies to sessions created from any entry point, such as issues and PRs.</span></li>
+        <li><span class="ja"><b>統合ブラウザーでの HTML 表示</b> — エディターヘッダー、ファイルツリーのコンテキストメニュー、チャットのインライン参照から表示。<span class="sub">Vite / React などビルドを要するアプリはローカルファイルから描画できないため「dev server を起動」の案内を表示。<code>agents.discover</code> 未実装の CLI でも検出が正常にデグレードします。</span></span><span class="en"><b>HTML in the integrated browser</b> — open it from the editor header, the file-tree context menu, or inline references in chat. <span class="sub">Apps that need a build step (Vite, React, etc.) can't render from a local file, so a &ldquo;start the dev server&rdquo; hint is shown. Detection degrades gracefully even on CLIs that don't implement <code>agents.discover</code>.</span></span></li>
+        <li><span class="ja"><b>チャット画像のコピー</b> — 画像の右クリックで「画像をコピー」。サムネイルとビューアーの両方に対応。</span><span class="en"><b>Copy chat images</b> — right-click an image and choose &ldquo;Copy image.&rdquo; Works in both the thumbnail and the viewer.</span></li>
+      </ul>
+    </div>
+    <div class="cl-panel">
+      <h3><span class="badge b-imp">Changed</span><span class="ja"> 変更</span></h3>
+      <ul class="cl-list" style="--mk:var(--gh-accent)">
+        <li><span class="ja"><b>ドラフト PR のフルパネル化</b> — Agent Merge と「Ready for review」に同じ場所からアクセス。</span><span class="en"><b>Draft PRs get the full panel</b> — reach Agent Merge and &ldquo;Ready for review&rdquo; from the same place.</span></li>
+        <li><span class="ja"><b>返信の引用（Quote in reply）</b> — 既存の下書き末尾に追記し、インラインコードや書式を保持。<code>Cmd+Shift+'</code> に対応し、引用の次行にカーソルを配置。</span><span class="en"><b>Quote in reply</b> — appends to the end of an existing draft, preserving inline code and formatting. Bound to <code>Cmd+Shift+'</code>, with the cursor placed on the line after the quote.</span></li>
+        <li><span class="ja"><b>テーマピッカーのアクセシビリティ</b> — 矢印キーで移動、Enter / Space で適用、Escape で既定に戻す。選択したテーマ名を支援技術に読み上げ。</span><span class="en"><b>Accessible theme picker</b> — move with the arrow keys, apply with Enter / Space, and reset to default with Escape. The selected theme name is announced to assistive technology.</span></li>
+        <li><span class="ja"><b>Issue テンプレート追従</b> — 見出し・セクション・HTML コメントを保持したまま生成。</span><span class="en"><b>Follows issue templates</b> — generates issues while preserving headings, sections, and HTML comments.</span></li>
+      </ul>
+    </div>
+  </div>
+  <div class="cl-panel" style="margin-top:18px">
+    <h3><span class="badge b-fix">Fixed</span><span class="ja"> 修正</span></h3>
+    <ul class="cl-list" style="--mk:var(--gh-done);columns:2;column-gap:28px">
+      <li><span class="ja">デフォルトブランチのリモート改名による、数百ファイルの幻の差分を修正。</span><span class="en">Fixed a phantom diff of hundreds of files caused by renaming the default branch on the remote.</span></li>
+      <li><span class="ja">Windows で Alt+Tab 後にチャット入力欄がフォーカスを失う問題を修正。</span><span class="en">Fixed the chat input losing focus after Alt+Tab on Windows.</span></li>
+      <li><span class="ja">Windows でリサイズハンドルがスクロールバーに重なりクリックできない問題を修正。</span><span class="en">Fixed a resize handle overlapping the scrollbar and blocking clicks on Windows.</span></li>
+      <li><span class="ja">未コミットの設定ファイルでは「Open on GitHub」を隠し、「Reveal in file manager」を表示。</span><span class="en">For uncommitted config files, hide &ldquo;Open on GitHub&rdquo; and show &ldquo;Reveal in file manager&rdquo; instead.</span></li>
+      <li><span class="ja">Settings のセクション移動時に、見出しへ確実にフォーカスを移動。</span><span class="en">Reliably move focus to the heading when navigating between Settings sections.</span></li>
+      <li><span class="ja">Windows のトレイがメインアイコンを使用し、明暗どちらのタスクバーでもコントラストを確保。</span><span class="en">The Windows tray now uses the main icon, keeping good contrast on both light and dark taskbars.</span></li>
+      <li><span class="ja">Markdown をエディターで開いた際の無害な自動書き換え（アンダースコアのエスケープ等）を防止。</span><span class="en">Prevent harmless auto-rewrites (such as escaping underscores) when opening Markdown in the editor.</span></li>
+    </ul>
+  </div>
+</section>
+<section id="about">
+  <div class="sec-head">
+    <div class="eyebrow">Overview</div>
+    <h2><span class="ja">GitHub Copilot App とは</span><span class="en">What is the GitHub Copilot App?</span></h2>
+    <p><span class="ja">アイデアからプルリクエストまで、GitHub リポジトリ全体のソフトウェア作業を「見つけ・実行し・操縦し・着地させる」ためのエージェントネイティブなデスクトップ体験です。</span><span class="en">An agent-native desktop experience for finding, running, steering, and landing software work across your entire GitHub repository &mdash; from idea to pull request.</span></p>
+  </div>
+  <p style="max-width:840px;color:var(--gh-text-muted);font-size:16.5px"><span class="ja">ターミナル・エディター・ブラウザータブ・GitHub のページを絶えず行き来することなく、着手すべき作業の発見、エージェントの起動と操縦、進捗のレビュー、変更の着地までを<b style="color:var(--gh-text)">単一のコントロールセンター</b>で完結できます。VS Code の拡張機能ではなく、<b style="color:var(--gh-text)">複数のエージェントを並列に扱う</b>ために設計された独立したデスクトップアプリです。各セッションは分離された Git worktree で動くため、バグ調査・Issue 実装・レビュー対応を互いに衝突させずに同時進行できます。</span><span class="en">Without constantly switching between terminals, editors, browser tabs, and GitHub pages, you can discover the work to pick up, launch and steer agents, review progress, and land changes &mdash; all from a <b style="color:var(--gh-text)">single control center</b>. It is not a VS Code extension; it is a standalone desktop app designed to <b style="color:var(--gh-text)">run multiple agents in parallel</b>. Because each session runs in an isolated Git worktree, you can investigate bugs, implement issues, and address reviews at the same time without them colliding.</span></p>
+  <div class="hl-grid" style="margin-top:26px">
+    <div class="hl-card"><span class="badge b-imp">Sessions</span><h3><span class="ja">並列エージェント開発</span><span class="en">Parallel agent development</span></h3><p><span class="ja">各ローカルセッションは独立した worktree で実行。クラウドセッションなら GitHub ホストの隔離環境で作業を継続できます。</span><span class="en">Each local session runs in its own worktree; cloud sessions continue the work in a GitHub-hosted, isolated environment.</span></p></div>
+    <div class="hl-card"><span class="badge b-imp">Canvas</span><h3><span class="ja">検査可能な作業サーフェス</span><span class="en">An inspectable work surface</span></h3><p><span class="ja">プラン、PR、ターミナル、ブラウザー、デプロイ、ダッシュボードを人とエージェントが双方向に編集できます。</span><span class="en">People and agents can edit plans, PRs, terminals, browsers, deployments, and dashboards together, in both directions.</span></p></div>
+    <div class="hl-card"><span class="badge b-imp">My Work</span><h3><span class="ja">作業の司令塔</span><span class="en">Your command center</span></h3><p><span class="ja">アクティブなセッション・Issue・PR・自動化を横断的に俯瞰し、次に注力すべき作業を判断できます。</span><span class="en">Get a cross-cutting overview of active sessions, issues, PRs, and automations to decide what to focus on next.</span></p></div>
+  </div>
+  <div class="note">
+    <svg height="16" viewBox="0 0 16 16" width="16" aria-hidden="true"><path d="M0 8a8 8 0 1116 0A8 8 0 010 8Zm8-6.5a6.5 6.5 0 100 13 6.5 6.5 0 000-13ZM6.5 7.75A.75.75 0 017.25 7h1a.75.75 0 01.75.75v2.75h.25a.75.75 0 010 1.5h-2a.75.75 0 010-1.5h.25v-2h-.25a.75.75 0 01-.75-.75ZM8 6a1 1 0 100-2 1 1 0 000 2Z"></path></svg>
+    <div><span class="ja"><b>Technical Preview として提供中。</b> 有料の Copilot Pro / Pro+ / Max / Business / Enterprise プランで利用できます。本ページは公式チェンジログ・README・GitHub Blog（Microsoft Build 2026 発表）に基づく解説です。</span><span class="en"><b>Available as a Technical Preview.</b> It is included with the paid Copilot Pro / Pro+ / Max / Business / Enterprise plans. This page is based on the official changelog, the README, and the GitHub Blog (announced at Microsoft Build 2026).</span></div>
+  </div>
+</section>
+<section id="features">
+  <div class="sec-head">
+    <div class="eyebrow">All Features</div>
+    <h2><span class="ja">全機能ガイド</span><span class="en">All features</span></h2>
+    <p><span class="ja">Copilot App と、その土台となる一つのエージェントランタイムが提供する機能を、領域別に詳しく解説します。ターミナル・クラウド・自分のツールまで、同じ基盤の上で動作します。</span><span class="en">A detailed, area-by-area guide to what the Copilot App and the single agent runtime beneath it provide. From the terminal to the cloud to your own tools, everything runs on the same foundation.</span></p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat" style="--accent:var(--gh-accent)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M1.75 0h12.5C15.216 0 16 .784 16 1.75v12.5A1.75 1.75 0 0 1 14.25 16H1.75A1.75 1.75 0 0 1 0 14.25V1.75C0 .784.784 0 1.75 0ZM1.5 1.75v12.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V1.75a.25.25 0 0 0-.25-.25H1.75a.25.25 0 0 0-.25.25Zm7 2.5a.75.75 0 0 1 1.5 0v6.5a.75.75 0 0 1-1.5 0Zm-4 1a.75.75 0 0 1 1.5 0v5.5a.75.75 0 0 1-1.5 0Zm8 1a.75.75 0 0 1 1.5 0v3.5a.75.75 0 0 1-1.5 0Z"></path></svg></div>
+      <h3><span class="ja">My Work（マイワーク）</span><span class="en">My Work</span></h3>
+      <p><span class="ja">接続したすべてのリポジトリを横断し、進行中のセッション・Issue・プルリクエスト・バックグラウンド自動化を一つのビューで俯瞰。次に注力すべき作業を判断できる、アプリの中心となるダッシュボードです。</span><span class="en">A single view across every connected repository showing in-progress sessions, issues, pull requests, and background automations. The app's central dashboard for deciding what to work on next.</span></p>
+    </div>
+    <div class="feat" style="--accent:var(--gh-success)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M9.5 3.25a2.25 2.25 0 1 1 3 2.122V6A2.5 2.5 0 0 1 10 8.5H6a1 1 0 0 0-1 1v1.128a2.251 2.251 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.5 0v1.836A2.493 2.493 0 0 1 6 7h4a1 1 0 0 0 1-1v-.628A2.25 2.25 0 0 1 9.5 3.25Zm-6 0a.75.75 0 1 0 1.5 0 .75.75 0 0 0-1.5 0Zm8.25-.75a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5ZM4.25 12a.75.75 0 1 0 0 1.5.75.75 0 0 0 0-1.5Z"></path></svg></div>
+      <h3><span class="ja">並列エージェント開発</span><span class="en">Parallel agent development</span></h3>
+      <p><span class="ja">各ローカルセッションは、ブランチの実コピーである独立した Git worktree で実行されます。worktree の作成・切り替え・後始末はアプリが自動処理。ブランチやファイルが衝突することなく、複数のエージェントを同時に走らせられます。</span><span class="en">Each local session runs in its own Git worktree &mdash; a real copy of the branch. The app creates, switches, and cleans up worktrees automatically, so you can run several agents at once without branch or file conflicts.</span></p>
+    </div>
+    <div class="feat" style="--accent:var(--gh-done)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 0a8 8 0 1 0 0 16A8 8 0 0 0 8 0ZM1.543 6.5H4.6a10.415 10.415 0 0 1 .965-3.532A6.517 6.517 0 0 0 1.543 6.5Zm0 3a6.517 6.517 0 0 0 4.022 3.532A10.415 10.415 0 0 1 4.6 9.5H1.543ZM8 14.5c.35 0 .98-.385 1.554-1.632.246-.533.442-1.155.579-1.868H5.867c.137.713.333 1.335.58 1.868C7.02 14.115 7.65 14.5 8 14.5Zm2.435-1.968A10.415 10.415 0 0 0 11.4 9.5h3.057a6.517 6.517 0 0 1-4.022 3.532ZM14.457 6.5H11.4a10.415 10.415 0 0 0-.965-3.532A6.517 6.517 0 0 1 14.457 6.5ZM8 1.5c-.35 0-.98.385-1.554 1.632-.246.533-.442 1.155-.579 1.868h4.266c-.137-.713-.333-1.335-.58-1.868C8.98 1.885 8.35 1.5 8 1.5Z"></path></svg></div>
+      <h3><span class="ja">クラウドセッション</span><span class="en">Cloud sessions</span></h3>
+      <p><span class="ja">GitHub がホストする分離環境でエージェントが作業を継続。どのデバイスからでもセッションを引き継ぎ、リモートで操作できます。ローカルのリソース制約に縛られません。</span><span class="en">Agents keep working in a GitHub-hosted, isolated environment. Pick up a session from any device and drive it remotely, free of local resource limits.</span></p>
+    </div>
+    <div class="feat" style="--accent:var(--gh-accent)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25Zm1.75-.25a.25.25 0 0 0-.25.25V4h13V2.75a.25.25 0 0 0-.25-.25Zm12.75 3H1.5v7.75c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25Z"></path></svg></div>
+      <h3><span class="ja">Canvas（キャンバス）</span><span class="en">Canvas</span></h3>
+      <p><span class="ja">人とエージェントの双方向作業サーフェス。プラン・PR・ブラウザー・ターミナル・デプロイ・ダッシュボード・ワークフロー状態を表示します。エージェントが作業中に更新し、開発者はその場で編集・並べ替え・承認・軌道修正が可能。AX（Agent Experience）の第一歩です。</span><span class="en">A two-way work surface for people and agents. It shows plans, PRs, browsers, terminals, deployments, dashboards, and workflow state. Agents update it as they work, and developers can edit, reorder, approve, and course-correct right there &mdash; a first step toward AX (Agent Experience).</span></p>
+    </div>
+    <div class="feat" style="--accent:var(--gh-attention)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM1.5 8a6.5 6.5 0 1 0 13 0 6.5 6.5 0 0 0-13 0Zm7-3.25v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5a.75.75 0 0 1 1.5 0Z"></path></svg></div>
+      <h3><span class="ja">Automations（自動化）</span><span class="en">Automations</span></h3>
+      <p><span class="ja">繰り返しのプロンプトやワークフローを、スケジュール実行やバックグラウンドタスクへ変換します。v1.0.11 からはカスタム CRON 式に対応。</span><span class="en">Turn repetitive prompts and workflows into scheduled runs and background tasks. Custom CRON expressions are supported since v1.0.11.</span></p>
+      <ul>
+        <li><span class="ja">スケジュール / GitHub イベント駆動の実行</span><span class="en">Scheduled or GitHub-event-driven runs</span></li>
+        <li><span class="ja">カスタム CRON 式（例: 平日 15 分ごと）</span><span class="en">Custom CRON expressions (e.g. every 15 minutes on weekdays)</span></li>
+        <li><span class="ja">ローカル / クラウドのプロバイダーモデルに対応</span><span class="en">Works with local or cloud provider models</span></li>
+      </ul>
+    </div>
+    <div class="feat" style="--accent:var(--gh-success)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M5.45 5.154A4.25 4.25 0 0 0 9.25 7.5h1.378a2.251 2.251 0 1 1 0 1.5H9.25A5.734 5.734 0 0 1 5 7.123v3.505a2.25 2.25 0 1 1-1.5 0V5.372a2.25 2.25 0 1 1 1.95-.218ZM4.25 13.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5Zm8.5-4.5a.75.75 0 1 0 0-1.5.75.75 0 0 0 0 1.5ZM5 3.25a.75.75 0 1 0-1.5 0 .75.75 0 0 0 1.5 0Z"></path></svg></div>
+      <h3>Agent Merge</h3>
+      <p><span class="ja">プルリクエストをレビュー・チェック・マージ条件の充足まで運びます。CI を監視し、必須レビュアーを追跡し、失敗チェックに対処。どこまで任せるかは利用者が選択します。</span><span class="en">Carries a pull request through review, checks, and the merge conditions. It watches CI, tracks required reviewers, and addresses failing checks. You choose how much to delegate.</span></p>
+      <ul>
+        <li><span class="ja">CI をグリーンに戻す</span><span class="en">Get CI back to green</span></li>
+        <li><span class="ja">レビューコメントへの対応</span><span class="en">Respond to review comments</span></li>
+        <li><span class="ja">条件を満たしたら自動マージ</span><span class="en">Auto-merge once conditions are met</span></li>
+      </ul>
+    </div>
+    <div class="feat" style="--accent:var(--gh-done)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M7.467.133a1.748 1.748 0 0 1 1.066 0l5.25 1.68A1.75 1.75 0 0 1 15 3.48V7c0 1.566-.32 3.182-1.303 4.682-.983 1.498-2.585 2.813-5.032 3.855a1.697 1.697 0 0 1-1.33 0c-2.447-1.042-4.049-2.357-5.032-3.855C1.32 10.182 1 8.566 1 7V3.48a1.75 1.75 0 0 1 1.217-1.667Zm.61 1.429a.25.25 0 0 0-.153 0l-5.25 1.68a.25.25 0 0 0-.174.238V7c0 1.358.275 2.666 1.057 3.86.784 1.194 2.121 2.34 4.366 3.297a.196.196 0 0 0 .154 0c2.245-.956 3.582-2.104 4.366-3.298C13.225 9.666 13.5 8.36 13.5 7V3.48a.251.251 0 0 0-.174-.237l-5.25-1.68Z"></path></svg></div>
+      <h3><span class="ja">クラウド / ローカル サンドボックス</span><span class="en">Cloud / local sandboxes</span></h3>
+      <p><span class="ja">エージェントが本番環境に触れずにコードを実行・検証できる、境界のある実行場所を提供します。</span><span class="en">Bounded places where agents can run and verify code without touching production.</span></p>
+      <ul>
+        <li><span class="ja"><b>ローカル:</b> ファイルシステム・ネットワーク・システム機能を制限した分離環境。ポリシーを集中管理・強制。</span><span class="en"><b>Local:</b> an isolated environment with restricted filesystem, network, and system access, with policies managed and enforced centrally.</span></li>
+        <li><span class="ja"><b>クラウド:</b> GitHub がホストする完全分離の ephemeral な Linux 環境。組織がポリシーを定義。</span><span class="en"><b>Cloud:</b> a fully isolated, ephemeral Linux environment hosted by GitHub, with policies defined by your organization.</span></li>
+      </ul>
+    </div>
+    <div class="feat" style="--accent:var(--gh-accent)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 2c1.981 0 3.671.992 4.933 2.078 1.27 1.091 2.187 2.345 2.637 3.023a1.62 1.62 0 0 1 0 1.798c-.45.677-1.367 1.931-2.637 3.022C11.67 13.008 9.981 14 8 14c-1.981 0-3.671-.992-4.933-2.078C1.797 10.83.88 9.576.43 8.898a1.62 1.62 0 0 1 0-1.798c.45-.677 1.367-1.931 2.637-3.022C4.33 2.992 6.019 2 8 2ZM8 5.5a2.5 2.5 0 1 0 0 5 2.5 2.5 0 0 0 0-5Z"></path></svg></div>
+      <h3><span class="ja">Copilot コードレビュー</span><span class="en">Copilot code review</span></h3>
+      <p><span class="ja">エージェント的なレビューがノイズをフィルタし、重要な箇所に集中できるようにします。</span><span class="en">Agentic review filters out the noise so you can focus on what matters.</span></p>
+      <ul>
+        <li><span class="ja"><b>medium tier</b>（高推論モデル）で精度と再現性を向上</span><span class="en"><b>Medium tier</b> (a higher-reasoning model) improves accuracy and reproducibility</span></li>
+        <li><span class="ja"><code>/security-review</code> でセキュリティ特化レビュー</span><span class="en"><code>/security-review</code> for a security-focused pass</span></li>
+        <li><span class="ja"><code>/rubberduck</code>（GA）で複数モデルによる実装批評</span><span class="en"><code>/rubberduck</code> (GA) critiques your implementation using multiple models</span></li>
+        <li><span class="ja">Azure DevOps にもネイティブ対応</span><span class="en">Native Azure DevOps support too</span></li>
+      </ul>
+    </div>
+    <div class="feat" style="--accent:var(--gh-success)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="m8.878.392 5.25 3.045c.54.314.872.89.872 1.514v6.098a1.75 1.75 0 0 1-.872 1.514l-5.25 3.045a1.75 1.75 0 0 1-1.756 0l-5.25-3.045A1.75 1.75 0 0 1 1 11.049V4.951c0-.624.332-1.201.872-1.514L7.122.392a1.75 1.75 0 0 1 1.756 0ZM7.875 1.69l-4.63 2.685L8 7.133l4.755-2.758-4.63-2.685a.248.248 0 0 0-.25 0ZM2.5 5.677v5.372c0 .09.047.171.125.216l4.625 2.683V8.432Zm6.25 8.271 4.625-2.683a.25.25 0 0 0 .125-.216V5.677L8.75 8.432Z"></path></svg></div>
+      <h3>Copilot SDK</h3>
+      <p><span class="ja">アプリを動かすのと同じエージェントランタイムを公開。内製の解析ツール、リリースノート生成、サポート業務に組み込むエージェントなどを、独自スタックを組まずに構築できます。</span><span class="en">Exposes the same agent runtime that powers the app. Build in-house analysis tools, release-note generation, agents embedded in support workflows, and more &mdash; without assembling your own stack.</span></p>
+      <ul>
+        <li><span class="ja">Node.js / TypeScript・Python・Go・.NET・Rust・Java で一般提供（GA）</span><span class="en">Generally available (GA) for Node.js / TypeScript, Python, Go, .NET, Rust, and Java</span></li>
+        <li><span class="ja">「一つのランタイム、多数のサーフェス」</span><span class="en">&ldquo;One runtime, many surfaces&rdquo;</span></li>
+      </ul>
+    </div>
+    <div class="feat" style="--accent:var(--gh-done)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v10.5A1.75 1.75 0 0 1 14.25 15H1.75A1.75 1.75 0 0 1 0 13.25Zm1.75-.25a.25.25 0 0 0-.25.25v10.5c0 .138.112.25.25.25h12.5a.25.25 0 0 0 .25-.25V2.75a.25.25 0 0 0-.25-.25ZM7.25 8a.75.75 0 0 1-.22.53l-2.25 2.25a.75.75 0 0 1-1.06-1.06L5.44 8 3.72 6.28a.75.75 0 0 1 1.06-1.06l2.25 2.25c.141.14.22.331.22.53Zm1.5 1.5h3a.75.75 0 0 1 0 1.5h-3a.75.75 0 0 1 0-1.5Z"></path></svg></div>
+      <h3>Copilot CLI</h3>
+      <p><span class="ja">ターミナル派のために再設計された、同じ基盤の上で動くコマンドライン体験です。</span><span class="en">A command-line experience redesigned for terminal fans, running on the same foundation.</span></p>
+      <ul>
+        <li><span class="ja">再設計された TUI（<code>/experimental</code> で PR・Issue・gist にタブアクセス）</span><span class="en">A redesigned TUI (tabbed access to PRs, issues, and gists via <code>/experimental</code>)</span></li>
+        <li><span class="ja">音声モード（オンデバイス音声認識で音声は端末外に出ない）</span><span class="en">Voice mode (on-device speech recognition keeps audio on your machine)</span></li>
+        <li><span class="ja"><code>/every</code> で定期プロンプト・バックグラウンドタスクをスケジュール</span><span class="en">Schedule recurring prompts and background tasks with <code>/every</code></span></li>
+      </ul>
+    </div>
+    <div class="feat" style="--accent:var(--gh-attention)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 1.5c-2.363 0-4 1.69-4 3.75 0 .984.424 1.625.984 2.304l.214.253c.223.264.47.556.673.848.284.411.537.896.621 1.49a.75.75 0 0 1-1.484.211c-.04-.282-.163-.547-.37-.847a8.456 8.456 0 0 0-.542-.68c-.084-.1-.173-.205-.268-.32C3.201 7.75 2.5 6.766 2.5 5.25 2.5 2.31 4.863 0 8 0s5.5 2.31 5.5 5.25c0 1.516-.701 2.5-1.318 3.184-.095.115-.184.22-.268.32-.207.245-.383.463-.541.68-.208.3-.33.565-.37.847a.751.751 0 0 1-1.485-.212c.084-.593.337-1.078.621-1.489.203-.292.45-.584.673-.848.075-.088.147-.173.213-.253.561-.679.985-1.32.985-2.304 0-2.06-1.637-3.75-4-3.75ZM5.75 12h4.5a.75.75 0 0 1 0 1.5h-4.5a.75.75 0 0 1 0-1.5ZM6 15.25a.75.75 0 0 1 .75-.75h2.5a.75.75 0 0 1 0 1.5h-2.5a.75.75 0 0 1-.75-.75Z"></path></svg></div>
+      <h3><span class="ja">クラウドエージェント</span><span class="en">Cloud agent</span></h3>
+      <p><span class="ja">スケジュール実行、GitHub イベントへの応答、Issue の起票、コメントまで対応。既定では各書き込み操作の前に許可を求め、信頼が築けたら autopilot へ切り替えられます。</span><span class="en">Runs on a schedule, responds to GitHub events, files issues, and comments. By default it asks permission before each write action; once you trust it, switch to autopilot.</span></p>
+    </div>
+    <div class="feat" style="--accent:var(--gh-accent)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="m.427 1.927 1.215 1.215a8.002 8.002 0 1 1-1.6 5.685.75.75 0 1 1 1.493-.154 6.5 6.5 0 1 0 1.18-4.458l1.358 1.358A.25.25 0 0 1 4.297 6H.25A.25.25 0 0 1 0 5.75V1.704a.25.25 0 0 1 .427-.177ZM7.75 4a.75.75 0 0 1 .75.75v2.992l2.028.812a.75.75 0 0 1-.557 1.392l-2.5-1A.751.751 0 0 1 7 8.25v-3.5A.75.75 0 0 1 7.75 4Z"></path></svg></div>
+      <h3><span class="ja">Memory++ と /chronicle</span><span class="en">Memory++ and /chronicle</span></h3>
+      <p><span class="ja">デバイスと時間をまたいだ継続性を提供。アプリ・CLI・VS Code・GitHub.com で開始したセッションのコンテキストを、横断的に照会できます。</span><span class="en">Continuity across devices and time. Query context across sessions started in the app, the CLI, VS Code, and GitHub.com.</span></p>
+    </div>
+    <div class="feat" style="--accent:var(--gh-success)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 0a.75.75 0 0 1 .671.415l.792 1.736 1.736.792a.75.75 0 0 1 0 1.342l-1.736.792-.792 1.736a.75.75 0 0 1-1.342 0l-.792-1.736-1.736-.792a.75.75 0 0 1 0-1.342l1.736-.792.792-1.736A.75.75 0 0 1 8 0Zm4.5 8a.75.75 0 0 1 .671.415l.396.868.868.396a.75.75 0 0 1 0 1.342l-.868.396-.396.868a.75.75 0 0 1-1.342 0l-.396-.868-.868-.396a.75.75 0 0 1 0-1.342l.868-.396.396-.868A.75.75 0 0 1 12.5 8ZM4 9a.75.75 0 0 1 .671.415l.192.421.421.192a.75.75 0 0 1 0 1.342l-.421.192-.192.421a.75.75 0 0 1-1.342 0l-.192-.421-.421-.192a.75.75 0 0 1 0-1.342l.421-.192.192-.421A.75.75 0 0 1 4 9Z"></path></svg></div>
+      <h3><span class="ja">パートナーエージェントアプリ</span><span class="en">Partner agent apps</span></h3>
+      <p><span class="ja">サードパーティのエージェントアプリが Copilot と統合し、タスクの自動化・コード生成・コンテキスト分析・アクション実行を実現。Issue を各エージェントにアサインできます。</span><span class="en">Third-party agent apps integrate with Copilot to automate tasks, generate code, analyze context, and take actions. You can assign issues to individual agents.</span></p>
+      <ul>
+        <li><span class="ja">LaunchDarkly・Sonar・PagerDuty・Miro・Amplitude・Endor Labs・Octopus Deploy ほか</span><span class="en">LaunchDarkly, Sonar, PagerDuty, Miro, Amplitude, Endor Labs, Octopus Deploy, and more</span></li>
+      </ul>
+    </div>
+    <div class="feat" style="--accent:var(--gh-done)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 0a8.2 8.2 0 0 1 .701.031C9.444.095 9.99.645 10.16 1.29l.288 1.107c.018.066.079.158.212.224.231.114.454.243.668.386.123.082.233.09.299.071l1.103-.303c.644-.176 1.392.021 1.82.63.27.385.506.792.704 1.218.315.675.111 1.422-.364 1.891l-.814.806c-.049.048-.098.147-.088.294.016.257.016.515 0 .772-.01.147.039.246.088.294l.814.806c.475.469.679 1.216.364 1.891a7.977 7.977 0 0 1-.704 1.217c-.428.61-1.176.807-1.82.63l-1.103-.303c-.066-.019-.176-.011-.299.071a4.909 4.909 0 0 1-.668.386c-.133.066-.194.158-.212.224l-.288 1.107c-.17.646-.716 1.196-1.459 1.26a8.006 8.006 0 0 1-1.402 0c-.743-.064-1.289-.614-1.459-1.26l-.288-1.107c-.018-.066-.079-.158-.212-.224a4.909 4.909 0 0 1-.668-.386c-.123-.082-.233-.09-.299-.071l-1.103.303c-.644.176-1.392-.021-1.82-.63a7.977 7.977 0 0 1-.704-1.217c-.315-.675-.111-1.422.364-1.891l.814-.806c.049-.048.098-.147.088-.294a6.214 6.214 0 0 1 0-.772c-.01-.147-.039-.246-.088-.294l-.814-.806C.635 6.045.431 5.298.746 4.623a7.92 7.92 0 0 1 .704-1.217c.428-.61 1.176-.807 1.82-.63l1.103.303c.066.019.176.011.299-.071.214-.143.437-.272.668-.386.133-.066.194-.158.212-.224l.288-1.107C6.71.645 7.256.095 8 .031 8.233.01 8.466 0 8.7 0Z"></path></svg></div>
+      <h3><span class="ja">拡張性（MCP / Skills / Plugins）</span><span class="en">Extensibility (MCP / Skills / Plugins)</span></h3>
+      <p><span class="ja">MCP サーバー接続、カスタムエージェントスキル、プラグインマーケットプレイス、そして gist で共有できる拡張機能（Canvas 拡張を含む）により、自分の標準・社内システム・エンジニアリング文脈をレビューやエージェントに反映できます。</span><span class="en">MCP server connections, custom agent skills, a plugin marketplace, and gist-shareable extensions (including Canvas extensions) let you bring your own standards, internal systems, and engineering context into reviews and agents.</span></p>
+    </div>
+    <div class="feat" style="--accent:var(--gh-accent)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M1.75 1h8.5c.966 0 1.75.784 1.75 1.75v5.5A1.75 1.75 0 0 1 10.25 10H7.061l-2.574 2.573A1.458 1.458 0 0 1 2 11.543V10h-.25A1.75 1.75 0 0 1 0 8.25v-5.5C0 1.784.784 1 1.75 1ZM14.5 4.75a.75.75 0 0 1 1.5 0v5.5A1.75 1.75 0 0 1 14.25 12H14v1.543a1.458 1.458 0 0 1-2.487 1.03L9.22 12.28a.749.749 0 1 1 1.06-1.06l2.22 2.22V11.25a.75.75 0 0 1 .75-.75h1a.25.25 0 0 0 .25-.25Z"></path></svg></div>
+      <h3><span class="ja">Chats（旧 Quick Chats）</span><span class="en">Chats (formerly Quick Chats)</span></h3>
+      <p><span class="ja">リポジトリを選ばずにチャットセッションを開始。ツール承認コマンド（<code>/yolo</code>、<code>/allow-all-tools</code> など）やセッションのフォークにも対応し、コードセッションと同等の機能を備えます。</span><span class="en">Start a chat session without picking a repository. It supports tool-approval commands (<code>/yolo</code>, <code>/allow-all-tools</code>, etc.) and session forking, with the same capabilities as a code session.</span></p>
+    </div>
+  </div>
+</section>
+<section id="modes">
+  <div class="sec-head">
+    <div class="eyebrow">Session Modes</div>
+    <h2><span class="ja">セッションモード</span><span class="en">Session modes</span></h2>
+    <p><span class="ja">プロンプト作成欄の枠線・フォーカスリング・送信ボタンの色は、現在のモードに応じて変化します（v1.0.11 以降）。作業の任せ方を場面ごとに切り替えられます。</span><span class="en">The composer's border, focus ring, and send-button color change with the current mode (since v1.0.11), so you can adjust how much you delegate for each situation.</span></p>
+  </div>
+  <div class="mode-grid">
+    <div class="mode" style="--mc:var(--gh-text-muted)"><h4><span class="sw"></span><span class="ja">Interactive（対話）</span><span class="en">Interactive</span></h4><p><span class="ja">1 ステップずつ確認しながら進める標準モード。色はニュートラル。</span><span class="en">The standard mode: proceed one step at a time with confirmation. Neutral color.</span></p></div>
+    <div class="mode" style="--mc:var(--gh-accent)"><h4><span class="sw"></span><span class="ja">Plan（計画）</span><span class="en">Plan</span></h4><p><span class="ja">実装前に計画を立て、承認を得てから進行します。色は青。</span><span class="en">Draw up a plan before implementing and proceed once it is approved. Blue.</span></p></div>
+    <div class="mode" style="--mc:var(--gh-success)"><h4><span class="sw"></span><span class="ja">Autopilot（自動運転）</span><span class="en">Autopilot</span></h4><p><span class="ja">承認を挟まず、自律的にタスクを実行します。色は緑。</span><span class="en">Executes tasks autonomously without pausing for approval. Green.</span></p></div>
+    <div class="mode" style="--mc:var(--gh-attention)"><h4><span class="sw"></span><span class="ja">Shell（シェル）</span><span class="en">Shell</span></h4><p><span class="ja">ターミナルコマンド中心の操作を行います。色はオレンジ。</span><span class="en">Centered on terminal commands. Orange.</span></p></div>
+  </div>
+  <div style="margin-top:32px">
+    <h3 style="margin-bottom:10px"><span class="ja">アクセシビリティ</span><span class="en">Accessibility</span></h3>
+    <p style="color:var(--gh-text-muted);max-width:840px;font-size:15.5px"><span class="ja">スクリーンリーダーはセッションやチャットのエージェント活動（返信・ツール呼び出し・CLI コマンド）を読み上げ、<code style="background:var(--gh-canvas-inset);padding:1px 6px;border-radius:5px">Settings &gt; Accessibility</code> でカテゴリ別にトグルできます。チャットの記録は見出しナビゲーションでメッセージ単位に移動でき（各メッセージを「You said:」「Copilot said:」と読み上げ）、テーマピッカーや検索結果の件数も支援技術に伝えられます。</span><span class="en">Screen readers announce agent activity in sessions and chats (replies, tool calls, CLI commands), and you can toggle it by category under <code style="background:var(--gh-canvas-inset);padding:1px 6px;border-radius:5px">Settings &gt; Accessibility</code>. Chat transcripts support heading navigation to move message by message (each is announced as &ldquo;You said:&rdquo; / &ldquo;Copilot said:&rdquo;), and the theme picker and search result counts are conveyed to assistive technology as well.</span></p>
+  </div>
+</section>
+<section id="setup">
+  <div class="sec-head">
+    <div class="eyebrow">Get Started</div>
+    <h2><span class="ja">動作要件と導入</span><span class="en">Requirements &amp; setup</span></h2>
+    <p><span class="ja">主要 3 プラットフォームに対応し、有料の Copilot サブスクリプションで利用できます。</span><span class="en">Runs on the three major platforms and is available with a paid Copilot subscription.</span></p>
+  </div>
+  <div class="feat-grid">
+    <div class="feat" style="--accent:var(--gh-success)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0Zm3.78 5.97a.75.75 0 0 0-1.06 0L6.75 9.94 5.28 8.47a.75.75 0 0 0-1.06 1.06l2 2a.75.75 0 0 0 1.06 0l4.5-4.5a.75.75 0 0 0 0-1.06Z"></path></svg></div>
+      <h3><span class="ja">必要なもの</span><span class="en">What you need</span></h3>
+      <ul>
+        <li>Git</li>
+        <li><span class="ja">有効な有料 Copilot サブスクリプション</span><span class="en">An active paid Copilot subscription</span></li>
+        <li><span class="ja">対応プラン: Pro / Pro+ / Max / Business / Enterprise</span><span class="en">Supported plans: Pro / Pro+ / Max / Business / Enterprise</span></li>
+      </ul>
+    </div>
+    <div class="feat" style="--accent:var(--gh-accent)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M0 2.75C0 1.784.784 1 1.75 1h12.5c.966 0 1.75.784 1.75 1.75v8.5A1.75 1.75 0 0 1 14.25 13H1.75A1.75 1.75 0 0 1 0 11.25Zm5.5 11.5a.75.75 0 0 0 0 1.5h5a.75.75 0 0 0 0-1.5Z"></path></svg></div>
+      <h3><span class="ja">対応プラットフォーム</span><span class="en">Supported platforms</span></h3>
+      <ul>
+        <li><span class="ja">Windows（x64 / ARM64）</span><span class="en">Windows (x64 / ARM64)</span></li>
+        <li><span class="ja">macOS（Apple Silicon / Intel）</span><span class="en">macOS (Apple Silicon / Intel)</span></li>
+        <li><span class="ja">Linux（AppImage・x64）</span><span class="en">Linux (AppImage, x64)</span></li>
+      </ul>
+    </div>
+    <div class="feat" style="--accent:var(--gh-done)">
+      <div class="ico"><svg height="20" viewBox="0 0 16 16" width="20"><path d="M2.75 14A1.75 1.75 0 0 1 1 12.25v-2.5a.75.75 0 0 1 1.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 0 0 .25-.25v-2.5a.75.75 0 0 1 1.5 0v2.5A1.75 1.75 0 0 1 13.25 14Zm4.53-4.28a.75.75 0 0 0 1.06 0l3.25-3.25a.749.749 0 1 0-1.06-1.06L8.75 7.19V1.75a.75.75 0 0 0-1.5 0v5.44L5.03 5.41a.749.749 0 1 0-1.06 1.06Z"></path></svg></div>
+      <h3><span class="ja">入手方法</span><span class="en">How to get it</span></h3>
+      <p><span class="ja">公式の <a href="https://github.com/github/app" target="_blank" rel="noopener">github/app</a> リポジトリの Releases ページから、各プラットフォーム向けビルドをダウンロードできます。セットアップと最初のセッションの手順はドキュメントを参照してください。</span><span class="en">Download platform-specific builds from the Releases page of the official <a href="https://github.com/github/app" target="_blank" rel="noopener">github/app</a> repository. See the documentation for setup and your first session.</span></p>
+    </div>
+  </div>
+</section>
+<section id="history">
+  <div class="sec-head">
+    <div class="eyebrow">Release History</div>
+    <h2><span class="ja">バージョン履歴（v1.0.7 → v1.0.12）</span><span class="en">Version history (v1.0.7 &rarr; v1.0.12)</span></h2>
+    <p><span class="ja">直近のリリースで積み上げられてきた主な機能の変遷です。1 リリースごとに、並列開発・アクセシビリティ・自動化が着実に強化されています。</span><span class="en">How the main features have built up over recent releases. With each one, parallel development, accessibility, and automation have grown steadily stronger.</span></p>
+  </div>
+  <div class="tl">
+    <div class="tl-item now">
+      <div class="ver">v1.0.12 <span class="badge b-new" style="margin-left:6px"><span class="ja">最新</span><span class="en">Latest</span></span></div>
+      <ul>
+        <li><span class="ja">エージェントピッカーをチャット作成欄に追加</span><span class="en">Added an agent picker to the chat composer</span></li>
+        <li><span class="ja">HTML を統合ブラウザーで直接表示</span><span class="en">Open HTML directly in the integrated browser</span></li>
+        <li><span class="ja">ドラフト PR がフル PR パネルで開く</span><span class="en">Draft PRs open in the full PR panel</span></li>
+        <li><span class="ja">Issue 作成時にリポジトリのテンプレートへ追従</span><span class="en">Follow the repository's templates when creating issues</span></li>
+      </ul>
+    </div>
+    <div class="tl-item">
+      <div class="ver">v1.0.11</div>
+      <ul>
+        <li><span class="ja">ローカル自動化がカスタム CRON 式に対応</span><span class="en">Local automations support custom CRON expressions</span></li>
+        <li><span class="ja">スクリーンリーダーがエージェント活動を読み上げ</span><span class="en">Screen readers announce agent activity</span></li>
+        <li><span class="ja">Manage Sessions フィルターに「is not」除外を追加</span><span class="en">Added an &ldquo;is not&rdquo; exclusion to the Manage Sessions filter</span></li>
+        <li><span class="ja">モード別のカラー表示（対話 / 計画 / 自動運転 / シェル）</span><span class="en">Per-mode color cues (Interactive / Plan / Autopilot / Shell)</span></li>
+      </ul>
+    </div>
+    <div class="tl-item">
+      <div class="ver">v1.0.10</div>
+      <ul>
+        <li><span class="ja">オーケストレーターが子セッションの計画を承認 / 軌道修正</span><span class="en">The orchestrator approves / course-corrects child-session plans</span></li>
+        <li><span class="ja">拡張機能の gist 共有をコマンドパレットから</span><span class="en">Share extensions as gists from the command palette</span></li>
+        <li><span class="ja">「Quick Chat」を「Chat」へ名称変更</span><span class="en">Renamed &ldquo;Quick Chat&rdquo; to &ldquo;Chat&rdquo;</span></li>
+      </ul>
+    </div>
+    <div class="tl-item">
+      <div class="ver">v1.0.9</div>
+      <ul>
+        <li><span class="ja">Chats がツール承認コマンドとフォークに対応</span><span class="en">Chats gain tool-approval commands and forking</span></li>
+        <li><span class="ja">Usage &amp; Plan ページに現在のプラン名を表示</span><span class="en">The Usage &amp; Plan page shows your current plan name</span></li>
+        <li><span class="ja">入力待ちセッションに「？」アイコンを表示</span><span class="en">Sessions waiting for input show a &ldquo;?&rdquo; icon</span></li>
+      </ul>
+    </div>
+    <div class="tl-item">
+      <div class="ver">v1.0.8</div>
+      <ul>
+        <li><span class="ja">セッションが最後のモデル / 推論努力 / 長コンテキストを記憶</span><span class="en">Sessions remember the last model / reasoning effort / long context</span></li>
+        <li><span class="ja">チャット記録のメッセージ単位ナビゲーション</span><span class="en">Message-by-message navigation of chat transcripts</span></li>
+        <li><span class="ja">Changes パネルを常にツリー表示化</span><span class="en">The Changes panel always uses a tree view</span></li>
+      </ul>
+    </div>
+    <div class="tl-item">
+      <div class="ver">v1.0.7</div>
+      <ul>
+        <li><span class="ja">ホーム画面に「Quick chat」を追加</span><span class="en">Added &ldquo;Quick chat&rdquo; to the home screen</span></li>
+        <li><span class="ja">自動化の実行にトークン / クレジット使用量を表示</span><span class="en">Show token / credit usage for automation runs</span></li>
+        <li><span class="ja">macOS のトラフィックライトをネイティブ化</span><span class="en">Native macOS traffic-light buttons</span></li>
+      </ul>
+    </div>
+  </div>
+</section>
+</main>
+<footer>
+  <div class="f-in">
+    <h4><span class="ja">出典</span><span class="en">Sources</span></h4>
+    <div class="src">
+      <a href="https://github.com/github/app/blob/main/changelog.md" target="_blank" rel="noopener"><span class="ja">公式チェンジログ（github/app）</span><span class="en">Official changelog (github/app)</span></a>
+      <a href="https://github.com/github/app" target="_blank" rel="noopener">github/app README</a>
+      <a href="https://github.blog/news-insights/product-news/github-copilot-app-the-agent-native-desktop-experience/" target="_blank" rel="noopener">GitHub Blog: The agent-native desktop experience</a>
+    </div>
+    <div class="disc"><span class="ja">本ページは GitHub Copilot App v1.0.12 の公開情報（公式チェンジログ・README・GitHub Blog / Microsoft Build 2026 発表）に基づく非公式のまとめです。GitHub および Copilot は GitHub, Inc. の商標です。仕様は今後のリリースで変更される可能性があります。</span><span class="en">This page is an unofficial summary based on public information about GitHub Copilot App v1.0.12 (the official changelog, the README, and the GitHub Blog / announced at Microsoft Build 2026). GitHub and Copilot are trademarks of GitHub, Inc. Details may change in future releases.</span></div>
+  </div>
+</footer>
+<script>
+(function(){
+  var html=document.documentElement;
+  var themeBtn=document.getElementById('themeToggle');
+  var themeLabel=document.getElementById('themeLabel');
+  var langBtn=document.getElementById('langToggle');
+  var langLabel=document.getElementById('langLabel');
+  var L={
+    ja:{dark:'ダーク',light:'ライト',themeAria:'テーマ切り替え',lang:'EN',langAria:'Switch to English',title:'GitHub Copilot App v1.0.12 — 機能ガイド'},
+    en:{dark:'Dark',light:'Light',themeAria:'Toggle theme',lang:'日本語',langAria:'日本語に切り替え',title:'GitHub Copilot App v1.0.12 — Feature Guide'}
+  };
+  function lang(){return html.getAttribute('data-lang')==='en'?'en':'ja';}
+  function sync(){
+    var t=L[lang()];
+    var dark=html.getAttribute('data-theme')==='dark';
+    if(themeLabel)themeLabel.textContent=dark?t.light:t.dark;
+    if(themeBtn)themeBtn.setAttribute('aria-label',t.themeAria);
+    if(langLabel)langLabel.textContent=t.lang;
+    if(langBtn)langBtn.setAttribute('aria-label',t.langAria);
+    html.setAttribute('lang',lang());
+    document.title=t.title;
+  }
+  sync();
+  if(themeBtn)themeBtn.addEventListener('click',function(){html.setAttribute('data-theme',html.getAttribute('data-theme')==='dark'?'light':'dark');sync();});
+  if(langBtn)langBtn.addEventListener('click',function(){html.setAttribute('data-lang',lang()==='en'?'ja':'en');sync();});
+})();
+</script>
+</body>
+</html>
