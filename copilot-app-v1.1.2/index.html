@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Bilingual complete guide to GitHub Copilot App v1.1.2 and every change since v1.0.12.">
+<title>GitHub Copilot App v1.1.2 — Complete feature guide</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="./">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.2</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+<a href="releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+<a href="../copilot-app-v1.1.2-hands-on/"><span class="header-nav__label"><span class="ja" lang="ja">ハンズオン</span><span class="en" lang="en">Hands-on</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="feature-title">
+  <div class="hero__inner">
+    <p class="eyebrow">Current release · Published 2026-07-28</p>
+    <h1 id="feature-title">GitHub Copilot App <span class="mono">v1.1.2</span></h1>
+    <p class="lede"><span class="ja" lang="ja">アイデア、並列セッション、レビュー、CI、マージまでを一つのデスクトップ体験で管理する現在版の完全ガイドです。v1.0.12 から 17 リリース、462 件の公式変更を追跡しています。</span><span class="en" lang="en">A complete guide to the current desktop experience for managing ideas, parallel sessions, review, CI, and merge. It tracks 17 releases and 462 official changes since v1.0.12.</span></p>
+    <div class="hero-actions">
+      <a class="button button--primary" href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">21 ガイドで試す</span><span class="en" lang="en">Try 21 hands-on guides</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="releases.html"><span class="ja" lang="ja">全 462 項目を検索</span><span class="en" lang="en">Search all 462 items</span></a>
+      <a class="button" href="https://github.com/features/ai/github-app" rel="noopener noreferrer"><span class="ja" lang="ja">公式ダウンロード</span><span class="en" lang="en">Official download</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <section class="section" id="summary">
+    <div class="section-heading"><p class="eyebrow">Executive summary</p><h2><span class="ja" lang="ja">v1.0.12 から何が変わったか</span><span class="en" lang="en">What changed since v1.0.12</span></h2><p><span class="ja" lang="ja">単機能の追加だけでなく、並列作業の可視化、GitHub ライフサイクル、モデル選択、拡張性、アクセシビリティ、復旧性が段階的に成熟しました。</span><span class="en" lang="en">Beyond individual features, parallel-work visibility, the GitHub lifecycle, model choice, extensibility, accessibility, and recovery matured release by release.</span></p></div>
+    <div class="card-grid">
+      <article class="card">
+  <div class="card__top"><span class="eyebrow">17</span></div>
+  <h3><span class="ja" lang="ja">対象リリース</span><span class="en" lang="en">Covered releases</span></h3>
+  <p><span class="ja" lang="ja">v1.0.13 から v1.1.2。v1.0.23 の独立サイトは作らず、全差分を現在版に統合しています。</span><span class="en" lang="en">v1.0.13 through v1.1.2. There is no separate v1.0.23 site; the full delta is integrated here.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span class="eyebrow">66</span></div>
+  <h3><span class="ja" lang="ja">Added</span><span class="en" lang="en">Added</span></h3>
+  <p><span class="ja" lang="ja">新しいセッション、レビュー、フィルター、モデル、拡張、運用サーフェス。</span><span class="en" lang="en">New session, review, filter, model, extension, and operations surfaces.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span class="eyebrow">73</span></div>
+  <h3><span class="ja" lang="ja">Changed</span><span class="en" lang="en">Changed</span></h3>
+  <p><span class="ja" lang="ja">性能、レイアウト、ワークフロー、既定値、ポリシー判定を改善。</span><span class="en" lang="en">Improved performance, layout, workflows, defaults, and policy evaluation.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span class="eyebrow">322</span></div>
+  <h3><span class="ja" lang="ja">Fixed</span><span class="en" lang="en">Fixed</span></h3>
+  <p><span class="ja" lang="ja">安定性、アクセシビリティ、状態保持、差分、起動、クリップボードを継続修正。</span><span class="en" lang="en">Ongoing fixes for stability, accessibility, state persistence, diffs, startup, and clipboard behavior.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span class="eyebrow">1</span></div>
+  <h3><span class="ja" lang="ja">Removed</span><span class="en" lang="en">Removed</span></h3>
+  <p><span class="ja" lang="ja">公式 Removed は 1 件。完全な文言はリリースエクスプローラーで確認できます。</span><span class="en" lang="en">One official Removed item. See its exact wording in the release explorer.</span></p>
+  <div class="card-actions"><a class="button" href="releases.html?category=Removed"><span class="ja" lang="ja">全差分を確認</span><span class="en" lang="en">View the full delta</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+    </div>
+  </section>
+
+  <section class="section" id="new">
+    <div class="section-heading"><p class="eyebrow">What's new</p><h2><span class="ja" lang="ja">v1.1.2 の主要変更</span><span class="en" lang="en">Key changes in v1.1.2</span></h2><p><span class="ja" lang="ja">以下は公式 changelog の Added / Changed から選んだ 5 項目です。修正 14 件を含む全 19 項目はリリースページにあります。</span><span class="en" lang="en">These five items come from the official Added and Changed sections. The release page includes all 19 items, including 14 fixes.</span></p></div>
+    <div class="card-grid">
+      <article class="card">
+  <div class="card__top"><span class="eyebrow">Added</span><span class="badge badge--added"><span class="ja" lang="ja">Added</span><span class="en" lang="en">Added</span></span></div>
+  <h3><span class="ja" lang="ja">モデルとアカウント</span><span class="en" lang="en">Models &amp; account</span></h3>
+  <p><span class="ja" lang="ja">有効なCopilotシートでサインインしている場合、GitHub CopilotがModel Providers設定に読み取り専用のモデルプロバイダーとして自動的に表示されるようになりました。</span><span class="en" lang="en">GitHub Copilot now appears automatically as a read-only model provider in the Model Providers settings when you&#039;re signed in with an active Copilot seat.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span class="eyebrow">Changed</span><span class="badge badge--changed"><span class="ja" lang="ja">Changed</span><span class="en" lang="en">Changed</span></span></div>
+  <h3><span class="ja" lang="ja">自動化</span><span class="en" lang="en">Automations</span></h3>
+  <p><span class="ja" lang="ja">プルリクエストのopened/synchronized/mergedなど、クエリフィールドを持つクラウド自動化トリガーが、issueトリガーと同じ検索フィルター入力を使用するようになり、修飾子のオートコンプリート、プレースホルダー、ヒントテキストが利用できます。</span><span class="en" lang="en">Cloud automation triggers with a query field, like pull request opened/synchronized/merged, now use the same search filter input as issue triggers, with qualifier autocomplete, placeholders, and hint text.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span class="eyebrow">Changed</span><span class="badge badge--changed"><span class="ja" lang="ja">Changed</span><span class="en" lang="en">Changed</span></span></div>
+  <h3><span class="ja" lang="ja">モデルとアカウント</span><span class="en" lang="en">Models &amp; account</span></h3>
+  <p><span class="ja" lang="ja">デフォルトのモデル選択が、常に固定のモデルを既定にするのではなく、実際にアカウントで利用可能なモデルに一致するようになりました。</span><span class="en" lang="en">The default model selection now matches what&#039;s actually available to your account instead of always defaulting to a fixed model.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span class="eyebrow">Changed</span><span class="badge badge--changed"><span class="ja" lang="ja">Changed</span><span class="en" lang="en">Changed</span></span></div>
+  <h3><span class="ja" lang="ja">拡張性</span><span class="en" lang="en">Extensibility</span></h3>
+  <p><span class="ja" lang="ja">Impeccableデザインスキルを新しいメジャーバージョンにアップグレードし、ネイティブのiOSおよびAndroidデザインガイダンス、セットアップの問題を診断する新しいdoctorコマンド、洗練されたデザインレビューワークフローを追加しました。</span><span class="en" lang="en">Upgraded the Impeccable design skill to a new major version, adding native iOS and Android design guidance, a new doctor command for diagnosing setup issues, and refined design review workflows.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span class="eyebrow">Changed</span><span class="badge badge--changed"><span class="ja" lang="ja">Changed</span><span class="en" lang="en">Changed</span></span></div>
+  <h3><span class="ja" lang="ja">拡張性</span><span class="en" lang="en">Extensibility</span></h3>
+  <p><span class="ja" lang="ja">WSLリモート環境に、GitHubのプルリクエストおよびissueワークフロースキルが含まれるようになり、リモートセッション接続の信頼性も向上しました。</span><span class="en" lang="en">WSL remote environments now include GitHub pull request and issue workflow skills, along with reliability improvements to remote session connections.</span></p>
+
+</article>
+    </div>
+  </section>
+
+  <section class="section" id="capabilities">
+    <div class="section-heading"><p class="eyebrow">Capability map</p><h2><span class="ja" lang="ja">現在の全機能マップ</span><span class="en" lang="en">Complete current capability map</span></h2></div>
+    <div class="card-grid">
+      <article class="card">
+  <div class="card__top"><span></span><span class="badge badge--success"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <h3><span class="ja" lang="ja">My Work と GitHub ライフサイクル</span><span class="en" lang="en">My Work and the GitHub lifecycle</span></h3>
+  <p><span class="ja" lang="ja">Issue とプルリクエストを絞り込み、セッションを開始し、差分、レビュー、CI、マージまで同じアプリで進めます。</span><span class="en" lang="en">Filter issues and pull requests, start sessions, and move through diffs, reviews, CI, and merge in one app.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span></span><span class="badge badge--success"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <h3><span class="ja" lang="ja">分離セッションと並列作業</span><span class="en" lang="en">Isolated sessions and parallel work</span></h3>
+  <p><span class="ja" lang="ja">各ローカルセッションを専用 git worktree とブランチで分離し、Session Grid とサイドチャットで複数の作業を監督します。</span><span class="en" lang="en">Isolate each local session in a dedicated git worktree and branch, then supervise several streams with Session Grid and side chats.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span></span><span class="badge badge--warning"><span class="ja" lang="ja">BYOK はプレビュー</span><span class="en" lang="en">BYOK preview</span></span></div>
+  <h3><span class="ja" lang="ja">モード、モデル、Auto、BYOK</span><span class="en" lang="en">Modes, models, Auto, and BYOK</span></h3>
+  <p><span class="ja" lang="ja">Interactive、Plan、Autopilot、複数モデル、推論量、Auto を選び、必要に応じて独自モデルプロバイダーを追加します。</span><span class="en" lang="en">Choose Interactive, Plan, or Autopilot plus models, reasoning effort, and Auto, with optional external model providers.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span></span><span class="badge badge--success"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <h3><span class="ja" lang="ja">Quick chats、履歴、巻き戻し</span><span class="en" lang="en">Quick chats, history, and rewind</span></h3>
+  <p><span class="ja" lang="ja">作業ブランチを作らずに相談し、会話をアーカイブ、編集して巻き戻し、長い履歴を扱います。</span><span class="en" lang="en">Brainstorm without a work branch, archive conversations, edit and rewind, and work with long histories.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span></span><span class="badge badge--success"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <h3><span class="ja" lang="ja">Files、差分、ブラウザー、Present</span><span class="en" lang="en">Files, diffs, browser, and Present</span></h3>
+  <p><span class="ja" lang="ja">ファイル、コミット、未コミット差分を切り替え、行参照や HTML プレビューを使って成果を確認します。</span><span class="en" lang="en">Switch among files, commits, and uncommitted changes, then verify outcomes with line references and HTML preview.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span></span><span class="badge badge--success"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <h3><span class="ja" lang="ja">Canvases と成果物</span><span class="en" lang="en">Canvases and artifacts</span></h3>
+  <p><span class="ja" lang="ja">人とエージェントが同じ状態を双方向に編集できる、計画、ボード、文書、表計算などの共有サーフェスを作ります。</span><span class="en" lang="en">Create shared surfaces for plans, boards, documents, and spreadsheets that people and agents can edit bidirectionally.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span></span><span class="badge badge--success"><span class="ja" lang="ja">ポリシー依存</span><span class="en" lang="en">Policy dependent</span></span></div>
+  <h3><span class="ja" lang="ja">ローカルとクラウドの自動化</span><span class="en" lang="en">Local and cloud automations</span></h3>
+  <p><span class="ja" lang="ja">繰り返しプロンプトを手動またはスケジュールで実行し、クラウドではイベントトリガーと最小権限ツールを構成します。</span><span class="en" lang="en">Run recurring prompts manually or on a schedule, with event triggers and least-privilege tools for cloud runs.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span></span><span class="badge badge--success"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <h3><span class="ja" lang="ja">Custom agents、MCP、skills、plugins</span><span class="en" lang="en">Custom agents, MCP, skills, and plugins</span></h3>
+  <p><span class="ja" lang="ja">リポジトリまたはユーザーの信頼境界でエージェント、ツール、スキル、プラグイン、Canvas extensions を追加します。</span><span class="en" lang="en">Add agents, tools, skills, plugins, and Canvas extensions within repository or user trust boundaries.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span></span><span class="badge badge--success"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <h3><span class="ja" lang="ja">Agent Merge とレビュー対応</span><span class="en" lang="en">Agent Merge and review response</span></h3>
+  <p><span class="ja" lang="ja">CI やレビューのブロッカーをセッションに解決させ、GitHub の必須条件が満たされたときだけマージします。</span><span class="en" lang="en">Let the session resolve CI and review blockers, merging only after GitHub&#039;s required conditions are satisfied.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span></span><span class="badge badge--warning"><span class="ja" lang="ja">一部プレビュー</span><span class="en" lang="en">Partly preview</span></span></div>
+  <h3><span class="ja" lang="ja">Security review と rubber duck</span><span class="en" lang="en">Security review and rubber duck</span></h3>
+  <p><span class="ja" lang="ja">高信頼度の脆弱性候補と実装上の弱点を別視点で確認します。既存のセキュリティ制御を置き換える機能ではありません。</span><span class="en" lang="en">Check high-confidence vulnerability candidates and implementation weaknesses from another perspective; these do not replace existing security controls.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span></span><span class="badge badge--warning"><span class="ja" lang="ja">Cloud はプレビュー</span><span class="en" lang="en">Cloud preview</span></span></div>
+  <h3><span class="ja" lang="ja">クラウド、WSL、VS Code ハンドオフ</span><span class="en" lang="en">Cloud, WSL, and VS Code handoff</span></h3>
+  <p><span class="ja" lang="ja">クラウドサンドボックスで継続し、WSL リモート環境や新しい VS Code ウィンドウへ作業を渡します。</span><span class="en" lang="en">Continue in a cloud sandbox, a WSL remote environment, or a new VS Code window.</span></p>
+
+</article>
+<article class="card">
+  <div class="card__top"><span></span><span class="badge badge--success"><span class="ja" lang="ja">境界に注意</span><span class="en" lang="en">Mind the boundary</span></span></div>
+  <h3><span class="ja" lang="ja">Memory、Chronicle、Insights、運用</span><span class="en" lang="en">Memory, Chronicle, Insights, and operations</span></h3>
+  <p><span class="ja" lang="ja">永続的な指示とセッション履歴を区別し、利用傾向、アクセシビリティ、ストレージ、復旧を管理します。</span><span class="en" lang="en">Separate durable guidance from session history, then manage usage patterns, accessibility, storage, and recovery.</span></p>
+
+</article>
+    </div>
+  </section>
+
+  <section class="section" id="workflow">
+    <div class="section-heading"><p class="eyebrow">Workflow</p><h2><span class="ja" lang="ja">代表的なエンドツーエンドフロー</span><span class="en" lang="en">A representative end-to-end workflow</span></h2></div>
+    <ol class="steps">
+      <li class="step"><h3><span class="ja" lang="ja">My Work で対象を絞る</span><span class="en" lang="en">Find the work in My Work</span></h3><p><span class="ja" lang="ja">Issue、プルリクエスト、CI 状態を検索条件で整理し、次に扱う 1 件を選びます。</span><span class="en" lang="en">Organize issues, pull requests, and CI state with filters, then choose one item.</span></p></li>
+<li class="step"><h3><span class="ja" lang="ja">実行場所と自律性を選ぶ</span><span class="en" lang="en">Choose execution and autonomy</span></h3><p><span class="ja" lang="ja">worktree、ローカル、クラウドの実行場所と Interactive、Plan、Autopilot をリスクに合わせて選びます。</span><span class="en" lang="en">Match worktree, local, or cloud execution and Interactive, Plan, or Autopilot to the risk.</span></p></li>
+<li class="step"><h3><span class="ja" lang="ja">並列セッションを監督する</span><span class="en" lang="en">Supervise parallel sessions</span></h3><p><span class="ja" lang="ja">Session Grid、サイドチャット、Files、Changes、Canvas で複数の進捗と成果を確認します。</span><span class="en" lang="en">Use Session Grid, side chats, Files, Changes, and Canvas to inspect several streams and artifacts.</span></p></li>
+<li class="step"><h3><span class="ja" lang="ja">レビューと CI を通す</span><span class="en" lang="en">Complete review and CI</span></h3><p><span class="ja" lang="ja">差分とコメントを確認し、必要なら security review や rubber duck を使い、ブロッカーを解消します。</span><span class="en" lang="en">Review diffs and comments, optionally use security review or rubber duck, and resolve blockers.</span></p></li>
+<li class="step"><h3><span class="ja" lang="ja">GitHub の条件を満たして着地する</span><span class="en" lang="en">Land after GitHub requirements pass</span></h3><p><span class="ja" lang="ja">必須レビュー、ブランチ保護、CI、マージキューの条件を尊重して Agent Merge または手動でマージします。</span><span class="en" lang="en">Respect required reviews, branch protection, CI, and merge-queue conditions, then use Agent Merge or merge manually.</span></p></li>
+    </ol>
+  </section>
+
+  <section class="section" id="availability">
+    <div class="section-heading"><p class="eyebrow">Availability &amp; requirements</p><h2><span class="ja" lang="ja">可用性、要件、ポリシー</span><span class="en" lang="en">Availability, requirements, and policies</span></h2></div>
+    <div class="card-grid">
+      <article class="card">
+  <div class="card__top"><span></span><span class="badge badge--success"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <h3><span class="ja" lang="ja">基本要件</span><span class="en" lang="en">Core requirements</span></h3>
+  <p><span class="ja" lang="ja">Git、GitHub アカウント、Windows / macOS / Linux。Copilot プランまたはローカル BYOK の資格情報が必要です。</span><span class="en" lang="en">Git, a GitHub account, and Windows, macOS, or Linux. Use a Copilot plan or local BYOK credentials.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span></span></div>
+  <h3><span class="ja" lang="ja">組織ポリシー</span><span class="en" lang="en">Organization policy</span></h3>
+  <p><span class="ja" lang="ja">Business / Enterprise では GitHub Copilot App ポリシーが必要です。これは Copilot CLI ポリシーとは別に評価されます。</span><span class="en" lang="en">Business and Enterprise accounts require the GitHub Copilot app policy. It is evaluated separately from the Copilot CLI policy.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span></span><span class="badge badge--warning"><span class="ja" lang="ja">Public preview</span><span class="en" lang="en">Public preview</span></span></div>
+  <h3><span class="ja" lang="ja">プレビュー機能</span><span class="en" lang="en">Preview features</span></h3>
+  <p><span class="ja" lang="ja">ローカル BYOK、クラウドサンドボックス、<code>/security-review</code> は公式文書で Public preview とされています。変更可能性を前提にしてください。</span><span class="en" lang="en">Official documentation labels local BYOK, cloud sandboxes, and <code>/security-review</code> as public preview. Plan for change.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span></span></div>
+  <h3><span class="ja" lang="ja">Cloud Automations</span><span class="en" lang="en">Cloud Automations</span></h3>
+  <p><span class="ja" lang="ja">対象プラン、private / internal リポジトリ、cloud agent と automations のポリシー、書き込み権限、Actions minutes / AI Credits が関係します。</span><span class="en" lang="en">Applicable plans, private or internal repositories, cloud-agent and automation policies, write access, Actions minutes, and AI Credits all matter.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span></span></div>
+  <h3><span class="ja" lang="ja">安全とデータ</span><span class="en" lang="en">Safety and data</span></h3>
+  <p><span class="ja" lang="ja">URL、プロンプト、ログにシークレットを含めず、自動化や拡張には最小権限だけを与えます。デバッグログは共有前に機密情報を確認します。</span><span class="en" lang="en">Keep secrets out of URLs, prompts, and logs; grant automations and extensions least privilege; inspect debug logs before sharing.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span></span></div>
+  <h3><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></h3>
+  <p><span class="ja" lang="ja">Windows は x64 / ARM64、macOS は Apple Silicon / Intel、Linux は公式リリース資産を使用します。WSL のコードは Windows 側のアプリからリモート接続します。</span><span class="en" lang="en">Use x64 or ARM64 on Windows, Apple Silicon or Intel on macOS, and official release assets on Linux. Connect to WSL code remotely from the Windows app.</span></p>
+
+</article>
+    </div>
+  </section>
+
+  <section class="section" id="setup">
+    <div class="section-heading"><p class="eyebrow">Setup</p><h2><span class="ja" lang="ja">導入の最短手順</span><span class="en" lang="en">Shortest setup path</span></h2></div>
+    <ol>
+      <li><span class="ja" lang="ja">公式ダウンロードから OS とアーキテクチャに合うビルドを入手します。</span><span class="en" lang="en">Download the build for your OS and architecture from the official page.</span></li>
+      <li><span class="ja" lang="ja">GitHub にサインインします。GHES では GitHub Enterprise を選びます。</span><span class="en" lang="en">Sign in to GitHub; choose GitHub Enterprise for GHES.</span></li>
+      <li><span class="ja" lang="ja">Copilot seat または独自モデルプロバイダーを選びます。キーは資格情報欄だけに入力します。</span><span class="en" lang="en">Choose a Copilot seat or an external model provider; enter keys only in credential fields.</span></li>
+      <li><span class="ja" lang="ja">GitHub リポジトリ、ローカルフォルダー、または Git URL をプロジェクトとして追加します。</span><span class="en" lang="en">Add a GitHub repository, local folder, or Git URL as a project.</span></li>
+      <li><span class="ja" lang="ja">低リスクの探索を Plan または Interactive で開始し、Changes を確認します。</span><span class="en" lang="en">Start a low-risk exploration in Plan or Interactive and inspect Changes.</span></li>
+      <li><span class="ja" lang="ja">必要なポリシーと実行場所を確認してから Autopilot、cloud、automations へ広げます。</span><span class="en" lang="en">Confirm policies and execution boundaries before expanding to Autopilot, cloud, or automations.</span></li>
+    </ol>
+  </section>
+
+  <section class="section" id="models">
+    <div class="section-heading"><p class="eyebrow">Models &amp; environments</p><h2><span class="ja" lang="ja">モデル、Auto、推論量、BYOK、WSL、Cloud</span><span class="en" lang="en">Models, Auto, reasoning, BYOK, WSL, and cloud</span></h2></div>
+    <div class="card-grid">
+      <article class="card">
+  <div class="card__top"><span></span></div>
+  <h3><span class="ja" lang="ja">Auto と既定モデル</span><span class="en" lang="en">Auto and the default model</span></h3>
+  <p><span class="ja" lang="ja">Auto はタスクの複雑さに基づいてモデルを選び、応答ごとの実モデルを表示します。v1.1.2 では既定選択がアカウントで実際に利用可能なモデルに一致します。</span><span class="en" lang="en">Auto chooses based on task complexity and shows the model used for each response. In v1.1.2, the default matches models actually available to the account.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span></span></div>
+  <h3><span class="ja" lang="ja">推論量</span><span class="en" lang="en">Reasoning effort</span></h3>
+  <p><span class="ja" lang="ja">複雑さに合わせて推論量を選びます。v1.1.2 ではセッション再開やアプリ再起動後も選択が保持されます。</span><span class="en" lang="en">Match reasoning effort to complexity. v1.1.2 preserves the choice across session resume and app restart.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span></span><span class="badge badge--warning"><span class="ja" lang="ja">Public preview</span><span class="en" lang="en">Public preview</span></span></div>
+  <h3><span class="ja" lang="ja">BYOK</span><span class="en" lang="en">BYOK</span></h3>
+  <p><span class="ja" lang="ja">OpenAI、Azure OpenAI、Microsoft Foundry、Anthropic、Ollama、Foundry Local、LM Studio、OpenAI 互換エンドポイントを追加できます。資格情報はシステムストアに保存されます。</span><span class="en" lang="en">Add OpenAI, Azure OpenAI, Microsoft Foundry, Anthropic, Ollama, Foundry Local, LM Studio, or an OpenAI-compatible endpoint. Credentials are stored in the system store.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span></span></div>
+  <h3><span class="ja" lang="ja">WSL</span><span class="en" lang="en">WSL</span></h3>
+  <p><span class="ja" lang="ja">v1.1.2 の WSL リモート環境には GitHub の PR / Issue ワークフロースキルと接続信頼性の改善が含まれます。</span><span class="en" lang="en">v1.1.2 WSL remote environments include GitHub PR and issue workflow skills plus connection reliability improvements.</span></p>
+
+</article>
+      <article class="card">
+  <div class="card__top"><span></span><span class="badge badge--warning"><span class="ja" lang="ja">Public preview</span><span class="en" lang="en">Public preview</span></span></div>
+  <h3><span class="ja" lang="ja">Cloud sandboxes</span><span class="en" lang="en">Cloud sandboxes</span></h3>
+  <p><span class="ja" lang="ja">GitHub ホストの分離 Linux 環境でセッションを継続できます。App から利用できますが、sandbox プラットフォーム自体は CLI にもまたがる隣接機能です。</span><span class="en" lang="en">Continue sessions in isolated GitHub-hosted Linux environments. The app can use them, while the sandbox platform also spans the adjacent CLI surface.</span></p>
+
+</article>
+    </div>
+  </section>
+
+  <section class="section" id="scope">
+    <div class="section-heading"><p class="eyebrow">Scope discipline</p><h2><span class="ja" lang="ja">App リリースと隣接機能を区別する</span><span class="en" lang="en">Distinguish App releases from adjacent capabilities</span></h2></div>
+    <div class="callout">
+      <p><span class="ja" lang="ja">このサイトのバージョン差分は <code>github/app</code> の changelog だけを App リリース事実として扱います。Copilot CLI、SDK、cloud agent、sandbox は App と連携する場合でも、それぞれの公式文書で提供範囲を示し、特定 App バージョンの追加機能としては扱いません。</span><span class="en" lang="en">This site treats only the <code>github/app</code> changelog as evidence of version-bound App changes. Copilot CLI, SDK, cloud agent, and sandbox capabilities are scoped through their own official documentation, even when they integrate with the App, and are not attributed to an App release without changelog support.</span></p>
+    </div>
+  </section>
+
+  <section class="section" id="sources">
+    <div class="section-heading"><p class="eyebrow">Official sources</p><h2><span class="ja" lang="ja">一次情報</span><span class="en" lang="en">Primary sources</span></h2></div>
+    <ul class="source-list">
+      <li><a href="https://github.com/github/app/blob/main/changelog.md">github/app changelog</a></li>
+      <li><a href="https://api.github.com/repos/github/app/releases">github/app Releases API</a></li>
+      <li><a href="https://github.com/github/app#readme">github/app README</a></li>
+      <li><a href="https://docs.github.com/en/copilot/concepts/agents/github-copilot-app">About the GitHub Copilot app</a></li>
+      <li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/getting-started">Getting started</a></li>
+      <li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions">Agent sessions</a></li>
+      <li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/managing-issues-and-pull-requests">Issues and pull requests</a></li>
+      <li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/using-automations">Automations</a></li>
+      <li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/use-byok-models">BYOK models</a></li>
+      <li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/working-with-canvas-extensions">Canvas extensions</a></li>
+      <li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/open-with-deep-links">Deep links</a></li>
+      <li><a href="https://docs.github.com/en/copilot/concepts/about-cloud-and-local-sandboxes">Cloud and local sandboxes</a></li>
+    </ul>
+  </section>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.2/"><span class="ja" lang="ja">v1.1.2 機能ガイド</span><span class="en" lang="en">v1.1.2 feature guide</span></a>
+      <a href="../copilot-app-v1.1.2/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">21 ハンズオン</span><span class="en" lang="en">21 hands-on guides</span></a>
+      <a href="../copilot-app-v1.0.12/"><span class="ja" lang="ja">v1.0.12 アーカイブ</span><span class="en" lang="en">v1.0.12 archive</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式ガイドです。製品の可用性、ポリシー、料金は公式ソースを確認してください。</span><span class="en" lang="en">This is an unofficial guide. Confirm product availability, policy, and pricing in official sources.</span></p>
+  </div>
+</footer>
+</body>
+</html>

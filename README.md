@@ -15,8 +15,11 @@ This repository is an evolving knowledge base where I accumulate files, slides, 
 
 | Topic | Description | Formats |
 |-------|-------------|---------|
-| [**GitHub Copilot App v1.0.12 — Feature Guide**](./copilot-app-v1.0.12/) | Detailed guide to every feature of the GitHub Copilot App v1.0.12 desktop app — latest features, changelog, all features, session modes, requirements / setup, and version history. Bilingual with a JA / EN toggle and light / dark theme | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.0.12/)) |
-| [**GitHub Copilot App v1.0.12 — Hands-on Guides**](./copilot-app-v1.0.12-hands-on/) | Step-by-step, hands-on walkthroughs for all 15 features of the Copilot App v1.0.12 — one guide per feature (My Work, parallel agents, cloud sessions, Canvas, Automations, Agent Merge, sandboxes, code review, SDK, CLI, and more) plus a common index. Each guide covers prerequisites, steps, what to check, and tips. Bilingual JA / EN toggle and light / dark theme | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.0.12-hands-on/)) |
+| [**GitHub Copilot App — Stable Version Hub**](./copilot-app/) | Durable entry point for the current GitHub Copilot App guide, complete release delta, hands-on learning paths, official resources, and archived versions | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app/)) |
+| [**GitHub Copilot App v1.1.2 — Complete Feature Guide**](./copilot-app-v1.1.2/) | Current capability map, setup, availability and policy boundaries, models / Auto / reasoning / BYOK, workflows, WSL and cloud behavior, plus all 462 official changes across 17 releases since v1.0.12 | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.2/)) |
+| [**GitHub Copilot App v1.1.2 — Hands-on Learning**](./copilot-app-v1.1.2-hands-on/) | Five learning paths and exactly 21 practical guides with copyable prompts, safety notes, expected results, troubleshooting, cleanup, platform callouts, local progress, search, and filtering | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.2-hands-on/)) |
+| [**GitHub Copilot App v1.0.12 — Feature Guide (Archive)**](./copilot-app-v1.0.12/) | Preserved historical snapshot of the v1.0.12 feature guide; use the stable hub for the current edition | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.0.12/)) |
+| [**GitHub Copilot App v1.0.12 — Hands-on Guides (Archive)**](./copilot-app-v1.0.12-hands-on/) | Preserved historical collection of the original 15 v1.0.12 guides | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.0.12-hands-on/)) |
 | [**Microsoft Build 2026 — GitHub Updates**](./build2026-github/) | Summary of GitHub-related announcements from Microsoft Build 2026 (Copilot app, Canvas, code review, SDK / CLI, security, and more) | HTML · JP ([live page](https://shinyay.github.io/something-something-something/build2026-github/)) |
 | [**VS Code Monthly Updates**](./vscode-monthy-update/) | Summary slides covering what's new in each VS Code release | PDF (EN / JP) |
 
@@ -30,12 +33,19 @@ This repository is an evolving knowledge base where I accumulate files, slides, 
 something-something-something/
 ├── build2026-github/           # Microsoft Build 2026 GitHub updates (web page)
 │   └── index.html              # Summary page (HTML · JP, served via GitHub Pages)
-├── copilot-app-v1.0.12/        # GitHub Copilot App v1.0.12 feature guide (web page)
-│   └── index.html              # Bilingual feature guide (HTML · JP / EN, served via GitHub Pages)
-├── copilot-app-v1.0.12-hands-on/  # Hands-on guides for each Copilot App feature (web pages)
-│   ├── index.html              # Guide index / landing (HTML · JP / EN)
-│   ├── 01-my-work.html … 15-chats.html  # One hands-on walkthrough per feature (15 pages)
-│   └── assets/                 # Shared style.css + app.js (theme / language toggle)
+├── copilot-app/                # Stable GitHub Copilot App version hub
+│   └── index.html              # Current / archive routing and official links
+├── copilot-app-v1.1.2/         # Current complete feature and release guide
+│   ├── index.html              # Capability map, setup, policies, platforms, workflows
+│   ├── releases.html           # Searchable 17-release / 462-item explorer
+│   └── assets/                 # Shared CSS, JS, and canonical release matrix JSON
+├── copilot-app-v1.1.2-hands-on/  # Five learning paths / 21 guides
+│   ├── index.html              # Search, filters, local progress, and resume
+│   ├── 01-install-projects.html … 21-accessibility-storage-lifecycle-recovery.html
+│   └── assets/                 # Shared theme, language, copy, filter, and progress logic
+├── copilot-app-v1.0.12/        # Historical v1.0.12 feature guide archive
+├── copilot-app-v1.0.12-hands-on/  # Historical 15-guide archive
+├── scripts/                    # Reproducible matrix, rendering, and validation scripts
 ├── vscode-monthy-update/       # VS Code release update slides
 │   ├── *-easy.pdf              # Beginner-friendly summary (EN)
 │   ├── *-easy-jp.pdf           # Beginner-friendly summary (JP)
@@ -54,6 +64,9 @@ Each content directory follows a consistent naming convention:
 
 ## 🗓️ Latest Additions
 
+- **2026-07-29** — [GitHub Copilot App stable version hub](./copilot-app/) ([live page](https://shinyay.github.io/something-something-something/copilot-app/))
+- **2026-07-29** — [GitHub Copilot App v1.1.2 complete feature and release guide](./copilot-app-v1.1.2/) ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.2/))
+- **2026-07-29** — [GitHub Copilot App v1.1.2 hands-on learning](./copilot-app-v1.1.2-hands-on/) (five paths / 21 guides) ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.2-hands-on/))
 - **2026-07-01** — [GitHub Copilot App v1.0.12 — Hands-on Guides](./copilot-app-v1.0.12-hands-on/) (15 per-feature walkthroughs + index) ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.0.12-hands-on/))
 - **2026-07-01** — [GitHub Copilot App v1.0.12 — Feature Guide](./copilot-app-v1.0.12/) ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.0.12/))
 - **2026-06-02** — [Microsoft Build 2026 — GitHub Updates](./build2026-github/) ([live page](https://shinyay.github.io/something-something-something/build2026-github/))

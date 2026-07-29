@@ -1,0 +1,507 @@
+{
+  "versions": [
+    "v1.0.18",
+    "v1.0.19",
+    "v1.0.20",
+    "v1.0.21"
+  ],
+  "items": [
+    {
+      "id": "v1-0-21-changed-001",
+      "version": "v1.0.21",
+      "category": "Changed",
+      "en": "Clarified during sign-in and in account settings that the \"GitHub Enterprise\" option is for GitHub Enterprise Cloud with data residency (*.ghe.com).",
+      "ja": "サインイン時およびアカウント設定において、「GitHub Enterprise」オプションはデータレジデンシー対応のGitHub Enterprise Cloud(*.ghe.com)向けであることを明確にしました。"
+    },
+    {
+      "id": "v1-0-21-fixed-001",
+      "version": "v1.0.21",
+      "category": "Fixed",
+      "en": "Fixed a workspace's pull request status incorrectly showing as merged after the agent opened a new pull request for that workspace.",
+      "ja": "エージェントがワークスペース用に新しいプルリクエストを作成した後、そのワークスペースのプルリクエストステータスがマージ済みと誤って表示される問題を修正しました。"
+    },
+    {
+      "id": "v1-0-21-fixed-002",
+      "version": "v1.0.21",
+      "category": "Fixed",
+      "en": "Fixed queuing a pull request for merge when it is waiting on a required review — the app now enables auto-merge so it queues automatically once requirements pass, instead of failing to queue.",
+      "ja": "必須レビュー待ちのプルリクエストをマージキューに追加する際の問題を修正しました。キューへの追加に失敗する代わりに、アプリが自動マージを有効化し、要件を満たした時点で自動的にキューに追加されるようになりました。"
+    },
+    {
+      "id": "v1-0-20-added-001",
+      "version": "v1.0.20",
+      "category": "Added",
+      "en": "Added a /security-review slash command to start a security review of the current diffs.",
+      "ja": "現在の差分に対するセキュリティレビューを開始する`/security-review`スラッシュコマンドを追加しました。"
+    },
+    {
+      "id": "v1-0-20-added-002",
+      "version": "v1.0.20",
+      "category": "Added",
+      "en": "In local sessions, you can now edit a previous message to rewind the conversation from that point and resend it as a new turn.",
+      "ja": "ローカルセッションにおいて、以前のメッセージを編集して会話をその時点まで巻き戻し、新しいターンとして再送信できるようになりました。"
+    },
+    {
+      "id": "v1-0-20-changed-001",
+      "version": "v1.0.20",
+      "category": "Changed",
+      "en": "Nested sessions in the sidebar now show connected hierarchy lines between parent and child rows, making it easier to scan deeper session relationships.",
+      "ja": "サイドバーのネストされたセッションで、親行と子行の間に接続された階層線が表示されるようになり、より深いセッション関係を把握しやすくなりました。"
+    },
+    {
+      "id": "v1-0-20-changed-002",
+      "version": "v1.0.20",
+      "category": "Changed",
+      "en": "Simplified the loading state of the pull request checks panel to show a single animated header instead of a duplicate loading message and skeleton.",
+      "ja": "プルリクエストのチェックパネルの読み込み状態を簡素化し、重複した読み込みメッセージとスケルトンの代わりに、単一のアニメーション付きヘッダーを表示するようにしました。"
+    },
+    {
+      "id": "v1-0-20-fixed-001",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Clicking the header of a session plan file in the diff view now opens the Plan tab instead of doing nothing.",
+      "ja": "diffビューでセッションのplanファイルのヘッダーをクリックしても何も起こらなかった問題を修正し、Planタブが開くようにしました。"
+    },
+    {
+      "id": "v1-0-20-fixed-002",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Collapsed project rows in the sidebar keep their project icon for working, paused, or completed sessions, only replacing it when a session needs input, is interrupted, or has failed.",
+      "ja": "サイドバーで折りたたまれたプロジェクト行は、作業中・一時停止中・完了済みのセッションではプロジェクトアイコンを維持し、セッションが入力を必要とする場合、中断された場合、または失敗した場合のみアイコンを置き換えるようにしました。"
+    },
+    {
+      "id": "v1-0-20-fixed-003",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Collapsed repository groups in the sidebar now keep showing the repository icon when all sessions are completed or ready to merge, instead of looking like a single session.",
+      "ja": "サイドバーで折りたたまれたリポジトリグループは、すべてのセッションが完了済み、またはマージ準備完了の場合、単一のセッションのように見える代わりに、リポジトリアイコンを表示し続けるようになりました。"
+    },
+    {
+      "id": "v1-0-20-fixed-004",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Fixed a spurious \"Model changed to...\" message appearing in the transcript when resuming a session with an unchanged model.",
+      "ja": "モデルを変更していないセッションを再開した際に、「Model changed to...」という誤ったメッセージがトランスクリプトに表示される問題を修正しました。"
+    },
+    {
+      "id": "v1-0-20-fixed-005",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Fixed agent merge getting stuck and not re-prompting after a required check finished running while another check was still failing.",
+      "ja": "必須チェックの1つが完了したものの、別のチェックがまだ失敗している場合に、Agent Mergeが行き詰まり、再プロンプトされない問題を修正しました。"
+    },
+    {
+      "id": "v1-0-20-fixed-006",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Fixed empty draft sessions sometimes remaining after leaving the multi-session grid view",
+      "ja": "マルチセッショングリッドビューを離れた後、空のドラフトセッションが残ってしまうことがある問題を修正しました"
+    },
+    {
+      "id": "v1-0-20-fixed-007",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Fixed pull requests briefly jumping out of \"Ready to merge\" in the sidebar while a merge was in progress before landing in \"Done\".",
+      "ja": "マージ処理中に、プルリクエストがサイドバーの「Ready to merge」から一時的に外れ、その後「Done」に落ち着く問題を修正しました。"
+    },
+    {
+      "id": "v1-0-20-fixed-008",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Fixed repository labels in the sidebar fading too early; hover and keyboard actions now only reserve space when revealed",
+      "ja": "サイドバーのリポジトリラベルが早く消えすぎる問題を修正しました。ホバーおよびキーボード操作は、表示されたときのみスペースを確保するようになりました"
+    },
+    {
+      "id": "v1-0-20-fixed-009",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Fixed the auto-merge agent sending unnecessary follow-up replies triggered by its own previous comments on a pull request.",
+      "ja": "自動マージエージェントが、プルリクエスト上の自身の過去のコメントに反応して不要なフォローアップ返信を送信していた問題を修正しました。"
+    },
+    {
+      "id": "v1-0-20-fixed-010",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Fixed the line-selection hint in the file header overlapping the toolbar buttons on narrow panels",
+      "ja": "幅の狭いパネルで、ファイルヘッダーの行選択ヒントがツールバーボタンと重なってしまう問題を修正しました"
+    },
+    {
+      "id": "v1-0-20-fixed-011",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Fixed the project removal confirmation dialog remaining visible after deleting a project in Settings.",
+      "ja": "設定でプロジェクトを削除した後も、プロジェクト削除の確認ダイアログが表示されたままになる問題を修正しました。"
+    },
+    {
+      "id": "v1-0-20-fixed-012",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Fixed the pull request author sometimes appearing as their own reviewer in the Reviewers panel.",
+      "ja": "プルリクエストの作成者が、Reviewersパネルで自分自身のレビュアーとして表示されてしまうことがある問題を修正しました。"
+    },
+    {
+      "id": "v1-0-20-fixed-013",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "Improved screen reader support in the Health Check dialog: diagnostic rows now announce their labels and pass/warning/error status, and copy-path buttons have distinct, descriptive names.",
+      "ja": "Health Checkダイアログのスクリーンリーダー対応を改善しました。診断結果の行がラベルと合格/警告/エラーのステータスを読み上げるようになり、パスをコピーするボタンにはそれぞれ区別できる説明的な名前が付きました。"
+    },
+    {
+      "id": "v1-0-20-fixed-014",
+      "version": "v1.0.20",
+      "category": "Fixed",
+      "en": "The Create PR action no longer appears for a workspace after a pull request has already been created for it.",
+      "ja": "すでにプルリクエストが作成済みのワークスペースに対して、Create PRアクションが表示されなくなりました。"
+    },
+    {
+      "id": "v1-0-19-added-001",
+      "version": "v1.0.19",
+      "category": "Added",
+      "en": "Added a rich text editor for the plan in the workspace Plan tab while Copilot waits for approval.",
+      "ja": "Copilotが承認を待っている間、ワークスペースのPlanタブでプランをリッチテキストエディタで編集できるようになりました。"
+    },
+    {
+      "id": "v1-0-19-added-002",
+      "version": "v1.0.19",
+      "category": "Added",
+      "en": "Deep links that create a new session can now nest it under an existing session using a parent parameter, so it appears as a child in the sidebar.",
+      "ja": "新しいセッションを作成するディープリンクで、`parent`パラメータを使用して既存のセッションの下にネストできるようになり、サイドバーに子セッションとして表示されるようになりました。"
+    },
+    {
+      "id": "v1-0-19-added-003",
+      "version": "v1.0.19",
+      "category": "Added",
+      "en": "You can now close an issue as a duplicate and select the canonical issue it duplicates.",
+      "ja": "Issueを重複としてクローズし、その重複元となる正規のIssueを選択できるようになりました。"
+    },
+    {
+      "id": "v1-0-19-changed-001",
+      "version": "v1.0.19",
+      "category": "Changed",
+      "en": "\"Create nested session\" now opens a dialog to describe the task, letting the parent session spawn the nested session(s) instead of starting from an empty draft.",
+      "ja": "「Create nested session」は、タスクを記述するダイアログを開くようになりました。空のドラフトから開始する代わりに、親セッションがネストされたセッションを生成できるようになりました。"
+    },
+    {
+      "id": "v1-0-19-changed-002",
+      "version": "v1.0.19",
+      "category": "Changed",
+      "en": "Clarified the subtitles in the Editor's Picks and Browse by Category sections of the extensions view.",
+      "ja": "拡張機能ビューの「Editor's Picks」と「Browse by Category」セクションのサブタイトルをより明確にしました。"
+    },
+    {
+      "id": "v1-0-19-changed-003",
+      "version": "v1.0.19",
+      "category": "Changed",
+      "en": "Issue numbers now appear inline next to the title in the sub-issue picker, and stay visible even when a row isn't highlighted.",
+      "ja": "サブIssueピッカーで、Issue番号がタイトルの横にインラインで表示されるようになり、行がハイライトされていない場合でも表示され続けるようになりました。"
+    },
+    {
+      "id": "v1-0-19-changed-004",
+      "version": "v1.0.19",
+      "category": "Changed",
+      "en": "Refreshed the styling of nested-session message rows in the chat timeline for a calmer, more consistent look.",
+      "ja": "チャットのタイムラインにおけるネストされたセッションのメッセージ行のスタイルを刷新し、より落ち着いた一貫性のある見た目にしました。"
+    },
+    {
+      "id": "v1-0-19-fixed-001",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Automation-related actions in the conversation timeline now show clear labels like \"Listed automations\" and \"Saved automation\" instead of generic \"workflow\" wording.",
+      "ja": "会話タイムライン内のオートメーション関連のアクションが、一般的な「workflow」という表現の代わりに、「Listed automations」や「Saved automation」といった明確なラベルで表示されるようになりました。"
+    },
+    {
+      "id": "v1-0-19-fixed-002",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Clicking a GitHub Actions check in the checks drawer now opens the Actions job page instead of an incorrect pull request checks link.",
+      "ja": "チェックの引き出しパネルでGitHub Actionsのチェックをクリックすると、誤ったプルリクエストチェックリンクではなく、Actionsのジョブページが開くようになりました。"
+    },
+    {
+      "id": "v1-0-19-fixed-003",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Corrected \"Healthcheck\" to \"Health check\" in dialog and error messages for better readability and screen reader pronunciation.",
+      "ja": "読みやすさとスクリーンリーダーでの発音を向上させるため、ダイアログおよびエラーメッセージ内の「Healthcheck」を「Health check」に修正しました。"
+    },
+    {
+      "id": "v1-0-19-fixed-004",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Fixed \"New session\" on project-scoped canvases in the Extensions Canvas tab so it starts the session directly instead of opening the generic canvas picker.",
+      "ja": "Extensions Canvasタブのプロジェクトスコープのcanvasにおける「New session」を修正し、汎用のcanvasピッカーを開く代わりに、セッションを直接開始するようにしました。"
+    },
+    {
+      "id": "v1-0-19-fixed-005",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Fixed \"View logs\" in the PR checks menu sometimes doing nothing for failing checks; it now opens the check's logs on GitHub, or is hidden if no link is available. Re-running a workflow run that is older than a month now shows a clear, calmer message instead of a raw GitHub API error.",
+      "ja": "PRチェックメニューの「View logs」が、失敗したチェックに対して何も反応しないことがある問題を修正しました。GitHub上のチェックのログを開くようになり、リンクが利用できない場合は非表示になります。また、1か月以上前のワークフロー実行を再実行しようとした場合、GitHub APIの生のエラーの代わりに、明確で落ち着いたメッセージが表示されるようになりました。"
+    },
+    {
+      "id": "v1-0-19-fixed-006",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Fixed text selection in the file view so the line-range highlight no longer lingers across hovered rows and copy behaves correctly.",
+      "ja": "ファイルビューでのテキスト選択を修正し、行範囲のハイライトがホバーした行に残り続けなくなり、コピーが正しく動作するようになりました。"
+    },
+    {
+      "id": "v1-0-19-fixed-007",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Fixed the browser preview's Reload button sometimes clearing the address bar and failing to reload the page.",
+      "ja": "ブラウザプレビューのReloadボタンが、アドレスバーをクリアしてしまいページの再読み込みに失敗することがある問題を修正しました。"
+    },
+    {
+      "id": "v1-0-19-fixed-008",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Fixed the keyboard focus outline being clipped on the first and last rows of the workflow runs and skills lists.",
+      "ja": "ワークフロー実行およびスキルのリストの最初と最後の行で、キーボードフォーカスの輪郭が切れてしまう問題を修正しました。"
+    },
+    {
+      "id": "v1-0-19-fixed-009",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Fixed the pull request Reviewers list sometimes appearing empty when reviewers had already submitted a review or when a team was requested for review.",
+      "ja": "レビュアーがすでにレビューを提出済みの場合や、チームがレビュー依頼されている場合に、プルリクエストのReviewersリストが空に表示されることがある問題を修正しました。"
+    },
+    {
+      "id": "v1-0-19-fixed-010",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Fixed the text caret not appearing when focusing an empty pull request or issue comment box",
+      "ja": "空のプルリクエストまたはIssueのコメントボックスにフォーカスした際に、テキストカーソルが表示されない問題を修正しました"
+    },
+    {
+      "id": "v1-0-19-fixed-011",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Made date-group labels in the Recent runs list navigable as headings for screen readers.",
+      "ja": "Recent runsリストの日付グループラベルを、スクリーンリーダーで見出しとして移動できるようにしました。"
+    },
+    {
+      "id": "v1-0-19-fixed-012",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "Terminal canvas commands no longer re-execute when a session is restored after restarting the app.",
+      "ja": "アプリを再起動した後にセッションが復元される際、terminal canvasのコマンドが再実行されなくなりました。"
+    },
+    {
+      "id": "v1-0-19-fixed-013",
+      "version": "v1.0.19",
+      "category": "Fixed",
+      "en": "The \"Create PR\" button no longer disappears for up to a minute after committing changes in a cloud-hosted workspace.",
+      "ja": "クラウドホスト型ワークスペースで変更をコミットした後、「Create PR」ボタンが最大1分間表示されなくなる問題がなくなりました。"
+    },
+    {
+      "id": "v1-0-18-added-001",
+      "version": "v1.0.18",
+      "category": "Added",
+      "en": "Added a \"Default agent\" setting in Settings → Sessions so new sessions automatically start with your chosen custom agent.",
+      "ja": "設定 → Sessionsに「Default agent」設定を追加しました。これにより、新しいセッションは選択したカスタムエージェントで自動的に開始されます。"
+    },
+    {
+      "id": "v1-0-18-added-002",
+      "version": "v1.0.18",
+      "category": "Added",
+      "en": "Added a \"Mark as unread\" / \"Mark as read\" action to the right-click menu for sessions and quick chats.",
+      "ja": "セッションおよびクイックチャットの右クリックメニューに「Mark as unread」/「Mark as read」アクションを追加しました。"
+    },
+    {
+      "id": "v1-0-18-added-003",
+      "version": "v1.0.18",
+      "category": "Added",
+      "en": "Added a \"Show in Finder/Explorer/Files\" action to the repository context menu in the sidebar.",
+      "ja": "サイドバーのリポジトリのコンテキストメニューに「Show in Finder/Explorer/Files」アクションを追加しました。"
+    },
+    {
+      "id": "v1-0-18-added-004",
+      "version": "v1.0.18",
+      "category": "Added",
+      "en": "Added a context-window usage graph to the Session Insights tab, showing how much of the context window has been used over time, with zoom and pan synced to the tool timeline.",
+      "ja": "Session Insightsタブにコンテキストウィンドウ使用量のグラフを追加しました。時間経過に伴うコンテキストウィンドウの使用量を表示し、ズームとパンはツールのタイムラインと同期します。"
+    },
+    {
+      "id": "v1-0-18-added-005",
+      "version": "v1.0.18",
+      "category": "Added",
+      "en": "Added a Location column to the Manage sessions table showing each worktree's path, and replaced misleading dashes with loading skeletons while file and chat sizes are being calculated.",
+      "ja": "Manage sessionsテーブルに、各worktreeのパスを表示するLocation列を追加しました。また、ファイルやチャットのサイズを計算している間、誤解を招くダッシュ記号の代わりに読み込み中のスケルトンを表示するようにしました。"
+    },
+    {
+      "id": "v1-0-18-added-006",
+      "version": "v1.0.18",
+      "category": "Added",
+      "en": "Collaboration links can now open a session on a specific existing branch instead of always creating a new one.",
+      "ja": "コラボレーションリンクで、常に新しいブランチを作成する代わりに、特定の既存ブランチでセッションを開けるようになりました。"
+    },
+    {
+      "id": "v1-0-18-changed-001",
+      "version": "v1.0.18",
+      "category": "Changed",
+      "en": "Clicking a GitHub issue or pull request link in a Quick Chat now opens the built-in viewer in the chat panel instead of your system browser.",
+      "ja": "クイックチャット内のGitHub Issueまたはプルリクエストのリンクをクリックすると、システムのブラウザではなく、チャットパネル内の組み込みビューアーが開くようになりました。"
+    },
+    {
+      "id": "v1-0-18-changed-002",
+      "version": "v1.0.18",
+      "category": "Changed",
+      "en": "Consolidated the panel maximize and full screen buttons into a single maximize control in the panel tab bar.",
+      "ja": "パネルの最大化ボタンと全画面表示ボタンを、パネルのタブバー内の単一の最大化コントロールに統合しました。"
+    },
+    {
+      "id": "v1-0-18-changed-003",
+      "version": "v1.0.18",
+      "category": "Changed",
+      "en": "Improved loading and scrolling performance for large pull request conversations, reducing blank gaps and scroll jumps.",
+      "ja": "大規模なプルリクエストの会話における読み込みとスクロールのパフォーマンスを改善し、空白の隙間やスクロールのジャンプを軽減しました。"
+    },
+    {
+      "id": "v1-0-18-changed-004",
+      "version": "v1.0.18",
+      "category": "Changed",
+      "en": "Polished the sign-in screen layout, shortening button labels and moving the GitHub Enterprise sign-in option to a subtler link.",
+      "ja": "サインイン画面のレイアウトを改良し、ボタンのラベルを短縮するとともに、GitHub Enterpriseのサインインオプションを目立たないリンクに移動しました。"
+    },
+    {
+      "id": "v1-0-18-changed-005",
+      "version": "v1.0.18",
+      "category": "Changed",
+      "en": "Pull requests and issues you're viewing now update in real time as changes happen, instead of waiting for the next periodic refresh.",
+      "ja": "閲覧中のプルリクエストやIssueが、次回の定期更新を待つことなく、変更が発生した時点でリアルタイムに更新されるようになりました。"
+    },
+    {
+      "id": "v1-0-18-changed-006",
+      "version": "v1.0.18",
+      "category": "Changed",
+      "en": "The quick open dialog (Cmd+K/Cmd+P) now opens and searches files more responsively.",
+      "ja": "クイックオープンダイアログ(Cmd+K/Cmd+P)が、より速く反応してファイルを開き検索できるようになりました。"
+    },
+    {
+      "id": "v1-0-18-fixed-001",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Draft pull requests now get conflict resolution, CI fixes, and review replies from the agent instead of being skipped entirely; merging is still withheld until the PR is marked ready for review.",
+      "ja": "ドラフトプルリクエストは完全にスキップされる代わりに、エージェントによる競合解決、CIの修正、レビュー返信を受けられるようになりました。ただし、PRがレビュー準備完了とマークされるまで、マージは引き続き保留されます。"
+    },
+    {
+      "id": "v1-0-18-fixed-002",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed an issue where deleting a custom model provider left its model stuck in the model picker, even after restarting the app.",
+      "ja": "カスタムモデルプロバイダーを削除しても、アプリを再起動した後もそのモデルがモデルピッカーに残ってしまう問題を修正しました。"
+    },
+    {
+      "id": "v1-0-18-fixed-003",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed an issue where renaming a session could be interrupted or reset if an automatic title update arrived while you were still typing.",
+      "ja": "セッションの名前を変更している最中に自動タイトル更新が届くと、名前変更が中断またはリセットされてしまうことがある問題を修正しました。"
+    },
+    {
+      "id": "v1-0-18-fixed-004",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed context menus (e.g. in the sidebar) sometimes closing immediately after right-clicking instead of staying open.",
+      "ja": "コンテキストメニュー(サイドバーなど)が、右クリック直後に開いたままにならず、すぐに閉じてしまうことがある問題を修正しました。"
+    },
+    {
+      "id": "v1-0-18-fixed-005",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed crashes in the browser preview and extension canvas, and a rare crash when pruning old log files.",
+      "ja": "ブラウザプレビューおよび拡張機能canvasでのクラッシュと、古いログファイルを削除する際にまれに発生するクラッシュを修正しました。"
+    },
+    {
+      "id": "v1-0-18-fixed-006",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed inconsistent styling of attachment and reference chips (files, images, PR/issue links) so they now look and behave the same in the composer and in the conversation view.",
+      "ja": "添付ファイルおよび参照チップ(ファイル、画像、PR/Issueリンク)のスタイルが一貫していない問題を修正し、コンポーザーと会話ビューの両方で同じ見た目・動作をするようになりました。"
+    },
+    {
+      "id": "v1-0-18-fixed-007",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed misaligned Path, Project, and Session ID values in the workspace info popover",
+      "ja": "ワークスペース情報のポップオーバーで、Path、Project、Session IDの値の位置がずれていた問題を修正しました"
+    },
+    {
+      "id": "v1-0-18-fixed-008",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed new chats sometimes being silently discarded when navigating away right after sending the first message or after only using the terminal, so the session and its messages are no longer lost.",
+      "ja": "最初のメッセージを送信した直後、またはターミナルのみを使用した直後に画面を離れると、新しいチャットが黙って破棄されてしまうことがある問題を修正しました。これにより、セッションとそのメッセージが失われなくなりました。"
+    },
+    {
+      "id": "v1-0-18-fixed-009",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed session and setup step file paths on Windows to display with native backslash separators instead of forward slashes.",
+      "ja": "Windowsにおけるセッションおよびセットアップステップのファイルパスを修正し、スラッシュではなくWindowsネイティブのバックスラッシュ区切りで表示されるようにしました。"
+    },
+    {
+      "id": "v1-0-18-fixed-010",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed slow scrolling in the diff view when files are collapsed.",
+      "ja": "ファイルが折りたたまれている場合にdiffビューのスクロールが遅くなる問題を修正しました。"
+    },
+    {
+      "id": "v1-0-18-fixed-011",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed the conversation scrolling or jumping around while Mermaid diagrams are loading or rendering.",
+      "ja": "Mermaid図が読み込み中または描画中に、会話がスクロールしたり飛んだりしてしまう問題を修正しました。"
+    },
+    {
+      "id": "v1-0-18-fixed-012",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed the conversation view sometimes jumping or showing blank content when scrolling to the bottom of a long chat",
+      "ja": "長いチャットの一番下までスクロールした際に、会話ビューが飛んだり空白の内容が表示されたりすることがある問題を修正しました"
+    },
+    {
+      "id": "v1-0-18-fixed-013",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed the conversation view sometimes landing above the latest messages instead of at the bottom when returning to a session that received new output while you were away.",
+      "ja": "離れている間に新しい出力を受け取ったセッションに戻った際、会話ビューが一番下ではなく最新メッセージより上の位置で表示されてしまうことがある問題を修正しました。"
+    },
+    {
+      "id": "v1-0-18-fixed-014",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed the Create PR button and workspace safety checks not working correctly on WSL projects.",
+      "ja": "WSLプロジェクトでCreate PRボタンおよびワークスペースの安全性チェックが正しく機能しない問題を修正しました。"
+    },
+    {
+      "id": "v1-0-18-fixed-015",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Fixed the emoji suggestion picker in the comment composer being clipped when typing near the bottom of a constrained view, such as a pull request review comment.",
+      "ja": "プルリクエストのレビューコメントなど、表示領域が限られたビューの下部付近で入力すると、コメントコンポーザーの絵文字候補ピッカーが切れてしまう問題を修正しました。"
+    },
+    {
+      "id": "v1-0-18-fixed-016",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Long node and edge labels in Mermaid diagrams now wrap correctly instead of overflowing their shapes",
+      "ja": "Mermaid図の長いノードラベルおよびエッジラベルが、図形からはみ出す代わりに、正しく折り返されるようになりました"
+    },
+    {
+      "id": "v1-0-18-fixed-017",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Made the Stop button in the run split button use a consistent subtle red styling across all color themes",
+      "ja": "実行用のスプリットボタン内のStopボタンが、すべてのカラーテーマで一貫した控えめな赤色スタイルを使用するようにしました"
+    },
+    {
+      "id": "v1-0-18-fixed-018",
+      "version": "v1.0.18",
+      "category": "Fixed",
+      "en": "Screen readers now correctly associate labels with values (like Schedule, Next run, and Environment) in the automation details, session usage, and workspace/branch popovers, and the automation popover's dialog title now reads \"Automation details\" instead of \"Workflow details\".",
+      "ja": "オートメーションの詳細、セッションの使用状況、ワークスペース/ブランチのポップオーバーにおいて、スクリーンリーダーがラベルと値(Schedule、Next run、Environmentなど)を正しく関連付けて読み上げるようになりました。また、オートメーションのポップオーバーのダイアログタイトルは「Workflow details」ではなく「Automation details」と表示されるようになりました。"
+    }
+  ]
+}

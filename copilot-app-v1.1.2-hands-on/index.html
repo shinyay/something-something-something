@@ -1,0 +1,320 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Five bilingual learning paths and 21 practical GitHub Copilot App v1.1.2 guides.">
+<title>GitHub Copilot App v1.1.2 — 21 hands-on guides</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-count="21">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="./">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.2</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+<a href="../copilot-app-v1.1.2/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+<a href="../copilot-app-v1.1.2/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="hands-title">
+  <div class="hero__inner">
+    <p class="eyebrow">5 learning paths · 21 unique guides · Local-only progress</p>
+    <h1 id="hands-title"><span class="ja" lang="ja">GitHub Copilot App v1.1.2 ハンズオン</span><span class="en" lang="en">GitHub Copilot App v1.1.2 hands-on</span></h1>
+    <p class="lede"><span class="ja" lang="ja">開始と構成から並列作業、GitHub ライフサイクル、自動化、運用までを、コピー可能なプロンプトと安全なリセット手順で学びます。アカウントやバックエンドなしで、このガイド UI の進捗をブラウザー内に保存します。</span><span class="en" lang="en">Learn setup, parallel work, the GitHub lifecycle, automation, and operations with copyable prompts and safe reset steps. The guide UI saves progress in your browser with no account or backend.</span></p>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#guides" data-resume-link><span class="ja" lang="ja">再開: </span><span class="en" lang="en">Resume: </span><span data-resume-title><span class="ja" lang="ja">ガイド 01</span><span class="en" lang="en">Guide 01</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="../copilot-app-v1.1.2/"><span class="ja" lang="ja">機能マップを見る</span><span class="en" lang="en">View capability map</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <section class="section" id="guides">
+    <div class="page-grid page-grid--wide">
+      <div>
+        <div class="filter-panel" aria-labelledby="guide-filter-title">
+          <h2 id="guide-filter-title"><span class="ja" lang="ja">21 ガイドを検索</span><span class="en" lang="en">Search 21 guides</span></h2>
+          <div class="filters">
+            <div class="field"><label for="guide-search"><span class="ja" lang="ja">キーワード</span><span class="en" lang="en">Keyword</span></label><input id="guide-search" type="search" data-guide-search placeholder="WSL, Agent Merge, Canvas…"></div>
+            <div class="field"><label for="guide-path"><span class="ja" lang="ja">学習パス</span><span class="en" lang="en">Learning path</span></label><select id="guide-path" data-guide-path><option value="">すべて / All</option><option value="start-configure">1. 開始と構成 / Start and configure</option><option value="parallel-work">2. 並列作業を実行 / Run parallel work</option><option value="github-lifecycle">3. GitHub ライフサイクルを管理 / Manage the GitHub lifecycle</option><option value="automate-extend">4. 自動化と拡張 / Automate and extend</option><option value="operate-optimize">5. 運用と最適化 / Operate and optimize</option></select></div>
+            <div class="field"><label for="guide-difficulty"><span class="ja" lang="ja">難易度</span><span class="en" lang="en">Difficulty</span></label><select id="guide-difficulty" data-guide-difficulty><option value="">すべて / All</option><option value="advanced">上級 / Advanced</option><option value="beginner">初級 / Beginner</option><option value="intermediate">中級 / Intermediate</option></select></div>
+            <div class="field"><label for="guide-status"><span class="ja" lang="ja">状態</span><span class="en" lang="en">Status</span></label><select id="guide-status" data-guide-status><option value="">すべて / All</option><option value="current">提供中 / Available</option><option value="preview">提供中（一部プレビュー） / Available (partly preview)</option></select></div>
+          </div>
+          <p class="muted" role="status" aria-live="polite" data-guide-filter-status>21 guides</p>
+        </div>
+      </div>
+      <aside class="progress-panel" aria-label="Learning progress">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 21</p>
+        <div class="progress-track" role="progressbar" aria-valuemin="0" aria-valuemax="21" aria-label="Learning progress"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-progress-reset><span class="ja" lang="ja">進捗をリセット</span><span class="en" lang="en">Reset progress</span></button>
+      </aside>
+    </div>
+  </section>
+  <section class="section" id="start-configure">
+  <div class="section-heading"><p class="eyebrow"><span class="ja" lang="ja">学習パス 1</span><span class="en" lang="en">Learning path 1</span></p><h2><span class="ja" lang="ja">開始と構成</span><span class="en" lang="en">Start and configure</span></h2><p><span class="ja" lang="ja">アプリを導入し、モデルとセッションの基本を安全に構成します。</span><span class="en" lang="en">Install the app and safely configure models and session fundamentals.</span></p></div>
+  <div class="card-grid"><article class="card" data-guide-card data-guide-id="01" data-path="start-configure" data-difficulty="beginner" data-status="current">
+  <div class="card__top"><span class="guide-number">01</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">インストールとプロジェクト接続</span><span class="en" lang="en">Install and connect projects</span></h3>
+  <p><span class="ja" lang="ja">GitHub Copilot App を導入し、GitHub リポジトリまたはローカルフォルダーを最初のプロジェクトとして接続します。</span><span class="en" lang="en">Install the GitHub Copilot app and connect a GitHub repository or local folder as your first project.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">初級</span><span class="en" lang="en">Beginner</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="01-install-projects.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="02" data-path="start-configure" data-difficulty="intermediate" data-status="preview">
+  <div class="card__top"><span class="guide-number">02</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">モデル、Auto、BYOK を構成する</span><span class="en" lang="en">Configure models, Auto, and BYOK</span></h3>
+  <p><span class="ja" lang="ja">GitHub ホスト型モデルと Auto の切り替え、reasoning effort の永続化、そしてローカル BYOK によるモデルプロバイダーの追加方法を確認します。</span><span class="en" lang="en">Review GitHub-hosted models and the Auto switch, reasoning effort persistence, and how to add a local BYOK model provider.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span><span class="badge badge--warning"><span class="ja" lang="ja">提供中（一部プレビュー）</span><span class="en" lang="en">Available (partly preview)</span></span></div>
+  <div class="card-actions"><a class="button" href="02-models-auto-byok.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="03" data-path="start-configure" data-difficulty="beginner" data-status="current">
+  <div class="card__top"><span class="guide-number">03</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">セッションを開始してモードを選ぶ</span><span class="en" lang="en">Start a session and choose a mode</span></h3>
+  <p><span class="ja" lang="ja">新しいワーキングツリー、ローカルリポジトリ、クラウドサンドボックスからセッションの実行場所を選び、Interactive、Plan、Autopilot のモードを使い分けて、安全な最初の実装を Changes で確認します。</span><span class="en" lang="en">Choose where a session runs—new working tree, local repository, or cloud sandbox—use Interactive, Plan, and Autopilot modes, and review a safe first implementation in Changes.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">初級</span><span class="en" lang="en">Beginner</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中（一部プレビュー）</span><span class="en" lang="en">Available (partly preview)</span></span></div>
+  <div class="card-actions"><a class="button" href="03-first-session-modes.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+</section>
+<section class="section" id="parallel-work">
+  <div class="section-heading"><p class="eyebrow"><span class="ja" lang="ja">学習パス 2</span><span class="en" lang="en">Learning path 2</span></p><h2><span class="ja" lang="ja">並列作業を実行</span><span class="en" lang="en">Run parallel work</span></h2><p><span class="ja" lang="ja">分離されたセッション、複数ビュー、ファイルと Canvas を使って作業を並列化します。</span><span class="en" lang="en">Parallelize work with isolated sessions, multi-session views, files, and canvases.</span></p></div>
+  <div class="card-grid"><article class="card" data-guide-card data-guide-id="04" data-path="parallel-work" data-difficulty="intermediate" data-status="current">
+  <div class="card__top"><span class="guide-number">04</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">Worktree とローカルリポジトリで並列セッションを実行</span><span class="en" lang="en">Run parallel sessions with worktrees and the local repository</span></h3>
+  <p><span class="ja" lang="ja">同じリポジトリで独立した2つの作業を、新しい working tree セッションとローカルリポジトリセッションに分けて同時に進め、ファイルの衝突を避ける方法を学びます。</span><span class="en" lang="en">Learn to run two independent pieces of work in the same repository at once by splitting them across a new working tree session and a local repository session, without colliding on files.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="04-worktrees-parallel-sessions.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="05" data-path="parallel-work" data-difficulty="advanced" data-status="current">
+  <div class="card__top"><span class="guide-number">05</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">オーケストレーションとネストされたセッション</span><span class="en" lang="en">Orchestration and nested sessions</span></h3>
+  <p><span class="ja" lang="ja">親セッションからサブタスクごとにネストされたセッションを作成し、計画を確認・承認しながら複数の作業を調整する方法を学びます。</span><span class="en" lang="en">Learn to spawn nested sessions for subtasks from a parent session, and coordinate multiple pieces of work while reviewing and approving each child&#039;s plan.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">上級</span><span class="en" lang="en">Advanced</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="05-orchestration-nested-sessions.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="06" data-path="parallel-work" data-difficulty="intermediate" data-status="current">
+  <div class="card__top"><span class="guide-number">06</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">Session Grid とサイドチャットで複数セッションを俯瞰する</span><span class="en" lang="en">Oversee multiple sessions with Session Grid and side chats</span></h3>
+  <p><span class="ja" lang="ja">v1.1.0で全ユーザーに提供されたSession Gridで複数セッションを同時に表示し、レビューパネルのサイドチャットで文脈を保ったまま質問し、プルリクエストタイトルへの自動セッション名変更を確認します。</span><span class="en" lang="en">Use Session Grid, available to all users since v1.1.0, to view multiple sessions at once, ask scoped questions with side chats in the review panel, and confirm automatic session renaming to the pull request title.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="06-session-grid-side-chats.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="07" data-path="parallel-work" data-difficulty="beginner" data-status="current">
+  <div class="card__top"><span class="guide-number">07</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">チャットのアーカイブ・巻き戻し・コンパクト化</span><span class="en" lang="en">Archive, rewind, and compact chats</span></h3>
+  <p><span class="ja" lang="ja">会話が長くなったチャットを<code>/compact</code>で手動コンパクト化し、不要になった会話は削除ではなくアーカイブして復元可能な状態にし、必要なら以前のメッセージから会話を巻き戻す方法を学びます。</span><span class="en" lang="en">Learn to manually compact a long conversation with <code>/compact</code>, archive chats you no longer need (instead of deleting them) so they stay recoverable, and rewind a conversation from an earlier message when needed.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">初級</span><span class="en" lang="en">Beginner</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="07-chat-archive-rewind-compact.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="08" data-path="parallel-work" data-difficulty="advanced" data-status="current">
+  <div class="card__top"><span class="guide-number">08</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">クラウド・WSL・VS Code・CLIへのハンドオフ</span><span class="en" lang="en">Hand off across cloud, WSL, VS Code, and CLI</span></h3>
+  <p><span class="ja" lang="ja">同じ作業をクラウドサンドボックス、WSLリモート環境、VS Code、Copilot CLIの間で引き継ぐ方法と、それぞれの境界を学びます。</span><span class="en" lang="en">Learn how to hand the same piece of work off between a cloud sandbox, a WSL remote environment, VS Code, and Copilot CLI, and understand the boundary between each surface.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">上級</span><span class="en" lang="en">Advanced</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="08-cloud-wsl-vscode-cli-handoff.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="09" data-path="parallel-work" data-difficulty="intermediate" data-status="current">
+  <div class="card__top"><span class="guide-number">09</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">ファイル・差分・ブラウザプレビュー・プレゼンテーションモード</span><span class="en" lang="en">Files, diffs, browser preview, and Present mode</span></h3>
+  <p><span class="ja" lang="ja">隠しファイル表示、コミット/ファイル/未コミットのスコープ切り替え、GitHub形式の行アンカー、ブラウザプレビュー、フルスクリーンのPresent modeを使い、シークレットを露出させずにレビューする方法を学びます。</span><span class="en" lang="en">Learn to toggle hidden files, switch between commit/file/uncommitted diff scopes, use GitHub-style line anchors, preview a running app in the browser tab, and present with full-screen Present mode — all without exposing secrets.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="09-files-diffs-browser-present-mode.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="10" data-path="parallel-work" data-difficulty="intermediate" data-status="current">
+  <div class="card__top"><span class="guide-number">10</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">Canvasとアーティファクトで人とエージェントが協働する</span><span class="en" lang="en">Collaborate with canvases and artifacts</span></h3>
+  <p><span class="ja" lang="ja"><code>/create-canvas</code>でCanvas拡張を作成し、ユーザースコープとプロジェクトスコープの違いを理解しながら、人とエージェントが同じ成果物を双方向に編集する方法を学びます。</span><span class="en" lang="en">Use <code>/create-canvas</code> to build a canvas extension, understand the difference between user and project scope, and collaborate bidirectionally with the agent on the same artifact.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="10-canvases-artifacts.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+</section>
+<section class="section" id="github-lifecycle">
+  <div class="section-heading"><p class="eyebrow"><span class="ja" lang="ja">学習パス 3</span><span class="en" lang="en">Learning path 3</span></p><h2><span class="ja" lang="ja">GitHub ライフサイクルを管理</span><span class="en" lang="en">Manage the GitHub lifecycle</span></h2><p><span class="ja" lang="ja">My Work から Issue、レビュー、CI、マージまでをアプリ内で進めます。</span><span class="en" lang="en">Move from My Work through issues, reviews, CI, and merge inside the app.</span></p></div>
+  <div class="card-grid"><article class="card" data-guide-card data-guide-id="11" data-path="github-lifecycle" data-difficulty="beginner" data-status="current">
+  <div class="card__top"><span class="guide-number">11</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">My Work のセクションとフィルターを使いこなす</span><span class="en" lang="en">Master My Work sections and filters</span></h3>
+  <p><span class="ja" lang="ja">My Work のデフォルトセクションを理解し、<code>has:</code>/<code>no:</code> 修飾子を使って issue とプルリクエストを素早く絞り込みます。</span><span class="en" lang="en">Understand My Work&#039;s default sections and use the <code>has:</code>/<code>no:</code> qualifiers to quickly narrow down issues and pull requests.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">初級</span><span class="en" lang="en">Beginner</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="11-my-work-filters.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="12" data-path="github-lifecycle" data-difficulty="beginner" data-status="current">
+  <div class="card__top"><span class="guide-number">12</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">Issue のセッションコンテキストと安全なディープリンク</span><span class="en" lang="en">Issue session context and safe deep links</span></h3>
+  <p><span class="ja" lang="ja">issue から作成したセッションにコンテキストを引き継がせ、<code>ghapp://</code> ディープリンクを公式ドキュメント通りの安全な形式で共有します。</span><span class="en" lang="en">Carry issue context into a new session and share <code>ghapp://</code> deep links using the safe, officially documented shapes.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">初級</span><span class="en" lang="en">Beginner</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="12-issues-deep-links.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="13" data-path="github-lifecycle" data-difficulty="intermediate" data-status="current">
+  <div class="card__top"><span class="guide-number">13</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">プルリクエストレビューを完了する</span><span class="en" lang="en">Complete a pull request review</span></h3>
+  <p><span class="ja" lang="ja">Overview、Files changed、保留中のレビューを使って PR レビューをセッション内で進め、ステージ済みコメントの文言を編集してから提出します。</span><span class="en" lang="en">Move a PR review through Overview, Files changed, and a pending review draft in a session, then edit staged comment wording and submit.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="13-pull-request-review.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="14" data-path="github-lifecycle" data-difficulty="advanced" data-status="current">
+  <div class="card__top"><span class="guide-number">14</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">Agent Merge で CI とマージキューを管理する</span><span class="en" lang="en">Manage CI and the merge queue with Agent Merge</span></h3>
+  <p><span class="ja" lang="ja">Agent Merge を有効にして、CI のブロック要因の解消からマージ条件を満たすまでをバックグラウンドで進めます。ブランチ保護や必須レビューを回避するものではありません。</span><span class="en" lang="en">Enable Agent Merge to resolve CI blockers and carry a PR to merge conditions in the background, without ever bypassing branch protection or required reviews.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">上級</span><span class="en" lang="en">Advanced</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="14-agent-merge-ci-queue.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="15" data-path="github-lifecycle" data-difficulty="intermediate" data-status="current">
+  <div class="card__top"><span class="guide-number">15</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">セキュリティレビューとラバーダックで批評を受ける</span><span class="en" lang="en">Get a critique with security review and rubber duck</span></h3>
+  <p><span class="ja" lang="ja"><code>/security-review</code> で高信頼度の脆弱性を確認し、Claude または GPT を使うセッションではラバーダックエージェントから建設的な批評を受けます。どちらも既存のセキュリティ機能を置き換えるものではありません。</span><span class="en" lang="en">Use <code>/security-review</code> to surface high-confidence vulnerabilities, and get a constructive critique from the rubber duck agent when your session uses a Claude or GPT model. Neither replaces your existing security tools.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="15-security-review-rubber-duck.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+</section>
+<section class="section" id="automate-extend">
+  <div class="section-heading"><p class="eyebrow"><span class="ja" lang="ja">学習パス 4</span><span class="en" lang="en">Learning path 4</span></p><h2><span class="ja" lang="ja">自動化と拡張</span><span class="en" lang="en">Automate and extend</span></h2><p><span class="ja" lang="ja">ローカルとクラウドの自動化を作成し、エージェント、MCP、スキル、プラグインを拡張します。</span><span class="en" lang="en">Create local and cloud automations, then extend agents, MCP, skills, and plugins.</span></p></div>
+  <div class="card-grid"><article class="card" data-guide-card data-guide-id="16" data-path="automate-extend" data-difficulty="intermediate" data-status="current">
+  <div class="card__top"><span class="guide-number">16</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">ローカル自動化を作成する</span><span class="en" lang="en">Create local automations</span></h3>
+  <p><span class="ja" lang="ja">アプリを起動したままローカル環境でエージェントタスクをスケジュール実行し、対話セッションと同じ設定・指示を再利用します。</span><span class="en" lang="en">Schedule recurring agent tasks to run from your local environment while the app is open, reusing the same settings and instructions as an interactive session.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="16-local-automations.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="17" data-path="automate-extend" data-difficulty="advanced" data-status="current">
+  <div class="card__top"><span class="guide-number">17</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">クラウド自動化を作成する</span><span class="en" lang="en">Create cloud automations</span></h3>
+  <p><span class="ja" lang="ja">プライベートまたは内部リポジトリで Copilot cloud agent をトリガーで自動実行し、パソコンの電源が切れていても夜間タスクを完了させます。</span><span class="en" lang="en">Trigger Copilot cloud agent automatically in a private or internal repository so overnight tasks finish even while your computer is off.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">上級</span><span class="en" lang="en">Advanced</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="17-cloud-automations.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="18" data-path="automate-extend" data-difficulty="intermediate" data-status="current">
+  <div class="card__top"><span class="guide-number">18</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">カスタムエージェントを作成して使う</span><span class="en" lang="en">Create and use custom agents</span></h3>
+  <p><span class="ja" lang="ja">リポジトリまたはユーザーレベルでカスタムエージェントを定義し、エージェントピッカーと /agent からブランチ・worktree 単位でも正しく呼び出せることを確認します。</span><span class="en" lang="en">Define a custom agent at the repository or user level, then confirm it can be selected from the agent picker and /agent even when it is scoped to a single branch or worktree.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="18-custom-agents.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="19" data-path="automate-extend" data-difficulty="advanced" data-status="current">
+  <div class="card__top"><span class="guide-number">19</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">MCP・スキル・プラグイン・Canvas 拡張を使い分ける</span><span class="en" lang="en">Use MCP, skills, plugins, and Canvas extensions together</span></h3>
+  <p><span class="ja" lang="ja">外部ツールを繋ぐ MCP サーバー、タスク別の指示であるスキル、まとめて配布するプラグイン、共同編集できる Canvas 拡張の違いを理解し、それぞれを安全に有効化します。</span><span class="en" lang="en">Understand the differences between MCP servers that connect external tools, task-specific skills, bundled plugins, and collaborative Canvas extensions, and enable each of them safely.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">上級</span><span class="en" lang="en">Advanced</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="19-mcp-skills-plugins-canvas-extensions.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+</section>
+<section class="section" id="operate-optimize">
+  <div class="section-heading"><p class="eyebrow"><span class="ja" lang="ja">学習パス 5</span><span class="en" lang="en">Learning path 5</span></p><h2><span class="ja" lang="ja">運用と最適化</span><span class="en" lang="en">Operate and optimize</span></h2><p><span class="ja" lang="ja">履歴と使用状況から改善し、アクセシビリティ、ストレージ、復旧を整えます。</span><span class="en" lang="en">Improve from history and usage data, then configure accessibility, storage, and recovery.</span></p></div>
+  <div class="card-grid"><article class="card" data-guide-card data-guide-id="20" data-path="operate-optimize" data-difficulty="intermediate" data-status="current">
+  <div class="card__top"><span class="guide-number">20</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">Memory・Chronicle・Insights</span><span class="en" lang="en">Memory, Chronicle, and Insights</span></h3>
+  <p><span class="ja" lang="ja">Copilot Memory の永続的な事実と好み、CLI 由来の Chronicle セッション履歴、そして Insights タブと公式の使用状況最適化ガイダンスを、混同せずに使い分けます。</span><span class="en" lang="en">Use Copilot Memory&#039;s durable facts and preferences, the CLI-native Chronicle session history, and the Insights tab plus official usage-optimization guidance without conflating the three.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="20-memory-chronicle-insights.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card" data-guide-card data-guide-id="21" data-path="operate-optimize" data-difficulty="intermediate" data-status="current">
+  <div class="card__top"><span class="guide-number">21</span><span class="badge badge--success" data-card-progress hidden><span class="ja" lang="ja">完了</span><span class="en" lang="en">Complete</span></span></div>
+  <h3><span class="ja" lang="ja">アクセシビリティ、ストレージ、セッションのライフサイクルと復旧</span><span class="en" lang="en">Accessibility, storage, session lifecycle, and recovery</span></h3>
+  <p><span class="ja" lang="ja">キーボードとスクリーンリーダー、ローカル音声入力を使いこなし、ディスク容量とアーカイブ・削除を安全に管理し、固まったセッションから慎重に復旧します。</span><span class="en" lang="en">Work confidently with keyboard navigation, screen readers, and local voice input, manage disk space and archive-versus-delete decisions safely, and recover carefully from a stuck session.</span></p>
+  <div class="chips"><span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span><span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span></div>
+  <div class="card-actions"><a class="button" href="21-accessibility-storage-lifecycle-recovery.html"><span class="ja" lang="ja">ガイドを開く</span><span class="en" lang="en">Open guide</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+</section>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.2/"><span class="ja" lang="ja">v1.1.2 機能ガイド</span><span class="en" lang="en">v1.1.2 feature guide</span></a>
+      <a href="../copilot-app-v1.1.2/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">21 ハンズオン</span><span class="en" lang="en">21 hands-on guides</span></a>
+      <a href="../copilot-app-v1.0.12/"><span class="ja" lang="ja">v1.0.12 アーカイブ</span><span class="en" lang="en">v1.0.12 archive</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式ガイドです。製品の可用性、ポリシー、料金は公式ソースを確認してください。</span><span class="en" lang="en">This is an unofficial guide. Confirm product availability, policy, and pricing in official sources.</span></p>
+  </div>
+</footer>
+</body>
+</html>
