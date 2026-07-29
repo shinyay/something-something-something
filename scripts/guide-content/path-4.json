@@ -1,0 +1,1460 @@
+{
+  "pathId": "automate-extend",
+  "guides": [
+    {
+      "id": "16",
+      "title": {
+        "ja": "ローカル自動化を作成する",
+        "en": "Create local automations"
+      },
+      "summary": {
+        "ja": "アプリを起動したままローカル環境でエージェントタスクをスケジュール実行し、対話セッションと同じ設定・指示を再利用します。",
+        "en": "Schedule recurring agent tasks to run from your local environment while the app is open, reusing the same settings and instructions as an interactive session."
+      },
+      "keywords": [
+        "automation",
+        "local automation",
+        "schedule",
+        "recurring prompt",
+        "per-project instructions",
+        "Automations tab"
+      ],
+      "difficulty": {
+        "key": "intermediate",
+        "label": {
+          "ja": "中級",
+          "en": "Intermediate"
+        }
+      },
+      "status": {
+        "key": "current",
+        "label": {
+          "ja": "提供中",
+          "en": "Available"
+        },
+        "detail": {
+          "ja": "v1.1.2 時点。ローカル自動化はアプリを使えるすべての Copilot プランで利用でき、v1.0.14 以降は対話セッションと同じ Settings とプロジェクト個別の指示を使用します。",
+          "en": "Current in v1.1.2. Local automations are available to any Copilot plan that can run the app, and since v1.0.14 they use the same Settings and per-project instructions as an interactive session."
+        }
+      },
+      "version": {
+        "ja": "v1.1.2 で確認",
+        "en": "Verified for v1.1.2"
+      },
+      "scenario": {
+        "ja": "毎朝、接続済みのサンプルリポジトリで新しい Issue を要約させたいものの、ファイルの変更やプルリクエストの作成はまだ許可したくない状況を扱います。",
+        "en": "You want a connected sample repository to summarize new issues every morning, but you are not ready to let the automation change files or open pull requests yet."
+      },
+      "scope": {
+        "ja": "このガイドは GitHub Copilot App の「Automations」タブで作成するローカル自動化（「Run in the cloud」をオフのまま）を扱います。同じ画面から作成できるクラウド自動化はガイド17の隣接領域として扱い、GitHub Actions のスケジュール実行や Copilot CLI 独自の定期実行の仕組みはこのガイドの対象外です。",
+        "en": "This guide covers local automations created from the GitHub Copilot app's Automations tab with Run in the cloud left off. Cloud automations created from the same screen are treated as the adjacent surface covered in guide 17; GitHub Actions scheduled workflows and Copilot CLI's own recurring-task mechanisms are out of scope here."
+      },
+      "safety": {
+        "ja": "自動化のプロンプトやフィルターにシークレットや個人情報を含めないでください。ローカル自動化は対話セッションと同じ権限で実行されるため、破壊的な操作を許可する前に低リスクな読み取り専用プロンプトで検証してください。",
+        "en": "Never put secrets or personal data in an automation's prompt or filters. Local automations run with the same permissions as an interactive session, so validate with a low-risk, read-only prompt before allowing destructive actions."
+      },
+      "prerequisites": [
+        {
+          "ja": "ガイド01 に沿って GitHub Copilot App をインストールし、サインインして、変更してよいプロジェクトを1つ接続済みであること。",
+          "en": "The GitHub Copilot app is installed and signed in, and you have connected one project you are allowed to change, as covered in guide 01."
+        },
+        {
+          "ja": "接続したプロジェクトに Git リポジトリとしての履歴があり、`.github/copilot-instructions.md` などのプロジェクト個別の指示があれば内容を把握していること。",
+          "en": "The connected project has Git history, and you know the contents of any per-project instructions, such as `.github/copilot-instructions.md`, if present."
+        },
+        {
+          "ja": "自動化のスケジュールを機能させたい時間帯に、アプリと端末を起動したままにできること。ローカル自動化は端末とアプリのプロセスが動作しているときにしか実行されません。",
+          "en": "You can keep the app and machine running during the hours you want the schedule to fire. Local automations only run while the app process and machine are active."
+        },
+        {
+          "ja": "組織管理アカウントの場合、GitHub Copilot App ポリシーが有効になっており、自動化機能がブロックされていないこと。",
+          "en": "For organization-managed accounts, the GitHub Copilot app policy is enabled so the automations feature is not blocked."
+        }
+      ],
+      "launchers": [
+        {
+          "label": {
+            "ja": "Automations を開く",
+            "en": "Open Automations"
+          },
+          "description": {
+            "ja": "サイドバーの Automations 画面を安全なホスト型ランチャーで開きます。",
+            "en": "Opens the Automations screen using the safe hosted launcher."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fautomations"
+        },
+        {
+          "label": {
+            "ja": "ローカル自動化の下書きを開く",
+            "en": "Open a local automation draft"
+          },
+          "description": {
+            "ja": "名前・スケジュール・プロンプトを事前入力した新規自動化ダイアログを開きます。作成は確認後にアプリ内で行われます。",
+            "en": "Opens the new automation dialog with a name, schedule, and prompt pre-filled. Nothing is created until you confirm inside the app."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fautomations%2Fnew%3Fname%3DLocal%2520backlog%2520triage%2520draft%26trigger%3Ddaily%26time%3D09%253A00%26prompt%3DDraft%2520a%2520short%2520summary%2520of%2520new%2520issues%2520opened%2520in%2520the%2520last%252024%2520hours.%2520Do%2520not%2520push%2520changes%2520or%2520open%2520a%2520pull%2520request."
+        }
+      ],
+      "commands": [
+        {
+          "id": "verify-project-instructions",
+          "label": {
+            "ja": "プロジェクトの指示ファイルを確認",
+            "en": "Verify the project instructions file"
+          },
+          "language": "shell",
+          "code": "git ls-files .github/copilot-instructions.md"
+        },
+        {
+          "id": "local-triage-prompt-en",
+          "label": {
+            "ja": "ローカル自動化の読み取り専用プロンプト",
+            "en": "Local automation's read-only prompt"
+          },
+          "language": "text",
+          "code": "Draft a short summary of new issues opened in the last 24 hours. Do not push changes or open a pull request."
+        },
+        {
+          "id": "local-triage-prompt-ja",
+          "label": {
+            "ja": "ローカル自動化の読み取り専用プロンプト（日本語）",
+            "en": "Local automation's read-only prompt (Japanese)"
+          },
+          "language": "text",
+          "code": "過去24時間に作成された新しい Issue の要約を短くまとめてください。変更のプッシュやプルリクエストの作成は行わないでください。"
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "ja": "プロジェクトの指示とスケジュールの前提を確認する",
+            "en": "Confirm project instructions and scheduling assumptions"
+          },
+          "body": [
+            {
+              "ja": "自動化は対話セッションと同じ Settings とプロジェクト個別の指示を使います（v1.0.14 以降）。まず接続済みプロジェクトに指示ファイルがあるか確認します。",
+              "en": "Automations use the same Settings and per-project instructions as an interactive session, since v1.0.14. First confirm whether the connected project has an instructions file."
+            }
+          ],
+          "commandIds": [
+            "verify-project-instructions"
+          ],
+          "expected": {
+            "ja": "コマンドの出力でファイルの有無が分かり、自動化が参照する指示の内容を把握できます。",
+            "en": "The command output shows whether the file exists, so you know what instructions the automation will draw on."
+          }
+        },
+        {
+          "title": {
+            "ja": "Automations タブを開く",
+            "en": "Open the Automations tab"
+          },
+          "body": [
+            {
+              "ja": "サイドバーの Automations を開くか、下のランチャーで安全に開きます。保存済みの自動化には名前、スケジュール、対象リポジトリ、最終実行ステータスが表示されます。",
+              "en": "Open Automations from the sidebar, or use the launcher below to open it safely. Saved automations show their name, schedule, associated repository, and last run status."
+            }
+          ],
+          "expected": {
+            "ja": "Automations 画面が開き、まだ何も保存していない場合は一覧が空です。",
+            "en": "The Automations screen opens, showing an empty list if you have not saved anything yet."
+          }
+        },
+        {
+          "title": {
+            "ja": "新しいローカル自動化を作成する",
+            "en": "Create a new local automation"
+          },
+          "body": [
+            {
+              "ja": "New automation をクリックし、名前を付けます。Run in the cloud はオフのままにして、ローカル自動化として作成します。",
+              "en": "Click New automation and give it a name. Leave Run in the cloud off so it is created as a local automation."
+            }
+          ],
+          "expected": {
+            "ja": "作成ダイアログでローカル実行が選択された状態になっています。",
+            "en": "The creation dialog shows local execution selected."
+          }
+        },
+        {
+          "title": {
+            "ja": "トリガーとプロンプトを設定する",
+            "en": "Configure the trigger and prompt"
+          },
+          "body": [
+            {
+              "ja": "トリガーを Manual または On a schedule（hourly/daily/weekly）から選び、下のプロンプトのように読み取り専用の指示を入力します。シークレットは入力しません。",
+              "en": "Choose Manual or On a schedule (hourly, daily, or weekly) as the trigger, and enter a read-only instruction like the prompt below. Do not enter any secrets."
+            }
+          ],
+          "commandIds": [
+            "local-triage-prompt-en",
+            "local-triage-prompt-ja"
+          ],
+          "expected": {
+            "ja": "トリガーとプロンプトが保存内容に反映されています。",
+            "en": "The trigger and prompt are reflected in what you are about to save."
+          }
+        },
+        {
+          "title": {
+            "ja": "保存して手動で1回テストする",
+            "en": "Save it and test it manually once"
+          },
+          "body": [
+            {
+              "ja": "Create and run を選び、保存と同時に手動実行してテストします。端末とアプリが起動していることを確認してから実行してください。",
+              "en": "Choose Create and run to save and immediately trigger a manual test. Confirm the machine and app are running before you run it."
+            }
+          ],
+          "expected": {
+            "ja": "テスト実行のセッションが開始され、ファイル変更なしで要約が返ってきます。",
+            "en": "A test-run session starts and returns a summary without changing any files."
+          }
+        },
+        {
+          "title": {
+            "ja": "Recent runs で実行状況を確認する",
+            "en": "Check run status in Recent runs"
+          },
+          "body": [
+            {
+              "ja": "実行中は Recent runs に running インジケーターが表示され、Running でフィルターできます（v1.0.25 以降）。完了後はステータスと実行時間を確認します。",
+              "en": "While running, the run shows a running indicator in Recent runs and can be filtered by Running status, since v1.0.25. After it finishes, check its status and duration."
+            }
+          ],
+          "expected": {
+            "ja": "実行履歴に成功ステータスが記録されています。",
+            "en": "The run history records a successful status."
+          }
+        },
+        {
+          "title": {
+            "ja": "スケジュールと端末の起動状態の関係を確認する",
+            "en": "Confirm how the schedule depends on the machine being on"
+          },
+          "body": [
+            {
+              "ja": "アプリまたは端末を閉じた状態で予定時刻を1回迎えさせ、次にアプリを開いたときに実行が行われていないことを確認します。ローカル自動化は端末が起動している間しか動きません。電源が切れていても実行させたい場合はガイド17のクラウド自動化を検討してください。",
+              "en": "Let one scheduled time pass while the app or machine is closed, then confirm on your next launch that the run did not happen. Local automations only run while the machine is on; if you need it to run while your computer is off, consider the cloud automation in guide 17."
+            }
+          ],
+          "expected": {
+            "ja": "端末オフ中の予定時刻はスキップされ、次回の予定時刻に正常に実行されます。",
+            "en": "The scheduled time while the machine was off is skipped, and the next scheduled time runs normally."
+          }
+        }
+      ],
+      "expected": [
+        {
+          "ja": "Automations 一覧に名前・スケジュール・対象プロジェクト・最終実行ステータスを持つローカル自動化が表示される。",
+          "en": "The Automations list shows the local automation with its name, schedule, target project, and last run status."
+        },
+        {
+          "ja": "手動テスト実行が Changes に変更を残さず完了し、プロンプトにシークレットが含まれていない。",
+          "en": "The manual test run completes without leaving changes in Changes, and the prompt contains no secrets."
+        },
+        {
+          "ja": "実行中は Recent runs に running インジケーターが表示され、Running でフィルターできる。",
+          "en": "While running, Recent runs shows a running indicator and can be filtered by Running status."
+        },
+        {
+          "ja": "端末やアプリが起動していない予定時刻には実行されず、次にアプリを開いたときにその欠落を確認できる。",
+          "en": "The automation does not run at a scheduled time while the machine or app is off, and you can confirm the miss the next time you open the app."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "problem": {
+            "ja": "予定した時刻に自動化が実行されなかった",
+            "en": "The automation did not run at the scheduled time"
+          },
+          "fix": {
+            "ja": "端末がスリープ状態だったか、アプリが終了していた可能性があります。ローカル自動化は端末とアプリが動作している間だけ実行されるため、電源が切れていても実行したい場合はガイド17のクラウド自動化に切り替えてください。",
+            "en": "The machine may have been asleep, or the app may have been closed. Local automations only run while the machine and app are active, so switch to the cloud automation in guide 17 if you need it to run while your computer is off."
+          }
+        },
+        {
+          "problem": {
+            "ja": "自動化がプロジェクト個別の指示を無視しているように見える",
+            "en": "The automation seems to ignore per-project instructions"
+          },
+          "fix": {
+            "ja": "v1.0.14 より前は、ローカル自動化が Settings とプロジェクトの指示を正しく参照しない不具合がありました。v1.1.2 に更新し、指示ファイルがプロジェクトルートの想定パスにあるか確認してください。",
+            "en": "Before v1.0.14, local automations had a bug where they did not correctly use Settings and project instructions. Update to v1.1.2 and confirm the instructions file is at the expected path in the project root."
+          }
+        },
+        {
+          "problem": {
+            "ja": "権限プロンプトに答えた後もセッションが応答しなくなった",
+            "en": "The session stopped responding after answering a permission prompt"
+          },
+          "fix": {
+            "ja": "拡張機能フックなどの権限プロンプトに答えた後、セッションが固まる不具合が v1.1.0 で修正されています。v1.1.2 に更新し、再現する場合はアプリを再起動してください。",
+            "en": "A bug where a permission prompt, such as one for enabling extension hooks, could leave a session unresponsive after being answered was fixed in v1.1.0. Update to v1.1.2 and restart the app if it recurs."
+          }
+        },
+        {
+          "problem": {
+            "ja": "自動化から始まったセッションにレビューパネルや Create PR ボタンが表示されない",
+            "en": "A session started by an automation shows no review panel or Create PR button"
+          },
+          "fix": {
+            "ja": "自動化開始のセッションでレビューパネルやパネル切り替え、Run / Open in / Create PR ボタンがアプリ再起動まで欠落する不具合が v1.1.0 で修正されました。v1.1.2 に更新し、直っていない場合はアプリを再起動してください。",
+            "en": "A bug where sessions started by an automation could get stuck with no review panel, panel toggle, or Run / Open in / Create PR buttons until the app restarted was fixed in v1.1.0. Update to v1.1.2 and restart the app if the panel is still missing."
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "ja": "テスト用のローカル自動化はコンテキストメニューから無効化するか削除します（v1.0.24 以降、一覧から直接切り替え可能です）。",
+          "en": "Disable or delete the test local automation from its context menu; since v1.0.24 you can toggle it directly from the list."
+        },
+        {
+          "ja": "テスト実行で作成されたセッションをアーカイブまたは削除し、必要な会話や変更がないことを確認します。",
+          "en": "Archive or delete the sessions created by test runs after confirming they contain no conversation or changes you need."
+        },
+        {
+          "ja": "テストのために作成したブランチや worktree が残っていれば削除します。",
+          "en": "Delete any branch or worktree that was created only for this test, if one remains."
+        },
+        {
+          "ja": "スケジュールを本番向けに切り替える前に、テストのために短縮した hourly トリガーなどを意図した間隔に戻します。",
+          "en": "Before treating the schedule as production-ready, revert any trigger you shortened for testing, such as an hourly interval, back to its intended interval."
+        }
+      ],
+      "platforms": {
+        "windows": {
+          "ja": "Windows では x64/ARM64 のセットアップ実行ファイルでアプリ本体を実行します。WSL 内のリポジトリを対象にする場合でも、スケジュールを機能させるにはアプリ自体が起動している必要があります。",
+          "en": "On Windows, the app itself runs from the x64/ARM64 setup executable. Even when the target repository lives inside WSL, the app process itself must stay running for the schedule to fire."
+        },
+        "macos": {
+          "ja": "macOS ではエナジーセーバーの設定でアプリがスリープ後に終了しないよう確認してください。予定時刻の直前にスリープしていると実行がスキップされます。",
+          "en": "On macOS, check your Energy Saver settings so the app is not terminated after sleep; if the machine is asleep at the scheduled time, the run is skipped."
+        },
+        "linux": {
+          "ja": "Linux では AppImage 版を使う場合、ログイン後にアプリを自動起動する設定をしておくと、再起動後もスケジュールが継続しやすくなります。",
+          "en": "On Linux, if you use the AppImage build, configure it to auto-start after login so the schedule keeps working across reboots."
+        },
+        "wsl": {
+          "ja": "WSL リモート環境を対象にする場合でも、ローカル自動化を動かす GitHub Copilot App のプロセス自体は Windows ホスト側で起動している必要があります。v1.1.2 では WSL リモート環境に GitHub の Issue/PR ワークフロースキルも追加されています。",
+          "en": "Even when targeting a WSL remote environment, the GitHub Copilot app process that runs the local automation still runs on the Windows host. In v1.1.2, WSL remote environments also gained GitHub pull request and issue workflow skills."
+        }
+      },
+      "related": [
+        "01",
+        "17",
+        "20"
+      ],
+      "sources": [
+        {
+          "title": "Using automations in the GitHub Copilot app",
+          "url": "https://docs.github.com/en/copilot/how-tos/github-copilot-app/using-automations"
+        },
+        {
+          "title": "About Copilot automations",
+          "url": "https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-automations"
+        },
+        {
+          "title": "GitHub Copilot app v1.1.2 release",
+          "url": "https://github.com/github/app/releases/tag/v1.1.2"
+        }
+      ]
+    },
+    {
+      "id": "17",
+      "title": {
+        "ja": "クラウド自動化を作成する",
+        "en": "Create cloud automations"
+      },
+      "summary": {
+        "ja": "プライベートまたは内部リポジトリで Copilot cloud agent をトリガーで自動実行し、パソコンの電源が切れていても夜間タスクを完了させます。",
+        "en": "Trigger Copilot cloud agent automatically in a private or internal repository so overnight tasks finish even while your computer is off."
+      },
+      "keywords": [
+        "cloud automation",
+        "cloud agent",
+        "trigger",
+        "least-privilege tools",
+        "write access",
+        "smart search",
+        "Actions minutes",
+        "AI credits"
+      ],
+      "difficulty": {
+        "key": "advanced",
+        "label": {
+          "ja": "上級",
+          "en": "Advanced"
+        }
+      },
+      "status": {
+        "key": "current",
+        "label": {
+          "ja": "提供中",
+          "en": "Available"
+        },
+        "detail": {
+          "ja": "v1.1.2 時点。Copilot Pro、Pro+、Max、Business、Enterprise プランで利用でき、プライベートまたは内部リポジトリで Copilot cloud agent と自動化が有効な場合に使えます。",
+          "en": "Current in v1.1.2. Available on the Copilot Pro, Pro+, Max, Business, and Enterprise plans, for private or internal repositories where Copilot cloud agent and automations are enabled."
+        }
+      },
+      "version": {
+        "ja": "v1.1.2 で確認",
+        "en": "Verified for v1.1.2"
+      },
+      "scenario": {
+        "ja": "プライベートなサンプルリポジトリで、毎晩 main ブランチの失敗テストを確認し、安全な修正案を下書き PR として提案させたい状況を扱います。",
+        "en": "You want a private sample repository to check for failing tests on main every night and propose a safe fix as a draft pull request."
+      },
+      "scope": {
+        "ja": "このガイドは GitHub Copilot App の Automations 画面で「Run in the cloud」を有効にして作成するクラウド自動化を扱います。同じ自動化はリポジトリの GitHub.com 上の Agents タブからも作成できますが、それは App とは別のクライアント面として触れるにとどめます。ローカル自動化（ガイド16）や GitHub Actions のスケジュール実行（ガイド14 の CI とは別物）は対象外です。",
+        "en": "This guide covers cloud automations created from the GitHub Copilot app's Automations screen with Run in the cloud enabled. The same automations can also be created from a repository's Agents tab on GitHub.com, which is only mentioned as an adjacent client surface. Local automations (guide 16) and GitHub Actions scheduled workflows (distinct from the CI in guide 14) are out of scope."
+      },
+      "safety": {
+        "ja": "プロンプトや検索クエリにシークレットを含めないでください。クラウド自動化が開始するセッションのログとプロンプトは、そのリポジトリにアクセスできる全員に見えます。機密値は Copilot cloud agent のリポジトリシークレットとして渡してください。",
+        "en": "Never include secrets in a prompt or search query. The prompt and session logs started by a cloud automation are visible to everyone with access to the repository. Pass sensitive values as Copilot cloud agent repository secrets instead."
+      },
+      "prerequisites": [
+        {
+          "ja": "対象リポジトリがプライベートまたは内部であること。クラウド自動化はパブリックリポジトリでは利用できません。",
+          "en": "The target repository is private or internal. Cloud automations are not available in public repositories."
+        },
+        {
+          "ja": "その組織で Copilot cloud agent ポリシーが有効になっており、Business/Enterprise の場合は管理者が有効化していること。",
+          "en": "The Copilot cloud agent policy is enabled for the organization, and an administrator has enabled it for Business or Enterprise plans."
+        },
+        {
+          "ja": "対象リポジトリに書き込み権限（write access）があること。自動化を作成できるのは書き込み権限を持つユーザーだけです。",
+          "en": "You have write access to the target repository. Only users with write access can create automations."
+        },
+        {
+          "ja": "Copilot Pro、Pro+、Max、Business、Enterprise のいずれかのプランを利用していること。",
+          "en": "You are on the Copilot Pro, Pro+, Max, Business, or Enterprise plan."
+        }
+      ],
+      "launchers": [
+        {
+          "label": {
+            "ja": "Automations を開く",
+            "en": "Open Automations"
+          },
+          "description": {
+            "ja": "サイドバーの Automations 画面を安全なホスト型ランチャーで開きます。ローカルとクラウドの両方の自動化がここに並びます。",
+            "en": "Opens the Automations screen using the safe hosted launcher. Both local and cloud automations are listed here."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fautomations"
+        },
+        {
+          "label": {
+            "ja": "クラウド自動化の下書きを開く",
+            "en": "Open a cloud automation draft"
+          },
+          "description": {
+            "ja": "夜間のテスト修正プロンプトを事前入力した新規自動化ダイアログを開きます。Run in the cloud はダイアログが開いた後にアプリ内で自分で有効にしてください（URL パラメーターではありません）。",
+            "en": "Opens the new automation dialog pre-filled with a nightly test-fix prompt. Enable Run in the cloud yourself inside the app after the dialog opens — it is not a URL parameter."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fautomations%2Fnew%3Fname%3DNightly%2520failing%2520test%2520triage%2520(cloud)%26trigger%3Ddaily%26time%3D02%253A00%26prompt%3DCheck%2520for%2520failing%2520tests%2520on%2520the%2520main%2520branch%252C%2520attempt%2520a%2520safe%2520fix%252C%2520and%2520open%2520a%2520draft%2520pull%2520request%2520for%2520review."
+        }
+      ],
+      "commands": [
+        {
+          "id": "verify-repo-visibility",
+          "label": {
+            "ja": "リポジトリの公開設定を確認",
+            "en": "Verify repository visibility"
+          },
+          "language": "shell",
+          "code": "gh repo view OWNER/REPO --json visibility"
+        },
+        {
+          "id": "cloud-nightly-prompt-en",
+          "label": {
+            "ja": "夜間のテスト修正プロンプト",
+            "en": "Nightly test-fix prompt"
+          },
+          "language": "text",
+          "code": "Check for failing tests on the main branch, attempt a safe fix, and open a draft pull request for review. Do not merge or force-push."
+        },
+        {
+          "id": "cloud-nightly-prompt-ja",
+          "label": {
+            "ja": "夜間のテスト修正プロンプト（日本語）",
+            "en": "Nightly test-fix prompt (Japanese)"
+          },
+          "language": "text",
+          "code": "main ブランチで失敗しているテストを確認し、安全な修正を試みて、レビュー用の下書きプルリクエストを作成してください。マージや force-push は行わないでください。"
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "ja": "リポジトリの公開設定と権限を確認する",
+            "en": "Confirm repository visibility and permissions"
+          },
+          "body": [
+            {
+              "ja": "クラウド自動化はプライベートまたは内部リポジトリでのみ有効です。下のコマンドで対象リポジトリの visibility を確認し、自分に書き込み権限があることも確認します。",
+              "en": "Cloud automations only work on private or internal repositories. Use the command below to confirm the target repository's visibility, and confirm you have write access."
+            }
+          ],
+          "commandIds": [
+            "verify-repo-visibility"
+          ],
+          "expected": {
+            "ja": "visibility が private または internal と表示され、書き込み権限があることが分かります。",
+            "en": "The visibility shows private or internal, and you confirm you have write access."
+          }
+        },
+        {
+          "title": {
+            "ja": "Automations 画面を開く",
+            "en": "Open the Automations screen"
+          },
+          "body": [
+            {
+              "ja": "アプリの Automations タブを開くか、下のランチャーで開きます。同じ画面はリポジトリの GitHub.com 上の Agents タブの Automations パネルからも開けますが、ここではアプリから進めます。",
+              "en": "Open the app's Automations tab, or use the launcher below. The same screen is also reachable from the Agents tab's Automations pane on the repository's GitHub.com page, but continue from the app here."
+            }
+          ],
+          "expected": {
+            "ja": "Automations 画面が開き、New automation ボタンが見えます。",
+            "en": "The Automations screen opens and the New automation button is visible."
+          }
+        },
+        {
+          "title": {
+            "ja": "New automation でトリガーを選ぶ（スマート検索を利用）",
+            "en": "Choose a trigger in New automation, using smart search"
+          },
+          "body": [
+            {
+              "ja": "Manual、On a schedule、When an issue is created、When a pull request is opened/synchronized から1つ以上選びます。v1.1.2 では、クエリ欄を持つトリガーが Issue トリガーと同じスマート検索の入力になり、修飾子のオートコンプリートとヒントテキストが使えます。",
+              "en": "Choose one or more triggers from Manual, On a schedule, When an issue is created, and When a pull request is opened or synchronized. In v1.1.2, triggers with a query field use the same smart search input as issue triggers, with qualifier autocomplete and hint text."
+            }
+          ],
+          "expected": {
+            "ja": "選んだトリガーにクエリ欄がある場合、入力に応じてオートコンプリートの候補が表示されます。",
+            "en": "If the chosen trigger has a query field, autocomplete suggestions appear as you type."
+          }
+        },
+        {
+          "title": {
+            "ja": "Run in the cloud を有効にし、ツールを最小権限で選ぶ",
+            "en": "Enable Run in the cloud and select least-privilege tools"
+          },
+          "body": [
+            {
+              "ja": "Run in the cloud を有効にします。Tools では、このタスクに必要な操作だけを選びます。迷う場合は Suggest tools でプロンプトに基づく候補を確認してから絞り込みます。",
+              "en": "Enable Run in the cloud. In Tools, select only the actions this task actually needs. If unsure, use Suggest tools to get prompt-based suggestions, then narrow them down."
+            }
+          ],
+          "expected": {
+            "ja": "Run in the cloud が有効になり、選んだツールだけがハイライトされています。",
+            "en": "Run in the cloud is enabled, and only the tools you selected are highlighted."
+          }
+        },
+        {
+          "title": {
+            "ja": "書き込み権限のない実行者を無視する設定を確認する",
+            "en": "Confirm the setting that ignores actors without write access"
+          },
+          "body": [
+            {
+              "ja": "既定では、書き込み権限のないユーザーが起こしたイベントは無視され、プロンプトインジェクションのリスクを減らします。外部コントリビューターのイベントでも動かしたい場合だけ、Copilot cloud agent のリポジトリ設定で「Only allow automations to be triggered by users with write access」を無効にします（v1.1.0 以降で切り替え可能）。",
+              "en": "By default, events from users without write access are ignored, reducing the risk of prompt injection. Only disable “Only allow automations to be triggered by users with write access” in the Copilot cloud agent repository settings, toggleable since v1.1.0, if you specifically want external-contributor events to trigger it."
+            }
+          ],
+          "expected": {
+            "ja": "設定を変更しない限り、書き込み権限のない実行者のイベントは自動化を起動しません。",
+            "en": "Unless you change the setting, events from actors without write access do not start the automation."
+          }
+        },
+        {
+          "title": {
+            "ja": "プロンプト、モデル、推論の強さを設定して保存する",
+            "en": "Configure the prompt, model, and reasoning effort, then save"
+          },
+          "body": [
+            {
+              "ja": "下のプロンプトのようにシークレットを含まない指示を入力し、モデルと推論の強さを選びます（v1.0.13 以降、編集時も選択が保持されます）。Create and run で保存とテスト実行を同時に行います。",
+              "en": "Enter a secret-free instruction like the prompt below, and choose a model and reasoning effort, which are remembered when you edit the automation later, since v1.0.13. Use Create and run to save and test in one step."
+            }
+          ],
+          "commandIds": [
+            "cloud-nightly-prompt-en",
+            "cloud-nightly-prompt-ja"
+          ],
+          "expected": {
+            "ja": "テスト実行のセッションが開始し、Recent runs にクラウド自動化として表示されます。",
+            "en": "A test-run session starts and appears in Recent runs marked as a cloud automation."
+          }
+        },
+        {
+          "title": {
+            "ja": "セッションログと使用量を確認する",
+            "en": "Review the session log and usage"
+          },
+          "body": [
+            {
+              "ja": "作成したセッションはリポジトリへのアクセス権を持つ全員に見えます。プロンプトと差分を確認し、想定外のツール実行がないことを確かめます。あわせて、この実行が GitHub Actions の分数と AI クレジットを消費していることも確認します。",
+              "en": "The session you created is visible to everyone with access to the repository. Review the prompt and diff to confirm no unexpected tool use occurred, and confirm this run consumed GitHub Actions minutes and AI credits."
+            }
+          ],
+          "expected": {
+            "ja": "セッションログが公開範囲内のメンバーに見え、想定したツールだけが使われ、使用量に記録が残っています。",
+            "en": "The session log is visible to members within the sharing scope, only the intended tools were used, and the usage is recorded."
+          }
+        }
+      ],
+      "expected": [
+        {
+          "ja": "Automations 一覧でこの自動化が cloud として表示され、対象リポジトリがプライベートまたは内部である。",
+          "en": "The automation appears marked as cloud in the Automations list, and the target repository is private or internal."
+        },
+        {
+          "ja": "テスト実行のセッションログがリポジトリへのアクセス権を持つメンバーに見え、プロンプトにシークレットが含まれていない。",
+          "en": "The test-run session log is visible to members with repository access, and the prompt contains no secrets."
+        },
+        {
+          "ja": "選んだツールだけが実行時に使われ、書き込み権限のない実行者のイベントは既定で無視される。",
+          "en": "Only the selected tools are used at runtime, and events from actors without write access are ignored by default."
+        },
+        {
+          "ja": "実行が GitHub Actions の分数と AI クレジットの使用量に反映されている。",
+          "en": "The run is reflected in GitHub Actions minutes and AI credit usage."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "problem": {
+            "ja": "Run in the cloud のトグルが無効（グレーアウト）になっている",
+            "en": "The Run in the cloud toggle is disabled (greyed out)"
+          },
+          "fix": {
+            "ja": "リポジトリがパブリックである、または組織で Copilot cloud agent ポリシーが無効になっている可能性があります。プライベート/内部リポジトリであることを確認し、管理者にポリシーの有効化を依頼してください。",
+            "en": "The repository may be public, or the organization's Copilot cloud agent policy may be disabled. Confirm the repository is private or internal, and ask an administrator to enable the policy."
+          }
+        },
+        {
+          "problem": {
+            "ja": "外部コントリビューターが Issue を開いても自動化が起動しない",
+            "en": "The automation does not start when an external contributor opens an issue"
+          },
+          "fix": {
+            "ja": "これは既定の安全な挙動です。書き込み権限のない実行者のイベントは無視されます。意図的に許可したい場合のみ、Copilot cloud agent のリポジトリ設定でその制限を無効にしてください。",
+            "en": "This is the default, safer behavior — events from actors without write access are ignored. Only disable that restriction in the Copilot cloud agent repository settings if you intentionally want to allow it."
+          }
+        },
+        {
+          "problem": {
+            "ja": "クエリトリガーの検索フィルターが期待した Issue や PR にマッチしない",
+            "en": "The query trigger's search filter does not match the expected issues or pull requests"
+          },
+          "fix": {
+            "ja": "v1.1.2 のスマート検索は Issue トリガーと同じ修飾子オートコンプリートを使います。プレースホルダーとヒントテキストを確認しながら `is:` や `label:` などの修飾子を入力し直してください。",
+            "en": "The v1.1.2 smart search uses the same qualifier autocomplete as issue triggers. Re-enter qualifiers such as `is:` or `label:` while checking the placeholders and hint text."
+          }
+        },
+        {
+          "problem": {
+            "ja": "自動化から始まったセッションにレビューパネルや Create PR ボタンが表示されない",
+            "en": "A session started by the automation shows no review panel or Create PR button"
+          },
+          "fix": {
+            "ja": "この不具合は v1.1.0 で修正済みです。v1.1.2 に更新し、直っていない場合はアプリを再起動してください。",
+            "en": "This bug was fixed in v1.1.0. Update to v1.1.2 and restart the app if the panel is still missing."
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "ja": "テスト用のクラウド自動化はコンテキストメニューから無効化するか削除します。",
+          "en": "Disable or delete the test cloud automation from its context menu."
+        },
+        {
+          "ja": "テスト実行で作成された下書き PR やブランチを確認し、不要であればクローズ・削除します。",
+          "en": "Review any draft pull request or branch created by the test run, and close or delete it if it is not needed."
+        },
+        {
+          "ja": "テストのために緩めたツール選択や「書き込み権限が必要」設定は、本番運用前に元の最小権限に戻します。",
+          "en": "Restore any tool selection or the write-access requirement you loosened for testing back to least privilege before relying on this in production."
+        },
+        {
+          "ja": "Actions の分数や AI クレジットの使用状況を確認し、想定外の消費がないか見ておきます。",
+          "en": "Check Actions minutes and AI credit usage to confirm there was no unexpected consumption."
+        }
+      ],
+      "platforms": {
+        "windows": {
+          "ja": "Windows のアプリからでもクラウド自動化の作成・管理は同じ画面で行えます。実行自体は GitHub がホストするクラウド環境で行われるため、Windows 端末の電源状態は実行に影響しません。",
+          "en": "Creating and managing cloud automations from the Windows app uses the same screen. Execution itself happens in a GitHub-hosted cloud environment, so the Windows machine's power state does not affect the run."
+        },
+        "macos": {
+          "ja": "macOS でも同様に、作成後は端末をスリープさせても実行は継続します。通知が必要な場合はアプリの通知設定を確認してください。",
+          "en": "On macOS, the run continues even if you let the machine sleep after creating the automation. Check the app's notification settings if you want to be notified."
+        },
+        "linux": {
+          "ja": "Linux の AppImage 版でも作成フローは同じです。テスト実行の結果を確認するためにアプリを開き続ける必要はありません。",
+          "en": "The creation flow is the same on the Linux AppImage build. You do not need to keep the app open to see the result of a test run."
+        },
+        "wsl": {
+          "ja": "WSL リモート環境のプロジェクトでもクラウド自動化を作成できますが、実行はそのリポジトリに対して GitHub がホストする環境で行われ、ローカルの WSL ディストリビューションには依存しません。",
+          "en": "You can create cloud automations for a project in a WSL remote environment, but execution happens in a GitHub-hosted environment for that repository and does not depend on your local WSL distribution."
+        }
+      },
+      "related": [
+        "14",
+        "16",
+        "18"
+      ],
+      "sources": [
+        {
+          "title": "Creating automations with Copilot cloud agent",
+          "url": "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/create-automations"
+        },
+        {
+          "title": "About Copilot automations",
+          "url": "https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-automations"
+        },
+        {
+          "title": "GitHub Copilot app v1.1.2 release",
+          "url": "https://github.com/github/app/releases/tag/v1.1.2"
+        }
+      ]
+    },
+    {
+      "id": "18",
+      "title": {
+        "ja": "カスタムエージェントを作成して使う",
+        "en": "Create and use custom agents"
+      },
+      "summary": {
+        "ja": "リポジトリまたはユーザーレベルでカスタムエージェントを定義し、エージェントピッカーと /agent からブランチ・worktree 単位でも正しく呼び出せることを確認します。",
+        "en": "Define a custom agent at the repository or user level, then confirm it can be selected from the agent picker and /agent even when it is scoped to a single branch or worktree."
+      },
+      "keywords": [
+        "custom agent",
+        "agent picker",
+        "/agent",
+        "agent profile",
+        ".github/agents",
+        "~/.copilot/agents",
+        "branch scoped",
+        "worktree",
+        "repository trust",
+        "default agent"
+      ],
+      "difficulty": {
+        "key": "intermediate",
+        "label": {
+          "ja": "中級",
+          "en": "Intermediate"
+        }
+      },
+      "status": {
+        "key": "current",
+        "label": {
+          "ja": "提供中",
+          "en": "Available"
+        },
+        "detail": {
+          "ja": "v1.1.2 時点。すべての Copilot プランで利用でき、ブランチまたは worktree だけで定義したカスタムエージェントがそのセッションのエージェントピッカーと /agent オートコンプリートに正しく表示される不具合が v1.1.2 で修正されています。",
+          "en": "Current in v1.1.2. Available to all Copilot plans. A bug where custom agents defined only on a branch or worktree did not appear correctly in that session's agent picker and /agent autocomplete was fixed in v1.1.2."
+        }
+      },
+      "version": {
+        "ja": "v1.1.2 で確認",
+        "en": "Verified for v1.1.2"
+      },
+      "scenario": {
+        "ja": "サンプルリポジトリの1つのブランチだけに、ドキュメントレビュー専門のカスタムエージェントを定義し、そのセッションのピッカーと /agent から選べることを確認します。",
+        "en": "You define a documentation-review custom agent on a single branch of a sample repository, and confirm it can be selected from that session's picker and /agent."
+      },
+      "scope": {
+        "ja": "このガイドは GitHub Copilot App 内でのカスタムエージェントの定義（プロジェクトまたはユーザーレベル、ブランチ/worktree 限定を含む）と、エージェントピッカーおよび /agent からの選択を扱います。同じエージェントプロファイル形式は VS Code、JetBrains、Eclipse、Xcode、素の Copilot CLI でも動作しますが、それらのクライアントでの作成手順は隣接領域として深く扱いません。",
+        "en": "This guide covers defining custom agents inside the GitHub Copilot app, at the project or user level, including branch- or worktree-only definitions, and selecting them from the agent picker and /agent. The same agent-profile format also works in VS Code, JetBrains IDEs, Eclipse, Xcode, and plain Copilot CLI, but this guide treats creation in those other clients as an adjacent surface it does not cover in depth."
+      },
+      "safety": {
+        "ja": "エージェントプロファイルの指示欄にシークレットや資格情報を書かないでください。tools を制限しないカスタムエージェントは既定で全ツールにアクセスできるため、リポジトリを信頼する前に、共有プロジェクトへ追加するエージェントの権限は明示的に絞ってください。",
+        "en": "Do not put secrets or credentials in an agent profile's instructions. A custom agent without a tools restriction has access to all tools by default, so explicitly scope the permissions of any agent you add to a shared project before you trust the repository."
+      },
+      "prerequisites": [
+        {
+          "ja": "GitHub Copilot App が v1.1.2 に更新されており、書き込み権限のあるプロジェクトが1つ接続されていること。",
+          "en": "The GitHub Copilot app is updated to v1.1.2 and one project you have write access to is connected."
+        },
+        {
+          "ja": "YAML フロントマター付き Markdown ファイルの基本的な書き方を理解していること。",
+          "en": "You understand the basics of writing a Markdown file with YAML frontmatter."
+        },
+        {
+          "ja": "プロジェクト（`.github/agents/`）とユーザー（`~/.copilot/agents/`）のどちらにエージェントを置くか、チームで共有するか個人用に留めるかを決めていること。",
+          "en": "You have decided whether the agent belongs in the project (`.github/agents/`) or user (`~/.copilot/agents/`) location, and whether it should be shared with the team or kept personal."
+        },
+        {
+          "ja": "テストに使う一時的なブランチまたは worktree を作成できること。",
+          "en": "You can create a temporary branch or worktree to use for testing."
+        }
+      ],
+      "launchers": [
+        {
+          "label": {
+            "ja": "github/app をアプリで開く",
+            "en": "Open github/app in the app"
+          },
+          "description": {
+            "ja": "安全なホスト型ランチャーで公開リポジトリ github/app を開きます。カスタムエージェントの構造を確認するサンプルとして使えます。",
+            "en": "Uses the safe hosted launcher to open the public github/app repository, useful as a sample for inspecting custom agent structure."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fgithub.com%2Fgithub%2Fapp"
+        },
+        {
+          "label": {
+            "ja": "確認用の新規セッションを開く",
+            "en": "Open a confirmation-gated new session"
+          },
+          "description": {
+            "ja": "github/app 向けに、利用可能なカスタムエージェントを列挙させるプロンプトを事前入力した新規セッションダイアログを開きます。作成前にアプリ内で確認が表示されます。",
+            "en": "Opens the new session dialog for github/app, pre-filled with a prompt asking to list available custom agents. A confirmation appears inside the app before anything is created."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fsession%2Fnew%3Frepo%3Dgithub%252Fapp%26mode%3Dinteractive%26prompt%3DList%2520the%2520custom%2520agents%2520available%2520in%2520this%2520session%2520and%2520explain%2520when%2520each%2520one%2520should%2520be%2520used."
+        }
+      ],
+      "commands": [
+        {
+          "id": "agent-profile-template",
+          "label": {
+            "ja": "エージェントプロファイルのひな形",
+            "en": "Agent profile template"
+          },
+          "language": "markdown",
+          "code": "---\nname: docs-reviewer\ndescription: Reviews README and CONTRIBUTING files for outdated setup steps and unclear instructions. Use for documentation-only review requests.\ntools: [\"view\", \"grep\", \"glob\"]\n---\nYou are a documentation reviewer. Your scope is limited to README, CONTRIBUTING, and other documentation files.\nFocus on the following:\n- Flag outdated install or setup steps\n- Flag unclear or ambiguous instructions\n- Suggest concrete rewrites, but do not modify code files"
+        },
+        {
+          "id": "invoke-agent-prompt-en",
+          "label": {
+            "ja": "エージェントを明示的に呼び出すプロンプト",
+            "en": "Prompt that explicitly invokes the agent"
+          },
+          "language": "text",
+          "code": "Use the docs-reviewer agent to check README.md and CONTRIBUTING.md for outdated setup instructions."
+        },
+        {
+          "id": "invoke-agent-prompt-ja",
+          "label": {
+            "ja": "エージェントを明示的に呼び出すプロンプト（日本語）",
+            "en": "Prompt that explicitly invokes the agent (Japanese)"
+          },
+          "language": "text",
+          "code": "docs-reviewer エージェントを使って、README.md と CONTRIBUTING.md に古いセットアップ手順がないか確認してください。"
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "ja": "配置場所とスコープを決める",
+            "en": "Decide the location and scope"
+          },
+          "body": [
+            {
+              "ja": "チームで共有するなら `.github/agents/`（プロジェクト）に、自分専用にするなら `~/.copilot/agents/`（ユーザー）に置きます。同名のエージェントがある場合はユーザー側が優先されます。今回はブランチ/worktree 限定の挙動を確認するため、テスト用ブランチの `.github/agents/` に作成します。",
+              "en": "Place it under `.github/agents/` (project) to share it with the team, or under `~/.copilot/agents/` (user) to keep it personal. If both locations define an agent with the same name, the user-level one wins. To verify branch/worktree-only behavior here, create it under `.github/agents/` on a test branch."
+            }
+          ],
+          "expected": {
+            "ja": "テスト用ブランチが作成され、そのブランチにだけエージェントファイルを追加する準備ができています。",
+            "en": "A test branch exists and you are ready to add the agent file only on that branch."
+          }
+        },
+        {
+          "title": {
+            "ja": "エージェントプロファイルを作成する",
+            "en": "Create the agent profile"
+          },
+          "body": [
+            {
+              "ja": "下のひな形を参考に、name・description・任意の tools を含む YAML フロントマターと、指示本文を書いた `docs-reviewer.agent.md` を作成します。読み取り専用に近い動作にしたいので、tools を view/grep/glob に絞ります。",
+              "en": "Using the template below, create `docs-reviewer.agent.md` with YAML frontmatter for name, description, and optional tools, followed by the instruction body. Restrict tools to view/grep/glob to keep this close to read-only behavior."
+            }
+          ],
+          "commandIds": [
+            "agent-profile-template"
+          ],
+          "expected": {
+            "ja": "ブランチにファイルが追加され、tools が明示的に制限されています。",
+            "en": "The file is added on the branch, with tools explicitly restricted."
+          }
+        },
+        {
+          "title": {
+            "ja": "そのブランチ/worktree のセッションを開き直す",
+            "en": "Reopen the session for that branch or worktree"
+          },
+          "body": [
+            {
+              "ja": "新しいセッションを開くか、既存セッションを開き直して、追加したエージェントファイルを認識させます。",
+              "en": "Open a new session, or reopen an existing one, so the newly added agent file is picked up."
+            }
+          ],
+          "expected": {
+            "ja": "セッションがそのブランチ/worktree のコンテキストで開いています。",
+            "en": "The session is open in the context of that branch or worktree."
+          }
+        },
+        {
+          "title": {
+            "ja": "エージェントピッカーと /agent オートコンプリートで確認する",
+            "en": "Confirm it in the agent picker and /agent autocomplete"
+          },
+          "body": [
+            {
+              "ja": "エージェントピッカーを開くか、プロンプト欄で /agent と入力し、docs-reviewer がブランチ限定であっても正しく一覧に表示されることを確認します（v1.1.2 での修正点）。",
+              "en": "Open the agent picker, or type /agent in the prompt box, and confirm docs-reviewer appears correctly in the list even though it is branch-scoped — this is the fix delivered in v1.1.2."
+            }
+          ],
+          "expected": {
+            "ja": "docs-reviewer がピッカーと /agent の候補の両方に表示されます。",
+            "en": "docs-reviewer appears in both the picker and the /agent suggestions."
+          }
+        },
+        {
+          "title": {
+            "ja": "明示的な指示でエージェントを呼び出す",
+            "en": "Invoke the agent with an explicit instruction"
+          },
+          "body": [
+            {
+              "ja": "下のプロンプトのように、エージェント名を明示してタスクを依頼します。",
+              "en": "Ask for the task while explicitly naming the agent, as in the prompt below."
+            }
+          ],
+          "commandIds": [
+            "invoke-agent-prompt-en",
+            "invoke-agent-prompt-ja"
+          ],
+          "expected": {
+            "ja": "サブエージェントとして docs-reviewer が起動し、指定したファイルだけを対象にレビュー結果を返します。",
+            "en": "docs-reviewer runs as a subagent and returns review results scoped only to the files you specified."
+          }
+        },
+        {
+          "title": {
+            "ja": "ツール制限が実際に効いているか確認する",
+            "en": "Confirm the tool restriction actually applies"
+          },
+          "body": [
+            {
+              "ja": "エージェントにファイル変更やコマンド実行を依頼してみて、tools で許可していない操作は拒否されるか、実行されないことを確認します。",
+              "en": "Ask the agent to modify a file or run a command, and confirm actions not permitted by its tools list are refused or simply do not happen."
+            }
+          ],
+          "expected": {
+            "ja": "許可されていない操作は実行されず、制限が意図どおりに機能しています。",
+            "en": "The disallowed action does not run, confirming the restriction works as intended."
+          }
+        },
+        {
+          "title": {
+            "ja": "共有するかどうかを最終決定する",
+            "en": "Decide whether to share it"
+          },
+          "body": [
+            {
+              "ja": "チームで使いたい場合は、`.github/agents/docs-reviewer.agent.md` をコミットして通常のプルリクエストとしてレビューに出します。個人用に留めたい場合は、代わりに `~/.copilot/agents/` にコピーし、ブランチ上のファイルは削除します。必要であれば Settings → Sessions の Default agent に設定します（v1.0.18 以降）。",
+              "en": "If you want the team to use it, commit `.github/agents/docs-reviewer.agent.md` and send it through a normal pull request review. If you want to keep it personal, copy it to `~/.copilot/agents/` instead and remove the branch copy. Optionally set it as the Default agent in Settings → Sessions, available since v1.0.18."
+            }
+          ],
+          "expected": {
+            "ja": "エージェントが意図した範囲（チーム共有かユーザー個人か）だけに存在しています。",
+            "en": "The agent exists only in the scope you intended — shared with the team or kept personal."
+          }
+        }
+      ],
+      "expected": [
+        {
+          "ja": "ブランチ/worktree 限定で追加した docs-reviewer が、そのセッションのエージェントピッカーと /agent の両方に表示される。",
+          "en": "The branch/worktree-only docs-reviewer agent appears in both the agent picker and /agent for that session."
+        },
+        {
+          "ja": "明示的にエージェント名を指定した依頼が、指定したファイルだけを対象にサブエージェントとして完了する。",
+          "en": "A request that explicitly names the agent completes as a subagent scoped only to the files you specified."
+        },
+        {
+          "ja": "tools で許可していない操作は拒否されるか実行されず、制限が有効に機能している。",
+          "en": "Actions not permitted by the tools list are refused or do not run, confirming the restriction is effective."
+        },
+        {
+          "ja": "共有を選んだ場合は `.github/agents/` に、個人用を選んだ場合は `~/.copilot/agents/` にのみエージェントファイルが存在する。",
+          "en": "The agent file exists only in `.github/agents/` if you chose to share it, or only in `~/.copilot/agents/` if you chose to keep it personal."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "problem": {
+            "ja": "ブランチ限定のエージェントがピッカーや /agent に出てこない",
+            "en": "A branch-only agent does not appear in the picker or /agent"
+          },
+          "fix": {
+            "ja": "この不具合は v1.1.2 で修正されています。アプリを v1.1.2 に更新し、対象のブランチ/worktree のセッションであることを確認してください。",
+            "en": "This bug was fixed in v1.1.2. Update the app to v1.1.2 and confirm the session is actually scoped to that branch or worktree."
+          }
+        },
+        {
+          "problem": {
+            "ja": "プロジェクトとユーザーの両方に同名のエージェントがあり、意図と違う方が使われる",
+            "en": "Both project and user locations define an agent with the same name, and the wrong one is used"
+          },
+          "fix": {
+            "ja": "同名の場合はユーザーレベル（`~/.copilot/agents/`）が優先されます。プロジェクト側を使わせたい場合は名前を変えるか、ユーザー側のファイルを削除・リネームしてください。",
+            "en": "When names collide, the user-level file (`~/.copilot/agents/`) takes precedence. Rename one of them, or remove the user-level file, if you want the project-level agent to be used instead."
+          }
+        },
+        {
+          "problem": {
+            "ja": "カスタムエージェントが想定より多くのツールにアクセスできる",
+            "en": "The custom agent has access to more tools than expected"
+          },
+          "fix": {
+            "ja": "tools フィールドを省略すると既定ですべてのツールにアクセスできます。プロファイルに明示的な tools 一覧を追加し、セッションを開き直してください。",
+            "en": "Omitting the tools field grants access to all tools by default. Add an explicit tools list to the profile and reopen the session."
+          }
+        },
+        {
+          "problem": {
+            "ja": "エージェントを追加した直後、一覧に反映されない",
+            "en": "The agent list does not reflect a file you just added"
+          },
+          "fix": {
+            "ja": "エージェントファイルの追加や変更は新しいセッションまたは開き直しで反映されます。既存セッションを開いたままにせず、一度セッションを開き直してください。",
+            "en": "Adding or editing an agent file is picked up by a new session or a reopened one. Reopen the session instead of relying on one left open from before the change."
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "ja": "テストに使った `docs-reviewer.agent.md` はブランチにコミットする予定がなければ削除します。",
+          "en": "Delete the test `docs-reviewer.agent.md` file if you do not plan to commit it on the branch."
+        },
+        {
+          "ja": "テストのために作成したブランチや worktree を削除します。",
+          "en": "Delete the branch or worktree created only for this test."
+        },
+        {
+          "ja": "テストのために設定した Default agent を、通常使うエージェントに戻します。",
+          "en": "Reset the Default agent setting back to whatever you normally use, if you changed it only for this test."
+        },
+        {
+          "ja": "チーム共有として追加した場合は、レビューされていない一時的な変更が残っていないか、そのプルリクエストを確認します。",
+          "en": "If you added the agent for team sharing, review the pull request to confirm it does not include leftover temporary changes."
+        }
+      ],
+      "platforms": {
+        "windows": {
+          "ja": "Windows でもエージェントファイルの配置場所は同じです。`~/.copilot/agents/` は `%USERPROFILE%\\.copilot\\agents\\` に対応します。",
+          "en": "Agent file locations are the same on Windows. `~/.copilot/agents/` corresponds to `%USERPROFILE%\\.copilot\\agents\\`."
+        },
+        "macos": {
+          "ja": "macOS では `~/.copilot/agents/` がホームディレクトリ配下にそのまま作成されます。Finder で隠しフォルダーを表示すると内容を確認できます。",
+          "en": "On macOS, `~/.copilot/agents/` is created directly under your home directory. Show hidden folders in Finder to inspect its contents."
+        },
+        "linux": {
+          "ja": "Linux でも `~/.copilot/agents/` が使われます。複数ユーザーで共有する端末では、パーミッションが自分のホームディレクトリに閉じていることを確認してください。",
+          "en": "Linux also uses `~/.copilot/agents/`. On a machine shared by multiple users, confirm the permissions keep it scoped to your own home directory."
+        },
+        "wsl": {
+          "ja": "WSL リモート環境のプロジェクトを開いている場合、`.github/agents/` はそのディストリビューション内のリポジトリに存在し、`~/.copilot/agents/` はホスト側かディストリビューション内かが設定によって変わります。作成後は該当セッションの一覧に出るか必ず確認してください。",
+          "en": "When you open a project in a WSL remote environment, `.github/agents/` lives in the repository inside that distribution, while `~/.copilot/agents/` resolves to the host or the distribution depending on your setup. Always confirm the agent appears in that session's list after creating it."
+        }
+      },
+      "related": [
+        "01",
+        "04",
+        "19"
+      ],
+      "sources": [
+        {
+          "title": "Creating and using custom agents for GitHub Copilot CLI",
+          "url": "https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli"
+        },
+        {
+          "title": "About custom agents",
+          "url": "https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-custom-agents"
+        },
+        {
+          "title": "GitHub Copilot app v1.1.2 release",
+          "url": "https://github.com/github/app/releases/tag/v1.1.2"
+        }
+      ]
+    },
+    {
+      "id": "19",
+      "title": {
+        "ja": "MCP・スキル・プラグイン・Canvas 拡張を使い分ける",
+        "en": "Use MCP, skills, plugins, and Canvas extensions together"
+      },
+      "summary": {
+        "ja": "外部ツールを繋ぐ MCP サーバー、タスク別の指示であるスキル、まとめて配布するプラグイン、共同編集できる Canvas 拡張の違いを理解し、それぞれを安全に有効化します。",
+        "en": "Understand the differences between MCP servers that connect external tools, task-specific skills, bundled plugins, and collaborative Canvas extensions, and enable each of them safely."
+      },
+      "keywords": [
+        "MCP",
+        "agent skills",
+        "plugins",
+        "canvas extension",
+        "OAuth",
+        "marketplace",
+        ".github/extensions",
+        "~/.copilot/extensions",
+        "trusted repository"
+      ],
+      "difficulty": {
+        "key": "advanced",
+        "label": {
+          "ja": "上級",
+          "en": "Advanced"
+        }
+      },
+      "status": {
+        "key": "current",
+        "label": {
+          "ja": "提供中",
+          "en": "Available"
+        },
+        "detail": {
+          "ja": "v1.1.2 時点。MCP サーバー、スキル、プラグイン、Canvas 拡張はすべての Copilot プランでアプリから設定できますが、リポジトリ定義のものは信頼済みリポジトリであることが前提です。",
+          "en": "Current in v1.1.2. MCP servers, skills, plugins, and Canvas extensions can all be configured from the app on any Copilot plan, but repository-defined ones require the repository to be trusted."
+        }
+      },
+      "version": {
+        "ja": "v1.1.2 で確認",
+        "en": "Verified for v1.1.2"
+      },
+      "scenario": {
+        "ja": "サンプルリポジトリで、OAuth 認証が必要な MCP サーバーを1つ接続し、デフォルトのマーケットプレイスからプラグインを1つ入れ、プロジェクト共有の小さな Canvas 拡張を1つ作る、という一連の作業を扱います。",
+        "en": "You connect one OAuth-based MCP server, install one plugin from a default marketplace, and build one small project-shared Canvas extension in a sample repository."
+      },
+      "scope": {
+        "ja": "このガイドは GitHub Copilot App の Settings 画面（MCP Servers、Skills、Plugins）とセッション内 `/create-canvas` から行う、MCP サーバー・スキル・プラグイン・Canvas 拡張の4つの拡張機構を扱います。これらの設定の元になる Copilot CLI 側のファイルやコマンド（`~/.copilot/mcp-config.json`、`copilot plugin install`、`.github/copilot/settings.json` など）は、同じ設定を別のクライアントから操作する隣接領域として触れるに留め、CLI での操作手順そのものは対象外です。",
+        "en": "This guide covers the four extension mechanisms available from the GitHub Copilot app's Settings screens (MCP Servers, Skills, Plugins) and in-session `/create-canvas`: MCP servers, skills, plugins, and Canvas extensions. The underlying Copilot CLI files and commands that back the same configuration (`~/.copilot/mcp-config.json`, `copilot plugin install`, `.github/copilot/settings.json`, and similar) are mentioned only as an adjacent surface that edits the same configuration from a different client; CLI operating steps themselves are out of scope."
+      },
+      "safety": {
+        "ja": "MCP サーバーの API キーやトークンは、チャットのプロンプトに貼り付けないでください。OAuth のサインインフロー、または MCP サーバーの資格情報・ヘッダー入力欄だけに入力します。既定以外のマーケットプレイスやリポジトリ定義の MCP サーバー・スキルを有効化する前に、そのリポジトリが信頼できることを確認してください。",
+        "en": "Never paste MCP server API keys or tokens into a chat prompt. Enter them only through the OAuth sign-in flow, or an MCP server's own credential or header fields. Before enabling a non-default marketplace, or a repository-defined MCP server or skill, confirm that the repository is one you trust."
+      },
+      "prerequisites": [
+        {
+          "ja": "GitHub Copilot App v1.1.2 でサインイン済みで、書き込み権限のあるプロジェクトが1つ接続されていること。",
+          "en": "You are signed in to GitHub Copilot app v1.1.2 with one project connected that you have write access to."
+        },
+        {
+          "ja": "リポジトリの「信頼」がどのような意味を持つか理解しており、信頼していないリポジトリのエージェント定義や MCP 設定を有効化しないこと。",
+          "en": "You understand what trusting a repository means, and that you should not enable agent definitions or MCP configuration from a repository you do not trust."
+        },
+        {
+          "ja": "少なくとも1つの OAuth 対応 MCP サーバーのアカウントを持っているか、パブリックなテスト用サーバーで代用できること。",
+          "en": "You have an account with at least one OAuth-capable MCP server, or can substitute a public test server."
+        },
+        {
+          "ja": "プロジェクト共有の Canvas 拡張やプラグイン設定をコミットする場合に備え、`.github/` 配下への書き込み権限があること。",
+          "en": "You have write access under `.github/` in case you commit a project-shared Canvas extension or plugin configuration."
+        }
+      ],
+      "launchers": [
+        {
+          "label": {
+            "ja": "マーケットプレイス追加フォームを開く",
+            "en": "Open the marketplace add form"
+          },
+          "description": {
+            "ja": "既定で追加済みの awesome-copilot を例に、マーケットプレイス追加フォームを事前入力して開きます。追加はアプリ内で確認してから行われます。",
+            "en": "Opens the marketplace add form pre-filled with awesome-copilot, which is already added by default, as an example. Nothing is added until you confirm inside the app."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fplugins%2Fmarketplace%2Fadd%3Fsource%3Dgithub%252Fawesome-copilot"
+        },
+        {
+          "label": {
+            "ja": "プラグインインストールフォームを開く",
+            "en": "Open the plugin install form"
+          },
+          "description": {
+            "ja": "awesome-copilot の Impeccable プラグインを例に、インストールフォームを事前入力して開きます。インストールはアプリ内で確認してから行われます。",
+            "en": "Opens the plugin install form pre-filled with the Impeccable plugin from awesome-copilot, as an example. Nothing is installed until you confirm inside the app."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fplugins%2Finstall%3Fsource%3Dimpeccable%2540awesome-copilot"
+        }
+      ],
+      "commands": [
+        {
+          "id": "create-canvas-prompt",
+          "label": {
+            "ja": "Canvas 拡張を作成するプロンプト",
+            "en": "Prompt that creates a canvas extension"
+          },
+          "language": "text",
+          "code": "/create-canvas Create a small triage board canvas with columns for New, Investigating, and Done, plus agent-callable capabilities to add and move cards."
+        },
+        {
+          "id": "enabled-plugins-config",
+          "label": {
+            "ja": "リポジトリのプラグイン設定（.github/copilot/settings.json）",
+            "en": "Repository plugin configuration (.github/copilot/settings.json)"
+          },
+          "language": "json",
+          "code": "{\n  \"enabledPlugins\": [\"impeccable@awesome-copilot\"],\n  \"extraKnownMarketplaces\": {\n    \"acme-plugins\": \"https://github.com/acme/plugins\"\n  }\n}"
+        },
+        {
+          "id": "list-project-extensions",
+          "label": {
+            "ja": "プロジェクト共有 Canvas 拡張の一覧",
+            "en": "List project-shared canvas extensions"
+          },
+          "language": "shell",
+          "code": "ls .github/extensions"
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "ja": "MCP サーバーを追加し OAuth でサインインする",
+            "en": "Add an MCP server and sign in with OAuth"
+          },
+          "body": [
+            {
+              "ja": "Settings → MCP Servers を開き、カタログから選ぶかカスタムサーバーを追加します。OAuth が必要なサーバーはアプリ内のサインインフローを使い、トークンをチャットに貼り付けないでください。",
+              "en": "Open Settings → MCP Servers, and choose one from the catalog or add a custom server. For servers that require OAuth, use the in-app sign-in flow, and never paste a token into chat."
+            }
+          ],
+          "expected": {
+            "ja": "サーバーのステータスが Connected になり、利用可能なツールが一覧に表示されます。",
+            "en": "The server's status shows Connected, and its available tools are listed."
+          }
+        },
+        {
+          "title": {
+            "ja": "リポジトリ定義の MCP サーバーの信頼と有効/無効を確認する",
+            "en": "Confirm trust and enable/disable for repository-defined MCP servers"
+          },
+          "body": [
+            {
+              "ja": "プロジェクトの MCP 設定セクションを開き、信頼済みリポジトリで定義された MCP サーバーの接続状況を確認します。ここから個々のサーバーを有効/無効にできます。信頼していないリポジトリのサーバーは有効化しないでください。",
+              "en": "Open the project's MCP settings section and review the connection status of MCP servers defined in the trusted repository. You can enable or disable individual servers from here. Do not enable a server from a repository you do not trust."
+            }
+          ],
+          "expected": {
+            "ja": "信頼済みリポジトリのサーバーだけが一覧に表示され、必要に応じて有効/無効を切り替えられます。",
+            "en": "Only servers from the trusted repository appear, and you can toggle each one on or off as needed."
+          }
+        },
+        {
+          "title": {
+            "ja": "Skills 設定を確認する",
+            "en": "Review the Skills settings"
+          },
+          "body": [
+            {
+              "ja": "Settings → Skills を開き、リポジトリまたは Copilot CLI 側の設定から自動的に一覧に出ているスキルを確認します。必要であればカスタムのスキルディレクトリを追加します。",
+              "en": "Open Settings → Skills and review the skills already listed automatically from the repository or Copilot CLI configuration. Add a custom skill directory if you need one."
+            }
+          ],
+          "expected": {
+            "ja": "既存のスキルが一覧に表示され、追加したカスタムディレクトリも認識されます。",
+            "en": "Existing skills are listed, and any custom directory you add is recognized."
+          }
+        },
+        {
+          "title": {
+            "ja": "デフォルトのマーケットプレイスからプラグインをインストールする",
+            "en": "Install a plugin from a default marketplace"
+          },
+          "body": [
+            {
+              "ja": "Settings → Plugins を開き、Editor's Picks または Browse by Category から、awesome-copilot に含まれる Impeccable のようなプラグインをインストールします。下のランチャーでインストールフォームを直接開くこともできます。",
+              "en": "Open Settings → Plugins, then install a plugin such as Impeccable from awesome-copilot, either from Editor's Picks or Browse by Category. You can also open the install form directly using the launcher below."
+            }
+          ],
+          "commandIds": [
+            "enabled-plugins-config"
+          ],
+          "expected": {
+            "ja": "プラグインが Installed として表示され、それが提供するエージェントやスキルが利用可能になります。",
+            "en": "The plugin shows as Installed, and the agents or skills it provides become available."
+          }
+        },
+        {
+          "title": {
+            "ja": "非デフォルトのマーケットプレイスを追加する（必要な場合のみ）",
+            "en": "Add a non-default marketplace (only if needed)"
+          },
+          "body": [
+            {
+              "ja": "社内や個人のマーケットプレイスを使いたい場合だけ、Settings → Plugins からマーケットプレイスを追加します。追加前に、そのリポジトリまたは URL を信頼できるかどうかを確認してください。",
+              "en": "Only if you need an internal or personal marketplace, add it from Settings → Plugins. Before adding it, confirm you trust the source repository or URL."
+            }
+          ],
+          "expected": {
+            "ja": "追加したマーケットプレイスのプラグイン一覧が表示され、信頼できないものは追加していません。",
+            "en": "The added marketplace's plugin list appears, and you have not added anything you do not trust."
+          }
+        },
+        {
+          "title": {
+            "ja": "セッション内で Canvas 拡張を作成する",
+            "en": "Create a canvas extension inside a session"
+          },
+          "body": [
+            {
+              "ja": "セッションを開き、下のプロンプトのように /create-canvas を使ってボードを作らせます。チーム共有にするならプロジェクトスコープ（`.github/extensions`）を、個人用ならユーザースコープ（`~/.copilot/extensions`）を選びます。",
+              "en": "Open a session and use /create-canvas as in the prompt below to have the agent build the board. Choose project scope (`.github/extensions`) to share it with the team, or user scope (`~/.copilot/extensions`) to keep it personal."
+            }
+          ],
+          "commandIds": [
+            "create-canvas-prompt"
+          ],
+          "expected": {
+            "ja": "右側パネルに Canvas が開き、選んだスコープのディレクトリにファイルが作成されます。",
+            "en": "The canvas opens in the right side panel, and files are created under the directory matching the scope you chose."
+          }
+        },
+        {
+          "title": {
+            "ja": "Canvas を操作し、URL からのインストールも確認する",
+            "en": "Interact with the canvas and confirm installing from a URL"
+          },
+          "body": [
+            {
+              "ja": "作成した Canvas のボタンやカードを直接操作し、続けてエージェントにもカードの追加や移動を依頼します。プロジェクトスコープを選んだ場合は、下のコマンドでファイルの配置を確認します。別のマシンでは、Extensions の Canvas タブの「Install from URL…」を使って gist や GitHub フォルダーの URL からインストールできることも確認します（v1.0.24 以降）。",
+              "en": "Interact with the canvas's buttons or cards directly, then also ask the agent to add or move a card. If you chose project scope, use the command below to confirm the file layout. On another machine, also confirm you can use “Install from URL…” in the Extensions Canvas tab to install from a gist or GitHub folder URL, since v1.0.24."
+            }
+          ],
+          "commandIds": [
+            "list-project-extensions"
+          ],
+          "expected": {
+            "ja": "UI 操作とエージェントの呼び出しの両方でボードの状態が更新され、プロジェクトスコープのファイルが `.github/extensions` 配下に存在します。",
+            "en": "The board's state updates from both UI actions and agent calls, and the project-scoped files exist under `.github/extensions`."
+          }
+        }
+      ],
+      "expected": [
+        {
+          "ja": "MCP サーバーが Connected と表示され、トークンをチャットのプロンプトに貼り付けていない。",
+          "en": "The MCP server shows Connected, and no token was pasted into a chat prompt."
+        },
+        {
+          "ja": "インストールしたプラグインが Settings → Plugins に表示され、それが提供するエージェントやスキルが使える。",
+          "en": "The installed plugin appears in Settings → Plugins, and the agents or skills it provides work."
+        },
+        {
+          "ja": "作成した Canvas 拡張が選んだスコープ（`.github/extensions` または `~/.copilot/extensions`）のディレクトリに存在し、右側パネルで正しく開く。",
+          "en": "The created canvas extension exists under the directory matching the scope you chose (`.github/extensions` or `~/.copilot/extensions`), and opens correctly in the right side panel."
+        },
+        {
+          "ja": "信頼していないリポジトリ由来の MCP サーバー、スキル、マーケットプレイスを有効化していない。",
+          "en": "You have not enabled an MCP server, skill, or marketplace from a repository you do not trust."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "problem": {
+            "ja": "サードパーティ OAuth の MCP サーバーが「authenticating」のまま止まる",
+            "en": "A third-party OAuth MCP server stays stuck on “authenticating”"
+          },
+          "fix": {
+            "ja": "この不具合は v1.0.16 と v1.1.0 でそれぞれ修正されています。v1.1.2 に更新し、サインインをやり直してください。",
+            "en": "This bug was fixed separately in v1.0.16 and v1.1.0. Update to v1.1.2 and retry the sign-in."
+          }
+        },
+        {
+          "problem": {
+            "ja": "Windows でプラグインのマーケットプレイス追加やインストールが失敗する",
+            "en": "Adding a plugin marketplace or installing a plugin fails on Windows"
+          },
+          "fix": {
+            "ja": "アプリ同梱の Git で資格情報ヘルパーのサイドカーが起動できず失敗する不具合が v1.0.17 で修正されています。プライベートリポジトリのクローンに失敗する不具合も同じバージョンで修正済みです。v1.1.2 に更新してください。",
+            "en": "A bug where the bundled Git's credential helper sidecar failed to launch, causing this to fail, was fixed in v1.0.17. A separate bug where cloning private repositories failed was also fixed in the same version. Update to v1.1.2."
+          }
+        },
+        {
+          "problem": {
+            "ja": "設定したカスタムスキルディレクトリが無視される",
+            "en": "A configured custom skill directory is ignored"
+          },
+          "fix": {
+            "ja": "Settings で設定したカスタムスキルディレクトリがスキル実行時に無視される不具合が v1.0.17 で修正されています。v1.1.2 に更新し、パスが正しいか再確認してください。",
+            "en": "A bug where custom skill directories configured in Settings were ignored when running skills was fixed in v1.0.17. Update to v1.1.2 and double-check the path is correct."
+          }
+        },
+        {
+          "problem": {
+            "ja": "プロジェクトスコープの Canvas で New session が汎用の Canvas ピッカーを開いてしまう",
+            "en": "New session on a project-scoped canvas opens the generic canvas picker instead"
+          },
+          "fix": {
+            "ja": "Extensions の Canvas タブでプロジェクトスコープの Canvas から New session を選んだときに、直接セッションを開始せず汎用ピッカーが開いてしまう不具合が v1.0.19 で修正されています。v1.1.2 に更新してください。",
+            "en": "A bug where choosing New session on a project-scoped canvas in the Extensions Canvas tab opened the generic canvas picker instead of starting the session directly was fixed in v1.0.19. Update to v1.1.2."
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "ja": "テストのために接続した MCP サーバーは無効化するか削除し、必要であれば OAuth 側のアプリ連携も取り消します。",
+          "en": "Disable or remove the MCP server you connected for testing, and revoke the OAuth app authorization on the provider's side if needed."
+        },
+        {
+          "ja": "テストでインストールしたプラグインをアンインストールし、テストのためだけに追加したマーケットプレイスも削除します。",
+          "en": "Uninstall the plugin you installed for testing, and remove any marketplace you added only for the test."
+        },
+        {
+          "ja": "追加したカスタムスキルディレクトリが不要であれば設定から外します。",
+          "en": "Remove the custom skill directory from settings if it is no longer needed."
+        },
+        {
+          "ja": "テスト用の Canvas 拡張ディレクトリ（`.github/extensions` または `~/.copilot/extensions` 配下）を削除し、プロジェクトスコープでコミットしていた場合はそのプルリクエストも閉じます。",
+          "en": "Delete the test canvas extension directory under `.github/extensions` or `~/.copilot/extensions`, and close the pull request if you committed a project-scoped copy."
+        }
+      ],
+      "platforms": {
+        "windows": {
+          "ja": "Windows ではアプリ同梱の Git を使う場合、プラグインのマーケットプレイス追加やプライベートリポジトリのクローンに関する既知の不具合が v1.0.17 で修正されています。パス区切りは `.github\\extensions` のようにバックスラッシュでも、Git Bash 経由のフォワードスラッシュでも動作します。",
+          "en": "On Windows, using the app's bundled Git, known issues with adding plugin marketplaces and cloning private repositories were fixed in v1.0.17. Path separators work either as backslashes, like `.github\\extensions`, or as forward slashes through Git Bash."
+        },
+        "macos": {
+          "ja": "macOS では Canvas 拡張や MCP サーバーの設定ファイルは通常のホームディレクトリ配下に置かれ、Finder の「隠しフォルダを表示」で `~/.copilot/extensions` を確認できます。",
+          "en": "On macOS, canvas extension and MCP server configuration files live under your normal home directory; enable “Show hidden files” in Finder to inspect `~/.copilot/extensions`."
+        },
+        "linux": {
+          "ja": "Linux では、ログインシェルのプロファイルで設定した PATH エントリなど、カスタム PATH 経由のツールが拡張機能から見つからない不具合が v1.0.26 で修正されています。スキルやプラグインが外部コマンドを呼び出す場合は、この修正を含む v1.1.2 を使ってください。",
+          "en": "On Linux, a bug where tools installed via the login shell profile, such as custom PATH entries, were not found by extensions was fixed in v1.0.26. Use v1.1.2, which includes this fix, if your skills or plugins call external commands."
+        },
+        "wsl": {
+          "ja": "WSL リモート環境では、v1.1.2 で GitHub の Issue/PR ワークフロースキルが標準搭載され、リモートセッション接続の信頼性も向上しています。Canvas やプラグインの拡張機能ファイルは、開いているプロジェクトがホスト側か WSL ディストリビューション内かに応じて置き場所が変わります。",
+          "en": "In WSL remote environments, v1.1.2 bundles GitHub pull request and issue workflow skills by default and improves remote session connection reliability. Where canvas and plugin extension files live depends on whether the open project is on the host or inside the WSL distribution."
+        }
+      },
+      "related": [
+        "10",
+        "16",
+        "18"
+      ],
+      "sources": [
+        {
+          "title": "Customizing the GitHub Copilot app",
+          "url": "https://docs.github.com/en/copilot/how-tos/github-copilot-app/customize-github-copilot-app"
+        },
+        {
+          "title": "Working with canvas extensions in the GitHub Copilot app",
+          "url": "https://docs.github.com/en/copilot/how-tos/github-copilot-app/working-with-canvas-extensions"
+        },
+        {
+          "title": "About GitHub Copilot plugins",
+          "url": "https://docs.github.com/en/copilot/concepts/agents/about-plugins"
+        },
+        {
+          "title": "GitHub Copilot app v1.1.2 release",
+          "url": "https://github.com/github/app/releases/tag/v1.1.2"
+        }
+      ]
+    }
+  ]
+}

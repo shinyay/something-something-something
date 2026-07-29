@@ -1,0 +1,1561 @@
+{
+  "pathId": "github-lifecycle",
+  "guides": [
+    {
+      "id": "11",
+      "title": {
+        "ja": "My Work のセクションとフィルターを使いこなす",
+        "en": "Master My Work sections and filters"
+      },
+      "summary": {
+        "ja": "My Work のデフォルトセクションを理解し、`has:`/`no:` 修飾子を使って issue とプルリクエストを素早く絞り込みます。",
+        "en": "Understand My Work's default sections and use the `has:`/`no:` qualifiers to quickly narrow down issues and pull requests."
+      },
+      "keywords": [
+        "My Work",
+        "filters",
+        "has:",
+        "no:",
+        "qualifiers",
+        "sections",
+        "triage",
+        "label"
+      ],
+      "difficulty": {
+        "key": "beginner",
+        "label": {
+          "ja": "初級",
+          "en": "Beginner"
+        }
+      },
+      "status": {
+        "key": "current",
+        "label": {
+          "ja": "提供中",
+          "en": "Available"
+        },
+        "detail": {
+          "ja": "v1.1.2 時点で提供中。`has:` および `no:` 修飾子は v1.1.0 で追加されました。",
+          "en": "Current in v1.1.2. The `has:` and `no:` qualifiers were added in v1.1.0."
+        }
+      },
+      "version": {
+        "ja": "v1.1.2 で確認",
+        "en": "Verified for v1.1.2"
+      },
+      "scenario": {
+        "ja": "複数リポジトリにまたがる担当 issue が積み上がっている状態で、スプリント開始前にラベルやマイルストーンが未設定の issue だけを洗い出し、My Work の独自セクションとして保存します。",
+        "en": "With assigned issues piling up across multiple repositories, you need to surface only the issues missing a label or milestone before sprint planning, then save that view as a custom My Work section."
+      },
+      "scope": {
+        "ja": "このガイドは My Work のセクションと検索修飾子によるフィルタリングを扱います。issue から新しいセッションを開始する手順はガイド 12 で、プルリクエストのレビューはガイド 13 で扱うため、ここでは対象外です。",
+        "en": "This guide covers filtering with My Work sections and search qualifiers. Starting a session from an issue is covered in guide 12, and reviewing pull requests is covered in guide 13, so both are out of scope here."
+      },
+      "safety": {
+        "ja": "保存したフィルターやセクション名に、非公開プロジェクトのコードネームや機密情報を含めないでください。共有端末では、機密性の高いフィルタークエリを含むセクションをサインアウト前に削除してください。",
+        "en": "Do not put confidential project codenames or sensitive information in saved filters or section names. On shared machines, remove sections containing sensitive filter queries before signing out."
+      },
+      "prerequisites": [
+        {
+          "ja": "ガイド 01 を完了し、GitHub Copilot App にサインインして少なくとも 1 つのプロジェクトを接続済みであること。",
+          "en": "Guide 01 is complete: you are signed in to the GitHub Copilot app with at least one project connected."
+        },
+        {
+          "ja": "接続したリポジトリに、ラベル、担当者、マイルストーンの設定状況が異なる複数の issue またはプルリクエストが存在すること。",
+          "en": "The connected repository has several issues or pull requests with varying label, assignee, and milestone states."
+        },
+        {
+          "ja": "組織アカウントの場合、GitHub Copilot App ポリシーが有効になっていること。My Work の可視性はこのポリシーに従います。",
+          "en": "For organization-managed accounts, the GitHub Copilot app policy is enabled. My Work visibility follows this policy."
+        }
+      ],
+      "launchers": [
+        {
+          "label": {
+            "ja": "My Work を安全に開く",
+            "en": "Open My Work safely"
+          },
+          "description": {
+            "ja": "公式ホスト型ランチャーを使って GitHub Copilot App の My Work ビューを開きます。",
+            "en": "Uses the official hosted launcher to open the My Work view in the GitHub Copilot app."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fmywork"
+        }
+      ],
+      "commands": [
+        {
+          "id": "filter-no-assignee",
+          "label": {
+            "ja": "担当者未設定の issue を検索",
+            "en": "Find issues without an assignee"
+          },
+          "language": "text",
+          "code": "is:issue no:assignee has:label"
+        },
+        {
+          "id": "filter-has-milestone-no-project",
+          "label": {
+            "ja": "マイルストーンはあるがプロジェクト未設定の PR を検索",
+            "en": "Find pull requests with a milestone but no project"
+          },
+          "language": "text",
+          "code": "is:pr has:milestone no:project"
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "ja": "My Work を開く",
+            "en": "Open My Work"
+          },
+          "body": [
+            {
+              "ja": "サイドバーの My Work をクリックするか、安全なランチャーを使って開きます。",
+              "en": "Click My Work in the sidebar, or use the safe launcher to open it."
+            }
+          ],
+          "expected": {
+            "ja": "My Work が開き、All、Active、Review requests、Done のデフォルトセクションが表示されます。",
+            "en": "My Work opens and shows the default All, Active, Review requests, and Done sections."
+          }
+        },
+        {
+          "title": {
+            "ja": "デフォルトセクションの用途を確認する",
+            "en": "Review what each default section is for"
+          },
+          "body": [
+            {
+              "ja": "各セクションにどの issue や PR が入っているかを確認し、Active と Review requests の違いを把握します。",
+              "en": "Check which issues and PRs appear in each section, and note the difference between Active and Review requests."
+            }
+          ],
+          "expected": {
+            "ja": "各セクションの目的が理解でき、どのセクションを基点にフィルタリングするか判断できます。",
+            "en": "You understand each section's purpose and can decide which one to filter from."
+          }
+        },
+        {
+          "title": {
+            "ja": "検索バーで `has:`/`no:` 修飾子を試す",
+            "en": "Try the has:/no: qualifiers in the search bar"
+          },
+          "body": [
+            {
+              "ja": "セクション内の検索バーに修飾子を入力し、ラベルはあるが担当者がいない issue だけに絞り込みます。",
+              "en": "Type the qualifiers into the section's search bar to narrow the list to issues that have a label but no assignee."
+            }
+          ],
+          "commandIds": [
+            "filter-no-assignee"
+          ],
+          "expected": {
+            "ja": "担当者未設定でラベル付きの issue だけが一覧に表示されます。",
+            "en": "Only unassigned, labeled issues remain in the list."
+          }
+        },
+        {
+          "title": {
+            "ja": "複数の修飾子を組み合わせる",
+            "en": "Combine multiple qualifiers"
+          },
+          "body": [
+            {
+              "ja": "`is:pr` と `has:milestone`、`no:project` を組み合わせて、マイルストーンはあるがプロジェクト未設定の PR を探します。",
+              "en": "Combine `is:pr` with `has:milestone` and `no:project` to find pull requests that have a milestone but no project set."
+            }
+          ],
+          "commandIds": [
+            "filter-has-milestone-no-project"
+          ],
+          "expected": {
+            "ja": "条件に一致する PR だけに一覧が絞り込まれます。",
+            "en": "The list narrows to only the pull requests matching all the conditions."
+          }
+        },
+        {
+          "title": {
+            "ja": "フィルターを独自セクションとして保存する",
+            "en": "Save the filter as a custom section"
+          },
+          "body": [
+            {
+              "ja": "デフォルトセクションを編集するか、新しいセクションを追加して、今作成したフィルタークエリを保存します。",
+              "en": "Edit a default section, or add a new one, and save the filter query you just built."
+            }
+          ],
+          "expected": {
+            "ja": "サイドバーの My Work に、保存したフィルターを持つ独自セクションが追加されます。",
+            "en": "A custom section with your saved filter appears in My Work's sidebar."
+          }
+        },
+        {
+          "title": {
+            "ja": "セクションの永続性を確認する",
+            "en": "Confirm the section persists"
+          },
+          "body": [
+            {
+              "ja": "アプリを再起動するか、別のプロジェクトへ切り替えてから My Work へ戻り、独自セクションとフィルターが残っていることを確認します。",
+              "en": "Restart the app, or switch to another project and back, and confirm the custom section and its filter are still there."
+            }
+          ],
+          "expected": {
+            "ja": "独自セクションとフィルターがアプリ再起動後も保持されています。",
+            "en": "The custom section and its filter survive the app restart."
+          }
+        }
+      ],
+      "expected": [
+        {
+          "ja": "My Work にデフォルトの 4 セクションが表示され、少なくとも 1 つの独自セクションを保存できた。",
+          "en": "My Work shows the four default sections and at least one custom section has been saved."
+        },
+        {
+          "ja": "`has:`/`no:` 修飾子を使った検索が、意図した issue/PR の部分集合だけを返す。",
+          "en": "A search using `has:`/`no:` qualifiers returns only the intended subset of issues or pull requests."
+        },
+        {
+          "ja": "アプリを再起動しても保存したセクションとフィルターが失われない。",
+          "en": "The saved section and its filter survive an app restart."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "problem": {
+            "ja": "検索しても結果が 0 件になる",
+            "en": "The search returns zero results"
+          },
+          "fix": {
+            "ja": "修飾子のスペルと大文字小文字を確認し、対象セクションのリポジトリ選択が絞られすぎていないか確認します。",
+            "en": "Check the qualifier spelling and case, and confirm the section's repository selection isn't scoped too narrowly."
+          }
+        },
+        {
+          "problem": {
+            "ja": "`has:`/`no:` を入力しても補完されない",
+            "en": "`has:`/`no:` does not autocomplete"
+          },
+          "fix": {
+            "ja": "この修飾子は v1.1.0 で追加されました。Settings でアプリのバージョンを確認し、v1.1.0 以降に更新してください。",
+            "en": "These qualifiers were added in v1.1.0. Check the app version in Settings and update to v1.1.0 or later."
+          }
+        },
+        {
+          "problem": {
+            "ja": "リポジトリ名を変更した後にセクションが消えた",
+            "en": "A section disappeared after renaming a repository"
+          },
+          "fix": {
+            "ja": "この問題は v1.0.26 で修正済みです。v1.1.2 に更新し、それでも解決しない場合はセクションを作り直してください。",
+            "en": "This was fixed in v1.0.26. Update to v1.1.2, and if the section still doesn't reappear, recreate it."
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "ja": "演習用に作成した独自セクションが不要であれば、セクションメニューから削除します。",
+          "en": "Remove the custom section you created for this exercise from the section menu if you no longer need it."
+        },
+        {
+          "ja": "検索バーに残ったテスト用のクエリをクリアします。",
+          "en": "Clear any leftover test query from the search bar."
+        },
+        {
+          "ja": "共有端末では、機密情報を含むフィルターを削除してからサインアウトします。",
+          "en": "On a shared machine, remove filters containing sensitive information before signing out."
+        }
+      ],
+      "platforms": {
+        "windows": {
+          "ja": "Windows では My Work の検索バーにサイドバーから直接アクセスできます。WSL 内のリポジトリでも、フィルタリング自体は Windows 側のアプリ UI で行います。",
+          "en": "On Windows, the My Work search bar is reachable directly from the sidebar. Even for repositories inside WSL, filtering happens in the Windows-side app UI."
+        },
+        "macos": {
+          "ja": "macOS ではキーボードショートカットでセクション内検索にフォーカスを移せます。",
+          "en": "On macOS, a keyboard shortcut can move focus directly to the in-section search field."
+        },
+        "linux": {
+          "ja": "Linux の AppImage ビルドでも My Work の挙動は同一です。ウィンドウマネージャーによってはショートカットが競合する場合があります。",
+          "en": "Behavior is identical on the Linux AppImage build. Some window managers may conflict with shortcuts."
+        },
+        "wsl": {
+          "ja": "WSL のリモート環境からでも My Work は Windows 側アプリで表示されます。リポジトリ接続はガイド 08 のハンドオフ手順に従ってください。",
+          "en": "My Work is displayed in the Windows-side app even for WSL remote environments. Follow the handoff steps in guide 08 to connect the repository."
+        }
+      },
+      "related": [
+        "01",
+        "12",
+        "20"
+      ],
+      "sources": [
+        {
+          "title": "Managing issues and pull requests with the GitHub Copilot app",
+          "url": "https://docs.github.com/en/copilot/how-tos/github-copilot-app/managing-issues-and-pull-requests"
+        },
+        {
+          "title": "GitHub Copilot app v1.1.0 release",
+          "url": "https://github.com/github/app/releases/tag/v1.1.0"
+        }
+      ]
+    },
+    {
+      "id": "12",
+      "title": {
+        "ja": "Issue のセッションコンテキストと安全なディープリンク",
+        "en": "Issue session context and safe deep links"
+      },
+      "summary": {
+        "ja": "issue から作成したセッションにコンテキストを引き継がせ、`ghapp://` ディープリンクを公式ドキュメント通りの安全な形式で共有します。",
+        "en": "Carry issue context into a new session and share `ghapp://` deep links using the safe, officially documented shapes."
+      },
+      "keywords": [
+        "issue",
+        "deep link",
+        "ghapp://",
+        "session context",
+        "launcher",
+        "URL encoding"
+      ],
+      "difficulty": {
+        "key": "beginner",
+        "label": {
+          "ja": "初級",
+          "en": "Beginner"
+        }
+      },
+      "status": {
+        "key": "current",
+        "label": {
+          "ja": "提供中",
+          "en": "Available"
+        },
+        "detail": {
+          "ja": "v1.1.2 時点で提供中。ディープリンクは公式ホスト型ランチャー経由で開くことが推奨されています。",
+          "en": "Current in v1.1.2. Deep links are recommended to be opened via the official hosted launcher."
+        }
+      },
+      "version": {
+        "ja": "v1.1.2 で確認",
+        "en": "Verified for v1.1.2"
+      },
+      "scenario": {
+        "ja": "チケット管理ツールや Slack から特定の issue へ直接ジャンプできるボタンを用意したいが、URL にプロンプトや機密情報を埋め込まずに、安全な形式のディープリンクだけを共有したい。",
+        "en": "You want a button in a ticket tool or Slack that jumps straight into a specific issue, while sharing only safely shaped deep links that never embed secrets or sensitive prompts."
+      },
+      "scope": {
+        "ja": "このガイドは issue を開くディープリンクと、issue コンテキストを引き継いだセッション開始を扱います。プルリクエストのレビューや Agent Merge に関するディープリンクは対象外です。",
+        "en": "This guide covers deep links that open an issue and starting a session that carries issue context. Pull request review and Agent Merge deep links are out of scope."
+      },
+      "safety": {
+        "ja": "`prompt` パラメーターに機密情報や資格情報を含めないでください。共有前に必ず公式ホスト型ランチャー (`https://github.com/copilot/app/launch?open=...`) 経由の URL であることを確認し、`ghapp://` を直接貼り付けたリンクは信頼できる内部ツールに限定します。",
+        "en": "Never put secrets or sensitive content in the `prompt` parameter. Always confirm the shared URL goes through the official hosted launcher (`https://github.com/copilot/app/launch?open=...`) before sharing, and limit raw `ghapp://` links to trusted internal tools."
+      },
+      "prerequisites": [
+        {
+          "ja": "ガイド 01 と 11 を完了し、対象の issue を含むリポジトリが接続済みであること。",
+          "en": "Guides 01 and 11 are complete, and the repository containing the target issue is connected."
+        },
+        {
+          "ja": "ディープリンク先の issue 番号とリポジトリの `OWNER/REPO` を把握していること。",
+          "en": "You know the target issue number and the repository's `OWNER/REPO`."
+        },
+        {
+          "ja": "`encodeURIComponent` など、URL エンコードの基本を理解していること。",
+          "en": "You understand the basics of URL encoding, such as `encodeURIComponent`."
+        }
+      ],
+      "launchers": [
+        {
+          "label": {
+            "ja": "Issue を安全に開く例",
+            "en": "Example: open an issue safely"
+          },
+          "description": {
+            "ja": "`github/app` リポジトリの issue を安全なランチャー経由で開きます。実際に使う際は対象の OWNER/REPO/NUMBER に置き換えてください。",
+            "en": "Opens an issue in the github/app repository through the safe launcher. Replace OWNER/REPO/NUMBER with your own target when reusing this link."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fgithub.com%2Fgithub%2Fapp%2Fissues%2F1"
+        }
+      ],
+      "commands": [
+        {
+          "id": "issue-app-link",
+          "label": {
+            "ja": "issue 用のアプリリンク",
+            "en": "App link for an issue"
+          },
+          "language": "text",
+          "code": "ghapp://github.com/OWNER/REPO/issues/NUMBER"
+        },
+        {
+          "id": "issue-launcher-url",
+          "label": {
+            "ja": "エンコードされたランチャー URL",
+            "en": "Encoded launcher URL"
+          },
+          "language": "text",
+          "code": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fgithub.com%2FOWNER%2FREPO%2Fissues%2FNUMBER"
+        },
+        {
+          "id": "session-new-from-issue",
+          "label": {
+            "ja": "issue を参照する新規セッションを開く",
+            "en": "Open a new session that references an issue"
+          },
+          "language": "text",
+          "code": "ghapp://session/new?repo=OWNER%2FREPO&prompt=Investigate%20issue%20%23NUMBER%20and%20propose%20a%20fix&mode=plan"
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "ja": "My Work から対象 issue を開く",
+            "en": "Open the target issue from My Work"
+          },
+          "body": [
+            {
+              "ja": "ガイド 11 の絞り込みを使って対象の issue を見つけ、クリックして詳細ペインを開きます。",
+              "en": "Use the filtering from guide 11 to find the target issue, then click it to open the detail pane."
+            }
+          ],
+          "expected": {
+            "ja": "issue の詳細ペインにタイトル、本文、コメントが表示されます。",
+            "en": "The issue detail pane shows the title, body, and comments."
+          }
+        },
+        {
+          "title": {
+            "ja": "New session をクリックしてコンテキストを引き継ぐ",
+            "en": "Click New session to carry over context"
+          },
+          "body": [
+            {
+              "ja": "issue 詳細ペインの New session をクリックし、issue のコンテキストが読み込まれた状態でセッションが作成されることを確認します。",
+              "en": "Click New session in the issue detail pane and confirm the session is created with the issue's context already loaded."
+            }
+          ],
+          "expected": {
+            "ja": "会話の冒頭に issue のタイトル・本文・コメントを踏まえた文脈が読み込まれます。",
+            "en": "The conversation starts with context drawn from the issue's title, body, and comments."
+          }
+        },
+        {
+          "title": {
+            "ja": "issue 用のアプリリンクを組み立てる",
+            "en": "Build the app link for the issue"
+          },
+          "body": [
+            {
+              "ja": "対象の OWNER、REPO、issue 番号を使って `ghapp://` の生アプリリンクを組み立てます。",
+              "en": "Assemble the raw `ghapp://` app link using the target owner, repo, and issue number."
+            }
+          ],
+          "commandIds": [
+            "issue-app-link"
+          ],
+          "expected": {
+            "ja": "ドキュメント通りの形式のアプリリンク文字列ができあがります。",
+            "en": "You have an app link string matching the documented shape."
+          }
+        },
+        {
+          "title": {
+            "ja": "安全なランチャー URL にエンコードする",
+            "en": "Encode it into the safe launcher URL"
+          },
+          "body": [
+            {
+              "ja": "アプリリンクを `encodeURIComponent` でエンコードし、`open` パラメーターとしてホスト型ランチャー URL に埋め込みます。",
+              "en": "Encode the app link with `encodeURIComponent` and embed it as the `open` parameter in the hosted launcher URL."
+            }
+          ],
+          "commandIds": [
+            "issue-launcher-url"
+          ],
+          "expected": {
+            "ja": "`https://github.com/copilot/app/launch?open=...` の形式に一致する URL ができあがります。",
+            "en": "You have a URL matching the `https://github.com/copilot/app/launch?open=...` shape."
+          }
+        },
+        {
+          "title": {
+            "ja": "ブラウザーまたはターミナルからリンクを開いてみる",
+            "en": "Test opening the link from a browser or terminal"
+          },
+          "body": [
+            {
+              "ja": "作成したランチャー URL をブラウザーのアドレスバーやターミナルで開き、アプリへのハンドオフを確認します。",
+              "en": "Open the launcher URL you built in a browser address bar or a terminal and confirm the hand-off to the app."
+            }
+          ],
+          "expected": {
+            "ja": "ブラウザーがアプリに制御を渡すか、渡せない場合はフォールバックページが表示されます。意図しないリポジトリや issue が開くことはありません。",
+            "en": "The browser hands off to the app, or shows the fallback page if it cannot. No unintended repository or issue opens."
+          }
+        },
+        {
+          "title": {
+            "ja": "issue を参照する新規セッションのリンクを作る",
+            "en": "Build a new-session link that references the issue"
+          },
+          "body": [
+            {
+              "ja": "`ghapp://session/new` には issue 専用のパラメーターがないため、`prompt` に issue 番号を含めて参照します。",
+              "en": "`ghapp://session/new` has no dedicated issue parameter, so reference the issue number inside the `prompt` value instead."
+            }
+          ],
+          "commandIds": [
+            "session-new-from-issue"
+          ],
+          "expected": {
+            "ja": "指定したリポジトリと Plan モードで、issue 番号を含むプロンプトが入力済みの新規セッションが開きます。",
+            "en": "A new session opens in the specified repository and Plan mode, with the prompt pre-filled to reference the issue number."
+          }
+        }
+      ],
+      "expected": [
+        {
+          "ja": "issue のディープリンクが My Work を経由せず issue 詳細を直接開いた。",
+          "en": "The issue deep link opened the issue detail directly without going through My Work."
+        },
+        {
+          "ja": "New session をクリックすると issue のタイトル・本文・コメントがセッションのコンテキストに読み込まれた。",
+          "en": "Clicking New session loaded the issue's title, body, and comments into the session context."
+        },
+        {
+          "ja": "組み立てたホスト型ランチャー URL が、ブラウザーまたは共有ツールから正しくアプリを起動した。",
+          "en": "The hosted launcher URL you built correctly launched the app from a browser or a sharing tool."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "problem": {
+            "ja": "リンクをクリックしてもアプリが開かず、フォールバックページが表示される",
+            "en": "Clicking the link shows a fallback page instead of opening the app"
+          },
+          "fix": {
+            "ja": "アプリが `ghapp://` プロトコルハンドラーとして登録されていない可能性があります。アプリを一度手動で起動し、OS の既定アプリ設定を確認してください。",
+            "en": "The app may not be registered as the `ghapp://` protocol handler. Launch the app manually once and check your OS's default app settings."
+          }
+        },
+        {
+          "problem": {
+            "ja": "誤ったリポジトリや issue が開いてしまう",
+            "en": "The wrong repository or issue opens"
+          },
+          "fix": {
+            "ja": "`OWNER%2FREPO` のエンコードや issue 番号の桁を確認します。パラメーター値は `encodeURIComponent` でエンコードしてから `open` パラメーターに埋め込む必要があります。",
+            "en": "Check the encoding of `OWNER%2FREPO` and the issue number digits. Parameter values must be encoded with `encodeURIComponent` before being embedded in the `open` parameter."
+          }
+        },
+        {
+          "problem": {
+            "ja": "New session を押しても issue のコンテキストが空に見える",
+            "en": "New session appears to start without issue context"
+          },
+          "fix": {
+            "ja": "issue 詳細ペインから直接 New session を押しているか確認します。`ghapp://session/new` は issue 専用パラメーターを持たないため、prompt に手動で issue 番号を含める必要があります。",
+            "en": "Confirm you clicked New session from the issue detail pane itself. `ghapp://session/new` has no dedicated issue parameter, so you must reference the issue number manually in the prompt."
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "ja": "テストで開いた issue 由来のセッションをアーカイブまたは削除します。",
+          "en": "Archive or delete the session you opened for this test."
+        },
+        {
+          "ja": "共有ツールやメモに残した一時的なディープリンクを削除します。",
+          "en": "Remove any temporary deep links left in shared tools or notes."
+        },
+        {
+          "ja": "ブラウザーの履歴にエンコード済み URL が残っている場合、機密情報を含んでいないか確認して削除します。",
+          "en": "If the encoded URL remains in your browser history, confirm it contains no sensitive information and delete it."
+        }
+      ],
+      "platforms": {
+        "windows": {
+          "ja": "Windows では `ghapp://` の関連付けはインストーラーが自動登録します。関連付けが外れた場合はアプリを再インストールしてください。",
+          "en": "On Windows, the installer automatically registers the `ghapp://` association. Reinstall the app if the association is lost."
+        },
+        "macos": {
+          "ja": "macOS では初回のプロトコルハンドラー確認ダイアログを許可する必要があります。",
+          "en": "On macOS, you must allow the first protocol-handler confirmation dialog."
+        },
+        "linux": {
+          "ja": "Linux では `xdg-open` の既定アプリ設定が `ghapp://` を認識している必要があります。AppImage の場合は手動登録が必要な場合があります。",
+          "en": "On Linux, `xdg-open`'s default-app configuration must recognize `ghapp://`; AppImage builds may need manual registration."
+        },
+        "wsl": {
+          "ja": "WSL 内のターミナルから開く場合、リンクは Windows 側のブラウザーまたはアプリで処理されます。WSL 固有のハンドオフはガイド 08 を参照してください。",
+          "en": "Links opened from a WSL terminal are handled by the Windows-side browser or app. See guide 08 for WSL-specific handoff details."
+        }
+      },
+      "related": [
+        "08",
+        "11",
+        "13"
+      ],
+      "sources": [
+        {
+          "title": "Using deep links to open the GitHub Copilot app",
+          "url": "https://docs.github.com/en/copilot/how-tos/github-copilot-app/open-with-deep-links"
+        },
+        {
+          "title": "Managing issues and pull requests with the GitHub Copilot app",
+          "url": "https://docs.github.com/en/copilot/how-tos/github-copilot-app/managing-issues-and-pull-requests"
+        }
+      ]
+    },
+    {
+      "id": "13",
+      "title": {
+        "ja": "プルリクエストレビューを完了する",
+        "en": "Complete a pull request review"
+      },
+      "summary": {
+        "ja": "Overview、Files changed、保留中のレビューを使って PR レビューをセッション内で進め、ステージ済みコメントの文言を編集してから提出します。",
+        "en": "Move a PR review through Overview, Files changed, and a pending review draft in a session, then edit staged comment wording and submit."
+      },
+      "keywords": [
+        "pull request",
+        "review",
+        "Files changed",
+        "pending review",
+        "staged comment",
+        "CI"
+      ],
+      "difficulty": {
+        "key": "intermediate",
+        "label": {
+          "ja": "中級",
+          "en": "Intermediate"
+        }
+      },
+      "status": {
+        "key": "current",
+        "label": {
+          "ja": "提供中",
+          "en": "Available"
+        },
+        "detail": {
+          "ja": "v1.1.2 時点で提供中。v1.1.0 で、エージェントが保留中レビューのステージ済みコメントを重複作成せずに編集できるようになりました。",
+          "en": "Current in v1.1.2. Since v1.1.0, agents can edit a previously staged pending-review comment instead of creating a duplicate."
+        }
+      },
+      "version": {
+        "ja": "v1.1.2 で確認",
+        "en": "Verified for v1.1.2"
+      },
+      "scenario": {
+        "ja": "チームメイトが出した PR をレビューし、diff を確認しながらエージェントに指摘を手伝わせ、コメントの言い回しを一度書き直してから正式にレビューを提出します。",
+        "en": "You review a teammate's PR, use an agent to help spot issues while reading the diff, revise the wording of one staged comment, and then formally submit the review."
+      },
+      "scope": {
+        "ja": "このガイドは PR の Overview、Files changed、レビューコメントの下書きと提出を扱います。CI のブロック要因の解消や Agent Merge によるマージはガイド 14 で扱うため対象外です。",
+        "en": "This guide covers a PR's Overview, Files changed, and drafting and submitting review comments. Resolving CI blockers and merging via Agent Merge are covered in guide 14 and out of scope here."
+      },
+      "safety": {
+        "ja": "エージェントの要約だけで承認しないでください。認証・権限・シークレットの扱いに関わる変更は必ず自分で diff を確認します。レビューコメントに社外秘の情報を書き込まないでください。",
+        "en": "Do not approve based only on the agent's summary. Always personally check diffs touching authentication, authorization, or secret handling. Never write confidential information into review comments."
+      },
+      "prerequisites": [
+        {
+          "ja": "ガイド 11 を完了し、My Work から少なくとも 1 件のオープンなプルリクエストを見つけられること。",
+          "en": "Guide 11 is complete and you can find at least one open pull request from My Work."
+        },
+        {
+          "ja": "対象リポジトリで PR にコメントできる権限 (Write 以上、または Triage としてのコメント権限) を持っていること。",
+          "en": "You have permission to comment on PRs in the target repository (Write or higher, or comment permission as a triager)."
+        },
+        {
+          "ja": "レビュー対象の PR に、少なくとも 1 つのファイル変更と CI チェックが設定されていること。",
+          "en": "The PR under review has at least one file change and configured CI checks."
+        }
+      ],
+      "launchers": [
+        {
+          "label": {
+            "ja": "プルリクエストを安全に開く例",
+            "en": "Example: open a pull request safely"
+          },
+          "description": {
+            "ja": "`github/app` リポジトリの PR を安全なランチャー経由で開きます。実際の対象 PR に合わせて OWNER/REPO/NUMBER を置き換えてください。",
+            "en": "Opens a pull request in the github/app repository through the safe launcher. Replace OWNER/REPO/NUMBER with your actual target."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fgithub.com%2Fgithub%2Fapp%2Fpull%2F1"
+        }
+      ],
+      "commands": [
+        {
+          "id": "review-risk-prompt",
+          "label": {
+            "ja": "リスク領域の要約を依頼するプロンプト",
+            "en": "Prompt to summarize risk areas"
+          },
+          "language": "text",
+          "code": "Before I review this pull request, summarize the areas of highest risk (auth, data handling, migrations) and any tests that are missing."
+        },
+        {
+          "id": "revise-comment-prompt",
+          "label": {
+            "ja": "ステージ済みコメントの文言修正を依頼するプロンプト",
+            "en": "Prompt to revise a staged comment's wording"
+          },
+          "language": "text",
+          "code": "Revise the wording of the review comment you staged on line 42 of auth.go to be more specific about the missing null check, without creating a duplicate comment."
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "ja": "My Work から PR を開く",
+            "en": "Open the pull request from My Work"
+          },
+          "body": [
+            {
+              "ja": "レビュー対象の PR をクリックし、Overview を表示します。",
+              "en": "Click the PR you're reviewing to display its Overview."
+            }
+          ],
+          "expected": {
+            "ja": "Overview に PR の要約、CI チェックの結果、レビュー活動が表示されます。",
+            "en": "The Overview shows the PR summary, CI check results, and review activity."
+          }
+        },
+        {
+          "title": {
+            "ja": "Overview で CI とレビュー活動を確認する",
+            "en": "Check CI and review activity in Overview"
+          },
+          "body": [
+            {
+              "ja": "必須チェックの成否と、既に付いているレビュー担当者やコメントを確認します。",
+              "en": "Check whether required checks pass and see any reviewers or comments already attached."
+            }
+          ],
+          "expected": {
+            "ja": "レビューを始める前に、CI の状態とこれまでのレビュー履歴を把握できます。",
+            "en": "You understand the CI state and review history before you start reviewing."
+          }
+        },
+        {
+          "title": {
+            "ja": "Files changed で diff を確認する",
+            "en": "Review the diff in Files changed"
+          },
+          "body": [
+            {
+              "ja": "Files changed タブに切り替え、変更されたファイルの差分を一通り読みます。",
+              "en": "Switch to the Files changed tab and read through the diff of the changed files."
+            }
+          ],
+          "expected": {
+            "ja": "変更内容の全体像が把握できます。",
+            "en": "You have an overall picture of what changed."
+          }
+        },
+        {
+          "title": {
+            "ja": "PR 用のセッションを開始する",
+            "en": "Start a session for the pull request"
+          },
+          "body": [
+            {
+              "ja": "New session をクリックし、リスクの高い領域を要約するようエージェントに依頼します。",
+              "en": "Click New session and ask the agent to summarize the highest-risk areas."
+            }
+          ],
+          "commandIds": [
+            "review-risk-prompt"
+          ],
+          "expected": {
+            "ja": "エージェントが認証・データ処理・マイグレーションなどのリスク領域と、不足しているテストを要約して返します。",
+            "en": "The agent summarizes risk areas such as auth, data handling, and migrations, and flags any missing tests."
+          }
+        },
+        {
+          "title": {
+            "ja": "diff にレビューコメントを残す",
+            "en": "Leave a review comment on the diff"
+          },
+          "body": [
+            {
+              "ja": "セッション内から diff の該当行にレビューコメントを追加します。",
+              "en": "Add a review comment on the relevant diff line from within the session."
+            }
+          ],
+          "expected": {
+            "ja": "コメントが保留中レビューの下書きに追加されます。",
+            "en": "The comment is added to the pending review draft."
+          }
+        },
+        {
+          "title": {
+            "ja": "ステージ済みコメントの文言を修正する",
+            "en": "Revise a staged comment's wording"
+          },
+          "body": [
+            {
+              "ja": "先ほど追加したコメントの言い回しをより具体的にするよう、エージェントに依頼します。",
+              "en": "Ask the agent to make the wording of the comment you just added more specific."
+            }
+          ],
+          "commandIds": [
+            "revise-comment-prompt"
+          ],
+          "expected": {
+            "ja": "同じコメントが編集され、重複するコメントは作られません。",
+            "en": "The same comment is edited in place and no duplicate comment is created."
+          }
+        },
+        {
+          "title": {
+            "ja": "PR 詳細に戻ってレビューを提出する",
+            "en": "Return to the PR detail view and submit the review"
+          },
+          "body": [
+            {
+              "ja": "PR 詳細ビューに戻り、上部の Review をクリックしてレビューを提出します。",
+              "en": "Go back to the PR detail view and click Review at the top to submit the review."
+            }
+          ],
+          "expected": {
+            "ja": "Approve、Request changes、Comment のいずれかでレビューが正常に提出されます。",
+            "en": "The review submits successfully as Approve, Request changes, or Comment."
+          }
+        }
+      ],
+      "expected": [
+        {
+          "ja": "PR の Overview に CI チェックとレビュー活動が表示される。",
+          "en": "The PR Overview shows CI checks and review activity."
+        },
+        {
+          "ja": "diff へのコメントが保留中レビューの下書きとして蓄積される。",
+          "en": "Comments on the diff accumulate in the pending review draft."
+        },
+        {
+          "ja": "文言を修正したコメントが重複せず、同じ場所で更新される。",
+          "en": "The comment you revised updates in place without creating a duplicate."
+        },
+        {
+          "ja": "レビューが正常に提出され、PR のステータスに反映される。",
+          "en": "The review submits successfully and is reflected in the PR's status."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "problem": {
+            "ja": "CI のステータスが更新されない",
+            "en": "CI status doesn't update"
+          },
+          "fix": {
+            "ja": "GitHub Actions 側の実行状況を確認し、アプリの Overview を再読み込みします。ネットワーク接続も確認してください。",
+            "en": "Check the run status on the GitHub Actions side and reload the Overview in the app. Also verify network connectivity."
+          }
+        },
+        {
+          "problem": {
+            "ja": "コメントを修正したのに重複したコメントが作られる",
+            "en": "Revising a comment creates a duplicate instead"
+          },
+          "fix": {
+            "ja": "v1.1.0 より前のビルドではこの挙動になります。Settings でバージョンを確認し、v1.1.0 以降に更新してください。",
+            "en": "This happens on builds older than v1.1.0. Check the version in Settings and update to v1.1.0 or later."
+          }
+        },
+        {
+          "problem": {
+            "ja": "Review ボタンを押しても提出できない",
+            "en": "Clicking Review doesn't let you submit"
+          },
+          "fix": {
+            "ja": "ブランチ保護ルールで必要なレビュー担当者や却下条件を満たしていない可能性があります。リポジトリの権限とブランチ保護設定を確認してください。",
+            "en": "Required reviewers or dismissal conditions from branch protection rules may not be satisfied. Check your repository permissions and branch protection settings."
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "ja": "レビュー用に作成したセッションをアーカイブまたは削除します。",
+          "en": "Archive or delete the session you created for this review."
+        },
+        {
+          "ja": "テストのために残した未提出の保留中レビューがあれば、破棄するか提出します。",
+          "en": "Discard or submit any unsubmitted pending review left over from testing."
+        },
+        {
+          "ja": "レビューで使ったローカルブランチや worktree が不要になったら削除します。",
+          "en": "Remove the local branch or worktree used for the review once it's no longer needed."
+        }
+      ],
+      "platforms": {
+        "windows": {
+          "ja": "Windows では大規模な PR の diff を開く際に一時的な遅延が出る場合があります。この遅延は v1.1.1 で改善されました。",
+          "en": "On Windows, opening large PRs' diffs could show a brief delay; this was improved in v1.1.1."
+        },
+        "macos": {
+          "ja": "macOS ではトラックパッドのスクロールジェスチャーで Files changed の差分をスムーズにスクロールできます。",
+          "en": "On macOS, trackpad scroll gestures scroll smoothly through the Files changed diff."
+        },
+        "linux": {
+          "ja": "Linux でも Overview と Files changed の挙動は同一です。外部リンクを開く際は既定ブラウザーの設定を確認してください。",
+          "en": "Overview and Files changed behave the same on Linux. Check your default browser setting when opening external links."
+        },
+        "wsl": {
+          "ja": "WSL リモート環境では、v1.1.2 で追加されたプルリクエストと issue ワークフロースキルにより、レビュー関連の提案が改善されています。",
+          "en": "In WSL remote environments, the pull request and issue workflow skills added in v1.1.2 improve review-related suggestions."
+        }
+      },
+      "related": [
+        "11",
+        "14",
+        "15"
+      ],
+      "sources": [
+        {
+          "title": "Managing issues and pull requests with the GitHub Copilot app",
+          "url": "https://docs.github.com/en/copilot/how-tos/github-copilot-app/managing-issues-and-pull-requests"
+        },
+        {
+          "title": "GitHub Copilot app v1.1.0 release",
+          "url": "https://github.com/github/app/releases/tag/v1.1.0"
+        },
+        {
+          "title": "Reviewing proposed changes in a pull request",
+          "url": "https://docs.github.com/en/pull-requests/how-tos/review-pull-requests/reviewing-proposed-changes-in-a-pull-request"
+        }
+      ]
+    },
+    {
+      "id": "14",
+      "title": {
+        "ja": "Agent Merge で CI とマージキューを管理する",
+        "en": "Manage CI and the merge queue with Agent Merge"
+      },
+      "summary": {
+        "ja": "Agent Merge を有効にして、CI のブロック要因の解消からマージ条件を満たすまでをバックグラウンドで進めます。ブランチ保護や必須レビューを回避するものではありません。",
+        "en": "Enable Agent Merge to resolve CI blockers and carry a PR to merge conditions in the background, without ever bypassing branch protection or required reviews."
+      },
+      "keywords": [
+        "Agent Merge",
+        "CI",
+        "merge queue",
+        "branch protection",
+        "background",
+        "required checks"
+      ],
+      "difficulty": {
+        "key": "advanced",
+        "label": {
+          "ja": "上級",
+          "en": "Advanced"
+        }
+      },
+      "status": {
+        "key": "current",
+        "label": {
+          "ja": "提供中",
+          "en": "Available"
+        },
+        "detail": {
+          "ja": "v1.1.2 時点で提供中。v1.1.1 で、有効にしても実際にはマージされていなかった不具合を修正し、実際のマージ動作が復元されました。",
+          "en": "Current in v1.1.2. v1.1.1 fixed a bug where enabling Agent Merge did not actually merge the pull request, restoring real merge behavior."
+        }
+      },
+      "version": {
+        "ja": "v1.1.2 で確認",
+        "en": "Verified for v1.1.2"
+      },
+      "scenario": {
+        "ja": "レビューが完了した PR を Agent Merge に任せ、必須チェックの失敗を修正させながら他の作業を進めます。ブランチ保護と必須承認は Agent Merge が有効な間も常に適用されることを確認します。",
+        "en": "You hand a reviewed PR to Agent Merge so it can fix failing required checks while you move on to other work, while confirming that branch protection and required approvals still apply even with Agent Merge enabled."
+      },
+      "scope": {
+        "ja": "このガイドは Agent Merge の有効化、CI ブロック要因への対応、マージキューのステータス確認を扱います。レビューコメントの作成自体はガイド 13 で扱うため対象外です。",
+        "en": "This guide covers enabling Agent Merge, responding to CI blockers, and checking merge queue status. Creating review comments themselves is covered in guide 13 and out of scope here."
+      },
+      "safety": {
+        "ja": "Agent Merge は GitHub が許可した時点でのみマージを実行し、ブランチ保護ルールや必須レビュー、必須チェックを回避することはありません。機密性の高いリリースブランチでは、無人でマージが進まないよう Agent Merge を無効にしておいてください。",
+        "en": "Agent Merge only merges once GitHub allows it, and it never bypasses branch protection rules, required reviews, or required checks. On sensitive release branches, keep Agent Merge disabled so merges don't proceed unattended."
+      },
+      "prerequisites": [
+        {
+          "ja": "ガイド 13 のレビュー手順を完了し、対象 PR が必要なレビューを受けている、または受けられる状態であること。",
+          "en": "Guide 13's review steps are complete and the target PR either has or can receive the required reviews."
+        },
+        {
+          "ja": "対象リポジトリに CI チェックが設定されており、あなたに PR をマージする権限があること。",
+          "en": "The target repository has CI checks configured and you have permission to merge the PR."
+        },
+        {
+          "ja": "リポジトリのブランチ保護ルール (必須チェック、必須承認、マージキューの有無) を把握していること。",
+          "en": "You understand the repository's branch protection rules, including required checks, required approvals, and whether a merge queue is used."
+        }
+      ],
+      "launchers": [
+        {
+          "label": {
+            "ja": "マージ対象の PR を安全に開く例",
+            "en": "Example: open the PR you intend to merge safely"
+          },
+          "description": {
+            "ja": "Agent Merge を有効にする対象の PR を安全なランチャー経由で開きます。",
+            "en": "Opens the PR you intend to enable Agent Merge on through the safe launcher."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fgithub.com%2Fgithub%2Fapp%2Fpull%2F1"
+        }
+      ],
+      "commands": [
+        {
+          "id": "explain-blockers-prompt",
+          "label": {
+            "ja": "現在のブロック要因の説明を依頼するプロンプト",
+            "en": "Prompt to explain current merge blockers"
+          },
+          "language": "text",
+          "code": "Explain what is currently blocking this pull request from merging, including failing checks and outstanding review requirements, without making any changes yet."
+        },
+        {
+          "id": "fix-checks-prompt",
+          "label": {
+            "ja": "失敗しているチェックの修正を依頼するプロンプト",
+            "en": "Prompt to fix failing checks"
+          },
+          "language": "text",
+          "code": "Investigate why the failing required check is failing and propose the smallest fix, without touching unrelated files or configuration."
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "ja": "レビュー済みの PR を開く",
+            "en": "Open a reviewed pull request"
+          },
+          "body": [
+            {
+              "ja": "ガイド 13 でレビューを終えた PR を開き、Overview で現在の CI とレビュー状況を確認します。",
+              "en": "Open the PR you finished reviewing in guide 13 and check its current CI and review status in Overview."
+            }
+          ],
+          "expected": {
+            "ja": "必要なレビューと CI の現状が Overview から確認できます。",
+            "en": "You can see the required reviews and current CI state from Overview."
+          }
+        },
+        {
+          "title": {
+            "ja": "アプリ上部で Agent Merge を有効にする",
+            "en": "Enable Agent Merge at the top of the app"
+          },
+          "body": [
+            {
+              "ja": "アプリ上部の Agent Merge トグルを有効にします。",
+              "en": "Turn on the Agent Merge toggle at the top of the app."
+            }
+          ],
+          "expected": {
+            "ja": "トグルがオンになり、ワークスペースの Copilot セッションがバックグラウンドで PR を読み込み始めます。",
+            "en": "The toggle turns on and the workspace's Copilot session starts reading the PR in the background."
+          }
+        },
+        {
+          "title": {
+            "ja": "現在のブロック要因を確認する",
+            "en": "Check current merge blockers"
+          },
+          "body": [
+            {
+              "ja": "変更を加える前に、何がマージをブロックしているかをエージェントに説明してもらいます。",
+              "en": "Before any change is made, ask the agent to explain what is blocking the merge."
+            }
+          ],
+          "commandIds": [
+            "explain-blockers-prompt"
+          ],
+          "expected": {
+            "ja": "失敗しているチェックや未承認のレビューなど、ブロック要因が一覧で説明されます。",
+            "en": "The agent lists blockers such as failing checks and outstanding reviews."
+          }
+        },
+        {
+          "title": {
+            "ja": "失敗しているチェックを修正させる",
+            "en": "Have the agent fix a failing check"
+          },
+          "body": [
+            {
+              "ja": "無関係なファイルには触れず、失敗している必須チェックの最小限の修正を依頼します。",
+              "en": "Ask the agent for the smallest possible fix to the failing required check, without touching unrelated files."
+            }
+          ],
+          "commandIds": [
+            "fix-checks-prompt"
+          ],
+          "expected": {
+            "ja": "エージェントが最小限の修正を提案し、チェックが再実行されます。",
+            "en": "The agent proposes a minimal fix and the check reruns."
+          }
+        },
+        {
+          "title": {
+            "ja": "マージキューのステータスを確認する",
+            "en": "Check merge queue status"
+          },
+          "body": [
+            {
+              "ja": "リポジトリがマージキューを使っている場合、バッジ、サイドバー、My Work の一覧など各所で PR のステータスを確認します。",
+              "en": "If the repository uses a merge queue, check the PR's status across surfaces such as badges, the sidebar, and the My Work list."
+            }
+          ],
+          "expected": {
+            "ja": "マージキュー使用時は、オープンやマージ準備完了ではなく Queued ステータスが一貫して表示されます。",
+            "en": "When a merge queue is used, the PR consistently shows a Queued status instead of open or merge-ready."
+          }
+        },
+        {
+          "title": {
+            "ja": "必須承認が引き続き適用されることを確認する",
+            "en": "Confirm required approvals still apply"
+          },
+          "body": [
+            {
+              "ja": "Agent Merge は自己承認したりレビュー担当者の要件を回避したりしないことを、承認が不足した状態のまま確認します。",
+              "en": "While approvals are still missing, confirm that Agent Merge does not self-approve or bypass reviewer requirements."
+            }
+          ],
+          "expected": {
+            "ja": "必須承認が満たされるまで、Agent Merge は実際のマージを実行しません。",
+            "en": "Agent Merge does not perform the actual merge until required approvals are satisfied."
+          }
+        },
+        {
+          "title": {
+            "ja": "マージ完了とトグルの自動オフを確認する",
+            "en": "Confirm the merge completes and the toggle turns off"
+          },
+          "body": [
+            {
+              "ja": "必須チェックと必須承認がすべて満たされた後、GitHub がマージを許可した時点で完了するのを見届けます。",
+              "en": "Watch the merge complete once GitHub allows it, after all required checks and approvals are satisfied."
+            }
+          ],
+          "expected": {
+            "ja": "PR がマージされ、Agent Merge のトグルが自動的にオフになります。",
+            "en": "The PR merges and the Agent Merge toggle turns off automatically."
+          }
+        }
+      ],
+      "expected": [
+        {
+          "ja": "Agent Merge のトグルが有効になり、バックグラウンドで動作し続ける。",
+          "en": "The Agent Merge toggle is enabled and continues running in the background."
+        },
+        {
+          "ja": "失敗していた必須チェックが修正され、再実行後に成功する。",
+          "en": "The previously failing required check is fixed and passes on rerun."
+        },
+        {
+          "ja": "必須承認とブランチ保護ルールが満たされるまで、実際のマージは行われない。",
+          "en": "The actual merge does not happen until required approvals and branch protection rules are satisfied."
+        },
+        {
+          "ja": "マージ完了後、Agent Merge のトグルが自動的にオフになる。",
+          "en": "After the merge completes, the Agent Merge toggle turns off automatically."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "problem": {
+            "ja": "1 つのチェックが成功しても、別のチェックが失敗したままだと Agent Merge が停止して見える",
+            "en": "Agent Merge appears stuck when one check passes but another is still failing"
+          },
+          "fix": {
+            "ja": "この再プロンプトの不具合は v1.0.20 で修正済みです。v1.1.2 に更新し、Agent Merge の状態パネルで進行状況を確認してください。",
+            "en": "This re-prompting issue was fixed in v1.0.20. Update to v1.1.2 and check the Agent Merge status panel for progress."
+          }
+        },
+        {
+          "problem": {
+            "ja": "Agent Merge を有効にしても実際にはマージされない",
+            "en": "Enabling Agent Merge doesn't actually merge the pull request"
+          },
+          "fix": {
+            "ja": "この不具合は v1.1.1 で修正されています。v1.1.1 より前のビルドでは有効化してもマージが実行されないため、v1.1.2 に更新してください。",
+            "en": "This bug was fixed in v1.1.1. Builds before v1.1.1 could enable Agent Merge without it actually merging, so update to v1.1.2."
+          }
+        },
+        {
+          "problem": {
+            "ja": "Agent Merge をオフにしたのにステータスが active のまま表示される",
+            "en": "The status still shows active after turning Agent Merge off"
+          },
+          "fix": {
+            "ja": "この表示上の不具合は v1.0.16 で修正済みです。表示が古いままの場合はセッションを再読み込みしてください。",
+            "en": "This display bug was fixed in v1.0.16. If the status still looks stale, reload the session."
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "ja": "演習で有効化した Agent Merge を、実際にマージする意図がなければオフにします。",
+          "en": "Turn off Agent Merge if you enabled it only for this exercise and don't intend to actually merge."
+        },
+        {
+          "ja": "マージ後、不要になったローカルブランチや worktree を削除します。",
+          "en": "Delete the local branch or worktree once it's no longer needed after the merge."
+        },
+        {
+          "ja": "バックグラウンドで動作したセッションをアーカイブし、消費したクレジットを Session spend の Agent merge 行で確認します。",
+          "en": "Archive the session that ran in the background, and check the Agent merge line in Session spend to see the credits it used."
+        }
+      ],
+      "platforms": {
+        "windows": {
+          "ja": "Windows でもバックグラウンド動作はアプリの再起動をまたいで継続します。タスクバーの通知でステータス変化を確認できます。",
+          "en": "Background operation continues across app restarts on Windows too. Watch the taskbar notification for status changes."
+        },
+        "macos": {
+          "ja": "macOS ではメニューバーのアイコンから Agent Merge の進行状況を確認できます。",
+          "en": "On macOS, you can check Agent Merge progress from the menu bar icon."
+        },
+        "linux": {
+          "ja": "Linux でもバックグラウンド動作の挙動は同一です。トレイアイコンがない環境では、アプリを開いた状態でステータスを確認してください。",
+          "en": "Background behavior is identical on Linux. In environments without a tray icon, keep the app open to check status."
+        },
+        "wsl": {
+          "ja": "WSL 内のリポジトリでも、Agent Merge を実行するのはワークスペースの Copilot セッションであり、状態は Windows 側アプリから確認します。",
+          "en": "Even for repositories inside WSL, Agent Merge is driven by the workspace's Copilot session, and you check its status from the Windows-side app."
+        }
+      },
+      "related": [
+        "13",
+        "15",
+        "16"
+      ],
+      "sources": [
+        {
+          "title": "Managing issues and pull requests with the GitHub Copilot app",
+          "url": "https://docs.github.com/en/copilot/how-tos/github-copilot-app/managing-issues-and-pull-requests"
+        },
+        {
+          "title": "GitHub Copilot app v1.1.1 release",
+          "url": "https://github.com/github/app/releases/tag/v1.1.1"
+        },
+        {
+          "title": "Merging a pull request with a merge queue",
+          "url": "https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/merging-a-pull-request-with-a-merge-queue"
+        }
+      ]
+    },
+    {
+      "id": "15",
+      "title": {
+        "ja": "セキュリティレビューとラバーダックで批評を受ける",
+        "en": "Get a critique with security review and rubber duck"
+      },
+      "summary": {
+        "ja": "`/security-review` で高信頼度の脆弱性を確認し、Claude または GPT を使うセッションではラバーダックエージェントから建設的な批評を受けます。どちらも既存のセキュリティ機能を置き換えるものではありません。",
+        "en": "Use `/security-review` to surface high-confidence vulnerabilities, and get a constructive critique from the rubber duck agent when your session uses a Claude or GPT model. Neither replaces your existing security tools."
+      },
+      "keywords": [
+        "/security-review",
+        "rubber duck",
+        "public preview",
+        "code scanning",
+        "Dependabot",
+        "secret scanning",
+        "critique"
+      ],
+      "difficulty": {
+        "key": "intermediate",
+        "label": {
+          "ja": "中級",
+          "en": "Intermediate"
+        }
+      },
+      "status": {
+        "key": "current",
+        "label": {
+          "ja": "提供中",
+          "en": "Available"
+        },
+        "detail": {
+          "ja": "v1.1.2 時点で提供中。`/security-review` は現在パブリックプレビューであり、仕様が変更される可能性があります。ラバーダックエージェントは、セッションのメインエージェントが Claude または GPT モデルを使用している場合にのみ利用できます。",
+          "en": "Current in v1.1.2. `/security-review` is currently in public preview and subject to change. The rubber duck agent is only available when the session's main agent is using a Claude or GPT model."
+        }
+      },
+      "version": {
+        "ja": "v1.1.2 で確認",
+        "en": "Verified for v1.1.2"
+      },
+      "scenario": {
+        "ja": "PR を出す前に、進行中のセッションで `/security-review` を実行して認証やシークレット周りの高信頼度の指摘を確認し、続けてラバーダックエージェントに実装計画への批評を依頼して、コードスキャンや Dependabot に頼る前の一次チェックとします。",
+        "en": "Before opening a PR, you run `/security-review` in an active session to catch high-confidence findings around auth and secrets, then ask the rubber duck agent to critique your implementation plan as an initial check before relying on code scanning and Dependabot."
+      },
+      "scope": {
+        "ja": "このガイドは進行中のセッション内での `/security-review` とラバーダックエージェントの使い方を扱います。コードスキャン、Dependabot、シークレットスキャン自体の設定は対象外です。これらは既存の仕組みを補完するものであり、置き換えるものではありません。",
+        "en": "This guide covers using `/security-review` and the rubber duck agent inside an active session. Configuring code scanning, Dependabot, or secret scanning themselves is out of scope. Both features complement, rather than replace, those existing tools."
+      },
+      "safety": {
+        "ja": "`/security-review` はパブリックプレビューであり、すべての脆弱性を検出することを保証しません。ラバーダックエージェントの批評は建設的な意見であり、セキュリティ上の保証ではありません。本番リリース前には、コードスキャン、Dependabot、シークレットスキャンなど既存の仕組みによる確認を必ず継続してください。",
+        "en": "`/security-review` is in public preview and does not guarantee detection of all vulnerabilities. The rubber duck agent's critique is a constructive opinion, not a security guarantee. Continue to rely on code scanning, Dependabot, and secret scanning before any production release."
+      },
+      "prerequisites": [
+        {
+          "ja": "ガイド 13 を完了し、レビュー対象の変更を含むアクティブなセッションを開けること。",
+          "en": "Guide 13 is complete and you can open an active session containing the changes to review."
+        },
+        {
+          "ja": "セッションのメインエージェントが Claude または GPT 系のモデルに設定されていること (ラバーダックエージェント利用の条件)。",
+          "en": "The session's main agent is configured to use a Claude- or GPT-family model, a requirement for the rubber duck agent."
+        },
+        {
+          "ja": "対象リポジトリで、コードスキャン、Dependabot、シークレットスキャンなど既存のセキュリティ機能がどのように設定されているか把握していること。",
+          "en": "You understand how existing security features such as code scanning, Dependabot, and secret scanning are configured in the target repository."
+        }
+      ],
+      "launchers": [
+        {
+          "label": {
+            "ja": "レビュー対象のセッション元 PR を安全に開く例",
+            "en": "Example: open the session's source PR safely"
+          },
+          "description": {
+            "ja": "セキュリティレビューを行うセッションの元になった PR を安全なランチャー経由で開きます。",
+            "en": "Opens the pull request behind the session you'll run the security review in, through the safe launcher."
+          },
+          "url": "https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fgithub.com%2Fgithub%2Fapp%2Fpull%2F1"
+        }
+      ],
+      "commands": [
+        {
+          "id": "run-security-review",
+          "label": {
+            "ja": "`/security-review` を実行",
+            "en": "Run `/security-review`"
+          },
+          "language": "text",
+          "code": "/security-review"
+        },
+        {
+          "id": "run-rubber-duck",
+          "label": {
+            "ja": "`/rubber-duck` で批評を依頼",
+            "en": "Ask for a critique with `/rubber-duck`"
+          },
+          "language": "text",
+          "code": "/rubber-duck Critique my current implementation plan for the auth middleware change, focusing on blind spots and edge cases."
+        }
+      ],
+      "steps": [
+        {
+          "title": {
+            "ja": "変更途中のアクティブなセッションを開く",
+            "en": "Open an active session with in-progress changes"
+          },
+          "body": [
+            {
+              "ja": "レビューしたい差分がまだ含まれているセッションを開きます。",
+              "en": "Open the session that still contains the diff you want to review."
+            }
+          ],
+          "expected": {
+            "ja": "セッションの Changes に、レビュー対象の差分が表示されています。",
+            "en": "The session's Changes shows the diff you intend to review."
+          }
+        },
+        {
+          "title": {
+            "ja": "`/security-review` を実行する",
+            "en": "Run `/security-review`"
+          },
+          "body": [
+            {
+              "ja": "プロンプトボックスに `/security-review` と入力して実行します。",
+              "en": "Type `/security-review` in the prompt box and run it."
+            }
+          ],
+          "commandIds": [
+            "run-security-review"
+          ],
+          "expected": {
+            "ja": "重要度と信頼度スコア付きの指摘と、適用可能な修正案が返ります。",
+            "en": "You get findings with severity and confidence scores, plus suggested fixes you can apply."
+          }
+        },
+        {
+          "title": {
+            "ja": "指摘を確認し、必要なら修正を適用する",
+            "en": "Review findings and apply fixes if needed"
+          },
+          "body": [
+            {
+              "ja": "高信頼度の指摘に対応し、同じセッション内で修正結果を検証します。",
+              "en": "Address the high-confidence findings and verify the fix in the same session."
+            }
+          ],
+          "expected": {
+            "ja": "指摘された高信頼度の問題が修正され、セッション内で検証できます。",
+            "en": "The high-confidence issues are fixed and verified in the session."
+          }
+        },
+        {
+          "title": {
+            "ja": "セッションのモデルが Claude または GPT であることを確認する",
+            "en": "Confirm the session's model is Claude or GPT"
+          },
+          "body": [
+            {
+              "ja": "モデルピッカーで現在のモデルを確認します。ラバーダックエージェントは Claude または GPT 系モデルのときにのみ利用できます。",
+              "en": "Check the current model in the model picker. The rubber duck agent is only available with a Claude- or GPT-family model."
+            }
+          ],
+          "expected": {
+            "ja": "ラバーダックエージェントが利用可能な状態であることが確認できます。",
+            "en": "You confirm the rubber duck agent is available for this session."
+          }
+        },
+        {
+          "title": {
+            "ja": "`/rubber-duck` で批評を依頼する",
+            "en": "Ask for a critique with `/rubber-duck`"
+          },
+          "body": [
+            {
+              "ja": "実装計画やコードについて具体的な観点を挙げて批評を依頼します。",
+              "en": "Ask for a critique of your plan or code, naming a specific aspect you want scrutinized."
+            }
+          ],
+          "commandIds": [
+            "run-rubber-duck"
+          ],
+          "expected": {
+            "ja": "セッションとは別のモデルによる、blocking / non-blocking / suggestion に分類された建設的な批評が返ります。",
+            "en": "You receive a constructive critique from a different model, categorized as blocking, non-blocking, or a suggestion."
+          }
+        },
+        {
+          "title": {
+            "ja": "批評を踏まえて計画または実装を調整する",
+            "en": "Adjust the plan or implementation based on the critique"
+          },
+          "body": [
+            {
+              "ja": "blocking の指摘には必ず対応し、その後もコードスキャンなど既存の仕組みでの確認を継続します。",
+              "en": "Address any blocking findings, and continue to rely on existing tools such as code scanning afterward."
+            }
+          ],
+          "expected": {
+            "ja": "重大な指摘に対応し、既存のセキュリティ機能による確認プロセスは変わらず継続されています。",
+            "en": "Blocking findings are addressed, and your existing security review process continues unchanged."
+          }
+        }
+      ],
+      "expected": [
+        {
+          "ja": "`/security-review` が現在の差分に対して重要度・信頼度付きの指摘を返した。",
+          "en": "`/security-review` returned findings with severity and confidence for the current diff."
+        },
+        {
+          "ja": "セッションのモデルが Claude または GPT のときに、ラバーダックエージェントの批評を受け取れた。",
+          "en": "You received a critique from the rubber duck agent while the session's model was Claude or GPT."
+        },
+        {
+          "ja": "批評が blocking / non-blocking / suggestion に分類され、行動可能な内容だった。",
+          "en": "The critique was categorized as blocking, non-blocking, or a suggestion, and was actionable."
+        },
+        {
+          "ja": "コードスキャン、Dependabot、シークレットスキャンなど既存の仕組みを置き換えていないことを確認できた。",
+          "en": "You confirmed that neither feature replaces existing tools like code scanning, Dependabot, or secret scanning."
+        }
+      ],
+      "troubleshooting": [
+        {
+          "problem": {
+            "ja": "`/security-review` を実行しても何も見つからないと表示される",
+            "en": "`/security-review` reports no findings"
+          },
+          "fix": {
+            "ja": "指摘がない場合は明示的にその旨が返されます。パブリックプレビューのため検出範囲には限りがあるので、コードスキャンなど既存の仕組みでの確認も継続してください。",
+            "en": "When there are no findings, the command explicitly says so. Because this is a public preview, coverage is limited, so continue relying on existing tools like code scanning."
+          }
+        },
+        {
+          "problem": {
+            "ja": "`/rubber-duck` を実行しても批評が返らない",
+            "en": "`/rubber-duck` doesn't return a critique"
+          },
+          "fix": {
+            "ja": "セッションのメインエージェントが Claude または GPT 系モデルになっているか確認してください。他のモデルの場合、ラバーダックエージェントは現在利用できません。",
+            "en": "Check that the session's main agent is using a Claude- or GPT-family model. The rubber duck agent is not currently available with other models."
+          }
+        },
+        {
+          "problem": {
+            "ja": "ラバーダックの指摘がスタイルや命名など些末な内容ばかりに見える",
+            "en": "The rubber duck's feedback seems limited to style or naming nitpicks"
+          },
+          "fix": {
+            "ja": "ラバーダックエージェントはスタイル、フォーマット、命名規則などを意図的にコメントしないよう設計されています。的外れに見える場合は、批評してほしい計画や実装をより具体的に説明して再依頼してください。",
+            "en": "The rubber duck agent is deliberately designed not to comment on style, formatting, or naming conventions. If the feedback seems off-target, describe the plan or implementation you want critiqued more specifically and ask again."
+          }
+        }
+      ],
+      "cleanup": [
+        {
+          "ja": "セキュリティレビューで適用したテスト用の修正が不要であれば、Changes から取り消します。",
+          "en": "Revert any test fixes you applied during the security review from Changes if they aren't needed."
+        },
+        {
+          "ja": "批評のために操作したセッションをアーカイブまたは削除します。",
+          "en": "Archive or delete the session you used for the critique."
+        },
+        {
+          "ja": "本番リリース前に、コードスキャン、Dependabot、シークレットスキャンの結果も別途確認したことを記録します。",
+          "en": "Before any production release, record that you separately checked the results of code scanning, Dependabot, and secret scanning."
+        }
+      ],
+      "platforms": {
+        "windows": {
+          "ja": "Windows でもスラッシュコマンドの挙動は同一です。日本語入力中は変換確定後に `/` を入力してください。",
+          "en": "Slash command behavior is identical on Windows. When using Japanese IME input, type `/` after confirming conversion."
+        },
+        "macos": {
+          "ja": "macOS でも同様にプロンプトボックスへ直接スラッシュコマンドを入力します。",
+          "en": "On macOS, type the slash command directly into the prompt box the same way."
+        },
+        "linux": {
+          "ja": "Linux の AppImage ビルドでも `/security-review` と `/rubber-duck` は同一のセッション機能として動作します。",
+          "en": "On the Linux AppImage build, `/security-review` and `/rubber-duck` work the same way as session features."
+        },
+        "wsl": {
+          "ja": "WSL リモート環境のセッションでもこれらのスラッシュコマンドは同様に使えます。表示は Windows 側アプリのウィンドウで行われます。",
+          "en": "These slash commands work the same way in WSL remote environment sessions. Output is displayed in the Windows-side app window."
+        }
+      },
+      "related": [
+        "13",
+        "14",
+        "18"
+      ],
+      "sources": [
+        {
+          "title": "Working with agent sessions in the GitHub Copilot app",
+          "url": "https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions"
+        },
+        {
+          "title": "About the rubber duck agent",
+          "url": "https://docs.github.com/en/copilot/concepts/agents/copilot-cli/rubber-duck"
+        },
+        {
+          "title": "GitHub Copilot app v1.0.20 release",
+          "url": "https://github.com/github/app/releases/tag/v1.0.20"
+        }
+      ]
+    }
+  ]
+}

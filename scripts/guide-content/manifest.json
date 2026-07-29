@@ -1,0 +1,181 @@
+{
+  "schemaVersion": 1,
+  "guideCount": 21,
+  "paths": [
+    {
+      "id": "start-configure",
+      "number": 1,
+      "title": {
+        "ja": "開始と構成",
+        "en": "Start and configure"
+      },
+      "summary": {
+        "ja": "アプリを導入し、モデルとセッションの基本を安全に構成します。",
+        "en": "Install the app and safely configure models and session fundamentals."
+      },
+      "guides": [
+        {
+          "id": "01",
+          "slug": "install-projects",
+          "filename": "01-install-projects.html"
+        },
+        {
+          "id": "02",
+          "slug": "models-auto-byok",
+          "filename": "02-models-auto-byok.html"
+        },
+        {
+          "id": "03",
+          "slug": "first-session-modes",
+          "filename": "03-first-session-modes.html"
+        }
+      ]
+    },
+    {
+      "id": "parallel-work",
+      "number": 2,
+      "title": {
+        "ja": "並列作業を実行",
+        "en": "Run parallel work"
+      },
+      "summary": {
+        "ja": "分離されたセッション、複数ビュー、ファイルと Canvas を使って作業を並列化します。",
+        "en": "Parallelize work with isolated sessions, multi-session views, files, and canvases."
+      },
+      "guides": [
+        {
+          "id": "04",
+          "slug": "worktrees-parallel-sessions",
+          "filename": "04-worktrees-parallel-sessions.html"
+        },
+        {
+          "id": "05",
+          "slug": "orchestration-nested-sessions",
+          "filename": "05-orchestration-nested-sessions.html"
+        },
+        {
+          "id": "06",
+          "slug": "session-grid-side-chats",
+          "filename": "06-session-grid-side-chats.html"
+        },
+        {
+          "id": "07",
+          "slug": "chat-archive-rewind-compact",
+          "filename": "07-chat-archive-rewind-compact.html"
+        },
+        {
+          "id": "08",
+          "slug": "cloud-wsl-vscode-cli-handoff",
+          "filename": "08-cloud-wsl-vscode-cli-handoff.html"
+        },
+        {
+          "id": "09",
+          "slug": "files-diffs-browser-present-mode",
+          "filename": "09-files-diffs-browser-present-mode.html"
+        },
+        {
+          "id": "10",
+          "slug": "canvases-artifacts",
+          "filename": "10-canvases-artifacts.html"
+        }
+      ]
+    },
+    {
+      "id": "github-lifecycle",
+      "number": 3,
+      "title": {
+        "ja": "GitHub ライフサイクルを管理",
+        "en": "Manage the GitHub lifecycle"
+      },
+      "summary": {
+        "ja": "My Work から Issue、レビュー、CI、マージまでをアプリ内で進めます。",
+        "en": "Move from My Work through issues, reviews, CI, and merge inside the app."
+      },
+      "guides": [
+        {
+          "id": "11",
+          "slug": "my-work-filters",
+          "filename": "11-my-work-filters.html"
+        },
+        {
+          "id": "12",
+          "slug": "issues-deep-links",
+          "filename": "12-issues-deep-links.html"
+        },
+        {
+          "id": "13",
+          "slug": "pull-request-review",
+          "filename": "13-pull-request-review.html"
+        },
+        {
+          "id": "14",
+          "slug": "agent-merge-ci-queue",
+          "filename": "14-agent-merge-ci-queue.html"
+        },
+        {
+          "id": "15",
+          "slug": "security-review-rubber-duck",
+          "filename": "15-security-review-rubber-duck.html"
+        }
+      ]
+    },
+    {
+      "id": "automate-extend",
+      "number": 4,
+      "title": {
+        "ja": "自動化と拡張",
+        "en": "Automate and extend"
+      },
+      "summary": {
+        "ja": "ローカルとクラウドの自動化を作成し、エージェント、MCP、スキル、プラグインを拡張します。",
+        "en": "Create local and cloud automations, then extend agents, MCP, skills, and plugins."
+      },
+      "guides": [
+        {
+          "id": "16",
+          "slug": "local-automations",
+          "filename": "16-local-automations.html"
+        },
+        {
+          "id": "17",
+          "slug": "cloud-automations",
+          "filename": "17-cloud-automations.html"
+        },
+        {
+          "id": "18",
+          "slug": "custom-agents",
+          "filename": "18-custom-agents.html"
+        },
+        {
+          "id": "19",
+          "slug": "mcp-skills-plugins-canvas-extensions",
+          "filename": "19-mcp-skills-plugins-canvas-extensions.html"
+        }
+      ]
+    },
+    {
+      "id": "operate-optimize",
+      "number": 5,
+      "title": {
+        "ja": "運用と最適化",
+        "en": "Operate and optimize"
+      },
+      "summary": {
+        "ja": "履歴と使用状況から改善し、アクセシビリティ、ストレージ、復旧を整えます。",
+        "en": "Improve from history and usage data, then configure accessibility, storage, and recovery."
+      },
+      "guides": [
+        {
+          "id": "20",
+          "slug": "memory-chronicle-insights",
+          "filename": "20-memory-chronicle-insights.html"
+        },
+        {
+          "id": "21",
+          "slug": "accessibility-storage-lifecycle-recovery",
+          "filename": "21-accessibility-storage-lifecycle-recovery.html"
+        }
+      ]
+    }
+  ]
+}

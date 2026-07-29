@@ -1,0 +1,318 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Review GitHub-hosted models and the Auto switch, reasoning effort persistence, and how to add a local BYOK model provider.">
+<title>GitHub Copilot App v1.1.2 — Configure models, Auto, and BYOK</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="02" data-guide-count="21">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.2 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.2</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.2/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="guide-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">学習パス 1 · ガイド 02</span><span class="en" lang="en">Learning path 1 · Guide 02</span></p>
+    <h1 id="guide-title"><span class="ja" lang="ja">モデル、Auto、BYOK を構成する</span><span class="en" lang="en">Configure models, Auto, and BYOK</span></h1>
+    <p class="lede"><span class="ja" lang="ja">GitHub ホスト型モデルと Auto の切り替え、reasoning effort の永続化、そしてローカル BYOK によるモデルプロバイダーの追加方法を確認します。</span><span class="en" lang="en">Review GitHub-hosted models and the Auto switch, reasoning effort persistence, and how to add a local BYOK model provider.</span></p>
+    <div class="meta-row" aria-label="Guide metadata">
+      <span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中（一部プレビュー）</span><span class="en" lang="en">Available (partly preview)</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.2 で確認（Auto の切り替え表示は v1.1.1 で追加）</span><span class="en" lang="en">Verified for v1.1.2 (the Auto switch display was added in v1.1.1)</span></span>
+    </div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#guides"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">21 ガイド一覧</span><span class="en" lang="en">All 21 guides</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="scenario">
+        <div class="section-heading">
+          <p class="eyebrow">Scenario &amp; scope</p>
+          <h2><span class="ja" lang="ja">シナリオと対象範囲</span><span class="en" lang="en">Scenario and scope</span></h2>
+        </div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">Guide 01 で接続したサンプルリポジトリを使い、まず GitHub ホスト型モデルで Auto と reasoning effort の挙動を確認し、そのあと OpenAI 互換のエンドポイントなど任意の1つのプロバイダーをローカル BYOK として追加して、同じセッションでモデルを切り替えて比較します。</span><span class="en" lang="en">Using the sample repository connected in Guide 01, first observe how Auto and reasoning effort behave with GitHub-hosted models, then add one local BYOK provider, such as an OpenAI-compatible endpoint, and compare it against GitHub-hosted models in the same session.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">機能の境界</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドは GitHub Copilot App v1.1.2 の Model Providers 設定内で完結するモデル構成（GitHub ホスト型モデル、Auto、reasoning effort、ローカル BYOK プロバイダーの追加）を扱います。Copilot CLI、VS Code や JetBrains などの IDE 拡張、Copilot SDK にも同様の BYOK 機構がありますが、これらは資格情報もモデル一覧もアプリとは別に管理される隣接サーフェスであり、本ガイドの対象外です。組織や Enterprise 管理者が設定するサーバー側の Enterprise BYOK（Enable custom models ポリシー）も、ユーザー個別のローカル BYOK とは別の仕組みであり、ここでは扱いません。</span><span class="en" lang="en">This guide covers model configuration that lives entirely inside GitHub Copilot App v1.1.2&#039;s Model Providers settings: GitHub-hosted models, Auto, reasoning effort, and adding a local BYOK provider. Copilot CLI, IDE extensions such as VS Code and JetBrains, and the Copilot SDK have their own equivalent BYOK mechanisms, but each manages its own credentials and model list separately from the app, so they are out of scope here. Server-side Enterprise BYOK, configured by organization or enterprise administrators through the Enable custom models policy, is a separate mechanism from per-user local BYOK and is not covered in this guide.</span></p></article>
+        </div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全上の注意</span><span class="en" lang="en">Safety note</span>:</strong> <span class="ja" lang="ja">API キーなどの資格情報は Model Providers の資格情報欄にのみ入力し、プロンプト、コマンド例、ファイル名、コミットメッセージには絶対に貼り付けないでください。practice 用に追加したプロバイダーは検証が終わったら削除し、共有端末では特に、システム資格情報ストアに残さないようにしてください。</span><span class="en" lang="en">Enter credentials such as API keys only in the Model providers credential field, never in prompts, command examples, filenames, or commit messages. Remove any provider you added for practice once you are done verifying it, and take extra care on shared machines to avoid leaving entries behind in the system credential store.</span></div>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">Guide 01 を完了し、GitHub Copilot App にサインイン済みで、少なくとも 1 つのプロジェクトが接続されていること。</span><span class="en" lang="en">Guide 01 is complete: the GitHub Copilot app is signed in and at least one project is connected.</span></li>
+<li><span class="ja" lang="ja">ローカル BYOK を試す場合は、サポートされているプロバイダー（OpenAI、Azure OpenAI、Microsoft Foundry、Anthropic、Ollama、Foundry Local、LM Studio、または任意の OpenAI 互換 HTTP エンドポイント）のいずれかについて、有効な API キーまたは接続情報を用意していること。</span><span class="en" lang="en">If you plan to try local BYOK, you have valid credentials or connection details for one supported provider: OpenAI, Azure OpenAI, Microsoft Foundry, Anthropic, Ollama, Foundry Local, LM Studio, or any OpenAI-compatible HTTP endpoint.</span></li>
+<li><span class="ja" lang="ja">自分のアカウントが Copilot プランを持っているか、それとも独自のモデルプロバイダーだけで利用しているかを把握していること。これにより GitHub Copilot が自動的に読み取り専用プロバイダーとして表示されるかどうかを判断できます。</span><span class="en" lang="en">You know whether your account has a Copilot plan or relies only on your own model provider, since this determines whether GitHub Copilot appears automatically as a read-only provider.</span></li>
+<li><span class="ja" lang="ja">OS のシステム資格情報ストア（Windows Credential Manager、macOS キーチェーン、または Linux のキーリング）を後で確認できる状態であること。</span><span class="en" lang="en">You are able to open your OS system credential store later—Windows Credential Manager, macOS Keychain, or a Linux keyring.</span></li></ul>
+      </section>
+
+
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="ja" lang="ja">Model Providers 設定を開き、自動表示を確認する</span><span class="en" lang="en">Open Model Providers settings and check the automatic entry</span></h3>
+  <p><span class="ja" lang="ja">アプリの設定を開き、Model Providers を選びます。有効な Copilot シートでサインインしている場合、GitHub Copilot が読み取り専用のプロバイダーとして自動的に一覧に表示されます。</span><span class="en" lang="en">Open app settings and choose Model providers. If you are signed in with an active Copilot seat, GitHub Copilot appears automatically in the list as a read-only provider.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">期待される結果</span><span class="en" lang="en">Expected result</span>:</strong> <span class="ja" lang="ja">GitHub Copilot エントリが一覧に表示され（Copilot シートがある場合）、編集や削除ができない読み取り専用として示されている。</span><span class="en" lang="en">The GitHub Copilot entry appears in the list (if you have a Copilot seat) and is shown as read-only, without edit or delete controls.</span></div>
+</li>
+<li class="step">
+  <h3><span class="ja" lang="ja">モデルピッカーで Auto と Previous models を確認する</span><span class="en" lang="en">Review Auto and Previous models in the model picker</span></h3>
+  <p><span class="ja" lang="ja">プロンプト欄下のモデルピッカーを開きます。上部に専用の説明が付いた Auto のスイッチがあり、古いモデルバージョンは Previous models セクションにまとめられています。</span><span class="en" lang="en">Open the model picker below the prompt field. Auto appears as a switch at the top with its own summary, and older model versions are grouped into a Previous models section.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">期待される結果</span><span class="en" lang="en">Expected result</span>:</strong> <span class="ja" lang="ja">Auto のスイッチとその説明、および Previous models セクションが表示され、現行モデルと区別できる。</span><span class="en" lang="en">The Auto switch with its summary, plus a Previous models section, are visible and clearly separated from current models.</span></div>
+</li>
+<li class="step">
+  <h3><span class="ja" lang="ja">Auto でプロンプトを送り、応答したモデルを確認する</span><span class="en" lang="en">Send a prompt with Auto and check which model responded</span></h3>
+  <p><span class="ja" lang="ja">モデルピッカーで Auto を選び、確認用プロンプトを送ります。応答が返ったら、Auto の隣に表示されるモデル名を確認します。</span><span class="en" lang="en">Select Auto in the model picker and send the check prompt. After the response arrives, look at the model name shown next to Auto.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">Auto のモデル確認プロンプト</span><span class="en" lang="en">Auto model-check prompt</span></span>
+    <button class="copy-button" type="button" data-copy="guide-02-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="guide-02-code-1" data-language="text">Which model handled this response? Summarize this repository&#039;s primary language and one low-risk improvement idea in three bullet points.</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">Auto のモデル確認プロンプト（日本語）</span><span class="en" lang="en">Auto model-check prompt (Japanese)</span></span>
+    <button class="copy-button" type="button" data-copy="guide-02-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="guide-02-code-2" data-language="text">この応答を処理したモデルはどれですか。このリポジトリの主な言語と、低リスクな改善案を1つ、3つの箇条書きで要約してください。</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">期待される結果</span><span class="en" lang="en">Expected result</span>:</strong> <span class="ja" lang="ja">Auto の隣に、実際に応答を処理したモデル名が表示され、アカウントで利用可能なモデルと一致している。</span><span class="en" lang="en">The model name that actually handled the response is shown next to Auto, and it matches a model available to your account.</span></div>
+</li>
+<li class="step">
+  <h3><span class="ja" lang="ja">reasoning effort を変更し、永続化を確認する</span><span class="en" lang="en">Change reasoning effort and confirm it persists</span></h3>
+  <p><span class="ja" lang="ja">reasoning effort のドロップダウンを Medium から High などに変更します。セッションを一度閉じて再度開くか、アプリを再起動して、選択した reasoning effort が Medium に戻らず維持されていることを確認します（v1.1.2 で修正済み）。</span><span class="en" lang="en">Change the reasoning effort dropdown from Medium to, for example, High. Close and reopen the session, or restart the app, and confirm the reasoning effort you chose stays instead of reverting to Medium (fixed in v1.1.2).</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">期待される結果</span><span class="en" lang="en">Expected result</span>:</strong> <span class="ja" lang="ja">セッションを再開またはアプリを再起動しても、選択した reasoning effort がそのまま維持されている。</span><span class="en" lang="en">The reasoning effort you selected remains after resuming the session or restarting the app.</span></div>
+</li>
+<li class="step">
+  <h3><span class="ja" lang="ja">ローカル BYOK プロバイダーを追加する</span><span class="en" lang="en">Add a local BYOK provider</span></h3>
+  <p><span class="ja" lang="ja">Model Providers で Add provider をクリックし、サポートされているプロバイダーを1つ選び、表示名、ベース URL、API キーなど必要な情報を入力します。API キーは資格情報欄にのみ入力します。</span><span class="en" lang="en">In Model providers, click Add provider, choose one supported provider, and enter the required details such as display name, base URL, and API key. Enter the API key only in the credential field.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">BYOK プロバイダー入力欄のテンプレート（実際のキーは書かない）</span><span class="en" lang="en">BYOK provider field template (do not put a real key here)</span></span>
+    <button class="copy-button" type="button" data-copy="guide-02-code-3" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="guide-02-code-3" data-language="text">Provider: OpenAI-compatible HTTP endpoint
+Display name: local-test-provider
+Base URL: https://api.example.com/v1
+API key: &lt;enter only in the Model providers field, never here&gt;</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">期待される結果</span><span class="en" lang="en">Expected result</span>:</strong> <span class="ja" lang="ja">プロバイダーが一覧に追加され、そのモデルがモデルピッカーに GitHub ホスト型モデルと並んで表示される。</span><span class="en" lang="en">The provider is added to the list, and its models appear in the model picker alongside GitHub-hosted models.</span></div>
+</li>
+<li class="step">
+  <h3><span class="ja" lang="ja">BYOK モデルでセッションを実行する</span><span class="en" lang="en">Run a session with the BYOK model</span></h3>
+  <p><span class="ja" lang="ja">新しいセッションでモデルピッカーからその BYOK モデルを選び、確認用プロンプトを送ります。Copilot プランがない場合でも、GitHub アカウントでサインインしていればセッションが開始できることを確認します。</span><span class="en" lang="en">In a new session, select that BYOK model from the picker and send the check prompt. Confirm the session starts even without a Copilot plan, as long as you are signed in with a GitHub account.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">Auto のモデル確認プロンプト</span><span class="en" lang="en">Auto model-check prompt</span></span>
+    <button class="copy-button" type="button" data-copy="guide-02-code-4" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="guide-02-code-4" data-language="text">Which model handled this response? Summarize this repository&#039;s primary language and one low-risk improvement idea in three bullet points.</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">期待される結果</span><span class="en" lang="en">Expected result</span>:</strong> <span class="ja" lang="ja">BYOK モデルでセッションが正常に開始され、応答が返ってくる。Copilot プランの有無に関わらず動作する。</span><span class="en" lang="en">The session starts successfully with the BYOK model and returns a response, regardless of whether you have a Copilot plan.</span></div>
+</li>
+<li class="step">
+  <h3><span class="ja" lang="ja">資格情報の保存場所を確認する</span><span class="en" lang="en">Confirm where credentials are stored</span></h3>
+  <p><span class="ja" lang="ja">Model Providers に戻り、追加したプロバイダーの API キーが UI に表示されないことを確認します。OS のシステム資格情報ストアを開き、対応するエントリが作成されていることも確認します。</span><span class="en" lang="en">Return to Model providers and confirm the API key for the provider you added is never shown in the UI. Also open your OS system credential store and confirm a corresponding entry was created.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">期待される結果</span><span class="en" lang="en">Expected result</span>:</strong> <span class="ja" lang="ja">API キーが UI 上ではマスクまたは非表示になっており、システム資格情報ストアにエントリが存在する。</span><span class="en" lang="en">The API key is masked or hidden in the UI, and a matching entry exists in the system credential store.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">Copilot シートがある場合、GitHub Copilot が Model Providers に読み取り専用で自動表示されている。</span><span class="en" lang="en">If you have a Copilot seat, GitHub Copilot appears automatically as a read-only entry in Model providers.</span></li>
+<li><span class="ja" lang="ja">Auto を選んだセッションで、実際に応答したモデル名が表示され、reasoning effort がセッション再開後も維持される。</span><span class="en" lang="en">In a session using Auto, the model that actually responded is shown, and reasoning effort persists after resuming the session.</span></li>
+<li><span class="ja" lang="ja">少なくとも1つのローカル BYOK プロバイダーを追加し、そのモデルでセッションが動作し、API キーは UI に表示されずシステム資格情報ストアに保存されている。</span><span class="en" lang="en">At least one local BYOK provider is added, a session runs successfully with its model, and the API key is stored in the system credential store rather than shown in the UI.</span></li></ul>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja">有効な Copilot シートがあるのに GitHub Copilot が Model Providers に自動表示されない</span><span class="en" lang="en">GitHub Copilot does not appear automatically in Model providers despite having an active seat</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">v1.1.2 以降であることを確認し、シートを保有するアカウントでサインインし直してからアプリを再起動します。この自動表示は v1.1.2 で追加された変更です。</span><span class="en" lang="en">Confirm you are on v1.1.2 or later, sign in again with the account that holds the seat, then restart the app. This automatic entry was added in v1.1.2.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">reasoning effort が resume や再起動のたびに Medium に戻ってしまう</span><span class="en" lang="en">Reasoning effort keeps reverting to Medium after resuming or restarting</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">v1.1.2 でこの問題は修正されています。アプリを最新版に更新しても解消しない場合は、セッション ID と再現手順を添えて公式リポジトリの Issue に報告してください。</span><span class="en" lang="en">This was fixed in v1.1.2. If updating to the latest version does not resolve it, report it in the official repository with the session ID and reproduction steps.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">プロバイダーを追加してもそのモデルがモデルピッカーに表示されない</span><span class="en" lang="en">A model does not appear in the picker after adding its provider</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">以前のバージョンではプロジェクトやワークスペースのセッションで BYOK モデルが動作しないエラーがありました（v1.0.14 で修正済み）。最新版に更新したうえで、Model Providers に戻ってベース URL と API キーが正しく保存されているかを確認してください。</span><span class="en" lang="en">Earlier versions had an error that could prevent BYOK models from working in project or workspace sessions (fixed in v1.0.14). Update to the latest version, then return to Model providers and confirm the base URL and API key were saved correctly.</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">practice のために追加した BYOK プロバイダーを Model Providers から削除します。特に共有端末では削除を忘れないでください。</span><span class="en" lang="en">Remove the BYOK provider you added for practice from Model providers, especially on a shared machine.</span></li>
+<li><span class="ja" lang="ja">実験のために変更した reasoning effort やモデル選択を、普段使うデフォルト（Auto、Medium など）に戻します。</span><span class="en" lang="en">Reset reasoning effort and model selection back to your usual defaults, such as Auto and Medium, after experimenting.</span></li>
+<li><span class="ja" lang="ja">プロバイダーを削除した後、OS のシステム資格情報ストアに古いエントリが残っていないかを確認し、不要であれば削除します。</span><span class="en" lang="en">After removing a provider, check your OS system credential store for leftover entries and delete them if they are no longer needed.</span></li></ol>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">資格情報は Windows Credential Manager に保存されます。x64 と ARM64 のどちらのビルドでも Model Providers の操作は同じです。</span><span class="en" lang="en">Credentials are stored in Windows Credential Manager. Model providers behave the same on both the x64 and ARM64 builds.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">資格情報は macOS のキーチェーンに保存されます。初めてプロバイダーを追加する際、キーチェーンへのアクセス許可を求められることがあります。</span><span class="en" lang="en">Credentials are stored in the macOS Keychain. You may be prompted to allow keychain access the first time you add a provider.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">資格情報はディストリビューションのキーリング（例: GNOME Keyring）に保存されます。キーリングサービスが実行されていることを確認してください。</span><span class="en" lang="en">Credentials are stored in your distribution&#039;s keyring service, such as GNOME Keyring. Confirm the keyring service is running.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">デスクトップアプリ自体は Windows 側で動作するため、資格情報も Windows 側のシステム資格情報ストアに保存されます。WSL 内のリポジトリを扱う場合の接続そのものはガイド 08 を参照してください。</span><span class="en" lang="en">Because the desktop app itself runs on the Windows side, credentials are stored in the Windows system credential store. See Guide 08 for the connection itself when working with a repository inside WSL.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/use-byok-models" rel="noopener noreferrer">Using your own LLM models in the GitHub Copilot app</a></li>
+<li><a href="https://docs.github.com/en/copilot/concepts/models/bring-your-own-key" rel="noopener noreferrer">Bring your own key for GitHub Copilot</a></li>
+<li><a href="https://docs.github.com/en/copilot/concepts/models/auto-model-selection" rel="noopener noreferrer">About Copilot auto model selection</a></li>
+<li><a href="https://github.com/github/app/releases/tag/v1.1.2" rel="noopener noreferrer">GitHub Copilot app v1.1.2 release</a></li>
+<li><a href="https://github.com/github/app/releases/tag/v1.1.1" rel="noopener noreferrer">GitHub Copilot app v1.1.1 release</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ガイド</span><span class="en" lang="en">Related guides</span></h2></div>
+        <ul><li><a href="01-install-projects.html"><span class="mono">01</span> <span class="ja" lang="ja">インストールとプロジェクト接続</span><span class="en" lang="en">Install and connect projects</span></a></li>
+<li><a href="03-first-session-modes.html"><span class="mono">03</span> <span class="ja" lang="ja">セッションを開始してモードを選ぶ</span><span class="en" lang="en">Start a session and choose a mode</span></a></li>
+<li><a href="18-custom-agents.html"><span class="mono">18</span> <span class="ja" lang="ja">カスタムエージェントを作成して使う</span><span class="en" lang="en">Create and use custom agents</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Guide navigation">
+        <a href="01-install-projects.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のガイド</span><span class="en" lang="en">Previous guide</span></span><br><strong><span class="ja" lang="ja">インストールとプロジェクト接続</span><span class="en" lang="en">Install and connect projects</span></strong></a>
+        <a href="03-first-session-modes.html"><span class="muted"><span class="ja" lang="ja">次のガイド</span><span class="en" lang="en">Next guide</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">セッションを開始してモードを選ぶ</span><span class="en" lang="en">Start a session and choose a mode</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Guide progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 21</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="21"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このガイドを完了にする</span><span class="en" lang="en">Mark this guide complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#scenario"><span class="ja" lang="ja">シナリオと対象範囲</span><span class="en" lang="en">Scenario and scope</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.2/"><span class="ja" lang="ja">v1.1.2 機能ガイド</span><span class="en" lang="en">v1.1.2 feature guide</span></a>
+      <a href="../copilot-app-v1.1.2/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 アーカイブ</span><span class="en" lang="en">v1.0.12 archive</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性とポリシーは公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability and policy details in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>
