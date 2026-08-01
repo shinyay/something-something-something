@@ -1,0 +1,16 @@
+# Binary assets: never apply end-of-line conversion or text diffing.
+# Scoped to binary extensions on purpose — no repository-wide `text=auto`,
+# so existing tracked text files keep their current normalization.
+*.pdf binary
+*.png binary
+*.jpg binary
+*.jpeg binary
+*.gif binary
+*.webp binary
+*.ico binary
+*.woff binary
+*.woff2 binary
+*.pptx binary
+*.docx binary
+*.xlsx binary
+*.zip binary
