@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="『Starting Agentic SDLC with GitHub Copilot』の補足資料。スライドの各概念を実際の GitHub Copilot 機能・設定・ポリシーに対応づけた 14 節の日本語ディープダイブ。">
+<title>Agentic SDLC 補足資料 — Starting Agentic SDLC with GitHub Copilot</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    let theme = param === "light" || param === "dark" ? param : null;
+    if (!theme) {
+      try {
+        const stored = localStorage.getItem("copilot-app-docs-theme");
+        if (stored === "light" || stored === "dark") theme = stored;
+      } catch {
+        theme = null;
+      }
+    }
+    if (!theme) {
+      theme = window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light";
+    }
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<link rel="stylesheet" href="./assets/style.css">
+<script src="./assets/app.js" defer></script>
+</head>
+<body>
+<a class="skip-link" href="#main">本文へ移動</a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="../"><span class="brand__mark"><svg width="24" height="24" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span><span>Something Something Something</span></a>
+    <span class="topic-pill">Agentic SDLC</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z"></path></svg> リポジトリ一覧</a>
+      <a href="https://github.com/shinyay/something-something-something" rel="noopener noreferrer">GitHub</a>
+      <button class="icon-button" type="button" data-theme-toggle><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z"></path></svg><span data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<div class="layout">
+<details class="toc" data-toc open>
+  <summary class="toc__summary"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path></svg><span>目次 — 全 14 節</span></summary>
+  <nav aria-label="セクション">
+    <p class="toc__title">目次</p>
+    <ul class="toc__list">
+      <li><a href="#intro"><span class="toc__num">00</span><span>本資料の位置づけと読み方</span></a></li>
+      <li><a href="#continuum"><span class="toc__num">01</span><span>5 段階の相互作用モデル → 実プロダクト対応</span></a></li>
+      <li><a href="#context"><span class="toc__num">02</span><span>「Context は大きなプロンプトではない」を実装する</span></a></li>
+      <li><a href="#contract"><span class="toc__num">03</span><span>8 フィールド → GitHub 上の実装先</span></a></li>
+      <li><a href="#autonomy"><span class="toc__num">04</span><span>「自律性はスイッチではなく予算」の配分先</span></a></li>
+      <li><a href="#loop"><span class="toc__num">05</span><span>5 つの変換 → 機能マップ</span></a></li>
+      <li><a href="#verification"><span class="toc__num">06</span><span>「決定的に検証する」の決定的側は具体的に何か</span></a></li>
+      <li><a href="#pr"><span class="toc__num">07</span><span>PR がガバナンス境界として機能する構造的保証</span></a></li>
+      <li><a href="#security"><span class="toc__num">08</span><span>委譲の条件としてのセキュリティ ── 成立する設定と、残る穴</span></a></li>
+      <li><a href="#modernization"><span class="toc__num">09</span><span>モダナイゼーション専用ツールの現状</span></a></li>
+      <li><a href="#ladder"><span class="toc__num">10</span><span>採用ラダー → 各段の Definition of Ready</span></a></li>
+      <li><a href="#billing"><span class="toc__num">11</span><span>この運用モデルのコストはどう発生するか</span></a></li>
+      <li><a href="#glossary"><span class="toc__num">12</span><span>発表者フレームワーク / 公式用語 対応表</span></a></li>
+      <li><a href="#sources"><span class="toc__num">13</span><span>一次情報リンク集</span></a></li>
+    </ul>
+  </nav>
+  <p class="toc__foot">2026 年 8 月時点の一次情報に基づき検証<br>Public Preview 表記の機能は仕様変更の可能性があります。</p>
+</details>
+<main id="main">
+  <div class="wrap">
+    <header class="hero">
+      <p class="eyebrow">Supplementary material · 日本語</p>
+      <h1>Agentic SDLC 補足資料</h1>
+      <p class="hero__subtitle">Starting Agentic SDLC with GitHub Copilot — GitHub Copilot 機能ディープダイブ</p>
+      <p class="hero__lede">プレゼンテーションが意図的に扱わなかった層 —— 各概念を実際に何が実装するのか —— を、一次情報に基づいて補完する資料です。全 14 節。各節の見出しにある <span class="slide-chip">S12</span> のようなチップは、対応する元スライド番号を示します。</p>
+      <ul class="hero__meta">
+        <li>対象デッキ: 2026-08-03_agentic-sdlc-modernization.pptx（46 スライド）</li>
+        <li>2026 年 8 月時点の一次情報に基づき検証</li>
+        <li>全 14 節</li>
+      </ul>
+    </header>
+<section class="section" id="intro" aria-labelledby="intro-title">
+  <div class="section__head">
+    <p class="section__num">00</p>
+    <div class="section__headings">
+      <p class="eyebrow">はじめに</p>
+      <h2 id="intro-title">本資料の位置づけと読み方</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S1</span><span class="slide-chip">S2</span><span class="slide-chip">S46</span></span></div>
+    </div>
+  </div>
+  <p class="lead">プレゼンテーション『Starting Agentic SDLC with GitHub Copilot』は、意図的に「操作モデル（どう仕事を設計するか）」に集中し、GitHub Copilot の個別機能の深掘りを避けています。本資料はその欠けている層 —— 各概念を実際に何が実装するのか —— を埋めます。</p>
+
+<figure class="deck-quote">
+    <blockquote>GitHub Copilot's next value is not generating more code; it is enabling teams to redesign modernization as bounded, verifiable work that agents execute and humans govern.</blockquote>
+    <figcaption>スライド原文 S2 / S18 / S45 / S46（逐語・4回反復）</figcaption>
+  </figure>
+
+<p>このテーゼは「何を作るか」ではなく「どう仕事を分割し、誰が責任を持つか」の主張です。したがってスライドは <strong>Delegation Contract</strong>（委譲契約）、<strong>Autonomy Budget</strong>（自律性の予算）、<strong>Agentic Modernization Loop</strong> といった<em>設計語彙</em>を提供します。しかしそれらを実際に GitHub 上で成立させるのは、具体的な機能・ファイル・設定です。本資料はその対応関係を 1 対 1 で示します。</p>
+
+<h3>3 種類のバッジ</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:48%"><col style="width:34%"></colgroup><thead><tr><th>バッジ</th><th>意味</th><th>扱い方</th></tr></thead><tbody><tr><td><span class="badge badge-official">公式</span></td><td>GitHub / Microsoft の公式ドキュメントに存在するプロダクト名・機能名</td><td>顧客への提案でそのまま使える</td></tr><tr><td><span class="badge badge-framework">発表者FW</span></td><td>本プレゼンテーション独自の整理枠組み。公式用語ではない</td><td>「当社の整理では」と前置きして使う</td></tr><tr><td><span class="badge badge-ga">GA</span> <span class="badge badge-pp">Public Preview</span> <span class="badge badge-na">状態表記なし</span></td><td>一次情報での提供状態。「状態表記なし」はドキュメントに GA/Preview の明記がないもの</td><td>Preview は SLA・仕様変更リスクを添えて説明する</td></tr></tbody></table></div>
+
+<aside class="callout callout-note">
+    <div class="callout-mark" aria-hidden="true">i</div>
+    <div class="callout-body"><p class="callout-title">スライド自身が出典規律を持っている</p><p>元スライドのスピーカーノートは全ページに <code>SOURCE:</code> 行を持ち、「User-provided original specification」か「Derived（…）」かを明示し、さらに <code>Source caveat</code> で公式用語との差分を宣言しています。たとえば S12 のノートは「GitHub uses "Assistive features" and "Agentic features"; it does not publish this exact five-stage model.」と自己申告しています。本資料もこの規律を継承します。</p></div>
+  </aside>
+
+<h3>本資料が答える問い</h3>
+<ul class="plain"><li>スライドの 5 段階モデルは、実際にはどのプロダクトに対応するのか（§01）</li><li>「Context は大きなプロンプトではない」を、具体的にどのファイルで実現するのか（§02）</li><li>Delegation Contract の 8 フィールドは、GitHub のどこに書けばエージェントに効くのか（§03）</li><li>「自律性は予算である」を、どの設定項目で配分するのか（§04）</li><li>Modernization Loop の各段で、どの機能が何を生むのか（§05）</li><li>「決定的に検証する」の決定的側とは具体的に何か（§06）</li><li>PR がガバナンス境界として機能する構造的な保証は何か（§07）</li><li>セキュリティ条件は、どの設定で成立し、どこに穴があるのか（§08）</li><li>モダナイゼーション専用のツールは今どうなっているのか（§09）</li><li>採用ラダーの各段に上がる前提条件は何か（§10）</li><li>この運用モデルのコストはどう発生するのか（§11・スライドには無い論点）</li></ul>
+
+</section>
+<section class="section" id="continuum" aria-labelledby="continuum-title">
+  <div class="section__head">
+    <p class="section__num">01</p>
+    <div class="section__headings">
+      <p class="eyebrow">相互作用モデル</p>
+      <h2 id="continuum-title">5 段階の相互作用モデル → 実プロダクト対応</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S12</span><span class="slide-chip">S13</span><span class="slide-chip">S14</span><span class="slide-chip">S15</span><span class="slide-chip">S16</span><span class="slide-chip">S17</span></span></div>
+    </div>
+  </div>
+  <p class="lead">スライド S12 は Completion → Conversation → Collaboration → Delegation → Orchestration という 5 段階を提示し、明示的に「PRESENTER FRAMEWORK」と自己申告しています。ここでは各段階に対応する実プロダクトを確定させます。</p>
+
+<figure class="deck-quote">
+    <blockquote>The useful progression is measured by how much work a person can define and hand off—not by launch dates.</blockquote>
+    <figcaption>スライド原文 S12</figcaption>
+  </figure>
+
+<div class="table-wrap"><table class=""><colgroup><col style="width:16%"><col style="width:30%"><col style="width:20%"><col style="width:12%"><col style="width:22%"></colgroup><thead><tr><th>段階</th><th>対応するプロダクト</th><th>実行場所</th><th>同期性</th><th>課金</th></tr></thead><tbody><tr><td><strong>Completion</strong><br><span class="muted">token / line / block</span></td><td><span class="badge badge-official">公式</span> <strong>GitHub Copilot code suggestions</strong><br><span class="muted">ghost text / next edit suggestions</span></td><td>IDE のみ</td><td>同期</td><td><span class="pos">AI Credits 消費なし</span></td></tr><tr><td><strong>Conversation</strong><br><span class="muted">question / explanation</span></td><td><span class="badge badge-official">公式</span> <strong>GitHub Copilot Chat</strong></td><td>GitHub.com / IDE / Mobile / CLI</td><td>同期</td><td>AI Credits</td></tr><tr><td><strong>Collaboration</strong><br><span class="muted">bounded steps in a shared session</span></td><td><span class="badge badge-official">公式</span> <strong>Agent mode</strong>（IDE）<br><span class="badge badge-official">公式</span> <strong>GitHub Copilot CLI</strong>（<code>copilot</code>）</td><td>自分のマシン / ローカル作業ツリー</td><td>同期</td><td>AI Credits</td></tr><tr><td><strong>Delegation</strong><br><span class="muted">outcome returned with evidence</span></td><td><span class="badge badge-official">公式</span> <strong>GitHub Copilot cloud agent</strong></td><td>GitHub Actions 上の ephemeral 開発環境</td><td><strong>非同期</strong></td><td>AI Credits <strong>＋ Actions 分</strong></td></tr><tr><td><strong>Orchestration</strong><br><span class="muted">repeatable flow across governed work</span></td><td><span class="badge badge-official">公式</span> <strong>Agents タブ / agents panel</strong>（<code>github.com/copilot/agents</code>）<br><span class="badge badge-pp">Public Preview</span> third-party coding agents（Anthropic Claude / OpenAI Codex）</td><td>GitHub.com（横断的な指令面）</td><td>非同期・並列</td><td>各エージェントの課金に従う</td></tr></tbody></table></div>
+
+<aside class="callout callout-key">
+    <div class="callout-mark" aria-hidden="true">★</div>
+    <div class="callout-body"><p class="callout-title">Collaboration と Delegation の実体的な境界は「同期／非同期」ではなく「どこで動くか」</p><p>Agent mode はあなたのマシンで、あなたが見ている前で動きます。ファイルは即座に変わり、あなたはいつでも止められます。<strong>cloud agent は違います。</strong> GitHub Actions 上の使い捨て環境で動き、あなたは見ていません。だから成果物が <code>copilot/…</code> ブランチと draft PR という「検査可能な形」で返る必要がある —— スライド S13 の「Delegation transfers responsibility for executing an outcome, not authority to merge it.」は、この実行モデルの直接の帰結です。</p></div>
+  </aside>
+
+<h3>cloud agent へのタスク投入経路（現行ドキュメントで確認できるもの）</h3>
+<ul class="plain"><li>リポジトリの <strong>Agents タブ</strong>／グローバル <strong>agents panel</strong>／<a href="https://github.com/copilot/agents" target="_blank" rel="noopener noreferrer">github.com/copilot/agents</a></li><li>ダッシュボードの <strong>Task</strong> プロンプト</li><li>GitHub Chat の <code>/task</code></li><li>Issue を <strong>Copilot</strong> にアサイン</li><li>既存 PR のコメントで <code>@copilot</code></li><li>IDE からの委譲 / GitHub Mobile / REST API / GitHub MCP Server</li><li><span class="badge badge-pp">Public Preview</span> GitHub CLI の <code>gh agent-task create</code>（スタンドアロンの <code>copilot</code> CLI とは別物）</li></ul>
+
+<aside class="callout callout-warn">
+    <div class="callout-mark" aria-hidden="true">!</div>
+    <div class="callout-body"><p class="callout-title">名称の変遷に注意</p><p>現行ドキュメントの名称は <strong>GitHub Copilot cloud agent</strong> です。2025 年 9 月に GA announcement が出たときの名称は <strong>Copilot coding agent</strong> でした。正式なリネーム告知は確認できていないため、「ドキュメント上の用語が変わった」と説明するのが安全です。<br>
+    同様に <strong>Agent HQ</strong> は GitHub Blog の傘ブランドで、実際の UI 名称は <strong>Agents タブ / agents panel / agents ページ</strong>、<strong>mission control</strong> はコマンドセンターという概念名です。</p></div>
+  </aside>
+
+<h3>スライドが述べる「管理対象の変化」の実装（S16）</h3>
+<div class="cards cards-3"><div class="card">
+        <p class="card-title">従来: 差分を管理する</p>
+        <div class="card-body">レビュー対象は diff。作業の経過はローカルにしか残らない。</div>
+      </div><div class="card">
+        <p class="card-title">Agentic: セッションを管理する <span class="badge badge-official">公式</span></p>
+        <div class="card-body">cloud agent の <strong>session log</strong> に、進捗・トークン使用量・所要時間・推論／ツール実行ログが残る。コミットは <strong>Verified 署名</strong>付きで、セッションログへ辿れる。依頼者が co-author に入る。</div>
+      </div><div class="card">
+        <p class="card-title">共有の既定値 <span class="badge badge-warn">要注意</span></p>
+        <div class="card-body">cloud agent のセッションは、既定でリポジトリにアクセスできる全員に共有される。ローカルセッションは既定で非共有。</div>
+      </div></div>
+
+</section>
+<section class="section" id="context" aria-labelledby="context-title">
+  <div class="section__head">
+    <p class="section__num">02</p>
+    <div class="section__headings">
+      <p class="eyebrow">Context Engineering</p>
+      <h2 id="context-title">「Context は大きなプロンプトではない」を実装する</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S21</span></span></div>
+    </div>
+  </div>
+  <p class="lead">S21 は Context を Persistent / Task / Dynamic の 3 種に分け、「discoverable（エージェントが確実に見つけられる場所にある）」「permission-aware, owned, reviewed, maintained」という品質要件を課します。これは抽象論ではなく、そのままリポジトリのファイル配置設計です。</p>
+
+<figure class="deck-quote">
+    <blockquote>Context is a managed system of relevant, current, and authorized information—not a one-time prompt enlarged until it works.<br>More tokens do not repair stale, hidden, or unauthorized context.</blockquote>
+    <figcaption>スライド原文 S21</figcaption>
+  </figure>
+
+<div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:22%"><col style="width:26%"><col style="width:34%"></colgroup><thead><tr><th>スライドの分類</th><th>実装</th><th>所在</th><th>備考</th></tr></thead><tbody><tr><td><strong>Persistent context</strong><br><span class="muted">Architecture, conventions, policies, repository knowledge</span></td><td><span class="badge badge-official">公式</span> custom instructions</td><td><code>.github/copilot-instructions.md</code><br><code>AGENTS.md</code><br><code>.github/instructions/**/*.instructions.md</code></td><td><code>AGENTS.md</code> は<strong>ネスト可能</strong>で、ディレクトリツリー上<strong>最も近いファイルが優先</strong>される。<code>*.instructions.md</code> は YAML frontmatter の <code>applyTo</code> glob でパス限定。</td></tr><tr><td></td><td><span class="badge badge-official">公式</span> 組織レベル instructions</td><td>Organization の Copilot 設定</td><td>Business / Enterprise のみ。GitHub.com Chat・code review・cloud agent に適用。</td></tr><tr><td></td><td><span class="badge badge-official">公式</span> <strong>GitHub Copilot Spaces</strong></td><td>GitHub.com</td><td>リポジトリ・ファイル・PR・Issue・自由記述・画像を束ねた永続コンテキスト。GitHub 由来のソースは自動追従。IDE からは GitHub MCP Server 経由で参照。</td></tr><tr><td></td><td><span class="badge badge-pp">Public Preview</span> <strong>GitHub Copilot Memory</strong></td><td>リポジトリ / ユーザー</td><td>リポジトリ事実とユーザー選好を永続化。事実は引用元を保持し現ブランチに対して検証される。<strong>28 日未使用で失効</strong>。cloud agent / code review / CLI が利用。</td></tr><tr><td><strong>Task context</strong><br><span class="muted">Outcome, scope, acceptance criteria, supplied references</span></td><td>Issue 本文（＝ Delegation Contract の置き場所）</td><td>GitHub Issues</td><td>§03 で全 8 フィールドの対応表を示す。</td></tr><tr><td></td><td><span class="badge badge-pp">Public Preview</span> <span class="badge badge-official">公式</span> <strong>Copilot prompt files</strong></td><td><code>.github/prompts/*.prompt.md</code></td><td>再利用可能なプロンプトテンプレート。YAML で <code>agent</code>・<code>description</code>、入力は <code>${input:code:...}</code> 形式。<strong>IDE Chat のみ</strong>（GitHub.com Chat・CLI では未文書化）。</td></tr><tr><td><strong>Dynamic context</strong><br><span class="muted">Current code, tool results, failures, changed assumptions</span></td><td><span class="badge badge-official">公式</span> <strong>MCP（Model Context Protocol）</strong></td><td>リポジトリの MCP JSON 設定 / IDE / CLI</td><td>外部ツールと文脈を供給。cloud agent と code review は同じリポジトリ MCP 設定を共有する。</td></tr><tr><td></td><td>ビルド・テスト・スキャン結果</td><td>GitHub Actions / CodeQL / Dependabot</td><td>§06 で扱う。エージェントは失敗結果を読んで反復する。</td></tr></tbody></table></div>
+
+<h3>custom instructions の優先順位（GitHub.com）</h3>
+<ol class="steps"><li><p class="step-title">1. Personal instructions</p><div class="step-body">個人設定。GitHub.com Chat のみ。</div></li><li><p class="step-title">2. Path-specific instructions</p><div class="step-body"><code>.github/instructions/**/*.instructions.md</code> のうち <code>applyTo</code> がマッチしたもの。</div></li><li><p class="step-title">3. Repository-wide instructions</p><div class="step-body"><code>.github/copilot-instructions.md</code></div></li><li><p class="step-title">4. Agent instructions</p><div class="step-body"><code>AGENTS.md</code>（および対応環境では <code>CLAUDE.md</code> / <code>GEMINI.md</code>）</div></li><li><p class="step-title">5. Organization instructions</p><div class="step-body">組織設定。</div></li></ol>
+
+<aside class="callout callout-warn">
+    <div class="callout-mark" aria-hidden="true">!</div>
+    <div class="callout-body"><p class="callout-title">これは「優先度ガイダンス」であって決定的なパーサ規則ではない</p><p>公式ドキュメントは「関連するすべての instruction セットが Copilot に渡される」と明記しています。つまり上位が下位を<strong>上書きする保証はありません</strong>。矛盾する指示を複数の階層に置くと、モデルがどちらを採るかは非決定的です。<br>スライド S21 の「Context must be … owned, reviewed, and maintained」は、この非決定性への実務的な対処として読むべきです —— 矛盾を残さないことがオーナーシップの中身です。</p></div>
+  </aside>
+
+<h3>パス限定 instructions の書式</h3>
+<pre class="code" data-lang="md"><code>---
+applyTo: "**/*.java,**/auth/**"
+excludeAgent: "code-review"
+---
+
+認証モジュールを変更する場合は、既存の characterization テストを先に確認すること。
+公開 API のシグネチャは変更しない。</code></pre>
+<p class="muted"><code>excludeAgent</code> に指定できるのは <code>code-review</code> または <code>cloud-agent</code>。特定のエージェントにだけ指示を出し分けられます。</p>
+
+<h3>クライアント別サポート状況</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:30%"><col style="width:70%"></colgroup><thead><tr><th>サーフェス</th><th>対応する instruction 種別</th></tr></thead><tbody><tr><td>GitHub.com Chat</td><td>Personal / repo-wide / organization</td></tr><tr><td>GitHub.com cloud agent</td><td>repo-wide / path-specific / <code>AGENTS.md</code>・<code>CLAUDE.md</code>・<code>GEMINI.md</code> / organization</td></tr><tr><td>GitHub.com code review</td><td>repo-wide / path-specific / <code>AGENTS.md</code> / organization</td></tr><tr><td>VS Code Chat</td><td>repo-wide / path-specific / <code>AGENTS.md</code></td></tr><tr><td>Visual Studio Chat</td><td>repo-wide / path-specific</td></tr><tr><td>JetBrains Chat</td><td>Personal / repo-wide / path-specific</td></tr><tr><td>Eclipse Chat</td><td>repo-wide のみ</td></tr><tr><td>Xcode Chat</td><td>repo-wide / path-specific</td></tr><tr><td>Copilot CLI</td><td>repo-wide / path-specific / agent files / <code>~/.copilot/copilot-instructions.md</code></td></tr></tbody></table></div>
+<p class="muted">最新の対応表: <a href="https://docs.github.com/en/copilot/reference/custom-instructions-support" target="_blank" rel="noopener noreferrer">docs.github.com — Custom instructions support</a></p>
+
+<h3>MCP を使う際に押さえるべき実装事実</h3>
+<ul class="plain"><li><strong>cloud agent / code review は MCP の tools のみ対応</strong>。resources・prompts は非対応。OAuth 認証のリモートサーバーも非対応。</li><li>既定で GitHub MCP と Playwright MCP が有効。GitHub の既定トークンは<strong>現リポジトリに対して読み取り専用</strong>。</li><li><strong>一度設定されると、cloud agent / code review は人の承認なしに MCP ツールを使える</strong>。これは §04 の Capability budget の中核。</li><li>MCP に渡す Agents secrets は <code>COPILOT_MCP_</code> プレフィックス必須。通常の Agents secrets にプレフィックスは不要。</li><li><span class="badge badge-pp">Public Preview</span> GitHub MCP Registry（<a href="https://github.com/mcp" target="_blank" rel="noopener noreferrer">github.com/mcp</a>）。Business/Enterprise は「Restrict MCP access to registry servers」ポリシーで制限可能だが、<strong>このポリシーは IDE/CLI に効き、cloud agent には効かない</strong>（cloud agent はリポジトリ / custom agent の MCP 設定に従う）。</li></ul>
+
+<h3>custom agents —— 再利用可能な「委譲先の型」</h3>
+<p><span class="badge badge-pp">Public Preview</span><span class="badge badge-na">サーフェス依存</span> <code>.github/agents/&lt;NAME&gt;.md</code> に、名前付きの専門エージェントプロファイルを定義できます。frontmatter で <code>description</code>（必須）、<code>name</code> / <code>tools</code> / <code>model</code> / <code>target</code> / <code>mcp-servers</code>（任意）を指定。組織・Enterprise レベルでは <code>.github</code> / <code>.github-private</code> リポジトリの <code>/agents/</code> に置きます。</p>
+<aside class="callout callout-key">
+    <div class="callout-mark" aria-hidden="true">★</div>
+    <div class="callout-body"><p class="callout-title">これはスライド S43「Standardize」段の実体</p><p>S43 の採用ラダーは <em>Standardize: Teams reuse instructions, skills, workflows, evidence formats, and gates</em> と定義しています。custom agents は「instructions ＋ tools ＋ model ＋ MCP」を 1 ファイルに束ねて再利用可能にする仕組みで、まさにこの段の具体物です。</p></div>
+  </aside>
+
+</section>
+<section class="section" id="contract" aria-labelledby="contract-title">
+  <div class="section__head">
+    <p class="section__num">03</p>
+    <div class="section__headings">
+      <p class="eyebrow">Delegation Contract</p>
+      <h2 id="contract-title">8 フィールド → GitHub 上の実装先</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S22</span><span class="slide-chip">S34</span><span class="slide-chip">S44</span></span></div>
+    </div>
+  </div>
+  <p class="lead">Delegation Contract はこのプレゼンテーションの中心概念で、S22（定義）・S34（認証モジュールへの適用例）・S44（明日のアクション）で同じ 2×4 グリッドが 3 回反復されます。ここが本資料で最も実用価値の高い節です —— 8 フィールドそれぞれを、GitHub のどこに書けば実際にエージェントに効くのかを確定させます。</p>
+
+<figure class="deck-quote">
+    <blockquote>A Delegation Contract makes success, boundaries, proof, and decision gates inspectable before work begins.<br>The contract grants bounded authority—not a blank check.</blockquote>
+    <figcaption>スライド原文 S22 / S34</figcaption>
+  </figure>
+
+<div class="table-wrap"><table class=""><colgroup><col style="width:14%"><col style="width:22%"><col style="width:44%"><col style="width:20%"></colgroup><thead><tr><th>フィールド</th><th>スライドの定義</th><th>GitHub 上の実装先</th><th>強制力</th></tr></thead><tbody><tr><td><strong>Outcome + Why</strong></td><td>Observable result and its business or technical purpose</td><td><strong>Issue のタイトルと本文</strong>（Copilot にアサインする Issue そのもの）</td><td><span class="soft">プロンプトのみ</span></td></tr><tr><td><strong>Scope + Out</strong></td><td>Where work may act and what explicitly must not change</td><td>Issue 本文の明示的除外 ＋ <code>.github/instructions/*.instructions.md</code> の <code>applyTo</code><br>＋ <strong>ruleset / branch protection</strong> のパス制限<br>＋ <strong>CODEOWNERS</strong></td><td><span class="hard">構造的に強制可</span></td></tr><tr><td><strong>Context</strong></td><td>Repository knowledge, current behavior, decisions, and assumptions</td><td><code>AGENTS.md</code> / <code>.github/copilot-instructions.md</code> / <strong>Copilot Spaces</strong> / リンクした Issue・PR / MCP</td><td><span class="soft">プロンプトのみ</span></td></tr><tr><td><strong>Tools + Constraints</strong></td><td>Permitted capabilities, limits, policies, and budgets</td><td><code>.github/workflows/copilot-setup-steps.yml</code>（<code>permissions:</code>・<code>timeout-minutes</code>）<br>＋ <strong>firewall allowlist</strong><br>＋ リポジトリ MCP 設定 ／ <strong>Agents secrets</strong><br>＋ custom agent の <code>tools:</code> frontmatter<br>＋ <strong>AI Controls</strong>（組織 / Enterprise ポリシー）</td><td><span class="hard">構造的に強制可</span></td></tr><tr><td><strong>Acceptance</strong></td><td>Observable conditions that define done</td><td>Issue の受け入れ条件 ＋ <strong>required status checks</strong></td><td><span class="hard">構造的に強制可</span></td></tr><tr><td><strong>Verification + Evidence</strong></td><td>Repeatable checks and proof returned for review</td><td><strong>GitHub Actions</strong> ワークフロー / <strong>CodeQL</strong> / <strong>Dependabot</strong> / <strong>secret scanning</strong><br>＋ <strong>session log</strong>・<strong>Verified 署名コミット</strong></td><td><span class="hard">構造的に強制可</span></td></tr><tr><td><strong>Escalate</strong></td><td>Ambiguity, risk, or failure conditions that stop the work</td><td>Issue / PR コメントで <code>@copilot</code> に差し戻し<br>＋ <strong>「Approve and run workflows」で既定停止</strong>する構造</td><td><span class="mid">半構造的</span></td></tr><tr><td><strong>Human gates</strong></td><td>Named decisions that remain with accountable people</td><td><strong>required reviews</strong> / <strong>CODEOWNERS 必須承認</strong> / <strong>environments の required reviewers</strong> / <strong>merge queue</strong> / <strong>deployment protection rules</strong></td><td><span class="hard">構造的に強制可</span></td></tr></tbody></table></div>
+
+<aside class="callout callout-key">
+    <div class="callout-mark" aria-hidden="true">★</div>
+    <div class="callout-body"><p class="callout-title">8 フィールドのうち 5 つは「お願い」ではなく「構造」にできる</p><p>これが本資料の最重要ポイントです。Delegation Contract を Issue 本文だけに書くと、全フィールドが<strong>確率的な指示</strong>のままです。しかし Scope / Tools / Acceptance / Verification / Human gates の 5 つは、ruleset・required checks・firewall・environments といった<strong>決定的な仕組み</strong>に落とせます。<br>これがスライド S24「Reason probabilistically. Verify deterministically.」の実装上の意味であり、S36「Autonomous execution does not require autonomous acceptance.」を担保する仕掛けです。</p></div>
+  </aside>
+
+<h3>構造的保証の核心：エージェントは自分の PR を承認できない</h3>
+<figure class="doc-quote">
+    <blockquote>Copilot cloud agent cannot mark its pull requests as "Ready for review" and cannot approve or merge a pull request.</blockquote>
+    <figcaption><a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/risks-and-mitigations" target="_blank" rel="noopener noreferrer">docs.github.com — Risks and mitigations for Copilot cloud agent</a></figcaption>
+  </figure>
+<p>さらに <strong>タスクを依頼した人自身の承認も required approvals にカウントされません</strong>。つまり「自分で投げて自分で承認する」経路が構造的に塞がれています。S13 の <em>"Delegation transfers responsibility for executing an outcome, not authority to merge it."</em> は、比喩ではなく製品仕様の記述です。</p>
+
+<h3>S34 の認証モジュール例を、実際のリポジトリ資産に置き換える</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:40%"><col style="width:60%"></colgroup><thead><tr><th>S34 のフィールド値（抜粋）</th><th>対応する実物</th></tr></thead><tbody><tr><td>「Change auth code, configuration, tests, and required dependencies; exclude roles, UI, schema, and rollout」</td><td><code>.github/instructions/auth.instructions.md</code> に <code>applyTo: "**/auth/**"</code>。ロール・UI・スキーマの各パスは <strong>CODEOWNERS</strong> でセキュリティ／アーキ担当を必須レビュアに。ロールアウトは <strong>environment</strong> の required reviewers に分離。</td></tr><tr><td>「Use repository and CI tools with approved dependencies; … expose no production secrets」</td><td><strong>firewall allowlist</strong> を承認済み依存レジストリに限定。本番シークレットは <strong>Agents secrets に置かない</strong>（Actions / Codespaces / Dependabot の secrets は cloud agent に自動的に渡らない仕様）。</td></tr><tr><td>「Pass builds, auth tests, compatibility cases, and scans; return commands, results, and criteria mapping」</td><td>required status checks に build / auth テスト / 互換テスト / CodeQL を登録。「commands, results」は <strong>session log</strong> と Actions のログが担う。「criteria mapping」は PR 本文に人が書かせる（自動化されない）。</td></tr><tr><td>「Return control on role, schema, security-baseline, or behavioral ambiguity」</td><td>該当パスを <strong>CODEOWNERS</strong> と ruleset で保護しておけば、エージェントがそこに触れた瞬間に必須レビューが発火する。<em>「エスカレーションを頼む」のではなく「触ると止まる」形にする</em>。</td></tr><tr><td>「Approve the plan, pull request, release, and production exposure separately」</td><td>plan → Agents UI での research/plan 段階レビュー。PR → required reviews。release / production → <strong>environments</strong> の deployment protection rules（reviewers・wait timer・branch 制限・admin bypass 禁止）。</td></tr></tbody></table></div>
+
+</section>
+<section class="section" id="autonomy" aria-labelledby="autonomy-title">
+  <div class="section__head">
+    <p class="section__num">04</p>
+    <div class="section__headings">
+      <p class="eyebrow">Autonomy Budget</p>
+      <h2 id="autonomy-title">「自律性はスイッチではなく予算」の配分先</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S23</span></span></div>
+    </div>
+  </div>
+  <p class="lead">S23 は自律性を Scope / Capability / Compute / Decision の 4 次元に分解し、「Scale every budget to reversibility, blast radius, and evidence quality」と述べます。ここでは各次元に対応する実際の設定項目を列挙します。</p>
+
+<figure class="deck-quote">
+    <blockquote>Autonomy has multiple dimensions that teams allocate per task. Expand it only when work is reversible, contained, and strongly evidenced.<br>Increase autonomy one bounded dimension at a time.</blockquote>
+    <figcaption>スライド原文 S23</figcaption>
+  </figure>
+
+<div class="cards cards-2"><div class="card">
+        <p class="card-title">Scope budget <span class="badge badge-framework">発表者FW</span></p>
+        <div class="card-body"><p class="muted">Files, components, repositories, and issue boundaries</p>
+      <ul class="plain tight">
+        <li><strong>既定で強い制約がある</strong>：エージェントは <code>copilot/…</code> ブランチ 1 本にしか push できない（<code>@copilot</code> で既存 PR に呼んだ場合のみその PR のブランチ）</li>
+        <li>1 タスク ＝ 1 ブランチ ＝ 1 PR</li>
+        <li>エージェントの認証情報は単純な push 操作のみ。<strong>直接 git コマンドは実行できない</strong></li>
+        <li>ruleset / branch protection のパス制限</li>
+        <li>CODEOWNERS による必須レビュー領域</li>
+      </ul></div>
+      </div><div class="card">
+        <p class="card-title">Capability budget <span class="badge badge-framework">発表者FW</span></p>
+        <div class="card-body"><p class="muted">Tools, network, and PR or workflow permissions</p>
+      <ul class="plain tight">
+        <li><strong>firewall は既定で ON</strong>。推奨依存 allowlist 付き。組織／リポジトリでカスタム allowlist 可、リポジトリ独自ルールを禁止するポリシーもある</li>
+        <li>リポジトリ MCP 設定（tools のみ・読み取り既定）</li>
+        <li><code>copilot-setup-steps.yml</code> の <code>permissions:</code></li>
+        <li>専用 <strong>Agents secrets / variables</strong>（Actions・Codespaces・Dependabot の secrets は渡らない。値はログでマスク）</li>
+        <li>custom agent の <code>tools:</code> / <code>mcp-servers:</code></li>
+        <li><strong>AI Controls</strong>：cloud agent の有効化範囲、third-party agents、custom agents、code review、MCP、モデル可用性を個別制御</li>
+      </ul></div>
+      </div><div class="card">
+        <p class="card-title">Compute budget <span class="badge badge-framework">発表者FW</span></p>
+        <div class="card-body"><p class="muted">Runtime and parallelism</p>
+      <ul class="plain tight">
+        <li><code>copilot-setup-steps.yml</code> の <code>timeout-minutes</code>（<strong>上限 59 分</strong>）</li>
+        <li>GitHub Actions 分の消費上限</li>
+        <li>AI Credits と <strong>budgets</strong> 設定</li>
+        <li>並列度は Agents パネルで人が投入する数に等しい ＝ <strong>実質的にレビュー容量が上限</strong></li>
+      </ul></div>
+      </div><div class="card">
+        <p class="card-title">Decision budget <span class="badge badge-framework">発表者FW</span></p>
+        <div class="card-body"><p class="muted">Required approvals and stopping conditions</p>
+      <ul class="plain tight">
+        <li>required approvals / CODEOWNERS 必須承認</li>
+        <li><strong>「Approve and run workflows」</strong>：既定では、write 権限者がクリックするまでワークフローが走らない</li>
+        <li>environments の required reviewers・wait timer・self-review 禁止</li>
+        <li>merge queue / linear history / signed commits</li>
+        <li>ruleset の bypass actor 設定（Copilot を bypass にするか否かは明示的な統治判断）</li>
+      </ul></div>
+      </div></div>
+
+<aside class="callout callout-note">
+    <div class="callout-mark" aria-hidden="true">i</div>
+    <div class="callout-body"><p class="callout-title">既定値がすでに保守的である、という事実の使い方</p><p>顧客に「エージェントは勝手に何でもやるのでは」と問われたとき、有効な回答は 4 つの既定値です —— <strong>(1)</strong> 専用ブランチ 1 本にしか push できない、<strong>(2)</strong> 自分の PR を Ready にも Approve にも Merge にもできない、<strong>(3)</strong> ワークフローは人がクリックするまで走らない、<strong>(4)</strong> ネットワークは既定でファイアウォール越し。<br>S23 の「予算」の言い方が有効なのは、これらが<em>すべて緩められる</em>からです。緩める判断こそが統治です。</p></div>
+  </aside>
+
+</section>
+<section class="section" id="loop" aria-labelledby="loop-title">
+  <div class="section__head">
+    <p class="section__num">05</p>
+    <div class="section__headings">
+      <p class="eyebrow">Modernization Loop</p>
+      <h2 id="loop-title">5 つの変換 → 機能マップ</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S25</span><span class="slide-chip">S27</span><span class="slide-chip">S28</span><span class="slide-chip">S29</span><span class="slide-chip">S30</span><span class="slide-chip">S31</span><span class="slide-chip">S32</span><span class="slide-chip">S33</span><span class="slide-chip">S40</span></span></div>
+    </div>
+  </div>
+  <p class="lead">S25 の Agentic Modernization Loop（Code→Doc / Doc→Plan / Plan→Work / Work→PR / PR→Learning）は、S27〜S33 と S40 で 1 段ずつ展開されます。各段で「どの機能を使い、何を成果物として残すか」を確定させます。</p>
+
+<figure class="deck-quote">
+    <blockquote>The loop turns uncertainty into small, reviewable changes and feeds every reviewed result back into organizational knowledge.<br>Bounded delegation sits at the center; human gates connect every stage.</blockquote>
+    <figcaption>スライド原文 S25</figcaption>
+  </figure>
+
+<div class="table-wrap"><table class=""><colgroup><col style="width:16%"><col style="width:9%"><col style="width:23%"><col style="width:27%"><col style="width:25%"></colgroup><thead><tr><th>変換</th><th>対応スライド</th><th>使う機能</th><th>リポジトリに残す成果物</th><th>人間のゲート</th></tr></thead><tbody><tr><td><strong>Code → Doc</strong><br><span class="muted">Recover structure, behavior, rules, and uncertainty</span></td><td>S27</td><td>Copilot Chat（リポジトリ横断の説明）<br>Copilot Spaces（対象範囲を束ねる）<br><span class="badge badge-pp">Public Preview</span> Modernize CLI の assess</td><td><code>docs/</code> 配下の構造・フロー・業務ルール記述<br><strong>「前提と未確定事項」の一覧</strong></td><td>ドメインオーナーによる検証。<em>復元されたドキュメントは検証されるまで仮説</em>（S27 逐語）</td></tr><tr><td><strong>（安全網）</strong><br><span class="muted">Create a behavioral safety net</span></td><td>S28</td><td>Copilot Chat のテスト生成<br>App modernization for Java（既存テスト移行 ＋ 新規ユニットテスト生成、behavioral-integrity 検証）</td><td>characterization テスト（現行の観測可能な振る舞いを固定するテスト）</td><td><strong>どれが意図した振る舞いでどれが欠陥か</strong>を人が判定する（S28 逐語の HUMAN DECISION）</td></tr><tr><td><strong>Doc → Plan</strong><br><span class="muted">Define the target, options, risks, and migration waves</span></td><td>S29 / S30</td><td><span class="badge badge-pp">Public Preview</span> <strong>modernization agent（Modernize CLI）</strong> の assess → plan<br>Dependabot / Advisory Database（既知脆弱性）<br>CodeQL（セキュリティ所見）</td><td>編集可能・順序付きのタスクと成功条件を持つ計画ファイル</td><td><strong>戦略・順序・リスクは人が選ぶ</strong>。アセスメントは事実であって戦略決定ではない（S29 逐語）</td></tr><tr><td><strong>Plan → Work</strong><br><span class="muted">Create bounded, independently verifiable tasks</span></td><td>S31</td><td>GitHub Issues（＝ Delegation Contract の器）<br>Issue テンプレート／ラベル</td><td>1 つの観測可能な成果・明示的依存・境界・検証手段・ロールバック手順を持つ Issue 群</td><td>Issue の粒度承認（＝スプリント計画）</td></tr><tr><td><strong>Work → PR</strong><br><span class="muted">Implement, check, report, and request human review</span></td><td>S32 / S33 / S35</td><td><strong>GitHub Copilot cloud agent</strong><br>GitHub Actions / CodeQL / secret scanning<br>Copilot code review</td><td><code>copilot/…</code> ブランチ、draft PR、Verified 署名コミット、session log</td><td>required reviews / CODEOWNERS / environments。<strong>エージェントは承認もマージもできない</strong></td></tr><tr><td><strong>PR → Learning</strong><br><span class="muted">Improve instructions, tests, plans, and future work</span></td><td>S40</td><td>既存のテレメトリ・インシデント・サポート基盤<br><span class="badge badge-pp">Public Preview</span> Copilot Memory<br>custom instructions / custom agents の更新</td><td>更新された <code>AGENTS.md</code> / <code>*.instructions.md</code>、強化されたテスト、runbook、次の Delegation Contract</td><td>どのシグナルが優先度・統制・ロールアウトを変えるかをオーナーが決める</td></tr></tbody></table></div>
+
+<aside class="callout callout-warn">
+    <div class="callout-mark" aria-hidden="true">!</div>
+    <div class="callout-body"><p class="callout-title">PR → Learning に対応する Copilot 製品は存在しない</p><p>スライド S40 のスピーカーノート自身がこう宣言しています —— <em>"Official research found no dedicated Copilot capability for autonomous post-deployment monitoring or incident correlation."</em>、<code>SOURCE: Derived (operating-model synthesis; not a dedicated Copilot monitoring feature)</code>。<br>
+    この段は<strong>既存の可観測性基盤 ＋ 人間の運用プロセス</strong>で実装するしかありません。Copilot 側で唯一この方向にあるのが <span class="badge badge-pp">Public Preview</span> <strong>Copilot Memory</strong>（リポジトリ事実の永続化・28 日で失効）ですが、これは運用シグナルの取り込み機構ではありません。提案時に「ここは製品機能ではなく運用設計」と明示することが誠実です。</p></div>
+  </aside>
+
+<h3>Agents UI の research / plan / iterate 段階</h3>
+<p>S32 は 5 ステップの流れ（承認された Issue → エージェントの調査 → 提案された計画 → 人による確認・軌道修正 → ブランチ作業 → チェック実行 → draft PR）を示します。これは <strong>Agents UI 経由の場合の実際の挙動</strong>に対応します。</p>
+<aside class="callout callout-note">
+    <div class="callout-mark" aria-hidden="true">i</div>
+    <div class="callout-body"><p class="callout-title">投入経路によって挙動が違う</p><p>Agents UI から起動した場合、cloud agent は PR を作る前に調査・計画・反復ができます。<strong>それ以外の多くの投入経路（Issue アサイン、<code>@copilot</code> など）では、すぐに PR を開きます。</strong><br>S32 の「Human confirms or redirects scope, approach, and assumptions」というステップ 2 を実際に成立させたいなら、<strong>Agents UI から投入する</strong>必要があります。この差は運用設計に直結します。</p></div>
+  </aside>
+
+</section>
+<section class="section" id="verification" aria-labelledby="verification-title">
+  <div class="section__head">
+    <p class="section__num">06</p>
+    <div class="section__headings">
+      <p class="eyebrow">検証</p>
+      <h2 id="verification-title">「決定的に検証する」の決定的側は具体的に何か</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S24</span><span class="slide-chip">S28</span><span class="slide-chip">S35</span></span></div>
+    </div>
+  </div>
+  <p class="lead">S24 の「Reason probabilistically. Verify deterministically.」はこのプレゼンテーションで最も実装に近い主張です。確率的側は明らかですが、決定的側は何で構成されるのかを機能単位で確定させます。</p>
+
+<figure class="deck-quote">
+    <blockquote>Use agent reasoning to interpret, explore, and propose. Accept work through repeatable checks with explicit pass or fail criteria.</blockquote>
+    <figcaption>スライド原文 S24</figcaption>
+  </figure>
+
+<div class="table-wrap"><table class=""><colgroup><col style="width:10%"><col style="width:24%"><col style="width:32%"><col style="width:34%"></colgroup><thead><tr><th>層</th><th>機能</th><th>何を保証するか</th><th>cloud agent での扱い</th></tr></thead><tbody><tr><td><span class="prob">確率的</span></td><td>Copilot Chat / Agent mode / cloud agent の推論</td><td>意図の解釈、パターンの発見、選択肢の提案</td><td>session log に推論・ツール実行の履歴が残る</td></tr><tr><td><span class="det">決定的</span></td><td><strong>GitHub Actions</strong>（ビルド・テスト）</td><td>コンパイルと、仕様化された振る舞い</td><td><strong>既定では自動実行されない</strong>。write 権限者が「Approve and run workflows」を押すまで待つ</td></tr><tr><td><span class="det">決定的</span></td><td><strong>CodeQL</strong>（code scanning）</td><td>設定したクエリ・ルールに対する評価</td><td><strong>GHAS / Code Security なしでも cloud agent に組み込まれている</strong></td></tr><tr><td><span class="det">決定的</span></td><td><strong>Dependabot / GitHub Advisory Database</strong></td><td>既知脆弱性を持つ依存の検出、承認済み依存範囲の逸脱検出</td><td>同上（組み込み）</td></tr><tr><td><span class="det">決定的</span></td><td><strong>secret scanning</strong></td><td>コミットされたシークレットの検出</td><td>同上（組み込み）</td></tr><tr><td><span class="det">決定的</span></td><td><strong>required status checks</strong></td><td>上記のどれが「通らないとマージできない」かの定義</td><td>エージェントの PR にも同じく適用される</td></tr><tr><td><span class="mixed">中間</span></td><td><strong>Copilot code review</strong></td><td>問題の可能性の指摘と修正提案</td><td><span class="badge badge-ga">GA</span>。ただし<strong>常に "Comment" レビュー</strong>で、Approve も Request changes もしない ＝ <strong>マージゲートにはならない</strong></td></tr></tbody></table></div>
+
+<aside class="callout callout-key">
+    <div class="callout-mark" aria-hidden="true">★</div>
+    <div class="callout-body"><p class="callout-title">見落とされやすい重要事実：cloud agent には GHAS なしでセキュリティ検証が組み込まれている</p><p>公式の risks-and-mitigations は、cloud agent の作業に対して <strong>CodeQL・Advisory Database による依存チェック・secret scanning・Copilot code review</strong> が働き、これらは <strong>GHAS / Code Security の契約を必要としない</strong>と明記しています。<br>
+    S24 の「Static analysis and CodeQL evaluate configured rules and queries」は、GHAS 顧客だけの話ではありません。これは提案の敷居を下げる材料になります。</p></div>
+  </aside>
+
+<h3>「決定的」の意味を誤解させないための注記</h3>
+<p>S24 のスピーカーノートは自ら注意を書いています —— <em>"'Deterministic' means explicit and repeatable within configured inputs, not infallible."</em>（設定された入力の範囲で明示的かつ再現可能、という意味であって、無謬という意味ではない）。CodeQL は<strong>設定したクエリしか見ません</strong>。テストは<strong>書いた振る舞いしか守りません</strong>。<br>だから S28 の characterization テストが先に来ます —— 検証の網が存在しない状態では、決定的検証は「何も検出しない」を再現可能に返すだけです。</p>
+
+<aside class="callout callout-warn">
+    <div class="callout-mark" aria-hidden="true">!</div>
+    <div class="callout-body"><p class="callout-title">characterization test という機能名は存在しない</p><p>「characterization testing」という名前の GitHub 機能は<strong>ありません</strong>。実装手段は次のいずれかです：<br>
+    ① Copilot Chat のユニットテスト生成、② <a href="https://docs.github.com/en/copilot/tutorials/modernize-legacy-code" target="_blank" rel="noopener noreferrer">modernize-legacy-code チュートリアル</a>が教える「業務ロジックのテスト計画を先に作り、それに対してテストを生成する」手順、③ App modernization for Java の既存テスト移行＋新規ユニットテスト生成（behavioral-integrity 検証を含む）。<br>
+    S28 の「Characterization tests preserve observations, not necessarily correctness.」というノートは、レガシー改修の一般原則としては正しく、製品機能名としては提示すべきではありません。</p></div>
+  </aside>
+
+</section>
+<section class="section" id="pr" aria-labelledby="pr-title">
+  <div class="section__head">
+    <p class="section__num">07</p>
+    <div class="section__headings">
+      <p class="eyebrow">ガバナンス</p>
+      <h2 id="pr-title">PR がガバナンス境界として機能する構造的保証</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S32</span><span class="slide-chip">S33</span><span class="slide-chip">S35</span><span class="slide-chip">S36</span><span class="slide-chip">S37</span></span></div>
+    </div>
+  </div>
+  <p class="lead">S36「The pull request is the governance boundary」と「Autonomous execution does not require autonomous acceptance.」は、比喩ではなく製品仕様で裏づけられます。何が保証され、何が保証されないのかを分けます。</p>
+
+<figure class="deck-quote">
+    <blockquote>The pull request reconnects intent, delegated execution, verification, and accountable human acceptance.<br>Autonomous execution does not require autonomous acceptance.</blockquote>
+    <figcaption>スライド原文 S36</figcaption>
+  </figure>
+
+<h3>製品仕様で保証されること</h3>
+<ol class="steps"><li><p class="step-title">書き込み権限のない人はエージェントを起動できない</p><div class="step-body">リポジトリへの write アクセスを持つユーザーだけがトリガーできます。write 権限のない人のコメントはプロンプトに渡されません。さらに、隠し文字と HTML コメントはプロンプト到達前にフィルタされます（プロンプトインジェクション対策）。</div></li><li><p class="step-title">エージェントは 1 本のブランチにしか push できない</p><div class="step-body">通常は新規に <code>copilot/…</code> ブランチが作られ、そこにしか push できません。<code>@copilot</code> で既存 PR に呼んだ場合はその PR のブランチ。<strong>エージェントは直接 git コマンドを実行できず</strong>、単純な push 操作に限定されます。ブランチ保護と required checks は当然に適用されます。</div></li><li><p class="step-title">エージェントは自分の PR を Ready にも Approve にも Merge にもできない</p><div class="step-body">加えて、<strong>タスクを依頼した本人の承認も required approvals にカウントされません</strong>。「投げた人が承認する」抜け道が構造的に塞がれています。</div></li><li><p class="step-title">ワークフローは既定で自動実行されない</p><div class="step-body">write 権限者が <strong>Approve and run workflows</strong> をクリックするまで走りません。自動実行させることは可能ですが、それは明示的なオプトインです。</div></li><li><p class="step-title">成果物は追跡可能</p><div class="step-body">コミットは Copilot が author、依頼者が co-author の <strong>Verified 署名コミット</strong>で、session log にリンクします。Enterprise の監査ログは <code>actor:Copilot</code> で過去 180 日を検索でき、<code>actor_is_agent</code>・<code>agent_session_id</code>・<code>user</code> フィールドを持ちます。</div></li></ol>
+
+<h3>保証されないこと（人が設計する必要がある部分）</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:30%"><col style="width:34%"><col style="width:36%"></colgroup><thead><tr><th>S36 / S37 が要求すること</th><th>現状</th><th>運用でどう埋めるか</th></tr></thead><tbody><tr><td>「Link the Delegation Contract and issue to the agent session, branch, and resulting change」</td><td><span class="mid">部分的</span> Issue → PR → session log のリンクは自動。<strong>Delegation Contract 自体の版管理は自動化されない</strong></td><td>契約を Issue 本文に置き、編集履歴を残す。テンプレート化して 8 フィールドの欠落を防ぐ</td></tr><tr><td>「Map evidence to every acceptance criterion」（S35）</td><td><span class="neg">なし</span> checks の pass/fail は出るが、<strong>受け入れ条件への対応づけは自動生成されない</strong></td><td>PR 本文テンプレートに受け入れ条件のチェックリストを置き、レビュアが埋める</td></tr><tr><td>「List unresolved items and assumptions」「Ask explicit questions」（S35 の UNCERTAINTY）</td><td><span class="mid">プロンプト依存</span> エージェントは書けるが、<strong>書くことは強制されない</strong></td><td><code>AGENTS.md</code> に「PR 本文には必ず Uncertainty セクションを設け、未解決事項と前提を列挙すること」を明記する</td></tr><tr><td>「Review architectural fit, compatibility, operational impact」（S36 ステップ 5）</td><td><span class="neg">人間のみ</span> Copilot code review は <strong>常に Comment レビュー</strong>で承認判断をしない</td><td>CODEOWNERS でアーキテクチャ／セキュリティ担当を必須レビュアに割り当てる</td></tr><tr><td>「Treat merge, release, and production deployment as explicit and potentially separate gates」</td><td><span class="pos">可能</span></td><td>environments ＋ deployment protection rules で 3 つを分離。required reviewers、wait timer、self-review 禁止、admin bypass 禁止を設定</td></tr></tbody></table></div>
+
+<aside class="callout callout-note">
+    <div class="callout-mark" aria-hidden="true">i</div>
+    <div class="callout-body"><p class="callout-title">Copilot code review の位置づけを間違えない</p><figure class="doc-quote">
+    <blockquote>Copilot always leaves a 'Comment' review, not an 'Approve' review or a 'Request changes' review.</blockquote>
+    <figcaption><a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/request-a-code-review/use-code-review" target="_blank" rel="noopener noreferrer">docs.github.com — Using Copilot code review</a></figcaption>
+  </figure>
+  <p>つまり Copilot code review は<strong>ゲートではなくシグナル</strong>です。S37「Review the decision, not only the diff」が人間に求めるのは、Copilot が指摘しない層 —— アーキテクチャ適合性、互換性、運用影響、残存する不確実性 —— の判断です。自動レビューが入ることで人間のレビューが不要になるのではなく、<strong>人間のレビューが上位の論点に集中できる</strong>という整理が正確です。</p>
+  <p class="muted">なお Copilot code review は既定で手動（PR の Reviewers から Copilot を指名）。新規 PR に対する自動レビューは設定で有効化でき、draft や新規 push も対象にできます。custom instructions・<code>AGENTS.md</code>・path-specific instructions・agent skills・MCP を尊重します（agent skills と MCP のサポートは 2026-07-29 に GA）。</p></div>
+  </aside>
+
+</section>
+<section class="section" id="security" aria-labelledby="security-title">
+  <div class="section__head">
+    <p class="section__num">08</p>
+    <div class="section__headings">
+      <p class="eyebrow">セキュリティ</p>
+      <h2 id="security-title">委譲の条件としてのセキュリティ ── 成立する設定と、残る穴</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S38</span></span></div>
+    </div>
+  </div>
+  <p class="lead">S38 は「Before execution / During execution / Before acceptance」の 3 段でセキュリティ条件を整理します。ここでは各段の実設定を対応させ、さらにスライドの記述のうち現行ドキュメントと食い違う 1 点を指摘します。</p>
+
+<figure class="deck-quote">
+    <blockquote>Security determines whether work may be delegated, how it may execute, and what must be true before humans can accept it.<br>Stop and escalate on unexpected dependencies, sensitive data, permission gaps, or policy violations.</blockquote>
+    <figcaption>スライド原文 S38</figcaption>
+  </figure>
+
+<div class="cards cards-3"><div class="card">
+        <p class="card-title">① Before execution</p>
+        <div class="card-body"><p class="muted">Approve content sources, tools, network access, scope, dependencies, and secret handling</p>
+      <ul class="plain tight">
+        <li><strong>firewall allowlist</strong>（既定 ON・推奨依存 allowlist 付き）</li>
+        <li>リポジトリ MCP 設定（tools のみ・GitHub 既定トークンは読み取り専用）</li>
+        <li><strong>Agents secrets / variables</strong>（Actions・Codespaces・Dependabot の secrets は渡らない）</li>
+        <li><strong>AI Controls</strong>：cloud agent / third-party agents / custom agents / code review / MCP / モデルを個別に許可</li>
+        <li><strong>content exclusion</strong>（Business・Enterprise）</li>
+      </ul></div>
+      </div><div class="card">
+        <p class="card-title">② During execution</p>
+        <div class="card-body"><p class="muted">Minimum necessary permissions, isolation, builds, tests, scans, and attributable logs</p>
+      <ul class="plain tight">
+        <li>write 権限者のみトリガー可。非 write 権限者のコメントは渡らない</li>
+        <li>隠し文字・HTML コメントをフィルタ</li>
+        <li><code>copilot/…</code> ブランチ 1 本に限定。git 直接実行不可</li>
+        <li>ephemeral 環境（Ubuntu 既定。Ubuntu x64 / Windows 64-bit 対応、macOS 非対応）</li>
+        <li>組み込みの CodeQL・依存チェック・secret scanning</li>
+        <li>secret 値は session log 上でマスク</li>
+      </ul></div>
+      </div><div class="card">
+        <p class="card-title">③ Before acceptance</p>
+        <div class="card-body"><p class="muted">Checks, security review, human approval, and retained audit evidence</p>
+      <ul class="plain tight">
+        <li>required status checks</li>
+        <li>required reviews / CODEOWNERS</li>
+        <li>ワークフローは <strong>Approve and run workflows</strong> まで停止</li>
+        <li>Verified 署名コミット ＋ session log</li>
+        <li>監査ログ <code>actor:Copilot</code>（180 日）、AI Controls のセッション一覧</li>
+        <li><span class="badge badge-pp">Public Preview</span> agentic audit-log streaming（EMU・特定のデータレジデンシー環境）</li>
+      </ul></div>
+      </div></div>
+
+<aside class="callout callout-update">
+    <div class="callout-mark" aria-hidden="true">⟳</div>
+    <div class="callout-body"><p class="callout-title">スライド S38 のノート記述は、現行ドキュメントでは更新されています</p><p>S38 のスピーカーノートは <em>"The default firewall does not cover MCP servers or setup-step processes, <strong>and content exclusions do not govern Copilot cloud agent</strong>."</em> と述べています。</p>
+  <p><strong>前半（firewall の穴）は現在も正しい</strong>のに対し、<strong>後半は現行ドキュメントと食い違います。</strong> <a href="https://docs.github.com/en/copilot/reference/supported-surfaces-for-policies" target="_blank" rel="noopener noreferrer">Supported surfaces for GitHub Copilot policies</a> の表では、content exclusion は次のように示されています：</p>
+  <div class="table-wrap"><table class=""><colgroup><col style="width:60%"><col style="width:40%"></colgroup><thead><tr><th>サーフェス</th><th>content exclusion</th></tr></thead><tbody><tr><td>IDEs</td><td><span class="pos">適用される</span></td></tr><tr><td><strong>Copilot cloud agent</strong></td><td><span class="pos">適用される</span></td></tr><tr><td>Copilot Chat in GitHub</td><td><span class="pos">適用される</span></td></tr><tr><td>Copilot code review</td><td><span class="pos">適用される</span></td></tr><tr><td>Third-party agents</td><td><span class="neg">適用されない</span></td></tr><tr><td>Copilot CLI</td><td><span class="neg">適用されない</span></td></tr><tr><td>GitHub Copilot app</td><td><span class="neg">適用されない</span></td></tr><tr><td>Spark</td><td><span class="neg">適用されない</span></td></tr></tbody></table></div>
+  <p>したがって発表時は「content exclusion は cloud agent に適用されるが、<strong>third-party agents と Copilot CLI には適用されない</strong>」と述べるのが現状に即しています。委譲先を Claude / Codex などのサードパーティエージェントに広げる判断は、この点で意味が変わります。</p></div>
+  </aside>
+
+<aside class="callout callout-warn">
+    <div class="callout-mark" aria-hidden="true">!</div>
+    <div class="callout-body"><p class="callout-title">content exclusion のもう 1 つの重要な限界</p><figure class="doc-quote">
+    <blockquote>Content exclusion is currently not supported in Edit and Agent modes of Copilot Chat in Visual Studio Code and other editors.</blockquote>
+    <figcaption><a href="https://docs.github.com/en/copilot/concepts/context/content-exclusion" target="_blank" rel="noopener noreferrer">docs.github.com — Content exclusion</a></figcaption>
+  </figure>
+  <p>つまり IDE の Agent mode では content exclusion が効きません。さらに、IDE が提供するセマンティック情報や型情報から間接的に文脈が漏れうること、シンボリックリンクとリモートファイルシステム上のリポジトリは非対応であることも明記されています。</p></div>
+  </aside>
+
+<h3>firewall の穴（スライドの記述どおり、現在も有効）</h3>
+<ul class="plain"><li>firewall がカバーするのは <strong>Actions アプライアンス内で Bash から起動されたエージェントプロセスのみ</strong></li><li><strong>MCP サーバーはカバーしない</strong></li><li><strong><code>copilot-setup-steps.yml</code> の setup steps はカバーしない</strong></li><li>高度な攻撃は回避しうる、と公式ドキュメント自身が述べている</li></ul>
+<p>S38 の「STOP AND ESCALATE — 予期しない依存、機微データ、権限の欠落、ポリシー違反で止める」は、この穴を人間の側で塞ぐ設計要求として読むのが正確です。<strong>MCP サーバーを追加する判断は、firewall を通らない経路を 1 本増やす判断</strong>であり、Delegation Contract の Tools + Constraints フィールドで明示的に扱うべき事項です。</p>
+
+</section>
+<section class="section" id="modernization" aria-labelledby="modernization-title">
+  <div class="section__head">
+    <p class="section__num">09</p>
+    <div class="section__headings">
+      <p class="eyebrow">モダナイゼーション</p>
+      <h2 id="modernization-title">モダナイゼーション専用ツールの現状</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S28</span><span class="slide-chip">S29</span><span class="slide-chip">S30</span></span></div>
+    </div>
+  </div>
+  <p class="lead">S28〜S30 は learn.microsoft.com の App Modernization 系ドキュメントを出典としています。この領域は名称と構成が変わっているため、現状を整理します。</p>
+
+<div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:82%"></colgroup><thead><tr><th>項目</th><th>現行の内容</th></tr></thead><tbody><tr><td>傘の名称</td><td><span class="badge badge-official">公式</span> <strong>GitHub Copilot modernization</strong></td></tr><tr><td>エージェント / CLI</td><td><span class="badge badge-official">公式</span> <strong>GitHub Copilot modernization agent</strong>（<strong>Modernize CLI</strong> として提供）</td></tr><tr><td>対象</td><td>Java / .NET / <strong>C++</strong> のアップグレード、サポートされる Azure 移行シナリオ。<em>「Java 版と .NET 版が別々」という整理はもはや正確ではない</em>（言語別のドキュメント・体験は残る）</td></tr><tr><td>提供状態</td><td><span class="badge badge-ga">GA</span> IDE でのランタイム／フレームワーク／ツールセット アップグレード（.NET・Java・C++）、IDE の移行シナリオ（.NET・Java）<br><span class="badge badge-pp">Public Preview</span> <strong>Modernize CLI のアセスメントと計画立案</strong></td></tr><tr><td>前提</td><td>GitHub Copilot サブスクリプション ＋ GitHub CLI 2.45 以上。クイックスタートは Free / Pro / Pro+ / Business / Enterprise を列挙</td></tr><tr><td>cloud agent 連携</td><td>CLI から cloud agent に作業を委譲できる。その分は cloud agent の AI Credits ＋ Actions 分を消費する</td></tr></tbody></table></div>
+
+<figure class="doc-quote">
+    <blockquote>The modernization agent, delivered via the Modernize CLI, enables architects and application owners to orchestrate assessment, migration planning, and framework upgrade automation across multiple applications simultaneously.</blockquote>
+    <figcaption><a href="https://learn.microsoft.com/en-us/azure/developer/github-copilot-app-modernization/overview" target="_blank" rel="noopener noreferrer">learn.microsoft.com — GitHub Copilot app modernization overview</a></figcaption>
+  </figure>
+
+<h3>Assess → Plan → Execute と、スライドの Loop の対応</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:16%"><col style="width:54%"><col style="width:30%"></colgroup><thead><tr><th>Modernize CLI の段階</th><th>内容</th><th>スライドの対応段</th></tr></thead><tbody><tr><td><strong>Assess</strong></td><td>コード・構成・依存・クラウド適合性・リスク・機会を分析。<strong>複数リポジトリを横断して集約できる</strong></td><td>S29「Assess opportunities with evidence」</td></tr><tr><td><strong>Plan</strong></td><td>編集可能・レビュー可能な順序付きタスクと成功条件を生成</td><td>S30「Define the target and migration strategy」</td></tr><tr><td><strong>Execute</strong></td><td>変換・依存アップグレードの適用、ビルド／テスト検証、CVE のスキャンと修復、追跡可能なコミット、cloud agent への委譲</td><td>S32「Delegate implementation and retain judgment」</td></tr></tbody></table></div>
+
+<aside class="callout callout-key">
+    <div class="callout-mark" aria-hidden="true">★</div>
+    <div class="callout-body"><p class="callout-title">S29 / S30 の「人が戦略を選ぶ」という主張は、この製品構造と一致する</p><p>S29 は <em>FACTUAL ASSESSMENT — NOT THE STRATEGY DECISION</em>、S30 は <em>humans choose strategy, sequence, and risk</em> と明示します。Modernize CLI の Plan 段が生成するのは<strong>「編集可能・レビュー可能」な計画</strong>であり、実行前に人が変更できる形になっています。プレゼンテーションの主張と製品の設計思想がここで一致しており、説明の説得力が高い箇所です。</p></div>
+  </aside>
+
+<pre class="code" data-lang="powershell"><code># Windows
+winget install GitHub.Copilot.modernization.agent
+
+# macOS / Linux
+brew tap microsoft/modernize https://github.com/microsoft/modernize-cli
+brew install modernize</code></pre>
+<p class="muted">対話型 TUI の <code>modernize</code> と、ヘッドレスの <code>modernize &lt;command&gt;</code> の両方をサポート。</p>
+
+<aside class="callout callout-warn">
+    <div class="callout-mark" aria-hidden="true">!</div>
+    <div class="callout-body"><p class="callout-title">状態ファイルのパスは統一されていない</p><p>ドキュメント上、Modernize CLI のページは <code>.github/modernize/…</code> を示し、実行に関する 1 ページは <code>.github/modernization/…</code> を参照し、IDE のアップグレードエージェントは <code>.github/upgrades/{scenarioId}</code> を使います。<strong>これらを 1 つのパスに正規化して説明しないでください</strong>（ドキュメントに存在しないパスになります）。</p></div>
+  </aside>
+
+<h3>docs.github.com の「Modernizing legacy code」チュートリアルは別物</h3>
+<p>S27 の出典 <a href="https://docs.github.com/en/copilot/tutorials/modernize-legacy-code" target="_blank" rel="noopener noreferrer">docs.github.com/copilot/tutorials/modernize-legacy-code</a> は <strong>Modernize CLI のチュートリアルではありません</strong>。Copilot Chat 主導の COBOL → Node.js 変換ワークフローを教えるものです：</p>
+<ul class="plain"><li>① clone してコンパイル・実行し、現状を動かす</li><li>② ファイルとデータフローを Copilot に説明させる</li><li>③ <strong>業務ロジックのテスト計画を先に作る</strong></li><li>④ COBOL ファイルを反復的に Node.js へ翻訳</li><li>⑤ Node アプリを組み立ててデバッグ</li><li>⑥ ③ の計画から Jest のユニット／統合テストを生成</li><li>⑦ テスト実行、失敗修正、リファイン</li></ul>
+<p>③ が ⑥ より前に来るのが要点で、これが S28「Create a behavioral safety net」の実務的な手順に対応します。<strong>実装を変える前に、期待される振る舞いを人間がレビューできる形にする</strong>という順序です。</p>
+
+</section>
+<section class="section" id="ladder" aria-labelledby="ladder-title">
+  <div class="section__head">
+    <p class="section__num">10</p>
+    <div class="section__headings">
+      <p class="eyebrow">導入</p>
+      <h2 id="ladder-title">採用ラダー → 各段の Definition of Ready</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S43</span><span class="slide-chip">S44</span></span></div>
+    </div>
+  </div>
+  <p class="lead">S43 の Assist → Collaborate → Delegate → Standardize → Orchestrate は、S12 の相互作用モデルとは別物であるとスライド自身が明示しています（前者は組織の成熟度、後者は対話の様式）。ここでは「次の段に上がってよい」と判断するための、具体的なリポジトリ資産のチェックリストを置きます。</p>
+
+<figure class="deck-quote">
+    <blockquote>This organizational maturity ladder is distinct from the interaction continuum in §2: increase delegation only after repository context and verification mature enough to support the next level safely.<br>Context and verification mature first; autonomy and orchestration follow.</blockquote>
+    <figcaption>スライド原文 S43</figcaption>
+  </figure>
+
+<div class="table-wrap"><table class=""><colgroup><col style="width:12%"><col style="width:26%"><col style="width:62%"></colgroup><thead><tr><th>段</th><th>スライドの定義</th><th>この段に上がる前に揃っているべきもの（Definition of Ready）</th></tr></thead><tbody><tr><td><strong>1. Assist</strong></td><td>A human owns every step and uses Copilot for bounded suggestions</td><td><ul class="plain"><li>Copilot ライセンスの割り当て</li><li>組織ポリシー（AI Controls）の初期設定：どのクライアント・どのモデルを許可するか</li><li>必要なら content exclusion の設定（Business / Enterprise）</li></ul></td></tr><tr><td><strong>2. Collaborate</strong></td><td>Human and agent share investigation, planning, implementation, and checking</td><td><ul class="plain"><li><strong><code>.github/copilot-instructions.md</code> が存在し、実際に守られている</strong></li><li>ビルドとテストが 1 コマンドで再現できる</li><li>IDE Agent mode / Copilot CLI の利用ポリシーが決まっている</li><li><span class="warn-inline">注意：IDE の Agent mode では content exclusion が効かない</span></li></ul></td></tr><tr><td><strong>3. Delegate</strong></td><td>An agent executes a bounded contract and returns a decision-ready pull request</td><td><ul class="plain"><li><strong>required status checks が定義され、実際にマージを止める</strong></li><li>CODEOWNERS が設定され、重要領域に必須レビュアがいる</li><li><code>copilot-setup-steps.yml</code> で依存解決が再現する</li><li>firewall allowlist が承認済みレジストリに限定されている</li><li><strong>Delegation Contract の 8 フィールドを持つ Issue テンプレート</strong></li><li>characterization テストが、委譲対象領域に存在する</li></ul></td></tr><tr><td><strong>4. Standardize</strong></td><td>Teams reuse instructions, skills, workflows, evidence formats, and gates</td><td><ul class="plain"><li><code>AGENTS.md</code> ＋ パス別 <code>*.instructions.md</code> の体系ができている</li><li><span class="badge badge-pp">Public Preview</span> <code>.github/agents/*.md</code> による custom agents（役割ごとの委譲先の型）</li><li>PR 本文テンプレート（受け入れ条件マッピング欄・Uncertainty 欄を含む）</li><li>組織レベル instructions（Business / Enterprise）</li><li>environments と deployment protection rules による merge / release / production の分離</li></ul></td></tr><tr><td><strong>5. Orchestrate</strong></td><td>Multiple bounded tasks run across the portfolio within governance and review capacity</td><td><ul class="plain"><li>Agents パネルでの複数タスク運用ルール</li><li><strong>レビュー容量の実測値</strong>（＝並列度の実質的な上限）</li><li>監査ログ <code>actor:Copilot</code> の定期レビュー運用</li><li>AI Credits / Actions 分の budgets 設定と監視</li><li>third-party agents を使う場合、<span class="warn-inline">content exclusion が適用されない</span>ことを踏まえたポリシー</li></ul></td></tr></tbody></table></div>
+
+<aside class="callout callout-key">
+    <div class="callout-mark" aria-hidden="true">★</div>
+    <div class="callout-body"><p class="callout-title">S43 の FOUNDATION ラベルの意味</p><p>スライドの階段図の下には <em>FOUNDATION: context &amp; verification</em> と書かれています。上の表を見ると、段が上がるほど増えるのは<strong>エージェントの能力ではなくリポジトリ側の資産</strong>であることが分かります。Delegate 段に必要なものはほぼすべて「リポジトリに何が置いてあるか」であり、Copilot の設定ではありません。<br>つまり導入プロジェクトの実作業の大半は、<strong>Copilot の導入ではなくリポジトリの整備</strong>です。これは提案の工数見積もりに直結する洞察です。</p></div>
+  </aside>
+
+<h3>S44 の「明日やること」を実行可能にする最小セット</h3>
+<p>S44 の CTA は <em>"Choose one important, reversible modernization task and write its Delegation Contract before your next sprint planning session."</em> です。この 1 件を本当に委譲まで持っていくために最低限必要なのは次の 4 つだけです：</p>
+<ol class="steps"><li><p class="step-title">① 対象領域の characterization テスト</p><div class="step-body">変更前の振る舞いを固定する。ここが無いと「検証」が空回りする。</div></li><li><p class="step-title">② required status checks</p><div class="step-body">そのテストとビルドが、通らなければマージできない状態になっていること。</div></li><li><p class="step-title">③ 8 フィールドを埋めた Issue</p><div class="step-body">Outcome+Why / Scope+Out / Context / Tools+Constraints / Acceptance / Verification+Evidence / Escalate / Human gates。</div></li><li><p class="step-title">④ CODEOWNERS</p><div class="step-body">契約の Escalate 欄に書いた「触ってほしくない領域」を、実際に必須レビューが発火する形にしておく。</div></li></ol>
+
+</section>
+<section class="section" id="billing" aria-labelledby="billing-title">
+  <div class="section__head">
+    <p class="section__num">11</p>
+    <div class="section__headings">
+      <p class="eyebrow">コスト</p>
+      <h2 id="billing-title">この運用モデルのコストはどう発生するか</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S23</span></span></div>
+    </div>
+  </div>
+  <p class="lead">スライドは課金に一切触れていませんが、S23 の Compute budget を実務で語るには不可欠な情報です。2026 年 6 月に課金モデルが変わっている点にも注意が必要です。</p>
+
+<aside class="callout callout-warn">
+    <div class="callout-mark" aria-hidden="true">!</div>
+    <div class="callout-body"><p class="callout-title">premium requests はもう既定の課金モデルではない</p><figure class="doc-quote">
+    <blockquote>Model multipliers are a concept specific to the legacy premium request-based billing system, and do not apply to GitHub's new usage-based billing model.</blockquote>
+    <figcaption><a href="https://docs.github.com/en/copilot/reference/copilot-billing/request-based-billing-legacy/model-multipliers-for-annual-plans" target="_blank" rel="noopener noreferrer">docs.github.com — Model multipliers for annual plans (legacy)</a></figcaption>
+  </figure>
+  <p>premium requests とモデル乗数が適用されるのは、2026 年 6 月 1 日以降もレガシー請求に留まった<strong>既存の年額 Copilot Pro / Pro+ 契約者のみ</strong>です。新規の説明では <strong>GitHub AI Credits</strong> を使ってください。</p></div>
+  </aside>
+
+<h3>現行モデル：GitHub AI Credits</h3>
+<div class="cards cards-3"><div class="card">
+        <p class="card-title">単位</p>
+        <div class="card-body"><p class="big">1 AI Credit = <strong>$0.01 USD</strong></p></div>
+      </div><div class="card">
+        <p class="card-title">計算方法</p>
+        <div class="card-body"><p>入力・出力・キャッシュの<strong>トークン消費量</strong> × モデル別公開価格。<span class="neg">リクエスト乗数モデルではない</span></p></div>
+      </div><div class="card">
+        <p class="card-title">自動モデル選択の割引</p>
+        <div class="card-body"><p>有料ユーザーは Chat・CLI・Copilot app・cloud agent で <strong>10% のコスト割引</strong></p></div>
+      </div></div>
+
+<div class="table-wrap"><table class=""><colgroup><col style="width:28%"><col style="width:16%"><col style="width:18%"><col style="width:38%"></colgroup><thead><tr><th>機能</th><th>AI Credits</th><th>GitHub Actions 分</th><th>備考</th></tr></thead><tbody><tr><td>code completions / next edit suggestions</td><td><span class="pos">消費しない</span></td><td><span class="pos">消費しない</span></td><td>従来の completion カウントモデルが継続</td></tr><tr><td>Copilot Chat</td><td><span class="neg">消費する</span></td><td>—</td><td></td></tr><tr><td>Agent mode（IDE）</td><td><span class="neg">消費する</span></td><td>—</td><td>プロンプトごとに消費</td></tr><tr><td>Copilot CLI</td><td><span class="neg">消費する</span></td><td>—</td><td></td></tr><tr><td><strong>Copilot cloud agent</strong></td><td><span class="neg">消費する</span></td><td><span class="neg">消費する</span></td><td><strong>2 種類のコストが同時に発生する</strong></td></tr><tr><td>Copilot code review</td><td><span class="neg">消費する</span></td><td><span class="neg">消費する</span></td><td>agentic なコンテキスト／ツール実行分</td></tr><tr><td>agentic autofix</td><td><span class="neg">消費する</span></td><td><span class="neg">消費する</span></td><td><span class="badge badge-pp">Public Preview</span>（2026-07-10〜）</td></tr><tr><td>Copilot Autofix（従来型）</td><td><span class="pos">消費しない</span></td><td><span class="pos">消費しない</span></td><td>Copilot サブスクリプション不要</td></tr><tr><td>third-party coding agents</td><td><span class="neg">消費する</span></td><td><span class="neg">消費する</span></td><td><span class="badge badge-pp">Public Preview</span> Anthropic Claude / OpenAI Codex</td></tr><tr><td>Copilot Spaces</td><td><span class="neg">消費する</span></td><td>—</td><td>質問は Chat インタラクションとして計上</td></tr></tbody></table></div>
+
+<h3>プラン別の月次 AI Credits</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:16%"><col style="width:18%"><col style="width:38%"><col style="width:28%"></colgroup><thead><tr><th>プラン</th><th>価格</th><th>含まれる AI Credits</th><th>cloud agent</th></tr></thead><tbody><tr><td>Free</td><td>無料</td><td>自動モデル選択経由の割当 ＋ 2,000 completions/月</td><td><span class="neg">対象外</span></td></tr><tr><td>Student</td><td>無料</td><td>自動モデル選択経由の割当 ＋ completions 無制限</td><td><span class="pos">含まれる</span></td></tr><tr><td>Pro</td><td>$10/月</td><td>1,500（base 1,000 ＋ flex 500）</td><td><span class="pos">既定で有効</span></td></tr><tr><td>Pro+</td><td>$39/月</td><td>7,000（base 3,900 ＋ flex 3,100）</td><td><span class="pos">既定で有効</span></td></tr><tr><td>Max</td><td>$100/月</td><td>20,000（base 10,000 ＋ flex 10,000）</td><td><span class="pos">既定で有効</span></td></tr><tr><td>Business</td><td>$19/付与シート/月</td><td>1,900/ユーザー/月（請求主体でプール）</td><td><span class="mid">管理者が有効化するまで無効</span></td></tr><tr><td>Enterprise</td><td>$39/付与シート/月</td><td>3,900/ユーザー/月（請求主体でプール）</td><td><span class="mid">管理者が有効化するまで無効</span></td></tr></tbody></table></div>
+<p class="muted">2026 年 6 月 1 日〜9 月 1 日の移行プロモーションとして、既存 Business / Enterprise 顧客はそれぞれ 3,000 / 7,000 クレジット（ユーザー/月）。<strong>未使用分は翌月に繰り越されない。</strong></p>
+
+<aside class="callout callout-note">
+    <div class="callout-mark" aria-hidden="true">i</div>
+    <div class="callout-body"><p class="callout-title">S23 の Compute budget を実務で語るときの要点</p><p>cloud agent は <strong>AI Credits と Actions 分の 2 系統</strong>を同時に消費します。したがって「並列度を上げる」判断は 2 種類の予算に同時に効きます。<br>
+    ただし実務上のボトルネックは通常コストではなく<strong>レビュー容量</strong>です。S43 の Orchestrate 段が「within governance and review capacity」と条件づけているのはそのためで、S42「Humans move from the work loop to the decision loop」も同じ制約を別角度から述べています。<strong>投入できるタスク数の上限は、承認できる人の数で決まります。</strong></p></div>
+  </aside>
+
+</section>
+<section class="section" id="glossary" aria-labelledby="glossary-title">
+  <div class="section__head">
+    <p class="section__num">12</p>
+    <div class="section__headings">
+      <p class="eyebrow">用語</p>
+      <h2 id="glossary-title">発表者フレームワーク / 公式用語 対応表</h2>
+        <div class="section__slides"><span class="slides"><span class="slide-chip">S12</span><span class="slide-chip">S13</span><span class="slide-chip">S20</span><span class="slide-chip">S22</span><span class="slide-chip">S23</span><span class="slide-chip">S25</span><span class="slide-chip">S43</span></span></div>
+    </div>
+  </div>
+  <p class="lead">このプレゼンテーションは独自の整理枠組みを多く使っており、スライド自身がそれを申告しています。顧客説明で「これは GitHub の公式用語ですか」と問われたときに即答できるよう、一覧にします。</p>
+
+<div class="table-wrap"><table class=""><colgroup><col style="width:22%"><col style="width:10%"><col style="width:38%"><col style="width:30%"></colgroup><thead><tr><th>本プレゼンテーションの用語</th><th>区分</th><th>最も近い公式概念 / 実装</th><th>スライド自身の申告</th></tr></thead><tbody><tr><td><strong>5 段階の相互作用モデル</strong><br>Completion → Conversation → Collaboration → Delegation → Orchestration</td><td><span class="badge badge-framework">発表者FW</span></td><td>GitHub は「Assistive features」と「Agentic features」の 2 分類を使う</td><td>S12 に <code>PRESENTER FRAMEWORK</code> バッジ。ノートに <em>"it does not publish this exact five-stage model"</em></td></tr><tr><td><strong>Delegation Contract</strong>（8 フィールド）</td><td><span class="badge badge-framework">発表者FW</span></td><td>対応する公式機能名なし。Issue 本文 ＋ instructions ＋ ruleset ＋ required checks の組み合わせで実装（§03）</td><td><code>SOURCE: User-provided original specification</code></td></tr><tr><td><strong>Autonomy budget</strong>（Scope / Capability / Compute / Decision）</td><td><span class="badge badge-framework">発表者FW</span></td><td>firewall・permissions・MCP 設定・required approvals などの個別制御（§04）</td><td><code>SOURCE: Derived (risk-scaled autonomy model …)</code></td></tr><tr><td><strong>Five layers</strong>（Intent / Context / Agent / Execution / Governance）</td><td><span class="badge badge-framework">発表者FW</span></td><td>公式のアーキテクチャ表現ではない</td><td>ノートに <em>"The layers are a presenter framework, not an official GitHub product architecture."</em></td></tr><tr><td><strong>Agentic Modernization Loop</strong>（5 変換）</td><td><span class="badge badge-framework">発表者FW</span></td><td>部分的に Modernize CLI の Assess → Plan → Execute に対応（§09）</td><td><code>SOURCE: Derived (five-stage loop …)</code></td></tr><tr><td><strong>Evidence Package</strong>（Code + Evidence + Uncertainty）</td><td><span class="badge badge-framework">発表者FW</span></td><td>session log ＋ checks 結果 ＋ Verified 署名コミットが素材。<strong>受け入れ条件へのマッピングは自動化されない</strong></td><td>S35。<code>SOURCE:</code> は manage-and-track-agents</td></tr><tr><td><strong>Adoption ladder</strong>（Assist → … → Orchestrate）</td><td><span class="badge badge-framework">発表者FW</span></td><td>対応する公式概念なし</td><td>S43 が「§2 の相互作用モデルとは別物」と明示</td></tr><tr><td><strong>Three forms of legacy</strong>（Code / Knowledge / Process）</td><td><span class="badge badge-framework">発表者FW</span></td><td>対応する公式概念なし</td><td>S8</td></tr><tr><td><strong>Copilot cloud agent</strong></td><td><span class="badge badge-official">公式</span></td><td>現行ドキュメントの正式名。旧名 <strong>Copilot coding agent</strong>（2025-09 に GA 告知）</td><td>S13・S32 の <code>SOURCE:</code> が about-cloud-agent</td></tr><tr><td><strong>Agent HQ</strong></td><td><span class="badge badge-na">ブログ用語</span></td><td>GitHub Blog の傘ブランド。実 UI は <strong>Agents タブ / agents panel / agents ページ</strong>。<strong>mission control</strong> はコマンドセンターの概念名</td><td>—</td></tr></tbody></table></div>
+
+<aside class="callout callout-key">
+    <div class="callout-mark" aria-hidden="true">★</div>
+    <div class="callout-body"><p class="callout-title">この区別を明示することが、この資料と発表の最大の信頼性資産</p><p>元スライドは 46 枚すべてのスピーカーノートに <code>SOURCE:</code> 行を持ち、<code>Derived content declaration</code>・<code>Source caveat</code>・<code>Derivation rationale</code> で「どこまでが公式で、どこからが自分の整理か」を宣言しています。この規律は、AI 関連のプレゼンテーションでは稀です。<br>
+    発表の場でも <strong>「これは当社の整理です」と「これは製品仕様です」を口頭で切り分ける</strong>ことで、同じ効果が得られます。特に Delegation Contract と Autonomy budget は前者、「エージェントは自分の PR を承認できない」は後者です。</p></div>
+  </aside>
+
+</section>
+<section class="section" id="sources" aria-labelledby="sources-title">
+  <div class="section__head">
+    <p class="section__num">13</p>
+    <div class="section__headings">
+      <p class="eyebrow">出典</p>
+      <h2 id="sources-title">一次情報リンク集</h2>
+    </div>
+  </div>
+  <p class="lead">本資料の主張はすべて以下の一次情報に基づいています。仕様は変わるため、顧客提示前に該当ページの再確認を推奨します。</p>
+
+<h3>GitHub Copilot — エージェント</h3>
+<ul class="plain"><li><a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-cloud-agent" target="_blank" rel="noopener noreferrer">About Copilot cloud agent</a></li><li><a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/risks-and-mitigations" target="_blank" rel="noopener noreferrer">Risks and mitigations for Copilot cloud agent</a><span class="src-note">「自分の PR を承認・マージできない」「<code>copilot/</code> ブランチ限定」「ワークフローは既定で自動実行しない」「firewall の限界」の出典</span></li><li><a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/start-copilot-sessions" target="_blank" rel="noopener noreferrer">Starting Copilot sessions（投入経路）</a></li><li><a href="https://docs.github.com/en/copilot/how-tos/copilot-on-github/use-copilot-agents/manage-and-track-agents" target="_blank" rel="noopener noreferrer">Manage and track agents（session log・共有既定値）</a></li><li><a href="https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/customize-the-agent-environment" target="_blank" rel="noopener noreferrer">Customize the agent environment（copilot-setup-steps.yml・59 分上限）</a></li><li><a href="https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-the-firewall" target="_blank" rel="noopener noreferrer">Customize the firewall</a></li><li><a href="https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/customize-cloud-agent/configure-secrets-and-variables" target="_blank" rel="noopener noreferrer">Configure secrets and variables（Agents secrets・COPILOT_MCP_）</a></li><li><a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-custom-agents" target="_blank" rel="noopener noreferrer">About custom agents</a></li><li><a href="https://docs.github.com/en/copilot/concepts/agents/about-third-party-coding-agents" target="_blank" rel="noopener noreferrer">About third-party coding agents</a></li><li><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-copilot-cli" target="_blank" rel="noopener noreferrer">About GitHub Copilot CLI</a></li><li><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-memory" target="_blank" rel="noopener noreferrer">Copilot Memory</a></li></ul>
+
+<h3>GitHub Copilot — コンテキストとカスタマイズ</h3>
+<ul class="plain"><li><a href="https://docs.github.com/en/copilot/concepts/prompting/response-customization" target="_blank" rel="noopener noreferrer">Response customization（instructions の優先順位）</a></li><li><a href="https://docs.github.com/en/copilot/how-tos/copilot-on-github/customize-copilot/add-custom-instructions/add-repository-instructions" target="_blank" rel="noopener noreferrer">Add repository instructions（applyTo・excludeAgent）</a></li><li><a href="https://docs.github.com/en/copilot/reference/custom-instructions-support" target="_blank" rel="noopener noreferrer">Custom instructions support（クライアント別対応表）</a></li><li><a href="https://docs.github.com/en/copilot/concepts/context/spaces" target="_blank" rel="noopener noreferrer">Copilot Spaces</a></li><li><a href="https://docs.github.com/en/copilot/concepts/context/mcp" target="_blank" rel="noopener noreferrer">MCP concepts</a></li><li><a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/mcp-and-cloud-agent" target="_blank" rel="noopener noreferrer">MCP and cloud agent</a></li><li><a href="https://docs.github.com/en/copilot/concepts/mcp-management" target="_blank" rel="noopener noreferrer">MCP management（組織ポリシー）</a></li><li><a href="https://docs.github.com/en/copilot/tutorials/customization-library/prompt-files/your-first-prompt-file" target="_blank" rel="noopener noreferrer">Prompt files</a></li></ul>
+
+<h3>GitHub Copilot — ガバナンスとセキュリティ</h3>
+<ul class="plain"><li><a href="https://docs.github.com/en/copilot/reference/supported-surfaces-for-policies" target="_blank" rel="noopener noreferrer">Supported surfaces for policies</a><span class="src-note">§08 の content exclusion 対応表の出典。<strong>スライド S38 のノート記述との差分はここで確認できる</strong></span></li><li><a href="https://docs.github.com/en/copilot/concepts/context/content-exclusion" target="_blank" rel="noopener noreferrer">Content exclusion（Agent mode で効かない件）</a></li><li><a href="https://docs.github.com/en/copilot/concepts/policies" target="_blank" rel="noopener noreferrer">Copilot policies / AI Controls</a></li><li><a href="https://docs.github.com/en/copilot/concepts/agents/enterprise-management" target="_blank" rel="noopener noreferrer">Enterprise management for agents</a></li><li><a href="https://docs.github.com/en/copilot/reference/agentic-audit-log-events" target="_blank" rel="noopener noreferrer">Agentic audit log events（actor:Copilot・180 日）</a></li><li><a href="https://docs.github.com/en/copilot/concepts/agents/code-review" target="_blank" rel="noopener noreferrer">Copilot code review</a></li><li><a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/request-a-code-review/use-code-review" target="_blank" rel="noopener noreferrer">Using Copilot code review（常に Comment レビュー）</a></li></ul>
+
+<h3>GitHub プラットフォーム（Copilot 専用ではない統制機構）</h3>
+<ul class="plain"><li><a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-protected-branches/about-protected-branches" target="_blank" rel="noopener noreferrer">About protected branches</a></li><li><a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/about-rulesets" target="_blank" rel="noopener noreferrer">About rulesets（競合時は最も厳格な設定が適用）</a></li><li><a href="https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/about-code-owners" target="_blank" rel="noopener noreferrer">About CODEOWNERS</a></li><li><a href="https://docs.github.com/en/actions/how-tos/deploy/configure-and-manage-deployments/manage-environments" target="_blank" rel="noopener noreferrer">Manage environments（deployment protection rules）</a></li></ul>
+
+<h3>モダナイゼーション</h3>
+<ul class="plain"><li><a href="https://learn.microsoft.com/en-us/azure/developer/github-copilot-app-modernization/overview" target="_blank" rel="noopener noreferrer">GitHub Copilot app modernization — Overview</a></li><li><a href="https://learn.microsoft.com/en-us/azure/developer/github-copilot-app-modernization/modernization-agent/overview" target="_blank" rel="noopener noreferrer">Modernization agent — Overview（Assess → Plan → Execute）</a></li><li><a href="https://learn.microsoft.com/en-us/azure/developer/github-copilot-app-modernization/modernization-agent/quickstart" target="_blank" rel="noopener noreferrer">Modernize CLI — Quickstart</a></li><li><a href="https://learn.microsoft.com/en-us/azure/developer/github-copilot-app-modernization/quickstart-unit-tests" target="_blank" rel="noopener noreferrer">Quickstart: unit tests</a></li><li><a href="https://docs.github.com/en/copilot/tutorials/modernize-legacy-code" target="_blank" rel="noopener noreferrer">Modernizing legacy code with GitHub Copilot（COBOL → Node.js）</a></li></ul>
+
+<h3>課金</h3>
+<ul class="plain"><li><a href="https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing" target="_blank" rel="noopener noreferrer">Models and pricing（AI Credits の計算）</a></li><li><a href="https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals" target="_blank" rel="noopener noreferrer">Usage-based billing for individuals</a></li><li><a href="https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-organizations-and-enterprises" target="_blank" rel="noopener noreferrer">Usage-based billing for organizations and enterprises</a></li><li><a href="https://docs.github.com/en/copilot/get-started/plans" target="_blank" rel="noopener noreferrer">Copilot plans</a></li></ul>
+
+<h3>コード スキャンと Autofix</h3>
+<ul class="plain"><li><a href="https://docs.github.com/en/code-security/concepts/code-scanning/autofix-for-code-scanning" target="_blank" rel="noopener noreferrer">Autofix for code scanning</a></li><li><a href="https://github.blog/changelog/2026-07-10-agentic-autofix-for-code-scanning-alerts-in-public-preview/" target="_blank" rel="noopener noreferrer">Agentic autofix in public preview（2026-07-10）</a></li></ul>
+
+<aside class="callout callout-note">
+    <div class="callout-mark" aria-hidden="true">i</div>
+    <div class="callout-body"><p class="callout-title">検証日</p><p>本資料の内容は <strong>2026 年 8 月</strong>時点の一次情報に基づいて検証されています。GitHub Copilot の機能名・提供状態・課金モデルは頻繁に変わります。特に次の 3 点は変化が速いため、提案直前の再確認を強く推奨します：<br>
+    ① <strong>Public Preview 機能の GA 昇格</strong>（custom agents、prompt files、Modernize CLI の assess/plan、agentic autofix、third-party agents）<br>
+    ② <strong>プロダクト名称</strong>（cloud agent / coding agent の呼称、Agent HQ 周辺の UI 名）<br>
+    ③ <strong>課金レート</strong>（AI Credits のプラン別付与量、2026-09-01 で終わる移行プロモーション）</p></div>
+  </aside>
+
+</section>
+    <footer class="page-footer">
+      <p>本資料は非公式の補足資料です。製品の可用性、ポリシー、料金は各節の一次情報リンクで確認してください。</p>
+      <p><a href="../">Something Something Something</a> · <a href="https://github.com/shinyay/something-something-something" rel="noopener noreferrer">GitHub リポジトリ</a></p>
+    </footer>
+  </div>
+</main>
+</div>
+</body>
+</html>
