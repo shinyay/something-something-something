@@ -7,6 +7,11 @@ const ASSET_DIR = `${OUT_DIR}/assets`;
 const REPO_URL = "https://github.com/shinyay/something-something-something";
 const DESCRIPTION =
   "『Starting Agentic SDLC with GitHub Copilot』の補足資料。スライドの各概念を実際の GitHub Copilot 機能・設定・ポリシーに対応づけた 14 節の日本語ディープダイブ。";
+const SLIDE_PDF = {
+  href: "slides/2026-08-03_agentic-sdlc-modernization.pdf",
+  label: "元スライドをダウンロード",
+  note: "PDF · 46 ページ · 0.7 MB",
+};
 
 if (sections.length !== 14) {
   throw new Error(`Supplementary guide must contain 14 sections (got ${sections.length})`);
@@ -20,6 +25,8 @@ const icons = {
   sun: "M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z",
   list: "M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z",
   back: "M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h7.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06z",
+  download:
+    "M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.749.749 0 111.06 1.06l-3.25 3.25a.749.749 0 01-1.06 0L4.22 6.78a.749.749 0 111.06-1.06l1.97 1.969z",
 };
 
 function escapeHtml(value) {
@@ -422,6 +429,40 @@ main {
   border-radius: 999px;
   background: var(--bg-muted);
   color: var(--fg-muted);
+  font-size: 12px;
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 20px;
+}
+
+.hero__download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border: 1px solid var(--border-accent-muted);
+  border-radius: var(--radius-small);
+  background: var(--bg-accent-emphasis);
+  color: var(--fg-on-emphasis);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.hero__download:hover {
+  filter: brightness(1.1);
+  color: var(--fg-on-emphasis);
+  text-decoration: none;
+}
+
+.hero__download-note {
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
   font-size: 12px;
 }
 
@@ -1296,6 +1337,10 @@ ${renderToc()}
         <li>${escapeHtml(meta.verified)}</li>
         <li>全 ${sections.length} 節</li>
       </ul>
+      <div class="hero__actions">
+        <a class="hero__download" href="${escapeHtml(SLIDE_PDF.href)}" download>${svg(icons.download)}<span>${escapeHtml(SLIDE_PDF.label)}</span></a>
+        <span class="hero__download-note">${escapeHtml(SLIDE_PDF.note)}</span>
+      </div>
     </header>
 ${sections.map(renderSection).join("\n")}
     <footer class="page-footer">

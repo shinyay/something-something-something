@@ -384,6 +384,40 @@ main {
   font-size: 12px;
 }
 
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 8px 12px;
+  margin-top: 20px;
+}
+
+.hero__download {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 7px 16px;
+  border: 1px solid var(--border-accent-muted);
+  border-radius: var(--radius-small);
+  background: var(--bg-accent-emphasis);
+  color: var(--fg-on-emphasis);
+  font-size: 14px;
+  font-weight: 600;
+  line-height: 20px;
+}
+
+.hero__download:hover {
+  filter: brightness(1.1);
+  color: var(--fg-on-emphasis);
+  text-decoration: none;
+}
+
+.hero__download-note {
+  color: var(--fg-muted);
+  font-family: var(--font-mono);
+  font-size: 12px;
+}
+
 /* ── sections ─────────────────────────────────────────── */
 .section {
   padding: 40px 0 8px;
