@@ -91,3 +91,13 @@ export const ul = (items) => `<ul class="plain">${items.map((i) => `<li>${i}</li
 export function pre(lang, code) {
     return `<pre class="code" data-lang="${lang}"><code>${esc(code)}</code></pre>`;
 }
+
+/**
+ * Wrap a hand-authored inline SVG diagram in a <figure> with a caption.
+ * `svgMarkup` is a raw SVG string; `caption` is optional HTML shown below.
+ * Class names are deliberately distinct from `.principle` / `.doc-quote`.
+ */
+export function diagram(svgMarkup, caption) {
+    const cap = caption ? `<figcaption>${caption}</figcaption>` : "";
+    return `<figure class="diagram">${svgMarkup}${cap}</figure>`;
+}
