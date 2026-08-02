@@ -1,4 +1,4 @@
-// PART 2–3: sections 03 (contract), 04 (autonomy), 05 (loop).
+// PART 2–3: sections 03 (contract), 04 (autonomy), 05 (loop), 06 (orchestration).
 import { badge, c, a, table, callout, principle, docQuote, cards, steps, ul, pre, diagram } from "./ui.mjs";
 import { contractDiagram, autonomyDiagram, loopDiagram } from "./diagrams.mjs";
 
@@ -84,7 +84,7 @@ ${table(
 ${callout(
     "key",
     "8 フィールドのうち 5 つは「お願い」ではなく「構造」にできる",
-    `<p>これが本資料の最重要ポイントです。Delegation Contract を Issue 本文だけに書くと、全フィールドが<strong>確率的な指示</strong>のままです。しかし Scope / Tools / Acceptance / Verification / Human gates の 5 つは、ruleset・required checks・firewall・environments といった<strong>決定的な仕組み</strong>に落とせます。<br>これが「<em>Reason probabilistically. Verify deterministically.</em>（確率的に推論し、決定的に検証する）」の実装上の意味であり、「<em>Autonomous execution does not require autonomous acceptance.</em>（自律的な実行は、自律的な受け入れを必要としない）」を担保する仕掛けです（§07・§08）。</p>`,
+    `<p>これが本資料の最重要ポイントです。Delegation Contract を Issue 本文だけに書くと、全フィールドが<strong>確率的な指示</strong>のままです。しかし Scope / Tools / Acceptance / Verification / Human gates の 5 つは、ruleset・required checks・firewall・environments といった<strong>決定的な仕組み</strong>に落とせます。<br>これが「<em>Reason probabilistically. Verify deterministically.</em>（確率的に推論し、決定的に検証する）」の実装上の意味であり、「<em>Autonomous execution does not require autonomous acceptance.</em>（自律的な実行は、自律的な受け入れを必要としない）」を担保する仕掛けです（§08・§09）。</p>`,
 )}
 
 <h3>構造的保証の核心：エージェントは自分の PR を承認できない</h3>
@@ -202,6 +202,33 @@ ${callout(
     "既定値がすでに保守的である、という事実の使い方",
     `<p>「エージェントは勝手に何でもやるのでは」と問われたとき、有効な回答は 4 つの既定値です —— <strong>(1)</strong> 専用ブランチ 1 本にしか push できない、<strong>(2)</strong> 自分の PR を Ready にも Approve にも Merge にもできない、<strong>(3)</strong> ワークフローは人がクリックするまで走らない、<strong>(4)</strong> ネットワークは既定でファイアウォール越し。<br>自律性を「予算」として語ることが有効なのは、これらが<em>すべて緩められる</em>からです。緩める判断こそが統治です。</p>`,
 )}
+
+<h3>Capability 予算を「宣言」から「強制」へ —— hooks ${OFFICIAL}</h3>
+<p>ここまでの Capability 予算（allowlist・permissions・tools）は<strong>宣言的</strong>です。「このツールは許す／許さない」を設定として書きますが、実行時に個別の呼び出しを検査して止める仕組みではありませんでした。<strong>hooks</strong> はこの欠けを埋めます —— エージェントのワークフローの要所でカスタムのシェルコマンドを実行し、<strong>ツール実行を実行時に承認／拒否</strong>できます。</p>
+${docQuote(
+    "preToolUse … This is the most powerful hook as it can approve or deny tool executions.",
+    "https://docs.github.com/en/copilot/concepts/agents/hooks",
+    "GitHub Docs — About hooks for GitHub Copilot",
+)}
+<p>hooks は <strong>Copilot cloud agent と GitHub Copilot CLI</strong> で利用でき、リポジトリの <code>.github/hooks/*.json</code> に置くとそのリポジトリでの Copilot エージェント利用時に常に適用されます（CLI は <code>~/.copilot/hooks/*.json</code> の個人フックも対応）。8 種類の実行点があります。</p>
+${table(
+    ["フック種別", "実行される時点", "主な用途"],
+    [
+        [`<code>sessionStart</code> / <code>sessionEnd</code>`, "セッションの開始 / 終了・中断", "環境初期化・監査ログ・一時リソースの後始末"],
+        [`<code>userPromptSubmitted</code>`, "ユーザーがプロンプトを送信したとき", "依頼の監査ログ・利用分析"],
+        [`<strong><code>preToolUse</code></strong>`, "エージェントがツールを使う<strong>前</strong>", `<strong>ツール実行の承認／拒否</strong>・危険なコマンドのブロック・ポリシー強制・機微操作の承認要求・利用ログ`],
+        [`<code>postToolUse</code>`, "ツール完了後（成否を問わず）", "実行結果のログ・統計・監査証跡・性能監視"],
+        [`<code>agentStop</code> / <code>subagentStop</code>`, "メイン／サブエージェントの応答完了時", "サブエージェント結果の検査（§06）・完了通知"],
+        [`<code>errorOccurred</code>`, "実行中にエラーが起きたとき", "エラーログ・通知・パターン追跡"],
+    ],
+    { widths: ["26%", "34%", "40%"] },
+)}
+<p>設定は <code>version: 1</code> と <code>hooks</code> オブジェクトからなり、各フックは <code>type:"command"</code>（必須）に <code>bash</code> / <code>powershell</code>、任意で <code>cwd</code>・<code>env</code>・<code>timeoutSec</code>（既定 30 秒）を持ちます。</p>
+${callout(
+    "key",
+    "hooks は 4 次元のうち Capability を「実行時に効く」次元へ格上げする",
+    `<p>allowlist や <code>tools:</code> が「何を許すか」の<strong>宣言</strong>だとすれば、<code>preToolUse</code> は「今まさに実行しようとしている操作を止められるか」の<strong>強制</strong>です。§12 の失敗パターンや §11 の逸脱を、二度と起こさない形（当該ツール実行の拒否・コンプライアンス用の利用ログ）に落とす受け皿になります。ただしフックは同期的にエージェント実行をブロックするため、<strong>実行時間は短く保つ</strong>必要があります（ドキュメントは 5 秒以内を推奨）。</p>`,
+)}
 `,
     },
 
@@ -279,6 +306,124 @@ ${callout(
     "note",
     "投入経路によって挙動が違う",
     `<p>Agents UI から起動した場合、cloud agent は PR を作る前に調査・計画・反復ができます。<strong>それ以外の多くの投入経路（Issue アサイン、<code>@copilot</code> など）では、すぐに PR を開きます。</strong><br>「人が範囲・アプローチ・前提を確認または軌道修正する」ステップを実際に成立させたいなら、<strong>Agents UI から投入する</strong>必要があります。この差は運用設計に直結します。</p>`,
+)}
+`,
+    },
+
+    // ────────────────────────────────────────────────────────────── 06
+    {
+        id: "orchestration",
+        num: "06",
+        eyebrow: "Orchestration",
+        title: "Orchestration の実務 —— 並列委譲を成立させる",
+        lead: "§01 と §10 の両方で「オーケストレーション」を頂点に置きながら、本資料はこれまで操作方法を示していませんでした。本節はその欠落を埋めます —— 並列に動かせる 4 つの実体を区別し、何を並列に載せてよいかの分解規準を確定させ、並列度の上限がどこにあるかを明示します。",
+        html: `
+${principle(
+    "Parallelism is bounded by review capacity, not by how many agents you can launch.",
+    "並列度を決めるのは「何体のエージェントを起動できるか」ではなく「人がレビューし切れる量」である。委譲を増やすほど、律速は生成側からレビュー側へ移る。",
+)}
+
+<h3>並列実行の 4 つの実体 —— 階層が違う</h3>
+<p>「エージェントを並列に動かす」と一言で言っても、GitHub には<strong>階層の異なる 4 つの仕組み</strong>があります。サブエージェントは<strong>1 セッションの内側</strong>で、cloud agent タスクや automations は<strong>セッションをまたいで</strong>並列化します。混同すると分解の粒度を誤ります。</p>
+
+${table(
+    ["並列の実体", "面 / 起動経路", "並列の単位", "コンテキストの分離", "課金・状態の帰結"],
+    [
+        [
+            `<strong>${c("/fleet")} サブエージェント</strong> ${OFFICIAL}`,
+            `GitHub Copilot CLI（1 セッション内）`,
+            "サブタスク（メインがオーケストレータ）",
+            `<strong>各サブエージェントが独立したコンテキスト窓</strong>（メインとも他のサブエージェントとも別）`,
+            `<span class="neg">AI Credits の消費が増える</span>（§13）。状態は 1 ワークツリー内`,
+        ],
+        [
+            `<strong>並列ワークスペース</strong> ${GA}`,
+            `GitHub Copilot app（デスクトップ）`,
+            "セッション（複数を同時実行）",
+            `<strong>各セッションが専用の git worktree とブランチ</strong>`,
+            `セッションごとに独立したブランチ。クラウドサンドボックス実行時は Actions も消費 ${PP}`,
+        ],
+        [
+            `<strong>cloud agent の複数タスク</strong> ${OFFICIAL}`,
+            `GitHub.com の Agents タブ / ${c("gh agent-task")} / agent-tasks REST API`,
+            "タスク＝セッション（セッション間）",
+            `各タスクが独立したエフェメラル環境と <code>copilot/…</code> ブランチ`,
+            `AI Credits ＋ Actions minutes。push 済みコミットとして残る`,
+        ],
+        [
+            `<strong>automations</strong> ${OFFICIAL}`,
+            `スケジュール / リポジトリイベント（無人）`,
+            "実行ごとに 1 セッション",
+            `リポジトリの cloud agent 設定を継承（1 リポジトリにスコープ）`,
+            `AI Credits ＋ Actions minutes。<span class="neg">定義は Git 管理外</span>（§09）`,
+        ],
+    ],
+    { widths: ["20%", "22%", "18%", "22%", "18%"] },
+)}
+
+${docQuote(
+    "the main Copilot agent … will act as orchestrator, managing the workflow and dependencies between the subtasks. Each subagent has its own context window, separate from the main agent and other subagents.",
+    "https://docs.github.com/en/copilot/concepts/agents/copilot-cli/fleet",
+    "GitHub Docs — Fleet for Copilot CLI",
+)}
+
+<h3>並列に載せてよいタスクの分解規準</h3>
+<p>並列化が利益を生むのは、タスクが<strong>本当に独立している</strong>ときだけです。分解の可否は次の 3 点で判定します。</p>
+${cards(
+    [
+        {
+            title: "① 独立性 —— 逐次依存がないこと",
+            badge: OFFICIAL,
+            body: `一方の出力が他方の入力になる依頼は並列化しても待ちが発生するだけです。ドキュメント原文も <em>「your request is inherently sequential なら <code>/fleet</code> は利益をもたらさないことがある」</em>と明言します。<strong>本質的に逐次な依頼を無理に並列化しない</strong> —— これが第一規準です。`,
+        },
+        {
+            title: "② 衝突面をパスで分離する",
+            badge: FRAMEWORK,
+            body: `並列タスクが同じファイルを触ると、ブランチ統合時に衝突します。§02 の <code>applyTo</code>（instruction のスコープ）と §03 の <strong>CODEOWNERS</strong> を再利用し、<strong>タスクごとに触るパスを重ならないよう割り当てる</strong>。衝突面を設計時に分離するのがオーケストレータの仕事です。`,
+        },
+        {
+            title: "③ 1 タスク 1 ブランチの帰結",
+            badge: FRAMEWORK,
+            body: `並列ワークスペースも cloud agent タスクも <strong>1 タスク＝1 ブランチ＝1 PR</strong> が単位です。したがって分解の粒度は「独立してレビュー・マージできる単位」まで下げる必要があります。粒度が粗いと衝突し、細か過ぎるとレビュー負荷（＝律速）が増えます。`,
+        },
+    ],
+    { cols: 3 },
+)}
+
+<h3>並列化が向く仕事・向かない仕事</h3>
+${table(
+    ["向き / 不向き", "例", "根拠"],
+    [
+        [
+            `<span class="pos">向く</span>`,
+            "複数ファイルの独立したリファクタ、依存更新、モジュール横断のテスト実行、<strong>新機能のテストスイート作成</strong>",
+            `ドキュメントが「複数ステップの独立作業」「新機能のテストスイート作成は並列化に向く」と明記`,
+        ],
+        [
+            `<span class="neg">向かない</span>`,
+            "設計→実装→検証のように前段の結論が次段の前提になる一連の作業",
+            `逐次依存があると <code>/fleet</code> は利益をもたらさない（AI Credits だけ増える）`,
+        ],
+    ],
+    { widths: ["14%", "50%", "36%"] },
+)}
+
+${callout(
+    "key",
+    "専門化 —— サブエージェントにモデルとカスタムエージェントを割り当てる",
+    `<p><code>/fleet</code> のサブエージェントは既定で低コストモデルを使いますが、プロンプト内でモデルを指定できます（例: <em>「… Use GPT-5.3-Codex, to create …」</em>）。<code>@CUSTOM-AGENT-NAME</code> でカスタムエージェントを明示指定すれば、タスクごとに専門化した振る舞いを割り当てられます。<strong>難所には高性能モデル、定型には低コストモデル</strong>という配分が、そのままコスト設計（§13）になります。</p>`,
+)}
+
+${callout(
+    "note",
+    "monorepo と polyrepo の違いは「分解規準」の中に吸収される",
+    `<p>monorepo では衝突面の分離がパス割り当て（規準②）で完結し、CODEOWNERS も 1 リポジトリで一元管理できます。polyrepo では 1 タスク 1 ブランチが自然にリポジトリ境界と一致する一方、リポジトリ横断の変更は automations が <strong>1 リポジトリにしか作用できない</strong>制約（§09）に突き当たります。いずれの場合も規準①〜③は変わりません。</p>`,
+)}
+
+${callout(
+    "warn",
+    "並列度を上げてもレビュー容量は増えない",
+    `<p>4 つの仕組みのどれを使っても、生成された PR は最終的に<strong>人のレビューという同じ関門</strong>を通ります。並列度を上げるほど律速はレビュー側に移動し、AI Credits（§13）は線形に増えます。<strong>「同時に何体動かせるか」ではなく「同時に何本レビューし切れるか」で並列度を決める</strong> —— これが本資料を貫くテーゼの、オーケストレーションにおける現れです。</p>`,
 )}
 `,
     },
