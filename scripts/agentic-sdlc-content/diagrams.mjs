@@ -54,7 +54,7 @@ export function loopDiagram() {
     const cx = 280;
     const cy = 252;
     const R = 178;
-    const bw = 132;
+    const bw = 138;
     const bh = 58;
     const nodes = [
         { main: "Code → Doc", sub: "構造復元" },
@@ -88,18 +88,23 @@ export function loopDiagram() {
         `  <text class="d-te" x="${cx}" y="${cy + 14}" text-anchor="middle" font-size="15" font-weight="600">委譲</text>`,
     );
 
-    // Node boxes on the ring.
+    // Node boxes on the ring. The badge and label are laid out as a fixed
+    // left-aligned unit (badge on the left, label starting after it) so the
+    // badge and label keep a constant horizontal gap regardless of label length.
     nodes.forEach((node, i) => {
         const [px, py] = polar(cx, cy, R, -90 + 72 * i);
         const x = F(px - bw / 2);
         const y = F(py - bh / 2);
+        const chipCx = F(x + 18);
+        const chipCy = F(y + bh / 2);
+        const tx = F(x + 38);
         parts.push(
             `  <g>
     <rect class="d-box-accent" x="${x}" y="${y}" width="${bw}" height="${bh}" rx="10"></rect>
-    <circle class="d-chip" cx="${F(x + 15)}" cy="${F(y + 15)}" r="10"></circle>
-    <text class="d-te" x="${F(x + 15)}" y="${F(y + 19)}" text-anchor="middle" font-size="12" font-weight="600">${i + 1}</text>
-    <text class="d-t" x="${F(px)}" y="${F(py - 3)}" text-anchor="middle" font-size="14" font-weight="600">${node.main}</text>
-    <text class="d-tm" x="${F(px)}" y="${F(py + 16)}" text-anchor="middle" font-size="11.5">${node.sub}</text>
+    <circle class="d-chip" cx="${chipCx}" cy="${chipCy}" r="10"></circle>
+    <text class="d-te" x="${chipCx}" y="${F(chipCy + 4)}" text-anchor="middle" font-size="12" font-weight="600">${i + 1}</text>
+    <text class="d-t" x="${tx}" y="${F(y + 25)}" text-anchor="start" font-size="13" font-weight="600">${node.main}</text>
+    <text class="d-tm" x="${tx}" y="${F(y + 43)}" text-anchor="start" font-size="11">${node.sub}</text>
   </g>`,
         );
     });
@@ -179,13 +184,15 @@ export function prDiagram() {
 
     // Blocked actions the agent cannot perform (crossing the boundary).
     const blocked = ["Ready", "Approve", "Merge"];
+    const boxEdge = 262 + 150; // right edge of the 実装 & push box
+    const cxBlock = 432; // × centre sits outside the box edge, left of the boundary
     blocked.forEach((label, i) => {
         const y = F(laneMid(1) - 18 + i * 18);
         parts.push(
             `  <g>
-    <line class="d-block" x1="${F(bx - 78)}" y1="${y}" x2="${F(bx - 6)}" y2="${y}" stroke-width="1.4" stroke-dasharray="4 3"></line>
-    <circle class="d-block-x" cx="${F(bx - 42)}" cy="${y}" r="8"></circle>
-    <text class="d-danger" x="${F(bx - 42)}" y="${F(y + 3.5)}" text-anchor="middle" font-size="11" font-weight="700">×</text>
+    <line class="d-block" x1="${boxEdge + 4}" y1="${y}" x2="448" y2="${y}" stroke-width="1.4" stroke-dasharray="4 3"></line>
+    <circle class="d-block-x" cx="${cxBlock}" cy="${y}" r="8"></circle>
+    <text class="d-danger" x="${cxBlock}" y="${F(y + 3.5)}" text-anchor="middle" font-size="11" font-weight="700">×</text>
     <text class="d-danger" x="${F(bx + 8)}" y="${F(y + 4)}" text-anchor="start" font-size="11">${label} 不可</text>
   </g>`,
         );
@@ -228,33 +235,39 @@ export function continuumDiagram() {
     );
 
     const modes = [
-        { name: "Completion", prod: "コード補完", fx: 0.06, fy: 0.06, cls: "d-box" },
-        { name: "Conversation", prod: "Copilot Chat", fx: 0.26, fy: 0.2, cls: "d-box" },
-        { name: "Collaboration", prod: "Agent mode / CLI", fx: 0.46, fy: 0.34, cls: "d-box-accent" },
-        { name: "Delegation", prod: "cloud agent", fx: 0.72, fy: 0.74, cls: "d-box-done" },
-        { name: "Orchestration", prod: "Agents パネル", fx: 0.95, fy: 0.96, cls: "d-box-done" },
+        { name: "Completion", prod: "コード補完", cls: "d-box" },
+        { name: "Conversation", prod: "Copilot Chat", cls: "d-box" },
+        { name: "Collaboration", prod: "Agent mode / CLI", cls: "d-box-accent" },
+        { name: "Delegation", prod: "cloud agent", cls: "d-box-done" },
+        { name: "Orchestration", prod: "Agents パネル", cls: "d-box-done" },
     ];
-    const px = (f) => F(x0 + (x1 - x0) * f);
-    const py = (f) => F(yBottom - (yBottom - yTop) * f);
+    const cw = 128;
+    const ch = 40;
+    // Chip centres form a diagonal strictly inside the axes (leftmost box clears
+    // the Y axis, lowest box clears the X axis). Vertical spacing (>= 49) exceeds
+    // the chip height, so chips never overlap one another either.
+    const centres = [
+        [198, 308],
+        [303, 258],
+        [408, 209],
+        [513, 159],
+        [598, 110],
+    ];
 
-    // Progression path through the points.
-    const path = modes.map((m, i) => `${i === 0 ? "M" : "L"} ${px(m.fx)} ${py(m.fy)}`).join(" ");
+    // Progression path through the chip centres.
+    const path = centres.map(([mx, my], i) => `${i === 0 ? "M" : "L"} ${mx} ${my}`).join(" ");
     parts.push(`  <path class="d-progress" d="${path}" fill="none" stroke-width="2" stroke-dasharray="4 4"></path>`);
 
     // Mode chips.
-    const cw = 128;
-    const ch = 40;
-    modes.forEach((m, i) => {
-        const cxp = px(m.fx);
-        const cyp = py(m.fy);
-        let bx = F(cxp - cw / 2);
-        bx = Math.max(x0 - 8, Math.min(bx, w - cw - 6));
-        const by = F(cyp - ch / 2);
+    centres.forEach(([mx, my], i) => {
+        const m = modes[i];
+        const bx = F(mx - cw / 2);
+        const by = F(my - ch / 2);
         parts.push(
             `  <g>
     <rect class="${m.cls}" x="${bx}" y="${by}" width="${cw}" height="${ch}" rx="9"></rect>
-    <text class="d-t" x="${F(bx + cw / 2)}" y="${F(by + 17)}" text-anchor="middle" font-size="12.5" font-weight="600">${i + 1}. ${m.name}</text>
-    <text class="d-tm" x="${F(bx + cw / 2)}" y="${F(by + 32)}" text-anchor="middle" font-size="10.5">${m.prod}</text>
+    <text class="d-t" x="${mx}" y="${F(by + 17)}" text-anchor="middle" font-size="12.5" font-weight="600">${i + 1}. ${m.name}</text>
+    <text class="d-tm" x="${mx}" y="${F(by + 32)}" text-anchor="middle" font-size="10.5">${m.prod}</text>
   </g>`,
         );
     });
