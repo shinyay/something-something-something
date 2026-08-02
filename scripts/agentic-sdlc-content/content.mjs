@@ -17,8 +17,8 @@ export const sections = [...sectionsA, ...sectionsB, ...sectionsC, ...sectionsD,
 export const parts = [
     { title: "PART 1 — 出発点", ids: ["overview"] },
     { title: "PART 2 — 委譲できる形に設計する", ids: ["continuum", "context", "contract", "autonomy"] },
-    { title: "PART 3 — 実行する", ids: ["loop", "modernization"] },
-    { title: "PART 4 — 信頼する", ids: ["verification", "pr", "security"] },
-    { title: "PART 5 — 運用する", ids: ["ladder", "billing", "antipatterns"] },
+    { title: "PART 3 — 実行する", ids: ["loop", "orchestration", "modernization"] },
+    { title: "PART 4 — 信頼する", ids: ["verification", "pr", "security", "recovery"] },
+    { title: "PART 5 — 運用する", ids: ["ladder", "billing", "measurement", "antipatterns"] },
     { title: "PART 6 — リファレンス", ids: ["glossary", "sources", "deck-map"] },
 ];

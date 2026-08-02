@@ -6,15 +6,15 @@ const OUT_DIR = "agentic-sdlc";
 const ASSET_DIR = `${OUT_DIR}/assets`;
 const REPO_URL = "https://github.com/shinyay/something-something-something";
 const DESCRIPTION =
-  "GitHub Copilot の技術的観点から Agentic SDLC を解説する自立した実践ガイド。境界のある検証可能な作業を設計・委譲・統治するための 16 節の日本語ディープダイブ。";
+  "GitHub Copilot の技術的観点から Agentic SDLC を解説する自立した実践ガイド。境界のある検証可能な作業を設計・委譲・統治するための 19 節の日本語ディープダイブ。";
 const SLIDE_PDF = {
   href: "slides/2026-08-03_agentic-sdlc-modernization.pdf",
   label: "関連する登壇資料（PDF・46 ページ）",
   note: "本文を読むのにスライドは不要です",
 };
 
-if (sections.length !== 16) {
-  throw new Error(`Guide must contain 16 sections (got ${sections.length})`);
+if (sections.length !== 19) {
+  throw new Error(`Guide must contain 19 sections (got ${sections.length})`);
 }
 if (new Set(sections.map((section) => section.id)).size !== sections.length) {
   throw new Error("Section ids must be unique");
@@ -1613,7 +1613,7 @@ ${renderToc()}
     </header>
 ${sections.map(renderSection).join("\n")}
     <footer class="page-footer">
-      <p>本資料は GitHub Copilot に関する非公式の技術資料です。製品の可用性、ポリシー、料金は各節の一次情報リンク（§14）で確認してください。</p>
+      <p>本資料は GitHub Copilot に関する非公式の技術資料です。製品の可用性、ポリシー、料金は各節の一次情報リンク（§17）で確認してください。</p>
       <p><a href="../">Something Something Something</a> · <a href="${REPO_URL}" rel="noopener noreferrer">GitHub リポジトリ</a></p>
     </footer>
   </div>
