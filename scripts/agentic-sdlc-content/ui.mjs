@@ -12,11 +12,6 @@ export function badge(kind, text) {
     return `<span class="badge badge-${kind}">${text}</span>`;
 }
 
-/** Slide cross-reference chips, e.g. slides(12, 13) -> "S12 S13" */
-export function slides(...nums) {
-    return `<span class="slides">${nums.map((n) => `<span class="slide-chip">S${n}</span>`).join("")}</span>`;
-}
-
 /** Inline code. */
 export const c = (s) => `<code>${esc(s)}</code>`;
 
@@ -48,11 +43,14 @@ export function callout(kind, title, body) {
   </aside>`;
 }
 
-/** Verbatim quote pulled from the deck. */
-export function deckQuote(text, ref) {
-    return `<figure class="deck-quote">
-    <blockquote>${text}</blockquote>
-    <figcaption>スライド原文 ${ref}</figcaption>
+/**
+ * Pull-quote presenting this guide's own thesis. No source attribution.
+ * `note` is an optional short gloss (e.g. a Japanese summary of an English thesis).
+ */
+export function principle(text, note) {
+    const cap = note ? `<figcaption>${note}</figcaption>` : "";
+    return `<figure class="principle">
+    <blockquote>${text}</blockquote>${cap}
   </figure>`;
 }
 
