@@ -983,6 +983,171 @@ ol.steps .step-body ul.plain {
   font-size: 12px;
 }
 
+/* ── diagrams (hand-authored inline SVG) ──────────────── */
+.diagram {
+  margin: 20px 0 26px;
+  padding: 18px 16px 16px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-large);
+  background: var(--bg-muted);
+}
+
+.diagram svg {
+  display: block;
+  width: 100%;
+  height: auto;
+  max-width: 760px;
+  margin: 0 auto;
+  fill: none;
+}
+
+.diagram figcaption {
+  margin: 12px auto 0;
+  max-width: 760px;
+  color: var(--fg-muted);
+  font-size: 12.5px;
+  line-height: 1.7;
+}
+
+.diagram text {
+  font-family: var(--font-sans);
+}
+
+.diagram .d-t {
+  fill: var(--fg-default);
+}
+
+.diagram .d-tm {
+  fill: var(--fg-muted);
+}
+
+.diagram .d-te {
+  fill: var(--fg-on-emphasis);
+}
+
+.diagram .d-accent {
+  fill: var(--fg-accent);
+}
+
+.diagram .d-danger {
+  fill: var(--fg-danger);
+}
+
+.diagram .d-box {
+  fill: var(--bg-default);
+  stroke: var(--border-default);
+  stroke-width: 1.5;
+}
+
+.diagram .d-box-accent {
+  fill: var(--bg-accent-muted);
+  stroke: var(--border-accent-muted);
+  stroke-width: 1.5;
+}
+
+.diagram .d-box-success {
+  fill: var(--bg-success-muted);
+  stroke: var(--border-success-muted);
+  stroke-width: 1.5;
+}
+
+.diagram .d-box-attention {
+  fill: var(--bg-attention-muted);
+  stroke: var(--border-attention-muted);
+  stroke-width: 1.5;
+}
+
+.diagram .d-box-done {
+  fill: var(--bg-done-muted);
+  stroke: var(--border-done-muted);
+  stroke-width: 1.5;
+}
+
+.diagram .d-box-emphasis {
+  fill: var(--bg-accent-emphasis);
+  stroke: var(--bg-accent-emphasis);
+}
+
+.diagram .d-chip {
+  fill: var(--bg-accent-emphasis);
+  stroke: none;
+}
+
+.diagram .d-lane {
+  fill: var(--bg-default);
+}
+
+.diagram .d-lane-alt {
+  fill: var(--bg-inset);
+}
+
+.diagram .d-line {
+  fill: none;
+  stroke: var(--border-default);
+  stroke-width: 1;
+}
+
+.diagram .d-axis {
+  fill: none;
+  stroke: var(--fg-muted);
+}
+
+.diagram .d-axis-arrow {
+  fill: var(--fg-muted);
+  stroke: none;
+}
+
+.diagram .d-flow {
+  fill: none;
+  stroke: var(--fg-accent);
+}
+
+.diagram .d-flow-arrow {
+  fill: var(--fg-accent);
+  stroke: none;
+}
+
+.diagram .d-progress {
+  stroke: var(--fg-done);
+}
+
+.diagram .d-conn {
+  fill: none;
+  stroke: var(--fg-muted);
+}
+
+.diagram .d-conn-arrow {
+  fill: var(--fg-muted);
+  stroke: none;
+}
+
+.diagram .d-boundary {
+  fill: none;
+  stroke: var(--fg-danger);
+}
+
+.diagram .d-block {
+  fill: none;
+  stroke: var(--fg-danger);
+}
+
+.diagram .d-block-x {
+  fill: var(--bg-danger-muted);
+  stroke: var(--border-danger-muted);
+  stroke-width: 1;
+}
+
+.diagram .d-track {
+  fill: var(--bg-inset);
+  stroke: var(--border-default);
+  stroke-width: 1;
+}
+
+.diagram .d-fill-accent {
+  fill: var(--fg-accent);
+  stroke: none;
+}
+
 /* ── code ─────────────────────────────────────────────── */
 code {
   padding: 0.2em 0.4em;
@@ -1159,6 +1324,62 @@ pre.code::before {
   .callout,
   .table-wrap {
     break-inside: avoid;
+  }
+
+  .diagram {
+    background: #ffffff !important;
+    border-color: #999999 !important;
+    break-inside: avoid;
+  }
+
+  .diagram .d-box,
+  .diagram .d-box-accent,
+  .diagram .d-box-success,
+  .diagram .d-box-attention,
+  .diagram .d-box-done,
+  .diagram .d-track,
+  .diagram .d-lane,
+  .diagram .d-lane-alt {
+    fill: #ffffff !important;
+    stroke: #999999 !important;
+  }
+
+  .diagram .d-box-emphasis,
+  .diagram .d-chip,
+  .diagram .d-block-x {
+    fill: #ffffff !important;
+    stroke: #000000 !important;
+  }
+
+  .diagram .d-fill-accent {
+    fill: #666666 !important;
+  }
+
+  .diagram .d-t,
+  .diagram .d-tm,
+  .diagram .d-accent,
+  .diagram .d-danger {
+    fill: #000000 !important;
+  }
+
+  .diagram .d-te {
+    fill: #000000 !important;
+  }
+
+  .diagram .d-line,
+  .diagram .d-axis,
+  .diagram .d-flow,
+  .diagram .d-progress,
+  .diagram .d-conn,
+  .diagram .d-boundary,
+  .diagram .d-block {
+    stroke: #000000 !important;
+  }
+
+  .diagram .d-axis-arrow,
+  .diagram .d-flow-arrow,
+  .diagram .d-conn-arrow {
+    fill: #000000 !important;
   }
 
   a {

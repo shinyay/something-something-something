@@ -1,5 +1,6 @@
 // PART 3–4: sections 06 (modernization), 07 (verification), 08 (pr), 09 (security).
-import { badge, c, a, table, callout, principle, docQuote, cards, steps, ul, pre } from "./ui.mjs";
+import { badge, c, a, table, callout, principle, docQuote, cards, steps, ul, pre, diagram } from "./ui.mjs";
+import { prDiagram } from "./diagrams.mjs";
 
 const OFFICIAL = badge("official", "公式");
 const GA = badge("ga", "GA");
@@ -167,6 +168,11 @@ ${callout(
 ${principle(
     "The pull request reconnects intent, delegated execution, verification, and accountable human acceptance.<br>Autonomous execution does not require autonomous acceptance.",
     "PR は「意図・委譲された実行・検証・説明責任を持つ人間の受け入れ」を再接続する点である。自律的な実行は、自律的な受け入れを必要としない。",
+)}
+
+${diagram(
+    prDiagram(),
+    "人間・エージェント・PR・CI の 4 レーン。エージェントは委譲を受けて copilot/… ブランチ 1 本に実装し draft PR を作るが、境界線の右側にある Ready 化・Approve・Merge はどれも実行できない（×）。受け入れは人間がレビューして行う。各保証の詳細は直後の一覧で確認できる。",
 )}
 
 <h3>製品仕様で保証されること</h3>

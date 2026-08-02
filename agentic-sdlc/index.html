@@ -165,6 +165,47 @@
     <blockquote>The useful progression is measured by how much work a person can define and hand off—not by launch dates.</blockquote><figcaption>有用な段階分けの尺度は「人がどれだけの作業を定義して手渡せるか」であって、機能のリリース時期ではない。</figcaption>
   </figure>
 
+<figure class="diagram"><svg viewBox="0 0 680 420" role="img" aria-labelledby="dg-continuum-t dg-continuum-d" preserveAspectRatio="xMidYMid meet">
+  <title id="dg-continuum-t">5 つの相互作用モードの連続体図</title>
+  <desc id="dg-continuum-d">Completion、Conversation、Collaboration、Delegation、Orchestration の 5 モードを、横軸の同期から非同期・並列へ、縦軸のローカルからクラウドへの平面上に並べた図。左下の Completion から右上の Orchestration へと段階的に進む。</desc>
+  <line class="d-axis" x1="120" y1="336" x2="636" y2="336" stroke-width="1.6"></line>
+<polygon class="d-axis-arrow" points="636,336 627.9,339.9 627.9,332.1"></polygon>
+  <line class="d-axis" x1="120" y1="336" x2="120" y2="70" stroke-width="1.6"></line>
+<polygon class="d-axis-arrow" points="120,70 123.9,78.1 116.1,78.1"></polygon>
+  <text class="d-tm" x="120" y="362" text-anchor="start" font-size="12">同期</text>
+  <text class="d-tm" x="636" y="362" text-anchor="end" font-size="12">非同期・並列</text>
+  <text class="d-tm" x="378" y="362" text-anchor="middle" font-size="11" font-weight="600">実行の同期性 →</text>
+  <text class="d-tm" x="108" y="80" text-anchor="end" font-size="12">クラウド</text>
+  <text class="d-tm" x="108" y="332" text-anchor="end" font-size="12">ローカル</text>
+  <text class="d-tm" x="0" y="0" text-anchor="middle" font-size="11" font-weight="600" transform="translate(76 207) rotate(-90)">実行場所 ↑</text>
+  <path class="d-progress" d="M 151 320.5 L 254.2 284.4 L 357.4 248.3 L 491.5 145.1 L 610.2 88.3" fill="none" stroke-width="2" stroke-dasharray="4 4"></path>
+  <g>
+    <rect class="d-box" x="112" y="300.5" width="128" height="40" rx="9"></rect>
+    <text class="d-t" x="176" y="317.5" text-anchor="middle" font-size="12.5" font-weight="600">1. Completion</text>
+    <text class="d-tm" x="176" y="332.5" text-anchor="middle" font-size="10.5">コード補完</text>
+  </g>
+  <g>
+    <rect class="d-box" x="190.2" y="264.4" width="128" height="40" rx="9"></rect>
+    <text class="d-t" x="254.2" y="281.4" text-anchor="middle" font-size="12.5" font-weight="600">2. Conversation</text>
+    <text class="d-tm" x="254.2" y="296.4" text-anchor="middle" font-size="10.5">Copilot Chat</text>
+  </g>
+  <g>
+    <rect class="d-box-accent" x="293.4" y="228.3" width="128" height="40" rx="9"></rect>
+    <text class="d-t" x="357.4" y="245.3" text-anchor="middle" font-size="12.5" font-weight="600">3. Collaboration</text>
+    <text class="d-tm" x="357.4" y="260.3" text-anchor="middle" font-size="10.5">Agent mode / CLI</text>
+  </g>
+  <g>
+    <rect class="d-box-done" x="427.5" y="125.1" width="128" height="40" rx="9"></rect>
+    <text class="d-t" x="491.5" y="142.1" text-anchor="middle" font-size="12.5" font-weight="600">4. Delegation</text>
+    <text class="d-tm" x="491.5" y="157.1" text-anchor="middle" font-size="10.5">cloud agent</text>
+  </g>
+  <g>
+    <rect class="d-box-done" x="546" y="68.3" width="128" height="40" rx="9"></rect>
+    <text class="d-t" x="610" y="85.3" text-anchor="middle" font-size="12.5" font-weight="600">5. Orchestration</text>
+    <text class="d-tm" x="610" y="100.3" text-anchor="middle" font-size="10.5">Agents パネル</text>
+  </g>
+</svg><figcaption>5 つのモードを「同期↔非同期・並列」「ローカル↔クラウド」の平面に置いた全体像。左下の Completion から右上の Orchestration へ進むほど、人が定義して手渡せる作業の量が増える。各モードの定義・対応プロダクト・課金は直後の一覧と表で確認できる。</figcaption></figure>
+
 <h3>5 つのモードの定義</h3>
 <ul class="plain"><li><strong>Completion</strong> —— IDE 内で、書きかけのコードをトークン／行／ブロック単位で補完する。作業は人が主導し、提案は局所的。</li><li><strong>Conversation</strong> —— 質問し、説明を得る。コードやリポジトリについての理解を対話で深める。</li><li><strong>Collaboration</strong> —— 共有セッション内で、人が見ている前でエージェントが境界のあるステップを実行する。ファイルは即座に変わり、人がいつでも止められる。</li><li><strong>Delegation</strong> —— 成果（outcome）を証跡付きで返してもらう。人は実行を見ておらず、成果物が検査可能な形で戻る。</li><li><strong>Orchestration</strong> —— 統治された複数の作業にわたって、繰り返し可能なフローを回す。並列・非同期。</li></ul>
 
@@ -265,6 +306,73 @@ excludeAgent: "code-review"
     <blockquote>A Delegation Contract makes success, boundaries, proof, and decision gates inspectable before work begins.<br>The contract grants bounded authority—not a blank check.</blockquote><figcaption>委譲契約は、作業を始める前に「成功・境界・証拠・意思決定ゲート」を検査可能にする。契約が与えるのは〈境界のある権限〉であって、白紙委任ではない。</figcaption>
   </figure>
 
+<figure class="diagram"><svg viewBox="0 0 680 392" role="img" aria-labelledby="dg-contract-t dg-contract-d" preserveAspectRatio="xMidYMid meet">
+  <title id="dg-contract-t">Delegation Contract の 8 フィールドの 2×4 グリッド図</title>
+  <desc id="dg-contract-d">委譲契約の 8 フィールドを 2 列 4 行に並べた図。Outcome + Why、Scope + Out、Context、Tools + Constraints、Acceptance、Verification + Evidence、Escalate、Human gates。各フィールドは強制力（構造的に強制可・半構造的・プロンプトのみ）で色分けされる。</desc>
+  <g>
+    <rect class="d-box" x="16" y="20" width="316" height="66" rx="10"></rect>
+    <circle class="d-chip" cx="36" cy="40" r="11"></circle>
+    <text class="d-te" x="36" y="44" text-anchor="middle" font-size="12" font-weight="600">1</text>
+    <text class="d-t" x="56" y="45" text-anchor="start" font-size="13" font-weight="600">Outcome + Why</text>
+    <text class="d-tm" x="56" y="66" text-anchor="start" font-size="11.5">成果と目的</text>
+  </g>
+  <g>
+    <rect class="d-box-success" x="348" y="20" width="316" height="66" rx="10"></rect>
+    <circle class="d-chip" cx="368" cy="40" r="11"></circle>
+    <text class="d-te" x="368" y="44" text-anchor="middle" font-size="12" font-weight="600">2</text>
+    <text class="d-t" x="388" y="45" text-anchor="start" font-size="13" font-weight="600">Scope + Out</text>
+    <text class="d-tm" x="388" y="66" text-anchor="start" font-size="11.5">範囲と除外</text>
+  </g>
+  <g>
+    <rect class="d-box" x="16" y="100" width="316" height="66" rx="10"></rect>
+    <circle class="d-chip" cx="36" cy="120" r="11"></circle>
+    <text class="d-te" x="36" y="124" text-anchor="middle" font-size="12" font-weight="600">3</text>
+    <text class="d-t" x="56" y="125" text-anchor="start" font-size="13" font-weight="600">Context</text>
+    <text class="d-tm" x="56" y="146" text-anchor="start" font-size="11.5">文脈・前提</text>
+  </g>
+  <g>
+    <rect class="d-box-success" x="348" y="100" width="316" height="66" rx="10"></rect>
+    <circle class="d-chip" cx="368" cy="120" r="11"></circle>
+    <text class="d-te" x="368" y="124" text-anchor="middle" font-size="12" font-weight="600">4</text>
+    <text class="d-t" x="388" y="125" text-anchor="start" font-size="13" font-weight="600">Tools + Constraints</text>
+    <text class="d-tm" x="388" y="146" text-anchor="start" font-size="11.5">能力・制約</text>
+  </g>
+  <g>
+    <rect class="d-box-success" x="16" y="180" width="316" height="66" rx="10"></rect>
+    <circle class="d-chip" cx="36" cy="200" r="11"></circle>
+    <text class="d-te" x="36" y="204" text-anchor="middle" font-size="12" font-weight="600">5</text>
+    <text class="d-t" x="56" y="205" text-anchor="start" font-size="13" font-weight="600">Acceptance</text>
+    <text class="d-tm" x="56" y="226" text-anchor="start" font-size="11.5">受け入れ条件</text>
+  </g>
+  <g>
+    <rect class="d-box-success" x="348" y="180" width="316" height="66" rx="10"></rect>
+    <circle class="d-chip" cx="368" cy="200" r="11"></circle>
+    <text class="d-te" x="368" y="204" text-anchor="middle" font-size="12" font-weight="600">6</text>
+    <text class="d-t" x="388" y="205" text-anchor="start" font-size="13" font-weight="600">Verification + Evidence</text>
+    <text class="d-tm" x="388" y="226" text-anchor="start" font-size="11.5">検証と証拠</text>
+  </g>
+  <g>
+    <rect class="d-box-attention" x="16" y="260" width="316" height="66" rx="10"></rect>
+    <circle class="d-chip" cx="36" cy="280" r="11"></circle>
+    <text class="d-te" x="36" y="284" text-anchor="middle" font-size="12" font-weight="600">7</text>
+    <text class="d-t" x="56" y="285" text-anchor="start" font-size="13" font-weight="600">Escalate</text>
+    <text class="d-tm" x="56" y="306" text-anchor="start" font-size="11.5">エスカレーション</text>
+  </g>
+  <g>
+    <rect class="d-box-success" x="348" y="260" width="316" height="66" rx="10"></rect>
+    <circle class="d-chip" cx="368" cy="280" r="11"></circle>
+    <text class="d-te" x="368" y="284" text-anchor="middle" font-size="12" font-weight="600">8</text>
+    <text class="d-t" x="388" y="285" text-anchor="start" font-size="13" font-weight="600">Human gates</text>
+    <text class="d-tm" x="388" y="306" text-anchor="start" font-size="11.5">人間のゲート</text>
+  </g>
+  <rect class="d-box-success" x="16" y="344" width="18" height="14" rx="4"></rect>
+  <text class="d-tm" x="40" y="356" text-anchor="start" font-size="11.5">構造的に強制可</text>
+  <rect class="d-box-attention" x="154" y="344" width="18" height="14" rx="4"></rect>
+  <text class="d-tm" x="178" y="356" text-anchor="start" font-size="11.5">半構造的</text>
+  <rect class="d-box" x="256" y="344" width="18" height="14" rx="4"></rect>
+  <text class="d-tm" x="280" y="356" text-anchor="start" font-size="11.5">プロンプトのみ</text>
+</svg><figcaption>Delegation Contract を構成する 8 フィールドの一覧。緑（構造的に強制可）の 5 つ —— Scope + Out / Tools + Constraints / Acceptance / Verification + Evidence / Human gates —— は ruleset や required checks などの決定的な仕組みに落とせる。各フィールドの実装先は直後の表で対応づける。</figcaption></figure>
+
 <div class="table-wrap"><table class=""><colgroup><col style="width:14%"><col style="width:22%"><col style="width:44%"><col style="width:20%"></colgroup><thead><tr><th>フィールド</th><th>フィールドの定義</th><th>GitHub 上の実装先</th><th>強制力</th></tr></thead><tbody><tr><td><strong>Outcome + Why</strong></td><td>観測可能な結果と、その業務上・技術上の目的</td><td><strong>Issue のタイトルと本文</strong>（Copilot にアサインする Issue そのもの）</td><td><span class="soft">プロンプトのみ</span></td></tr><tr><td><strong>Scope + Out</strong></td><td>作業してよい範囲と、明示的に変えてはならないもの</td><td>Issue 本文の明示的除外 ＋ <code>.github/instructions/*.instructions.md</code> の <code>applyTo</code><br>＋ <strong>ruleset / branch protection</strong> のパス制限<br>＋ <strong>CODEOWNERS</strong></td><td><span class="hard">構造的に強制可</span></td></tr><tr><td><strong>Context</strong></td><td>リポジトリ知識・現在の振る舞い・決定事項・前提</td><td><code>AGENTS.md</code> / <code>.github/copilot-instructions.md</code> / <strong>Copilot Spaces</strong> / リンクした Issue・PR / MCP</td><td><span class="soft">プロンプトのみ</span></td></tr><tr><td><strong>Tools + Constraints</strong></td><td>許可された能力・制限・ポリシー・予算</td><td><code>.github/workflows/copilot-setup-steps.yml</code>（<code>permissions:</code>・<code>timeout-minutes</code>）<br>＋ <strong>firewall allowlist</strong><br>＋ リポジトリ MCP 設定 ／ <strong>Agents secrets</strong><br>＋ custom agent の <code>tools:</code> frontmatter<br>＋ <strong>AI Controls</strong>（組織 / Enterprise ポリシー）</td><td><span class="hard">構造的に強制可</span></td></tr><tr><td><strong>Acceptance</strong></td><td>「完了」を定義する観測可能な条件</td><td>Issue の受け入れ条件 ＋ <strong>required status checks</strong></td><td><span class="hard">構造的に強制可</span></td></tr><tr><td><strong>Verification + Evidence</strong></td><td>繰り返し可能なチェックと、レビュー用に返す証拠</td><td><strong>GitHub Actions</strong> ワークフロー / <strong>CodeQL</strong> / <strong>Dependabot</strong> / <strong>secret scanning</strong><br>＋ <strong>session log</strong>・<strong>Verified 署名コミット</strong></td><td><span class="hard">構造的に強制可</span></td></tr><tr><td><strong>Escalate</strong></td><td>作業を止めるべき曖昧さ・リスク・失敗条件</td><td>Issue / PR コメントで <code>@copilot</code> に差し戻し<br>＋ <strong>「Approve and run workflows」で既定停止</strong>する構造</td><td><span class="mid">半構造的</span></td></tr><tr><td><strong>Human gates</strong></td><td>説明責任を持つ人に残す、名前のついた意思決定</td><td><strong>required reviews</strong> / <strong>CODEOWNERS 必須承認</strong> / <strong>environments の required reviewers</strong> / <strong>merge queue</strong> / <strong>deployment protection rules</strong></td><td><span class="hard">構造的に強制可</span></td></tr></tbody></table></div>
 
 <aside class="callout callout-key">
@@ -296,6 +404,43 @@ excludeAgent: "code-review"
 <figure class="principle">
     <blockquote>Autonomy has multiple dimensions that teams allocate per task. Expand it only when work is reversible, contained, and strongly evidenced.<br>Increase autonomy one bounded dimension at a time.</blockquote><figcaption>自律性は複数の次元を持ち、チームはそれをタスクごとに配分する。拡大してよいのは、作業が可逆で・影響が封じ込められ・強く証跡づけられているときだけ。自律性は一度に 1 つの次元ずつ上げる。</figcaption>
   </figure>
+
+<figure class="diagram"><svg viewBox="0 0 640 336" role="img" aria-labelledby="dg-autonomy-t dg-autonomy-d" preserveAspectRatio="xMidYMid meet">
+  <title id="dg-autonomy-t">Autonomy Budget の 4 次元バー図</title>
+  <desc id="dg-autonomy-d">自律性を Scope（範囲）、Capability（能力）、Compute（実行資源）、Decision（意思決定）の 4 次元に分解し、それぞれを低から高へ段階的に濃くなる帯で表した図。自律性はオンオフのスイッチではなく、次元ごとに配分する予算であり、一度に 1 次元ずつ拡大する。</desc>
+  <text class="d-t" x="20" y="26" text-anchor="start" font-size="13" font-weight="600">自律性 = 予算（スイッチではない）</text>
+  <text class="d-t" x="20" y="59" text-anchor="start" font-size="13" font-weight="600">Scope</text>
+  <text class="d-tm" x="20" y="74" text-anchor="start" font-size="11">範囲</text>
+  <rect class="d-track" x="170" y="44" width="446" height="30" rx="7"></rect>
+  <rect class="d-fill-accent" x="170" y="44" width="109.5" height="30" rx="5" fill-opacity="0.3"></rect>
+  <rect class="d-fill-accent" x="281.5" y="44" width="109.5" height="30" rx="5" fill-opacity="0.5"></rect>
+  <rect class="d-fill-accent" x="393" y="44" width="109.5" height="30" rx="5" fill-opacity="0.8"></rect>
+  <rect class="d-fill-accent" x="504.5" y="44" width="109.5" height="30" rx="5" fill-opacity="1"></rect>
+  <text class="d-t" x="20" y="115" text-anchor="start" font-size="13" font-weight="600">Capability</text>
+  <text class="d-tm" x="20" y="130" text-anchor="start" font-size="11">能力</text>
+  <rect class="d-track" x="170" y="100" width="446" height="30" rx="7"></rect>
+  <rect class="d-fill-accent" x="170" y="100" width="109.5" height="30" rx="5" fill-opacity="0.3"></rect>
+  <rect class="d-fill-accent" x="281.5" y="100" width="109.5" height="30" rx="5" fill-opacity="0.5"></rect>
+  <rect class="d-fill-accent" x="393" y="100" width="109.5" height="30" rx="5" fill-opacity="0.8"></rect>
+  <rect class="d-fill-accent" x="504.5" y="100" width="109.5" height="30" rx="5" fill-opacity="1"></rect>
+  <text class="d-t" x="20" y="171" text-anchor="start" font-size="13" font-weight="600">Compute</text>
+  <text class="d-tm" x="20" y="186" text-anchor="start" font-size="11">実行資源</text>
+  <rect class="d-track" x="170" y="156" width="446" height="30" rx="7"></rect>
+  <rect class="d-fill-accent" x="170" y="156" width="109.5" height="30" rx="5" fill-opacity="0.3"></rect>
+  <rect class="d-fill-accent" x="281.5" y="156" width="109.5" height="30" rx="5" fill-opacity="0.5"></rect>
+  <rect class="d-fill-accent" x="393" y="156" width="109.5" height="30" rx="5" fill-opacity="0.8"></rect>
+  <rect class="d-fill-accent" x="504.5" y="156" width="109.5" height="30" rx="5" fill-opacity="1"></rect>
+  <text class="d-t" x="20" y="227" text-anchor="start" font-size="13" font-weight="600">Decision</text>
+  <text class="d-tm" x="20" y="242" text-anchor="start" font-size="11">意思決定</text>
+  <rect class="d-track" x="170" y="212" width="446" height="30" rx="7"></rect>
+  <rect class="d-fill-accent" x="170" y="212" width="109.5" height="30" rx="5" fill-opacity="0.3"></rect>
+  <rect class="d-fill-accent" x="281.5" y="212" width="109.5" height="30" rx="5" fill-opacity="0.5"></rect>
+  <rect class="d-fill-accent" x="393" y="212" width="109.5" height="30" rx="5" fill-opacity="0.8"></rect>
+  <rect class="d-fill-accent" x="504.5" y="212" width="109.5" height="30" rx="5" fill-opacity="1"></rect>
+  <text class="d-tm" x="170" y="264" text-anchor="start" font-size="11">低</text>
+  <text class="d-tm" x="393" y="264" text-anchor="middle" font-size="11">→ 一度に 1 次元ずつ拡大 →</text>
+  <text class="d-tm" x="616" y="264" text-anchor="end" font-size="11">高</text>
+</svg><figcaption>自律性を Scope / Capability / Compute / Decision の 4 次元に分解し、それぞれを低→高の帯で表した図。自律性はオン・オフのスイッチではなく次元ごとに配分する「予算」であり、拡大は一度に 1 次元ずつ行う。各次元に対応する実際の設定項目は直後のカードで確認できる。</figcaption></figure>
 
 <div class="cards cards-2"><div class="card">
         <p class="card-title">Scope budget <span class="badge badge-framework">本資料の整理</span></p>
@@ -358,6 +503,55 @@ excludeAgent: "code-review"
 <figure class="principle">
     <blockquote>The loop turns uncertainty into small, reviewable changes and feeds every reviewed result back into organizational knowledge.<br>Bounded delegation sits at the center; human gates connect every stage.</blockquote><figcaption>ループは不確実性を、小さくレビュー可能な変更へと変え、レビュー済みの結果をすべて組織知識へ戻す。中心には境界のある委譲があり、各段を人間のゲートがつなぐ。</figcaption>
   </figure>
+
+<figure class="diagram"><svg viewBox="0 0 560 480" role="img" aria-labelledby="dg-loop-t dg-loop-d" preserveAspectRatio="xMidYMid meet">
+  <title id="dg-loop-t">Agentic Modernization Loop の循環図</title>
+  <desc id="dg-loop-d">5 つの変換 Code→Doc、Doc→Plan、Plan→Work、Work→PR、PR→Learning が時計回りに一周し、PR→Learning から Code→Doc に戻る円環。中心には境界のある委譲が置かれ、各変換をつなぐ。</desc>
+  <circle class="d-flow" cx="280" cy="252" r="178" stroke-width="2.4" stroke-dasharray="5 5"></circle>
+<polygon class="d-flow-arrow" points="384.6,108 374.7,106.3 379.9,99.2"></polygon>
+<polygon class="d-flow-arrow" points="449.3,307 447.9,297.1 456.2,299.8"></polygon>
+<polygon class="d-flow-arrow" points="280,430 289,425.6 289,434.4"></polygon>
+<polygon class="d-flow-arrow" points="110.7,307 117.6,314.2 109.3,316.9"></polygon>
+<polygon class="d-flow-arrow" points="175.4,108 170.7,116.8 165.5,109.7"></polygon>
+  <circle class="d-box-emphasis" cx="280" cy="252" r="56"></circle>
+  <text class="d-te" x="280" y="246" text-anchor="middle" font-size="15" font-weight="600">境界のある</text>
+  <text class="d-te" x="280" y="266" text-anchor="middle" font-size="15" font-weight="600">委譲</text>
+  <g>
+    <rect class="d-box-accent" x="214" y="45" width="132" height="58" rx="10"></rect>
+    <circle class="d-chip" cx="229" cy="60" r="10"></circle>
+    <text class="d-te" x="229" y="64" text-anchor="middle" font-size="12" font-weight="600">1</text>
+    <text class="d-t" x="280" y="71" text-anchor="middle" font-size="14" font-weight="600">Code → Doc</text>
+    <text class="d-tm" x="280" y="90" text-anchor="middle" font-size="11.5">構造復元</text>
+  </g>
+  <g>
+    <rect class="d-box-accent" x="383.3" y="168" width="132" height="58" rx="10"></rect>
+    <circle class="d-chip" cx="398.3" cy="183" r="10"></circle>
+    <text class="d-te" x="398.3" y="187" text-anchor="middle" font-size="12" font-weight="600">2</text>
+    <text class="d-t" x="449.3" y="194" text-anchor="middle" font-size="14" font-weight="600">Doc → Plan</text>
+    <text class="d-tm" x="449.3" y="213" text-anchor="middle" font-size="11.5">計画</text>
+  </g>
+  <g>
+    <rect class="d-box-accent" x="318.6" y="367" width="132" height="58" rx="10"></rect>
+    <circle class="d-chip" cx="333.6" cy="382" r="10"></circle>
+    <text class="d-te" x="333.6" y="386" text-anchor="middle" font-size="12" font-weight="600">3</text>
+    <text class="d-t" x="384.6" y="393" text-anchor="middle" font-size="14" font-weight="600">Plan → Work</text>
+    <text class="d-tm" x="384.6" y="412" text-anchor="middle" font-size="11.5">Issue 化</text>
+  </g>
+  <g>
+    <rect class="d-box-accent" x="109.4" y="367" width="132" height="58" rx="10"></rect>
+    <circle class="d-chip" cx="124.4" cy="382" r="10"></circle>
+    <text class="d-te" x="124.4" y="386" text-anchor="middle" font-size="12" font-weight="600">4</text>
+    <text class="d-t" x="175.4" y="393" text-anchor="middle" font-size="14" font-weight="600">Work → PR</text>
+    <text class="d-tm" x="175.4" y="412" text-anchor="middle" font-size="11.5">実装・検証</text>
+  </g>
+  <g>
+    <rect class="d-box-accent" x="44.7" y="168" width="132" height="58" rx="10"></rect>
+    <circle class="d-chip" cx="59.7" cy="183" r="10"></circle>
+    <text class="d-te" x="59.7" y="187" text-anchor="middle" font-size="12" font-weight="600">5</text>
+    <text class="d-t" x="110.7" y="194" text-anchor="middle" font-size="14" font-weight="600">PR → Learning</text>
+    <text class="d-tm" x="110.7" y="213" text-anchor="middle" font-size="11.5">知識還元</text>
+  </g>
+</svg><figcaption>Code→Doc / Doc→Plan / Plan→Work / Work→PR / PR→Learning の 5 変換が時計回りに一周し、PR→Learning がふたたび Code→Doc に戻る循環。中心には「境界のある委譲」があり、各変換をつなぐのは人間のゲートである。各変換で使う機能・残す成果物・人間のゲートは直後の表で確認できる。</figcaption></figure>
 
 <div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:26%"><col style="width:30%"><col style="width:26%"></colgroup><thead><tr><th>変換</th><th>使う機能</th><th>リポジトリに残す成果物</th><th>人間のゲート</th></tr></thead><tbody><tr><td><strong>Code → Doc</strong><br><span class="muted">構造・振る舞い・ルール・不確実性を復元する</span></td><td>Copilot Chat（リポジトリ横断の説明）<br>Copilot Spaces（対象範囲を束ねる）<br><span class="badge badge-pp">Public Preview</span> Modernize CLI の assess</td><td><code>docs/</code> 配下の構造・フロー・業務ルール記述<br><strong>「前提と未確定事項」の一覧</strong></td><td>ドメインオーナーによる検証。<em>復元されたドキュメントは、検証されるまで仮説にすぎない</em></td></tr><tr><td><strong>（安全網）</strong><br><span class="muted">振る舞いの安全網を作る</span></td><td>Copilot Chat のテスト生成<br>App modernization for Java（既存テスト移行 ＋ 新規ユニットテスト生成、behavioral-integrity 検証）</td><td>characterization テスト（現行の観測可能な振る舞いを固定するテスト）</td><td><strong>どれが意図した振る舞いでどれが欠陥か</strong>を人が判定する</td></tr><tr><td><strong>Doc → Plan</strong><br><span class="muted">目標・選択肢・リスク・移行の波を定義する</span></td><td><span class="badge badge-pp">Public Preview</span> <strong>modernization agent（Modernize CLI）</strong> の assess → plan<br>Dependabot / Advisory Database（既知脆弱性）<br>CodeQL（セキュリティ所見）</td><td>編集可能・順序付きのタスクと成功条件を持つ計画ファイル</td><td><strong>戦略・順序・リスクは人が選ぶ</strong>。アセスメントは事実であって戦略決定ではない</td></tr><tr><td><strong>Plan → Work</strong><br><span class="muted">境界があり独立に検証可能なタスクを作る</span></td><td>GitHub Issues（＝ Delegation Contract の器）<br>Issue テンプレート／ラベル</td><td>1 つの観測可能な成果・明示的依存・境界・検証手段・ロールバック手順を持つ Issue 群</td><td>Issue の粒度承認（＝スプリント計画）</td></tr><tr><td><strong>Work → PR</strong><br><span class="muted">実装・検証・報告し、人間のレビューを求める</span></td><td><strong>GitHub Copilot cloud agent</strong><br>GitHub Actions / CodeQL / secret scanning<br>Copilot code review</td><td><code>copilot/…</code> ブランチ、draft PR、Verified 署名コミット、session log</td><td>required reviews / CODEOWNERS / environments。<strong>エージェントは承認もマージもできない</strong></td></tr><tr><td><strong>PR → Learning</strong><br><span class="muted">instructions・テスト・計画・今後の作業を改善する</span></td><td>既存のテレメトリ・インシデント・サポート基盤<br><span class="badge badge-pp">Public Preview</span> Copilot Memory<br>custom instructions / custom agents の更新</td><td>更新された <code>AGENTS.md</code> / <code>*.instructions.md</code>、強化されたテスト、runbook、次の Delegation Contract</td><td>どのシグナルが優先度・統制・ロールアウトを変えるかをオーナーが決める</td></tr></tbody></table></div>
 
@@ -466,6 +660,75 @@ brew install modernize</code></pre>
     <blockquote>The pull request reconnects intent, delegated execution, verification, and accountable human acceptance.<br>Autonomous execution does not require autonomous acceptance.</blockquote><figcaption>PR は「意図・委譲された実行・検証・説明責任を持つ人間の受け入れ」を再接続する点である。自律的な実行は、自律的な受け入れを必要としない。</figcaption>
   </figure>
 
+<figure class="diagram"><svg viewBox="0 0 680 384" role="img" aria-labelledby="dg-pr-t dg-pr-d" preserveAspectRatio="xMidYMid meet">
+  <title id="dg-pr-t">PR をガバナンス境界とするレーン図</title>
+  <desc id="dg-pr-d">人間・エージェント・PR・CI の 4 レーン。エージェントは Issue の委譲を受けて copilot/… ブランチ 1 本に実装し draft PR を作るが、境界線の右側にある Ready 化・Approve・Merge は実行できず、人間がレビューしてマージする。自律的な実行は自律的な受け入れを意味しない。</desc>
+  <rect class="d-lane" x="0" y="52" width="680" height="72"></rect>
+  <text class="d-tm" x="82" y="92" text-anchor="end" font-size="13" font-weight="600">人間</text>
+  <rect class="d-lane-alt" x="0" y="124" width="680" height="72"></rect>
+  <text class="d-tm" x="82" y="164" text-anchor="end" font-size="13" font-weight="600">エージェント</text>
+  <rect class="d-lane" x="0" y="196" width="680" height="72"></rect>
+  <text class="d-tm" x="82" y="236" text-anchor="end" font-size="13" font-weight="600">PR</text>
+  <rect class="d-lane-alt" x="0" y="268" width="680" height="72"></rect>
+  <text class="d-tm" x="82" y="308" text-anchor="end" font-size="13" font-weight="600">CI</text>
+  <line class="d-line" x1="96" y1="52" x2="96" y2="340"></line>
+  <text class="d-tm" x="270" y="34" text-anchor="middle" font-size="12" font-weight="600">自律的な実行</text>
+  <text class="d-tm" x="566" y="34" text-anchor="middle" font-size="12" font-weight="600">人間による受け入れ</text>
+  <line class="d-boundary" x1="452" y1="46" x2="452" y2="346" stroke-width="2" stroke-dasharray="6 5"></line>
+  <text class="d-danger" x="452" y="362" text-anchor="middle" font-size="11.5" font-weight="600">エージェントが越えられない境界</text>
+  <g>
+    <rect class="d-box-accent" x="118" y="65" width="128" height="46" rx="9"></rect>
+    <text class="d-t" x="182" y="85" text-anchor="middle" font-size="12.5" font-weight="600">Issue を委譲</text>
+    <text class="d-tm" x="182" y="101" text-anchor="middle" font-size="10.5">Delegation Contract</text>
+  </g>
+  <g>
+    <rect class="d-box" x="262" y="137" width="150" height="46" rx="9"></rect>
+    <text class="d-t" x="337" y="157" text-anchor="middle" font-size="12.5" font-weight="600">実装 & push</text>
+    <text class="d-tm" x="337" y="173" text-anchor="middle" font-size="10.5">copilot/… ブランチ 1 本</text>
+  </g>
+  <g>
+    <rect class="d-box" x="262" y="209" width="150" height="46" rx="9"></rect>
+    <text class="d-t" x="337" y="229" text-anchor="middle" font-size="12.5" font-weight="600">draft PR</text>
+    <text class="d-tm" x="337" y="245" text-anchor="middle" font-size="10.5">Ready にできない</text>
+  </g>
+  <g>
+    <rect class="d-box-attention" x="486" y="281" width="128" height="46" rx="9"></rect>
+    <text class="d-t" x="550" y="301" text-anchor="middle" font-size="12.5" font-weight="600">checks 実行</text>
+    <text class="d-tm" x="550" y="317" text-anchor="middle" font-size="10.5">Approve and run 後</text>
+  </g>
+  <g>
+    <rect class="d-box-success" x="486" y="65" width="150" height="46" rx="9"></rect>
+    <text class="d-t" x="561" y="85" text-anchor="middle" font-size="12.5" font-weight="600">レビュー & Merge</text>
+    <text class="d-tm" x="561" y="101" text-anchor="middle" font-size="10.5">required reviews</text>
+  </g>
+  <line class="d-conn" x1="246" y1="88" x2="262" y2="154" stroke-width="1.6"></line>
+<polygon class="d-conn-arrow" points="262,154 256.9,147.8 263.7,146.2"></polygon>
+  <line class="d-conn" x1="337" y1="183" x2="337" y2="209" stroke-width="1.6"></line>
+<polygon class="d-conn-arrow" points="337,209 333.5,201.8 340.5,201.8"></polygon>
+  <line class="d-conn" x1="412" y1="232" x2="486" y2="298" stroke-width="1.6"></line>
+<polygon class="d-conn-arrow" points="486,298 478.3,295.8 483,290.6"></polygon>
+  <line class="d-conn" x1="550" y1="281" x2="561" y2="111" stroke-width="1.6"></line>
+<polygon class="d-conn-arrow" points="561,111 564,118.4 557,117.9"></polygon>
+  <g>
+    <line class="d-block" x1="374" y1="142" x2="446" y2="142" stroke-width="1.4" stroke-dasharray="4 3"></line>
+    <circle class="d-block-x" cx="410" cy="142" r="8"></circle>
+    <text class="d-danger" x="410" y="145.5" text-anchor="middle" font-size="11" font-weight="700">×</text>
+    <text class="d-danger" x="460" y="146" text-anchor="start" font-size="11">Ready 不可</text>
+  </g>
+  <g>
+    <line class="d-block" x1="374" y1="160" x2="446" y2="160" stroke-width="1.4" stroke-dasharray="4 3"></line>
+    <circle class="d-block-x" cx="410" cy="160" r="8"></circle>
+    <text class="d-danger" x="410" y="163.5" text-anchor="middle" font-size="11" font-weight="700">×</text>
+    <text class="d-danger" x="460" y="164" text-anchor="start" font-size="11">Approve 不可</text>
+  </g>
+  <g>
+    <line class="d-block" x1="374" y1="178" x2="446" y2="178" stroke-width="1.4" stroke-dasharray="4 3"></line>
+    <circle class="d-block-x" cx="410" cy="178" r="8"></circle>
+    <text class="d-danger" x="410" y="181.5" text-anchor="middle" font-size="11" font-weight="700">×</text>
+    <text class="d-danger" x="460" y="182" text-anchor="start" font-size="11">Merge 不可</text>
+  </g>
+</svg><figcaption>人間・エージェント・PR・CI の 4 レーン。エージェントは委譲を受けて copilot/… ブランチ 1 本に実装し draft PR を作るが、境界線の右側にある Ready 化・Approve・Merge はどれも実行できない（×）。受け入れは人間がレビューして行う。各保証の詳細は直後の一覧で確認できる。</figcaption></figure>
+
 <h3>製品仕様で保証されること</h3>
 <ol class="steps"><li><p class="step-title">書き込み権限のない人はエージェントを起動できない</p><div class="step-body">リポジトリへの write アクセスを持つユーザーだけがトリガーできます。write 権限のない人のコメントはプロンプトに渡されません。さらに、隠し文字と HTML コメントはプロンプト到達前にフィルタされます（プロンプトインジェクション対策）。</div></li><li><p class="step-title">エージェントは 1 本のブランチにしか push できない</p><div class="step-body">通常は新規に <code>copilot/…</code> ブランチが作られ、そこにしか push できません。<code>@copilot</code> で既存 PR に呼んだ場合はその PR のブランチ。<strong>エージェントは直接 git コマンドを実行できず</strong>、単純な push 操作に限定されます。ブランチ保護と required checks は当然に適用されます。</div></li><li><p class="step-title">エージェントは自分の PR を Ready にも Approve にも Merge にもできない</p><div class="step-body">加えて、<strong>タスクを依頼した本人の承認も required approvals にカウントされません</strong>。「投げた人が承認する」抜け道が構造的に塞がれています。</div></li><li><p class="step-title">ワークフローは既定で自動実行されない</p><div class="step-body">write 権限者が <strong>Approve and run workflows</strong> をクリックするまで走りません。自動実行させることは可能ですが、それは明示的なオプトインです。</div></li><li><p class="step-title">成果物は追跡可能</p><div class="step-body">コミットは Copilot が author、依頼者が co-author の <strong>Verified 署名コミット</strong>で、session log にリンクします。Enterprise の監査ログは <code>actor:Copilot</code> で過去 180 日を検索でき、<code>actor_is_agent</code>・<code>agent_session_id</code>・<code>user</code> フィールドを持ちます。</div></li></ol>
 
@@ -565,6 +828,57 @@ brew install modernize</code></pre>
 <figure class="principle">
     <blockquote>Increase delegation only after repository context and verification mature enough to support the next level safely.<br>Context and verification mature first; autonomy and orchestration follow.</blockquote><figcaption>委譲を増やしてよいのは、リポジトリのコンテキストと検証が、次の段を安全に支えられるだけ成熟したあとだけ。まずコンテキストと検証が成熟し、自律性とオーケストレーションはそのあとに続く。</figcaption>
   </figure>
+
+<figure class="diagram"><svg viewBox="0 0 680 372" role="img" aria-labelledby="dg-ladder-t dg-ladder-d" preserveAspectRatio="xMidYMid meet">
+  <title id="dg-ladder-t">採用ラダーの階段図</title>
+  <desc id="dg-ladder-d">Assist、Collaborate、Delegate、Standardize、Orchestrate の 5 段が左下から右上へ上る階段。上の段ほど委譲の範囲が広がるが、上がる前提はリポジトリのコンテキストと検証の成熟である。</desc>
+  <line class="d-axis" x1="26" y1="328" x2="26" y2="30" stroke-width="1.6"></line>
+<polygon class="d-axis-arrow" points="26,30 29.9,38.1 22.1,38.1"></polygon>
+  <text class="d-tm" x="0" y="0" text-anchor="middle" font-size="11.5" transform="translate(16 160) rotate(-90)">コンテキストと検証の成熟 → 委譲の拡大</text>
+  <g>
+    <rect class="d-box-accent" x="42" y="274" width="340" height="46" rx="9"></rect>
+    <circle class="d-chip" cx="64" cy="297" r="12"></circle>
+    <text class="d-te" x="64" y="301" text-anchor="middle" font-size="12.5" font-weight="600">1</text>
+    <text class="d-t" x="86" y="294" text-anchor="start" font-size="13.5" font-weight="600">Assist</text>
+    <text class="d-tm" x="86" y="311" text-anchor="start" font-size="11">人が全ステップを所有</text>
+  </g>
+  <line class="d-conn" x1="342" y1="274" x2="130" y2="266" stroke-width="1.5" stroke-dasharray="4 3"></line>
+<polygon class="d-conn-arrow" points="130,266 136.4,263.2 136.2,269.3"></polygon>
+  <g>
+    <rect class="d-box-accent" x="108" y="220" width="340" height="46" rx="9"></rect>
+    <circle class="d-chip" cx="130" cy="243" r="12"></circle>
+    <text class="d-te" x="130" y="247" text-anchor="middle" font-size="12.5" font-weight="600">2</text>
+    <text class="d-t" x="152" y="240" text-anchor="start" font-size="13.5" font-weight="600">Collaborate</text>
+    <text class="d-tm" x="152" y="257" text-anchor="start" font-size="11">調査・計画・実装を共有</text>
+  </g>
+  <line class="d-conn" x1="408" y1="220" x2="196" y2="212" stroke-width="1.5" stroke-dasharray="4 3"></line>
+<polygon class="d-conn-arrow" points="196,212 202.4,209.2 202.2,215.3"></polygon>
+  <g>
+    <rect class="d-box-accent" x="174" y="166" width="340" height="46" rx="9"></rect>
+    <circle class="d-chip" cx="196" cy="189" r="12"></circle>
+    <text class="d-te" x="196" y="193" text-anchor="middle" font-size="12.5" font-weight="600">3</text>
+    <text class="d-t" x="218" y="186" text-anchor="start" font-size="13.5" font-weight="600">Delegate</text>
+    <text class="d-tm" x="218" y="203" text-anchor="start" font-size="11">契約を実行し PR を返す</text>
+  </g>
+  <line class="d-conn" x1="474" y1="166" x2="262" y2="158" stroke-width="1.5" stroke-dasharray="4 3"></line>
+<polygon class="d-conn-arrow" points="262,158 268.4,155.2 268.2,161.3"></polygon>
+  <g>
+    <rect class="d-box-accent" x="240" y="112" width="340" height="46" rx="9"></rect>
+    <circle class="d-chip" cx="262" cy="135" r="12"></circle>
+    <text class="d-te" x="262" y="139" text-anchor="middle" font-size="12.5" font-weight="600">4</text>
+    <text class="d-t" x="284" y="132" text-anchor="start" font-size="13.5" font-weight="600">Standardize</text>
+    <text class="d-tm" x="284" y="149" text-anchor="start" font-size="11">instructions/skills を再利用</text>
+  </g>
+  <line class="d-conn" x1="540" y1="112" x2="328" y2="104" stroke-width="1.5" stroke-dasharray="4 3"></line>
+<polygon class="d-conn-arrow" points="328,104 334.4,101.2 334.2,107.3"></polygon>
+  <g>
+    <rect class="d-box-accent" x="306" y="58" width="340" height="46" rx="9"></rect>
+    <circle class="d-chip" cx="328" cy="81" r="12"></circle>
+    <text class="d-te" x="328" y="85" text-anchor="middle" font-size="12.5" font-weight="600">5</text>
+    <text class="d-t" x="350" y="78" text-anchor="start" font-size="13.5" font-weight="600">Orchestrate</text>
+    <text class="d-tm" x="350" y="95" text-anchor="start" font-size="11">統治下で並列に走らせる</text>
+  </g>
+</svg><figcaption>Assist → Collaborate → Delegate → Standardize → Orchestrate の 5 段が左下から右上へ上る階段。上の段ほど委譲の範囲が広がるが、上がる前提はエージェントの能力ではなくリポジトリ側のコンテキストと検証の成熟である。各段の Definition of Ready は直後の表で確認できる。</figcaption></figure>
 
 <div class="table-wrap"><table class=""><colgroup><col style="width:12%"><col style="width:26%"><col style="width:62%"></colgroup><thead><tr><th>段</th><th>定義</th><th>この段に上がる前に揃っているべきもの（Definition of Ready）</th></tr></thead><tbody><tr><td><strong>1. Assist</strong></td><td>人がすべてのステップを所有し、境界のある提案に Copilot を使う</td><td><ul class="plain"><li>Copilot ライセンスの割り当て</li><li>組織ポリシー（AI Controls）の初期設定：どのクライアント・どのモデルを許可するか</li><li>必要なら content exclusion の設定（Business / Enterprise）</li></ul></td></tr><tr><td><strong>2. Collaborate</strong></td><td>人とエージェントが調査・計画・実装・検証を共有する</td><td><ul class="plain"><li><strong><code>.github/copilot-instructions.md</code> が存在し、実際に守られている</strong></li><li>ビルドとテストが 1 コマンドで再現できる</li><li>IDE Agent mode / Copilot CLI の利用ポリシーが決まっている</li><li><span class="warn-inline">注意：IDE の Agent mode では content exclusion が効かない</span></li></ul></td></tr><tr><td><strong>3. Delegate</strong></td><td>エージェントが境界のある契約を実行し、判断可能な PR を返す</td><td><ul class="plain"><li><strong>required status checks が定義され、実際にマージを止める</strong></li><li>CODEOWNERS が設定され、重要領域に必須レビュアがいる</li><li><code>copilot-setup-steps.yml</code> で依存解決が再現する</li><li>firewall allowlist が承認済みレジストリに限定されている</li><li><strong>Delegation Contract の 8 フィールドを持つ Issue テンプレート</strong></li><li>characterization テストが、委譲対象領域に存在する</li></ul></td></tr><tr><td><strong>4. Standardize</strong></td><td>チームが instructions・skills・workflows・evidence formats・gates を再利用する</td><td><ul class="plain"><li><code>AGENTS.md</code> ＋ パス別 <code>*.instructions.md</code> の体系ができている</li><li><span class="badge badge-pp">Public Preview</span> <code>.github/agents/*.md</code> による custom agents（役割ごとの委譲先の型）</li><li>PR 本文テンプレート（受け入れ条件マッピング欄・Uncertainty 欄を含む）</li><li>組織レベル instructions（Business / Enterprise）</li><li>environments と deployment protection rules による merge / release / production の分離</li></ul></td></tr><tr><td><strong>5. Orchestrate</strong></td><td>複数の境界ある作業を、統治とレビュー容量の範囲内でポートフォリオ横断に走らせる</td><td><ul class="plain"><li>Agents パネルでの複数タスク運用ルール</li><li><strong>レビュー容量の実測値</strong>（＝並列度の実質的な上限）</li><li>監査ログ <code>actor:Copilot</code> の定期レビュー運用</li><li>AI Credits / Actions 分の budgets 設定と監視</li><li>third-party agents を使う場合、<span class="warn-inline">content exclusion が適用されない</span>ことを踏まえたポリシー</li></ul></td></tr></tbody></table></div>
 

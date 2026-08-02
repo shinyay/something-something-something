@@ -1,5 +1,6 @@
 // PART 5: sections 10 (ladder), 11 (billing), 12 (antipatterns).
-import { badge, c, a, table, callout, principle, docQuote, cards, steps, ul, pre } from "./ui.mjs";
+import { badge, c, a, table, callout, principle, docQuote, cards, steps, ul, pre, diagram } from "./ui.mjs";
+import { ladderDiagram } from "./diagrams.mjs";
 
 const OFFICIAL = badge("official", "公式");
 const GA = badge("ga", "GA");
@@ -17,6 +18,11 @@ export const sectionsD = [
 ${principle(
     "Increase delegation only after repository context and verification mature enough to support the next level safely.<br>Context and verification mature first; autonomy and orchestration follow.",
     "委譲を増やしてよいのは、リポジトリのコンテキストと検証が、次の段を安全に支えられるだけ成熟したあとだけ。まずコンテキストと検証が成熟し、自律性とオーケストレーションはそのあとに続く。",
+)}
+
+${diagram(
+    ladderDiagram(),
+    "Assist → Collaborate → Delegate → Standardize → Orchestrate の 5 段が左下から右上へ上る階段。上の段ほど委譲の範囲が広がるが、上がる前提はエージェントの能力ではなくリポジトリ側のコンテキストと検証の成熟である。各段の Definition of Ready は直後の表で確認できる。",
 )}
 
 ${table(

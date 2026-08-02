@@ -1,5 +1,6 @@
 // PART 2–3: sections 03 (contract), 04 (autonomy), 05 (loop).
-import { badge, c, a, table, callout, principle, docQuote, cards, steps, ul, pre } from "./ui.mjs";
+import { badge, c, a, table, callout, principle, docQuote, cards, steps, ul, pre, diagram } from "./ui.mjs";
+import { contractDiagram, autonomyDiagram, loopDiagram } from "./diagrams.mjs";
 
 const OFFICIAL = badge("official", "公式");
 const FRAMEWORK = badge("framework", "本資料の整理");
@@ -18,6 +19,11 @@ export const sectionsB = [
 ${principle(
     "A Delegation Contract makes success, boundaries, proof, and decision gates inspectable before work begins.<br>The contract grants bounded authority—not a blank check.",
     "委譲契約は、作業を始める前に「成功・境界・証拠・意思決定ゲート」を検査可能にする。契約が与えるのは〈境界のある権限〉であって、白紙委任ではない。",
+)}
+
+${diagram(
+    contractDiagram(),
+    "Delegation Contract を構成する 8 フィールドの一覧。緑（構造的に強制可）の 5 つ —— Scope + Out / Tools + Constraints / Acceptance / Verification + Evidence / Human gates —— は ruleset や required checks などの決定的な仕組みに落とせる。各フィールドの実装先は直後の表で対応づける。",
 )}
 
 ${table(
@@ -132,6 +138,11 @@ ${principle(
     "自律性は複数の次元を持ち、チームはそれをタスクごとに配分する。拡大してよいのは、作業が可逆で・影響が封じ込められ・強く証跡づけられているときだけ。自律性は一度に 1 つの次元ずつ上げる。",
 )}
 
+${diagram(
+    autonomyDiagram(),
+    "自律性を Scope / Capability / Compute / Decision の 4 次元に分解し、それぞれを低→高の帯で表した図。自律性はオン・オフのスイッチではなく次元ごとに配分する「予算」であり、拡大は一度に 1 次元ずつ行う。各次元に対応する実際の設定項目は直後のカードで確認できる。",
+)}
+
 ${cards(
     [
         {
@@ -205,6 +216,11 @@ ${callout(
 ${principle(
     "The loop turns uncertainty into small, reviewable changes and feeds every reviewed result back into organizational knowledge.<br>Bounded delegation sits at the center; human gates connect every stage.",
     "ループは不確実性を、小さくレビュー可能な変更へと変え、レビュー済みの結果をすべて組織知識へ戻す。中心には境界のある委譲があり、各段を人間のゲートがつなぐ。",
+)}
+
+${diagram(
+    loopDiagram(),
+    "Code→Doc / Doc→Plan / Plan→Work / Work→PR / PR→Learning の 5 変換が時計回りに一周し、PR→Learning がふたたび Code→Doc に戻る循環。中心には「境界のある委譲」があり、各変換をつなぐのは人間のゲートである。各変換で使う機能・残す成果物・人間のゲートは直後の表で確認できる。",
 )}
 
 ${table(

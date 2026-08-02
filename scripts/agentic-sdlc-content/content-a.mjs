@@ -1,5 +1,6 @@
 // PART 1–2: sections 00 (overview), 01 (continuum), 02 (context).
-import { badge, c, a, table, callout, principle, docQuote, cards, steps, ul, pre } from "./ui.mjs";
+import { badge, c, a, table, callout, principle, docQuote, cards, steps, ul, pre, diagram } from "./ui.mjs";
+import { continuumDiagram } from "./diagrams.mjs";
 
 const OFFICIAL = badge("official", "公式");
 const FRAMEWORK = badge("framework", "本資料の整理");
@@ -96,6 +97,11 @@ ${ul([
 ${principle(
     "The useful progression is measured by how much work a person can define and hand off—not by launch dates.",
     "有用な段階分けの尺度は「人がどれだけの作業を定義して手渡せるか」であって、機能のリリース時期ではない。",
+)}
+
+${diagram(
+    continuumDiagram(),
+    "5 つのモードを「同期↔非同期・並列」「ローカル↔クラウド」の平面に置いた全体像。左下の Completion から右上の Orchestration へ進むほど、人が定義して手渡せる作業の量が増える。各モードの定義・対応プロダクト・課金は直後の一覧と表で確認できる。",
 )}
 
 <h3>5 つのモードの定義</h3>
