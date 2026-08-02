@@ -7,6 +7,7 @@ import { sectionsE } from "./content-e.mjs";
 export const meta = {
     title: "Agentic SDLC 実践ガイド",
     subtitle: "GitHub Copilot で『境界のある・検証可能な作業』を設計し、委譲し、統治する",
+    tagline: "GitHub Copilot 技術ディープダイブ",
     verified: "2026 年 8 月時点の一次情報に基づき検証",
 };
 
