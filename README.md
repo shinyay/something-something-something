@@ -20,7 +20,7 @@ This repository is an evolving knowledge base where I accumulate files, slides, 
 | [**GitHub Copilot App v1.1.2 — Hands-on Learning**](./copilot-app-v1.1.2-hands-on/) | Five learning paths and exactly 21 practical guides with copyable prompts, safety notes, expected results, troubleshooting, cleanup, platform callouts, local progress, search, and filtering | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.2-hands-on/)) |
 | [**GitHub Copilot App v1.0.12 — Feature Guide (Archive)**](./copilot-app-v1.0.12/) | Preserved historical snapshot of the v1.0.12 feature guide; use the stable hub for the current edition | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.0.12/)) |
 | [**GitHub Copilot App v1.0.12 — Hands-on Guides (Archive)**](./copilot-app-v1.0.12-hands-on/) | Preserved historical collection of the original 15 v1.0.12 guides | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.0.12-hands-on/)) |
-| [**Starting Agentic SDLC with GitHub Copilot — Supplementary Guide**](./agentic-sdlc/) | Deep dive that maps every concept from the talk — the five-stage interaction continuum, Delegation Contract, autonomy budget, Modernization Loop, PR governance, and adoption ladder — onto the GitHub Copilot features, settings, and policies that actually implement them, across 14 sections cross-referenced to all 46 slides, plus the original talk deck as a downloadable PDF | HTML · JP + PDF ([live page](https://shinyay.github.io/something-something-something/agentic-sdlc/)) |
+| [**Agentic SDLC Practical Guide with GitHub Copilot**](./agentic-sdlc/) | Self-standing technical guide that designs, delegates, and governs bounded, verifiable work with GitHub Copilot — the five interaction modes, Context Engineering, Delegation Contract, autonomy budget, Modernization Loop, deterministic verification, the PR as governance boundary, security, adoption ladder, cost model, delegation anti-patterns, and a glossary — across 16 sections in 6 parts, readable without the slides; the original talk deck is included as an appendix PDF | HTML · JP + PDF ([live page](https://shinyay.github.io/something-something-something/agentic-sdlc/)) |
 | [**Microsoft Build 2026 — GitHub Updates**](./build2026-github/) | Summary of GitHub-related announcements from Microsoft Build 2026 (Copilot app, Canvas, code review, SDK / CLI, security, and more) | HTML · JP ([live page](https://shinyay.github.io/something-something-something/build2026-github/)) |
 | [**VS Code Monthly Updates**](./vscode-monthy-update/) | Summary slides covering what's new in each VS Code release | PDF (EN / JP) |
 
@@ -32,9 +32,9 @@ This repository is an evolving knowledge base where I accumulate files, slides, 
 
 ```
 something-something-something/
-├── agentic-sdlc/               # Agentic SDLC talk supplementary guide (web page)
-│   ├── index.html              # 14-section deep dive (HTML · JP, served via GitHub Pages)
-│   ├── slides/                 # Original talk deck (PDF · 46 pages), linked from the hero
+├── agentic-sdlc/               # Agentic SDLC practical guide (self-standing web page)
+│   ├── index.html              # 16-section guide in 6 parts (HTML · JP, served via GitHub Pages)
+│   ├── slides/                 # Original talk deck (PDF · 46 pages), linked as an appendix
 │   └── assets/                 # Primer-themed CSS plus theme and table-of-contents logic
 ├── build2026-github/           # Microsoft Build 2026 GitHub updates (web page)
 │   └── index.html              # Summary page (HTML · JP, served via GitHub Pages)
@@ -51,7 +51,7 @@ something-something-something/
 ├── copilot-app-v1.0.12/        # Historical v1.0.12 feature guide archive
 ├── copilot-app-v1.0.12-hands-on/  # Historical 15-guide archive
 ├── scripts/                    # Reproducible matrix, rendering, and validation scripts
-│   ├── agentic-sdlc-content/   # Section modules for the Agentic SDLC supplementary guide
+│   ├── agentic-sdlc-content/   # Section modules for the Agentic SDLC practical guide
 │   └── render-agentic-sdlc.mjs # Renders agentic-sdlc/ from those modules
 ├── vscode-monthy-update/       # VS Code release update slides
 │   ├── *-easy.pdf              # Beginner-friendly summary (EN)
@@ -71,7 +71,8 @@ Each content directory follows a consistent naming convention:
 
 ## 🗓️ Latest Additions
 
-- **2026-08-01** — [Starting Agentic SDLC with GitHub Copilot — Supplementary Guide](./agentic-sdlc/) (14 sections, JP; original 46-slide deck included as PDF) ([live page](https://shinyay.github.io/something-something-something/agentic-sdlc/))
+- **2026-08-02** — [Agentic SDLC Practical Guide with GitHub Copilot](./agentic-sdlc/) reframed as a self-standing guide (16 sections in 6 parts, JP; original 46-slide deck retained as an appendix PDF) ([live page](https://shinyay.github.io/something-something-something/agentic-sdlc/))
+- **2026-08-01** — [Starting Agentic SDLC with GitHub Copilot](./agentic-sdlc/) (original supplementary edition; JP, 46-slide deck included as PDF) ([live page](https://shinyay.github.io/something-something-something/agentic-sdlc/))
 - **2026-07-29** — [GitHub Copilot App stable version hub](./copilot-app/) ([live page](https://shinyay.github.io/something-something-something/copilot-app/))
 - **2026-07-29** — [GitHub Copilot App v1.1.2 complete feature and release guide](./copilot-app-v1.1.2/) ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.2/))
 - **2026-07-29** — [GitHub Copilot App v1.1.2 hands-on learning](./copilot-app-v1.1.2-hands-on/) (five paths / 21 guides) ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.2-hands-on/))

@@ -1,23 +1,35 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
-import { meta, sections } from "./agentic-sdlc-content/content.mjs";
+import { meta, parts, sections } from "./agentic-sdlc-content/content.mjs";
 
 const OUT_DIR = "agentic-sdlc";
 const ASSET_DIR = `${OUT_DIR}/assets`;
 const REPO_URL = "https://github.com/shinyay/something-something-something";
 const DESCRIPTION =
-  "『Starting Agentic SDLC with GitHub Copilot』の補足資料。スライドの各概念を実際の GitHub Copilot 機能・設定・ポリシーに対応づけた 14 節の日本語ディープダイブ。";
+  "GitHub Copilot の技術的観点から Agentic SDLC を解説する自立した実践ガイド。境界のある検証可能な作業を設計・委譲・統治するための 16 節の日本語ディープダイブ。";
 const SLIDE_PDF = {
   href: "slides/2026-08-03_agentic-sdlc-modernization.pdf",
-  label: "元スライドをダウンロード",
-  note: "PDF · 46 ページ · 0.7 MB",
+  label: "関連する登壇資料（PDF・46 ページ）",
+  note: "本文を読むのにスライドは不要です",
 };
 
-if (sections.length !== 14) {
-  throw new Error(`Supplementary guide must contain 14 sections (got ${sections.length})`);
+if (sections.length !== 16) {
+  throw new Error(`Guide must contain 16 sections (got ${sections.length})`);
 }
 if (new Set(sections.map((section) => section.id)).size !== sections.length) {
   throw new Error("Section ids must be unique");
+}
+{
+  const partIds = parts.flatMap((part) => part.ids);
+  if (partIds.length !== sections.length) {
+    throw new Error(
+      `Part index lists ${partIds.length} sections but there are ${sections.length}`,
+    );
+  }
+  const sectionIds = new Set(sections.map((section) => section.id));
+  for (const id of partIds) {
+    if (!sectionIds.has(id)) throw new Error(`Part references unknown section id: ${id}`);
+  }
 }
 
 const icons = {
@@ -328,9 +340,30 @@ main {
   color: var(--fg-muted);
 }
 
+.toc__parts {
+  list-style: none;
+  margin: 10px 0 0;
+  padding: 0;
+}
+
+.toc__part + .toc__part {
+  margin-top: 14px;
+}
+
+.toc__part-title {
+  margin: 0 0 2px;
+  padding: 0 10px;
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  font-weight: 600;
+  letter-spacing: 0.04em;
+  text-transform: uppercase;
+  color: var(--fg-muted);
+}
+
 .toc__list {
   list-style: none;
-  margin: 12px 0 0;
+  margin: 4px 0 0;
   padding: 0;
 }
 
@@ -901,35 +934,45 @@ ol.steps .step-body ul.plain {
 }
 
 /* ── quotes ───────────────────────────────────────────── */
-.deck-quote,
+.principle {
+  margin: 18px 0 24px;
+}
+
+.principle blockquote {
+  margin: 0;
+  padding: 14px 18px;
+  border: 1px solid var(--border-done-muted);
+  border-left: 4px solid var(--fg-done);
+  border-radius: var(--radius-large);
+  background: var(--bg-done-muted);
+  font-size: 15px;
+  font-weight: 600;
+  line-height: 1.8;
+}
+
+.principle figcaption {
+  margin-top: 6px;
+  padding: 0 4px;
+  color: var(--fg-muted);
+  font-size: 13px;
+  line-height: 1.7;
+}
+
 .doc-quote {
   margin: 16px 0 24px;
 }
 
-.deck-quote blockquote,
 .doc-quote blockquote {
   margin: 0;
   padding: 12px 16px;
-  border: 1px solid var(--border-default);
+  border: 1px solid var(--border-accent-muted);
   border-bottom: 0;
   border-radius: var(--radius-large) var(--radius-large) 0 0;
-  font-size: 14px;
+  background: var(--bg-accent-muted);
+  font-size: 13px;
   line-height: 1.8;
 }
 
-.deck-quote blockquote {
-  border-color: var(--border-done-muted);
-  background: var(--bg-done-muted);
-  font-style: italic;
-}
-
-.doc-quote blockquote {
-  border-color: var(--border-accent-muted);
-  background: var(--bg-accent-muted);
-  font-size: 13px;
-}
-
-.deck-quote figcaption,
 .doc-quote figcaption {
   padding: 6px 16px;
   border: 1px solid var(--border-default);
@@ -1083,7 +1126,7 @@ pre.code::before {
   .badge,
   .callout,
   .card,
-  .deck-quote blockquote,
+  .principle blockquote,
   .doc-quote blockquote,
   pre.code,
   th {
@@ -1258,19 +1301,31 @@ const themeScript = `<script>
 </script>`;
 
 function renderToc() {
-  const items = sections
-    .map(
-      (section) =>
-        `      <li><a href="#${section.id}"><span class="toc__num">${escapeHtml(section.num)}</span><span>${escapeHtml(section.title)}</span></a></li>`,
-    )
+  const bySection = new Map(sections.map((section) => [section.id, section]));
+  const groups = parts
+    .map((part) => {
+      const items = part.ids
+        .map((id) => bySection.get(id))
+        .map(
+          (section) =>
+            `        <li><a href="#${section.id}"><span class="toc__num">${escapeHtml(section.num)}</span><span>${escapeHtml(section.title)}</span></a></li>`,
+        )
+        .join("\n");
+      return `      <li class="toc__part">
+        <p class="toc__part-title">${escapeHtml(part.title)}</p>
+        <ul class="toc__list">
+${items}
+        </ul>
+      </li>`;
+    })
     .join("\n");
 
   return `<details class="toc" data-toc open>
   <summary class="toc__summary">${svg(icons.list)}<span>目次 — 全 ${sections.length} 節</span></summary>
   <nav aria-label="セクション">
     <p class="toc__title">目次</p>
-    <ul class="toc__list">
-${items}
+    <ul class="toc__parts">
+${groups}
     </ul>
   </nav>
   <p class="toc__foot">${escapeHtml(meta.verified)}<br>Public Preview 表記の機能は仕様変更の可能性があります。</p>
@@ -1278,19 +1333,13 @@ ${items}
 }
 
 function renderSection(section) {
-  const slideRefs = section.slides.length
-    ? `        <div class="section__slides"><span class="slides">${section.slides
-        .map((slide) => `<span class="slide-chip">S${slide}</span>`)
-        .join("")}</span></div>\n`
-    : "";
-
   return `<section class="section" id="${section.id}" aria-labelledby="${section.id}-title">
   <div class="section__head">
     <p class="section__num">${escapeHtml(section.num)}</p>
     <div class="section__headings">
       <p class="eyebrow">${escapeHtml(section.eyebrow)}</p>
       <h2 id="${section.id}-title">${escapeHtml(section.title)}</h2>
-${slideRefs}    </div>
+    </div>
   </div>
   <p class="lead">${section.lead}</p>
   ${section.html}
@@ -1328,12 +1377,11 @@ ${renderToc()}
 <main id="main">
   <div class="wrap">
     <header class="hero">
-      <p class="eyebrow">Supplementary material · 日本語</p>
+      <p class="eyebrow">実践ガイド · 日本語</p>
       <h1>${escapeHtml(meta.title)}</h1>
       <p class="hero__subtitle">${escapeHtml(meta.subtitle)}</p>
-      <p class="hero__lede">プレゼンテーションが意図的に扱わなかった層 —— 各概念を実際に何が実装するのか —— を、一次情報に基づいて補完する資料です。全 ${sections.length} 節。各節の見出しにある <span class="slide-chip">S12</span> のようなチップは、対応する元スライド番号を示します。</p>
+      <p class="hero__lede">GitHub Copilot のエージェント機能を前提に、モダナイゼーションを「境界のある・検証可能な作業」として設計し、エージェントに委譲し、人間が統治するための実践ガイドです。概念の定義から、それを GitHub 上で成立させる具体的な機能・ファイル・設定・ガバナンス境界までを、一次情報に基づいて一気通貫で扱います。全 ${sections.length} 節。</p>
       <ul class="hero__meta">
-        <li>対象デッキ: ${escapeHtml(meta.deck)}</li>
         <li>${escapeHtml(meta.verified)}</li>
         <li>全 ${sections.length} 節</li>
       </ul>
@@ -1344,7 +1392,7 @@ ${renderToc()}
     </header>
 ${sections.map(renderSection).join("\n")}
     <footer class="page-footer">
-      <p>本資料は非公式の補足資料です。製品の可用性、ポリシー、料金は各節の一次情報リンクで確認してください。</p>
+      <p>本資料は GitHub Copilot に関する非公式の技術資料です。製品の可用性、ポリシー、料金は各節の一次情報リンク（§14）で確認してください。</p>
       <p><a href="../">Something Something Something</a> · <a href="${REPO_URL}" rel="noopener noreferrer">GitHub リポジトリ</a></p>
     </footer>
   </div>

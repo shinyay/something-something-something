@@ -1,35 +1,52 @@
-// Sections 0–6 of the supplementary guide.
-import { badge, slides, c, a, table, callout, deckQuote, docQuote, cards, steps, ul, pre } from "./ui.mjs";
+// PART 1–2: sections 00 (overview), 01 (continuum), 02 (context).
+import { badge, c, a, table, callout, principle, docQuote, cards, steps, ul, pre } from "./ui.mjs";
 
 const OFFICIAL = badge("official", "公式");
-const FRAMEWORK = badge("framework", "発表者FW");
+const FRAMEWORK = badge("framework", "本資料の整理");
 const GA = badge("ga", "GA");
 const PP = badge("pp", "Public Preview");
 const UNLABELED = badge("na", "状態表記なし");
 
 export const sectionsA = [
-    // ────────────────────────────────────────────────────────────── 0
+    // ────────────────────────────────────────────────────────────── 00
     {
-        id: "intro",
+        id: "overview",
         num: "00",
         eyebrow: "はじめに",
-        title: "本資料の位置づけと読み方",
-        slides: [1, 2, 46],
-        lead: "プレゼンテーション『Starting Agentic SDLC with GitHub Copilot』は、意図的に「操作モデル（どう仕事を設計するか）」に集中し、GitHub Copilot の個別機能の深掘りを避けています。本資料はその欠けている層 —— 各概念を実際に何が実装するのか —— を埋めます。",
+        title: "Agentic SDLC とは何か",
+        lead: "Agentic SDLC の主眼は「より多くのコードを生成すること」ではありません。作業を境界のある検証可能な単位として再設計し、それをエージェントが実行し、人間が統治する —— この運用モデルへの転換です。本資料は、その考え方と、GitHub 上でそれを成立させる具体的な機能・ファイル・設定・ガバナンス境界を一気通貫で解説します。",
         html: `
-${deckQuote(
+${principle(
     "GitHub Copilot's next value is not generating more code; it is enabling teams to redesign modernization as bounded, verifiable work that agents execute and humans govern.",
-    "S2 / S18 / S45 / S46（逐語・4回反復）",
+    "本資料のテーゼ：Copilot の次の価値は「もっとコードを書くこと」ではなく、作業を〈境界があり・検証可能な単位〉として再設計し、エージェントが実行し人間が統治できるようにすることにある。",
 )}
 
-<p>このテーゼは「何を作るか」ではなく「どう仕事を分割し、誰が責任を持つか」の主張です。したがってスライドは <strong>Delegation Contract</strong>（委譲契約）、<strong>Autonomy Budget</strong>（自律性の予算）、<strong>Agentic Modernization Loop</strong> といった<em>設計語彙</em>を提供します。しかしそれらを実際に GitHub 上で成立させるのは、具体的な機能・ファイル・設定です。本資料はその対応関係を 1 対 1 で示します。</p>
+<p>この主張は「何を作るか」ではなく「どう仕事を分割し、誰が責任を持つか」に関するものです。したがって本資料は、まず <strong>Delegation Contract</strong>（委譲契約）、<strong>Autonomy Budget</strong>（自律性の予算）、<strong>Agentic Modernization Loop</strong> といった<em>設計語彙</em>を定義し、そのうえで、それらを実際に GitHub 上で成立させる具体的な機能・ファイル・設定を 1 対 1 で対応づけます。抽象論で終わらせず、「どのファイルに何を書けばエージェントに効くのか」まで降ります。</p>
 
-<h3>3 種類のバッジ</h3>
+<h3>具体的な導入シナリオ</h3>
+<p>月曜の朝、あなたのリポジトリにはレビュー待ちの PR が 3 本あります。いずれも週末のうちにエージェントが開いたものです —— 1 本目は依存ライブラリの CVE 修正、2 本目はレガシーな認証モジュールの特性テスト（characterization test）の追加、3 本目は非推奨 API の一括置換。3 本とも <code>copilot/…</code> ブランチ上にあり、ビルドと CodeQL は既に走り終え、結果が PR に添付されています。あなたがやるのは「コードを書くこと」ではなく、<strong>差分の背後にある判断を検証し、受け入れるかどうかを決めること</strong>です。<br>
+この朝の風景が成立するには、その前に多くの設計が要ります —— エージェントが触ってよい範囲、通らなければマージできない検証、触れた瞬間に必須レビューが発火する境界。本資料はこの「前提の設計」を順に組み立てます。</p>
+
+<h3>人間とエージェントの役割分担</h3>
+${table(
+    ["フェーズ", "人間が担うこと（統治）", "エージェントが担うこと（実行）"],
+    [
+        ["意図・優先度", "何を・なぜやるかを決める", "—"],
+        ["コンテキスト整備", "情報を設計し所有・レビュー・保守する（§02）", "与えられた情報を確実に見つけて利用する"],
+        ["計画・戦略・順序", "戦略・順序・リスク受容を選ぶ", "選択肢・根拠・移行計画を提示する（§05）"],
+        ["実装", "境界と予算を与える（§03・§04）", "境界内で変更を実装し証跡を返す"],
+        ["検証", "受け入れ条件を定義し、最終判断を下す", "決定的チェックを走らせ結果を添える（§07）"],
+        ["マージ・リリース", "承認・マージ・リリースを決める（§08）", `<span class="neg">できない</span>（自分の PR を承認・マージ不可）`],
+    ],
+    { widths: ["18%", "44%", "38%"] },
+)}
+
+<h3>3 種類のバッジ（凡例）</h3>
 ${table(
     ["バッジ", "意味", "扱い方"],
     [
         [OFFICIAL, "GitHub / Microsoft の公式ドキュメントに存在するプロダクト名・機能名", "顧客への提案でそのまま使える"],
-        [FRAMEWORK, "本プレゼンテーション独自の整理枠組み。公式用語ではない", "「当社の整理では」と前置きして使う"],
+        [FRAMEWORK, "本資料が独自に導入した整理枠組み。公式用語ではない", "「本資料の整理では」と明示して使う"],
         [`${GA} ${PP} ${UNLABELED}`, "一次情報での提供状態。「状態表記なし」はドキュメントに GA/Preview の明記がないもの", "Preview は SLA・仕様変更リスクを添えて説明する"],
     ],
     { widths: ["18%", "48%", "34%"] },
@@ -37,43 +54,61 @@ ${table(
 
 ${callout(
     "note",
-    "スライド自身が出典規律を持っている",
-    `<p>元スライドのスピーカーノートは全ページに <code>SOURCE:</code> 行を持ち、「User-provided original specification」か「Derived（…）」かを明示し、さらに <code>Source caveat</code> で公式用語との差分を宣言しています。たとえば S12 のノートは「GitHub uses "Assistive features" and "Agentic features"; it does not publish this exact five-stage model.」と自己申告しています。本資料もこの規律を継承します。</p>`,
+    "本資料は出典規律を持つ",
+    `<p>本資料では、どこまでが GitHub の<strong>公式製品名・仕様</strong>で、どこからが<strong>本資料独自の整理語彙</strong>かを、上のバッジと §13「用語集」で明示的に分けています。技術的な断定はすべて §14「一次情報リンク集」の一次情報に基づいて検証済みです。「これは製品仕様」「これは当方の整理」を切り分けられることは、この種の技術資料の信頼性の根幹です。</p>`,
 )}
+
+<h3>この資料の読み方</h3>
+<p>本資料は 6 つのパートで構成されます。上から順に読めば「設計 → 実行 → 信頼 → 運用」の流れで Agentic SDLC を一巡できますが、各節は独立して参照できます。</p>
+${ul([
+    "<strong>PART 1 出発点</strong>：本節。運用モデルの全体像。",
+    "<strong>PART 2 委譲できる形に設計する</strong>：相互作用モード（§01）、コンテキスト設計（§02）、委譲契約（§03）、自律性の予算（§04）。",
+    "<strong>PART 3 実行する</strong>：モダナイゼーションのループ（§05）と専用ツール（§06）。",
+    "<strong>PART 4 信頼する</strong>：決定的検証（§07）、ガバナンス境界としての PR（§08）、セキュリティ（§09）。",
+    "<strong>PART 5 運用する</strong>：採用ラダー（§10）、コスト構造（§11）、委譲してはいけない作業（§12）。",
+    "<strong>PART 6 リファレンス</strong>：用語集（§13）、一次情報リンク集（§14）、付録の対応表（§15）。",
+])}
 
 <h3>本資料が答える問い</h3>
 ${ul([
-    "スライドの 5 段階モデルは、実際にはどのプロダクトに対応するのか（§01）",
+    "GitHub Copilot の相互作用モードは実際にはどのプロダクトに対応し、いつどれを選ぶのか（§01）",
     "「Context は大きなプロンプトではない」を、具体的にどのファイルで実現するのか（§02）",
-    "Delegation Contract の 8 フィールドは、GitHub のどこに書けばエージェントに効くのか（§03）",
+    "委譲を仕様化する 8 フィールドは、GitHub のどこに書けばエージェントに効くのか（§03）",
     "「自律性は予算である」を、どの設定項目で配分するのか（§04）",
-    "Modernization Loop の各段で、どの機能が何を生むのか（§05）",
-    "「決定的に検証する」の決定的側とは具体的に何か（§06）",
-    "PR がガバナンス境界として機能する構造的な保証は何か（§07）",
-    "セキュリティ条件は、どの設定で成立し、どこに穴があるのか（§08）",
-    "モダナイゼーション専用のツールは今どうなっているのか（§09）",
-    "採用ラダーの各段に上がる前提条件は何か（§10）",
-    "この運用モデルのコストはどう発生するのか（§11・スライドには無い論点）",
+    "モダナイゼーションのループの各段で、どの機能が何を生むのか（§05・§06）",
+    "「決定的に検証する」の決定的側とは具体的に何か（§07）",
+    "PR がガバナンス境界として機能する構造的な保証は何か（§08）",
+    "セキュリティ条件は、どの設定で成立し、どこに穴があるのか（§09）",
+    "採用ラダーの各段に上がる前提条件は何か（§10）、この運用モデルのコストはどう発生するのか（§11）",
+    "そもそも委譲してはいけない作業は何で、よくある失敗はどう避けるのか（§12）",
 ])}
 `,
     },
 
-    // ────────────────────────────────────────────────────────────── 1
+    // ────────────────────────────────────────────────────────────── 01
     {
         id: "continuum",
         num: "01",
-        eyebrow: "相互作用モデル",
-        title: "5 段階の相互作用モデル → 実プロダクト対応",
-        slides: [12, 13, 14, 15, 16, 17],
-        lead: "スライド S12 は Completion → Conversation → Collaboration → Delegation → Orchestration という 5 段階を提示し、明示的に「PRESENTER FRAMEWORK」と自己申告しています。ここでは各段階に対応する実プロダクトを確定させます。",
+        eyebrow: "相互作用モード",
+        title: "GitHub Copilot の 5 つの相互作用モード",
+        lead: "GitHub Copilot との関わり方は、Completion → Conversation → Collaboration → Delegation → Orchestration という 5 つのモードに整理できます。これは本資料の分類軸です。各モードの定義と、対応する実プロダクト・実行場所・同期性・課金、そして「いつどれを選ぶか」を確定させます。",
         html: `
-${deckQuote(
+${principle(
     "The useful progression is measured by how much work a person can define and hand off—not by launch dates.",
-    "S12",
+    "有用な段階分けの尺度は「人がどれだけの作業を定義して手渡せるか」であって、機能のリリース時期ではない。",
 )}
 
+<h3>5 つのモードの定義</h3>
+${ul([
+    "<strong>Completion</strong> —— IDE 内で、書きかけのコードをトークン／行／ブロック単位で補完する。作業は人が主導し、提案は局所的。",
+    "<strong>Conversation</strong> —— 質問し、説明を得る。コードやリポジトリについての理解を対話で深める。",
+    "<strong>Collaboration</strong> —— 共有セッション内で、人が見ている前でエージェントが境界のあるステップを実行する。ファイルは即座に変わり、人がいつでも止められる。",
+    "<strong>Delegation</strong> —— 成果（outcome）を証跡付きで返してもらう。人は実行を見ておらず、成果物が検査可能な形で戻る。",
+    "<strong>Orchestration</strong> —— 統治された複数の作業にわたって、繰り返し可能なフローを回す。並列・非同期。",
+])}
+
 ${table(
-    ["段階", "対応するプロダクト", "実行場所", "同期性", "課金"],
+    ["モード", "対応するプロダクト", "実行場所", "同期性", "課金"],
     [
         [
             `<strong>Completion</strong><br><span class="muted">token / line / block</span>`,
@@ -115,9 +150,15 @@ ${table(
 )}
 
 ${callout(
+    "note",
+    "いつどのモードを選ぶか",
+    `<p>判断の軸は「作業をどこまで<strong>定義して手渡せるか</strong>」です。<strong>Completion / Conversation</strong> は探索・理解の段階、つまり作業がまだ言語化しきれていないときに使います。<strong>Collaboration</strong> は境界は見えているが自分の手元で確かめながら進めたいとき。<strong>Delegation</strong> は「成果・境界・受け入れ条件・検証手段」を書き切れたとき —— ここに来て初めて非同期で手渡せます。<strong>Orchestration</strong> はそれを複数同時に回す段で、実質的な上限は<strong>レビュー容量</strong>です（§10・§11）。可逆性・影響範囲・証跡の質が上がるほど、右のモードへ進めます。</p>`,
+)}
+
+${callout(
     "key",
     "Collaboration と Delegation の実体的な境界は「同期／非同期」ではなく「どこで動くか」",
-    `<p>Agent mode はあなたのマシンで、あなたが見ている前で動きます。ファイルは即座に変わり、あなたはいつでも止められます。<strong>cloud agent は違います。</strong> GitHub Actions 上の使い捨て環境で動き、あなたは見ていません。だから成果物が <code>copilot/…</code> ブランチと draft PR という「検査可能な形」で返る必要がある —— スライド S13 の「Delegation transfers responsibility for executing an outcome, not authority to merge it.」は、この実行モデルの直接の帰結です。</p>`,
+    `<p>Agent mode はあなたのマシンで、あなたが見ている前で動きます。ファイルは即座に変わり、あなたはいつでも止められます。<strong>cloud agent は違います。</strong> GitHub Actions 上の使い捨て環境で動き、あなたは見ていません。だから成果物が <code>copilot/…</code> ブランチと draft PR という「検査可能な形」で返る必要があります。<strong>委譲は「成果を実行する責任」を移すのであって、「マージする権限」を移すのではありません</strong> —— これはこの実行モデルの直接の帰結です（§08）。</p>`,
 )}
 
 <h3>cloud agent へのタスク投入経路（現行ドキュメントで確認できるもの）</h3>
@@ -138,7 +179,7 @@ ${callout(
     同様に <strong>Agent HQ</strong> は GitHub Blog の傘ブランドで、実際の UI 名称は <strong>Agents タブ / agents panel / agents ページ</strong>、<strong>mission control</strong> はコマンドセンターという概念名です。</p>`,
 )}
 
-<h3>スライドが述べる「管理対象の変化」の実装（S16）</h3>
+<h3>「管理対象の変化」の実装 —— 差分からセッションへ</h3>
 ${cards(
     [
         {
@@ -161,25 +202,24 @@ ${cards(
 `,
     },
 
-    // ────────────────────────────────────────────────────────────── 2
+    // ────────────────────────────────────────────────────────────── 02
     {
         id: "context",
         num: "02",
         eyebrow: "Context Engineering",
-        title: "「Context は大きなプロンプトではない」を実装する",
-        slides: [21],
-        lead: "S21 は Context を Persistent / Task / Dynamic の 3 種に分け、「discoverable（エージェントが確実に見つけられる場所にある）」「permission-aware, owned, reviewed, maintained」という品質要件を課します。これは抽象論ではなく、そのままリポジトリのファイル配置設計です。",
+        title: "Context Engineering —— エージェントが確実に見つけられる情報設計",
+        lead: "Context は「大きなプロンプト」ではありません。関連し・最新で・認可された情報を管理されたシステムとして設計することです。本資料は Context を Persistent / Task / Dynamic の 3 種に分け、discoverable・permission-aware・owned・reviewed・maintained という品質要件を課します。これはそのままリポジトリのファイル配置設計になります。",
         html: `
-${deckQuote(
+${principle(
     "Context is a managed system of relevant, current, and authorized information—not a one-time prompt enlarged until it works.<br>More tokens do not repair stale, hidden, or unauthorized context.",
-    "S21",
+    "コンテキストとは、関連し・最新で・認可された情報を管理するシステムであって、動くまで膨らませた一度きりのプロンプトではない。トークンを増やしても、古い・隠れた・非認可のコンテキストは直らない。",
 )}
 
 ${table(
-    ["スライドの分類", "実装", "所在", "備考"],
+    ["分類", "実装", "所在", "備考"],
     [
         [
-            `<strong>Persistent context</strong><br><span class="muted">Architecture, conventions, policies, repository knowledge</span>`,
+            `<strong>Persistent context</strong><br><span class="muted">アーキテクチャ・規約・ポリシー・リポジトリ知識</span>`,
             `${OFFICIAL} custom instructions`,
             `${c(".github/copilot-instructions.md")}<br>${c("AGENTS.md")}<br>${c(".github/instructions/**/*.instructions.md")}`,
             `<code>AGENTS.md</code> は<strong>ネスト可能</strong>で、ディレクトリツリー上<strong>最も近いファイルが優先</strong>される。<code>*.instructions.md</code> は YAML frontmatter の <code>applyTo</code> glob でパス限定。`,
@@ -203,7 +243,7 @@ ${table(
             "リポジトリ事実とユーザー選好を永続化。事実は引用元を保持し現ブランチに対して検証される。<strong>28 日未使用で失効</strong>。cloud agent / code review / CLI が利用。",
         ],
         [
-            `<strong>Task context</strong><br><span class="muted">Outcome, scope, acceptance criteria, supplied references</span>`,
+            `<strong>Task context</strong><br><span class="muted">成果・スコープ・受け入れ条件・与えられた参照</span>`,
             "Issue 本文（＝ Delegation Contract の置き場所）",
             "GitHub Issues",
             "§03 で全 8 フィールドの対応表を示す。",
@@ -215,7 +255,7 @@ ${table(
             `再利用可能なプロンプトテンプレート。YAML で <code>agent</code>・<code>description</code>、入力は <code>` + "${input:code:...}" + `</code> 形式。<strong>IDE Chat のみ</strong>（GitHub.com Chat・CLI では未文書化）。`,
         ],
         [
-            `<strong>Dynamic context</strong><br><span class="muted">Current code, tool results, failures, changed assumptions</span>`,
+            `<strong>Dynamic context</strong><br><span class="muted">現在のコード・ツール結果・失敗・変わった前提</span>`,
             `${OFFICIAL} <strong>MCP（Model Context Protocol）</strong>`,
             "リポジトリの MCP JSON 設定 / IDE / CLI",
             "外部ツールと文脈を供給。cloud agent と code review は同じリポジトリ MCP 設定を共有する。",
@@ -224,7 +264,7 @@ ${table(
             "",
             "ビルド・テスト・スキャン結果",
             "GitHub Actions / CodeQL / Dependabot",
-            "§06 で扱う。エージェントは失敗結果を読んで反復する。",
+            "§07 で扱う。エージェントは失敗結果を読んで反復する。",
         ],
     ],
     { widths: ["18%", "22%", "26%", "34%"] },
@@ -242,7 +282,7 @@ ${steps([
 ${callout(
     "warn",
     "これは「優先度ガイダンス」であって決定的なパーサ規則ではない",
-    `<p>公式ドキュメントは「関連するすべての instruction セットが Copilot に渡される」と明記しています。つまり上位が下位を<strong>上書きする保証はありません</strong>。矛盾する指示を複数の階層に置くと、モデルがどちらを採るかは非決定的です。<br>スライド S21 の「Context must be … owned, reviewed, and maintained」は、この非決定性への実務的な対処として読むべきです —— 矛盾を残さないことがオーナーシップの中身です。</p>`,
+    `<p>公式ドキュメントは「関連するすべての instruction セットが Copilot に渡される」と明記しています。つまり上位が下位を<strong>上書きする保証はありません</strong>。矛盾する指示を複数の階層に置くと、モデルがどちらを採るかは非決定的です。<br>Context が <em>owned, reviewed, maintained</em> であるべきという要件は、この非決定性への実務的な対処として読むべきです —— 矛盾を残さないことがオーナーシップの中身です。</p>`,
 )}
 
 <h3>パス限定 instructions の書式</h3>
@@ -280,8 +320,8 @@ ${ul([
 <p>${PP}${badge("na", "サーフェス依存")} ${c(".github/agents/<NAME>.md")} に、名前付きの専門エージェントプロファイルを定義できます。frontmatter で <code>description</code>（必須）、<code>name</code> / <code>tools</code> / <code>model</code> / <code>target</code> / <code>mcp-servers</code>（任意）を指定。組織・Enterprise レベルでは <code>.github</code> / <code>.github-private</code> リポジトリの <code>/agents/</code> に置きます。</p>
 ${callout(
     "key",
-    "これはスライド S43「Standardize」段の実体",
-    `<p>S43 の採用ラダーは <em>Standardize: Teams reuse instructions, skills, workflows, evidence formats, and gates</em> と定義しています。custom agents は「instructions ＋ tools ＋ model ＋ MCP」を 1 ファイルに束ねて再利用可能にする仕組みで、まさにこの段の具体物です。</p>`,
+    "これは採用ラダーの Standardize 段の実体（§10）",
+    `<p>採用ラダーの Standardize 段は「チームが instructions・skills・workflows・evidence formats・gates を再利用する」段です。custom agents は「instructions ＋ tools ＋ model ＋ MCP」を 1 ファイルに束ねて再利用可能にする仕組みで、まさにこの段の具体物です。</p>`,
 )}
 `,
     },
