@@ -549,8 +549,14 @@ ${callout(
     `<p>停止操作は Actions の実行を終わらせますが、<strong>エージェントがすでに <code>copilot/…</code> ブランチに push したコミットはそのまま残ります</strong>。したがって「止めた ＝ 何も起きなかったことになる」ではありません。残ったブランチ・draft PR をどう扱うか（放棄するのか、人が引き継ぐのか）まで含めて判断する必要があります。§09 の「PR がガバナンス境界」というテーゼは、ここでも効きます —— 未レビューのコミットが残っても、マージ関門を越えない限り既定ブランチには入りません。</p>`,
 )}
 
-<h3>セッション時間の上限とタイムアウト</h3>
-<p>cloud agent のセッションには実行時間の上限があり、長時間応答しないセッションは<strong>おおむね 1 時間でタイムアウト</strong>します。これは「無限に走り続けて AI Credits を溶かす」ことを防ぐ安全弁であると同時に、<strong>1 セッションに詰め込める作業量の物理的な上限</strong>でもあります。§06 の分解規準（独立してレビュー・マージできる単位まで下げる）は、この上限とも整合します。</p>
+<h3>停滞したセッションのタイムアウト</h3>
+<p>${OFFICIAL} 一次情報が定めているのは<strong>停滞したセッションの扱い</strong>です。セッションはしばらく停滞して見えたあとに再び動き出すことがあり、停滞したままの場合に<strong>1 時間でタイムアウト</strong>します。復帰手段も決まっていて、Issue 割り当てなら <strong>unassign → 再 assign</strong>、PR コメントへの応答中に停滞したなら<strong>同じコメントをもう一度投稿</strong>します（上表の「再試行」に対応）。</p>
+${docQuote(
+    "If the session remains stuck, it will time out after an hour. You can retry by unassigning the issue and then reassigning it to Copilot.",
+    "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/troubleshoot-cloud-agent",
+    "docs.github.com — Troubleshooting GitHub Copilot cloud agent",
+)}
+<p>${FRAMEWORK} 一方で、<strong>正常に進行しているセッションの実行時間そのものに上限があるとは公開ドキュメントに書かれていません</strong>。したがって「1 時間」を、1 セッションに詰め込める作業量の設計上限として当てにするのは誤りです。それでも §06 の分解規準（独立してレビュー・マージできる単位まで下げる）は有効で、根拠はタイムアウトではなく<strong>停滞や逸脱が起きたときに失うものの大きさ</strong>にあります —— 1 セッションが長大なほど、巻き戻す範囲が広く、再実行のコストも高くなります。</p>
 
 <h3>iterate と abandon の判断基準</h3>
 ${cards(
