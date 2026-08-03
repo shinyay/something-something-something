@@ -22,10 +22,13 @@
 
   function updateThemeToggles() {
     const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+    const isJa = (root.getAttribute("lang") || "ja").toLowerCase().startsWith("ja");
     document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
       button.setAttribute(
         "aria-label",
-        `${nextTheme === "dark" ? "ダーク" : "ライト"}テーマに切り替える`,
+        isJa
+          ? `${nextTheme === "dark" ? "ダーク" : "ライト"}テーマに切り替える`
+          : `Switch to ${nextTheme} theme`,
       );
       const label = button.querySelector("[data-toggle-label]");
       if (label) label.textContent = nextTheme === "dark" ? "Dark" : "Light";
@@ -106,6 +109,26 @@
     sections.forEach((section) => observer.observe(section));
   }
 
+  function initializeLanguageSwitch() {
+    const links = Array.from(document.querySelectorAll("[data-lang-link]"));
+    if (!links.length) return;
+
+    // Carry the section being read across to the other language. The href is
+    // rewritten on load and on every hash change rather than in a click
+    // handler, so the link is always already correct when it is followed.
+    const bases = new Map(links.map((link) => [link, link.getAttribute("href")]));
+    const syncHash = () => {
+      const hash = window.location.hash;
+      links.forEach((link) => {
+        link.setAttribute("href", `${bases.get(link)}${hash}`);
+      });
+    };
+
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+  }
+
   initializeTheme();
   initializeToc();
+  initializeLanguageSwitch();
 })();

@@ -1,11 +1,11 @@
 <!DOCTYPE html>
-<html lang="ja">
+<html lang="en">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light dark">
-<meta name="description" content="GitHub Copilot の技術的観点から Agentic SDLC を解説する自立した実践ガイド。境界のある検証可能な作業を設計・委譲・統治するための 19 節の日本語ディープダイブ。">
-<title>Agentic SDLC 実践ガイド — GitHub Copilot 技術ディープダイブ</title>
+<meta name="description" content="A standalone practical guide to the Agentic SDLC from a GitHub Copilot engineering perspective. A 19-section deep dive on designing, delegating, and governing bounded, verifiable work.">
+<title>Agentic SDLC Practical Guide — A GitHub Copilot technical deep dive</title>
 <link rel="alternate" hreflang="ja" href="https://shinyay.github.io/something-something-something/agentic-sdlc/">
 <link rel="alternate" hreflang="en" href="https://shinyay.github.io/something-something-something/agentic-sdlc/en/">
 <link rel="alternate" hreflang="x-default" href="https://shinyay.github.io/something-something-something/agentic-sdlc/">
@@ -27,152 +27,152 @@
     document.documentElement.setAttribute("data-theme", theme);
   })();
 </script>
-<link rel="stylesheet" href="./assets/style.css">
-<script src="./assets/app.js" defer></script>
+<link rel="stylesheet" href="../assets/style.css">
+<script src="../assets/app.js" defer></script>
 </head>
 <body>
-<a class="skip-link" href="#main">本文へ移動</a>
+<a class="skip-link" href="#main">Skip to content</a>
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="brand" href="../"><span class="brand__mark"><svg width="24" height="24" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span><span>Something Something Something</span></a>
+    <a class="brand" href="../../"><span class="brand__mark"><svg width="24" height="24" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span><span>Something Something Something</span></a>
     <span class="topic-pill">Agentic SDLC</span>
     <div class="header-nav">
-      <div class="lang-switch" role="group" aria-label="言語"><span class="lang-switch__item is-current" aria-current="true" lang="ja">日本語</span><a class="lang-switch__item" href="./en/" hreflang="en" lang="en" data-lang-link>English</a></div>
+      <div class="lang-switch" role="group" aria-label="Language"><a class="lang-switch__item" href="../" hreflang="ja" lang="ja" data-lang-link>日本語</a><span class="lang-switch__item is-current" aria-current="true" lang="en">English</span></div>
       <button class="icon-button" type="button" data-theme-toggle><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13zM2.343 2.343a.75.75 0 011.061 0l1.06 1.061a.75.75 0 01-1.06 1.06l-1.06-1.06a.75.75 0 010-1.06zm9.193 9.193a.75.75 0 011.06 0l1.061 1.06a.75.75 0 01-1.06 1.061l-1.061-1.06a.75.75 0 010-1.061zM16 8a.75.75 0 01-.75.75h-1.5a.75.75 0 010-1.5h1.5A.75.75 0 0116 8zM3 8a.75.75 0 01-.75.75H.75a.75.75 0 010-1.5h1.5A.75.75 0 013 8zm10.657-5.657a.75.75 0 010 1.061l-1.061 1.06a.75.75 0 11-1.06-1.06l1.06-1.06a.75.75 0 011.06 0zm-9.193 9.193a.75.75 0 010 1.06l-1.06 1.061a.75.75 0 11-1.061-1.06l1.06-1.061a.75.75 0 011.061 0z"></path></svg><span data-toggle-label>Dark</span></button>
     </div>
   </div>
 </header>
 <div class="layout">
 <details class="toc" data-toc open>
-  <summary class="toc__summary"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path></svg><span>目次 — 全 19 節</span></summary>
-  <nav aria-label="セクション">
-    <p class="toc__title">目次</p>
+  <summary class="toc__summary"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2 4a1 1 0 100-2 1 1 0 000 2zm3.75-1.5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zm0 5a.75.75 0 000 1.5h8.5a.75.75 0 000-1.5h-8.5zM3 8a1 1 0 11-2 0 1 1 0 012 0zm-1 6a1 1 0 100-2 1 1 0 000 2z"></path></svg><span>Contents — 19 sections</span></summary>
+  <nav aria-label="Sections">
+    <p class="toc__title">Contents</p>
     <ul class="toc__parts">
       <li class="toc__part">
-        <p class="toc__part-title">PART 1 — 出発点</p>
+        <p class="toc__part-title">PART 1 — Starting point</p>
         <ul class="toc__list">
-        <li><a href="#overview"><span class="toc__num">00</span><span>Agentic SDLC とは何か</span></a></li>
+        <li><a href="#overview"><span class="toc__num">00</span><span>What the Agentic SDLC Is</span></a></li>
         </ul>
       </li>
       <li class="toc__part">
-        <p class="toc__part-title">PART 2 — 委譲できる形に設計する</p>
+        <p class="toc__part-title">PART 2 — Designing work you can delegate</p>
         <ul class="toc__list">
-        <li><a href="#continuum"><span class="toc__num">01</span><span>GitHub Copilot の 5 つの相互作用モード</span></a></li>
-        <li><a href="#context"><span class="toc__num">02</span><span>Context Engineering —— エージェントが確実に見つけられる情報設計</span></a></li>
-        <li><a href="#contract"><span class="toc__num">03</span><span>Delegation Contract —— 委譲を仕様化する 8 フィールド</span></a></li>
-        <li><a href="#autonomy"><span class="toc__num">04</span><span>Autonomy Budget —— 自律性を 4 次元で配分する</span></a></li>
+        <li><a href="#continuum"><span class="toc__num">01</span><span lang="ja">GitHub Copilot の 5 つの相互作用モード</span></a></li>
+        <li><a href="#context"><span class="toc__num">02</span><span lang="ja">Context Engineering —— エージェントが確実に見つけられる情報設計</span></a></li>
+        <li><a href="#contract"><span class="toc__num">03</span><span lang="ja">Delegation Contract —— 委譲を仕様化する 8 フィールド</span></a></li>
+        <li><a href="#autonomy"><span class="toc__num">04</span><span lang="ja">Autonomy Budget —— 自律性を 4 次元で配分する</span></a></li>
         </ul>
       </li>
       <li class="toc__part">
-        <p class="toc__part-title">PART 3 — 実行する</p>
+        <p class="toc__part-title">PART 3 — Executing</p>
         <ul class="toc__list">
-        <li><a href="#loop"><span class="toc__num">05</span><span>Agentic Modernization Loop —— 5 つの変換と機能マップ</span></a></li>
-        <li><a href="#orchestration"><span class="toc__num">06</span><span>Orchestration の実務 —— 並列委譲を成立させる</span></a></li>
-        <li><a href="#modernization"><span class="toc__num">07</span><span>モダナイゼーション専用ツールの現状</span></a></li>
+        <li><a href="#loop"><span class="toc__num">05</span><span lang="ja">Agentic Modernization Loop —— 5 つの変換と機能マップ</span></a></li>
+        <li><a href="#orchestration"><span class="toc__num">06</span><span lang="ja">Orchestration の実務 —— 並列委譲を成立させる</span></a></li>
+        <li><a href="#modernization"><span class="toc__num">07</span><span lang="ja">モダナイゼーション専用ツールの現状</span></a></li>
         </ul>
       </li>
       <li class="toc__part">
-        <p class="toc__part-title">PART 4 — 信頼する</p>
+        <p class="toc__part-title">PART 4 — Trusting the result</p>
         <ul class="toc__list">
-        <li><a href="#verification"><span class="toc__num">08</span><span>確率的に推論し、決定的に検証する</span></a></li>
-        <li><a href="#pr"><span class="toc__num">09</span><span>PR をガバナンス境界にする 5 つの構造的保証</span></a></li>
-        <li><a href="#security"><span class="toc__num">10</span><span>委譲の前提となるセキュリティ設定と、残る穴</span></a></li>
-        <li><a href="#recovery"><span class="toc__num">11</span><span>逸脱と回復 —— エージェントが外れたときに何をするか</span></a></li>
+        <li><a href="#verification"><span class="toc__num">08</span><span lang="ja">確率的に推論し、決定的に検証する</span></a></li>
+        <li><a href="#pr"><span class="toc__num">09</span><span lang="ja">PR をガバナンス境界にする 5 つの構造的保証</span></a></li>
+        <li><a href="#security"><span class="toc__num">10</span><span lang="ja">委譲の前提となるセキュリティ設定と、残る穴</span></a></li>
+        <li><a href="#recovery"><span class="toc__num">11</span><span lang="ja">逸脱と回復 —— エージェントが外れたときに何をするか</span></a></li>
         </ul>
       </li>
       <li class="toc__part">
-        <p class="toc__part-title">PART 5 — 運用する</p>
+        <p class="toc__part-title">PART 5 — Operating</p>
         <ul class="toc__list">
-        <li><a href="#ladder"><span class="toc__num">12</span><span>採用ラダーと各段の Definition of Ready</span></a></li>
-        <li><a href="#billing"><span class="toc__num">13</span><span>この運用モデルのコスト構造</span></a></li>
-        <li><a href="#measurement"><span class="toc__num">14</span><span>計測 —— 採用と効果を統治する</span></a></li>
-        <li><a href="#antipatterns"><span class="toc__num">15</span><span>委譲してはいけない作業と、よくある失敗</span></a></li>
+        <li><a href="#ladder"><span class="toc__num">12</span><span lang="ja">採用ラダーと各段の Definition of Ready</span></a></li>
+        <li><a href="#billing"><span class="toc__num">13</span><span lang="ja">この運用モデルのコスト構造</span></a></li>
+        <li><a href="#measurement"><span class="toc__num">14</span><span lang="ja">計測 —— 採用と効果を統治する</span></a></li>
+        <li><a href="#antipatterns"><span class="toc__num">15</span><span lang="ja">委譲してはいけない作業と、よくある失敗</span></a></li>
         </ul>
       </li>
       <li class="toc__part">
-        <p class="toc__part-title">PART 6 — リファレンス</p>
+        <p class="toc__part-title">PART 6 — Reference</p>
         <ul class="toc__list">
-        <li><a href="#glossary"><span class="toc__num">16</span><span>用語集</span></a></li>
-        <li><a href="#sources"><span class="toc__num">17</span><span>一次情報リンク集</span></a></li>
-        <li><a href="#deck-map"><span class="toc__num">18</span><span>登壇資料との対応表</span></a></li>
+        <li><a href="#glossary"><span class="toc__num">16</span><span lang="ja">用語集</span></a></li>
+        <li><a href="#sources"><span class="toc__num">17</span><span lang="ja">一次情報リンク集</span></a></li>
+        <li><a href="#deck-map"><span class="toc__num">18</span><span lang="ja">登壇資料との対応表</span></a></li>
         </ul>
       </li>
     </ul>
   </nav>
-  <p class="toc__foot">2026 年 8 月時点の一次情報に基づき検証<br>Public Preview 表記の機能は仕様変更の可能性があります。</p>
+  <p class="toc__foot">Verified against primary sources as of August 2026<br>Features marked Public Preview may still change.</p>
 </details>
 <main id="main">
   <div class="wrap">
     <header class="hero">
-      <p class="eyebrow">実践ガイド · 日本語</p>
-      <h1>Agentic SDLC 実践ガイド</h1>
-      <p class="hero__subtitle">GitHub Copilot で『境界のある・検証可能な作業』を設計し、委譲し、統治する</p>
-      <p class="hero__lede">GitHub Copilot のエージェント機能を前提に、モダナイゼーションを「境界のある・検証可能な作業」として設計し、エージェントに委譲し、人間が統治するための実践ガイドです。概念の定義から、それを GitHub 上で成立させる具体的な機能・ファイル・設定・ガバナンス境界までを、一次情報に基づいて一気通貫で扱います。全 19 節。</p>
+      <p class="eyebrow">Practical guide · English</p>
+      <h1>Agentic SDLC Practical Guide</h1>
+      <p class="hero__subtitle">Designing, delegating, and governing bounded, verifiable work with GitHub Copilot</p>
+      <p class="hero__lede">A practical guide to designing modernization as bounded, verifiable work, delegating it to GitHub Copilot&#039;s agentic capabilities, and governing it as a human. It runs from the concepts themselves through to the specific GitHub features, files, settings, and governance boundaries that make them real, with every technical claim checked against a primary source. 19 sections.</p>
       <ul class="hero__meta">
-        <li>2026 年 8 月時点の一次情報に基づき検証</li>
-        <li>全 19 節</li>
+        <li>Verified against primary sources as of August 2026</li>
+        <li>19 sections</li>
       </ul>
       <div class="hero__actions">
-        <a class="hero__download" href="slides/2026-08-03_agentic-sdlc-modernization.pdf" download><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.749.749 0 111.06 1.06l-3.25 3.25a.749.749 0 01-1.06 0L4.22 6.78a.749.749 0 111.06-1.06l1.97 1.969z"></path></svg><span>関連する登壇資料（PDF・46 ページ）</span></a>
-        <span class="hero__download-note">本文を読むのにスライドは不要です</span>
+        <a class="hero__download" href="../slides/2026-08-03_agentic-sdlc-modernization.pdf" download><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M2.75 14A1.75 1.75 0 011 12.25v-2.5a.75.75 0 011.5 0v2.5c0 .138.112.25.25.25h10.5a.25.25 0 00.25-.25v-2.5a.75.75 0 011.5 0v2.5A1.75 1.75 0 0113.25 14zM7.25 7.689V2a.75.75 0 011.5 0v5.689l1.97-1.969a.749.749 0 111.06 1.06l-3.25 3.25a.749.749 0 01-1.06 0L4.22 6.78a.749.749 0 111.06-1.06l1.97 1.969z"></path></svg><span>Companion slide deck (PDF, 46 pages)</span></a>
+        <span class="hero__download-note">You do not need the slides to read this guide</span>
       </div>
     </header>
 <section class="section" id="overview" aria-labelledby="overview-title">
   <div class="section__head">
     <p class="section__num">00</p>
     <div class="section__headings">
-      <p class="eyebrow">はじめに</p>
-      <h2 id="overview-title">Agentic SDLC とは何か</h2>
+      <p class="eyebrow">Introduction</p>
+      <h2 id="overview-title">What the Agentic SDLC Is</h2>
     </div>
   </div>
-  <p class="lead">Agentic SDLC の主眼は「より多くのコードを生成すること」ではありません。作業を境界のある検証可能な単位として再設計し、それをエージェントが実行し、人間が統治する —— この運用モデルへの転換です。本資料は、その考え方と、GitHub 上でそれを成立させる具体的な機能・ファイル・設定・ガバナンス境界を一気通貫で解説します。</p>
+  <p class="lead">The point of the Agentic SDLC is not to generate more code. It is a change of operating model: work is redesigned into bounded, verifiable units that agents execute and humans govern. This guide covers that idea end to end, together with the specific GitHub features, files, settings, and governance boundaries that make it hold up in practice.</p>
 
 <figure class="principle">
-    <blockquote>GitHub Copilot's next value is not generating more code; it is enabling teams to redesign modernization as bounded, verifiable work that agents execute and humans govern.</blockquote><figcaption>本資料のテーゼ：Copilot の次の価値は「もっとコードを書くこと」ではなく、作業を〈境界があり・検証可能な単位〉として再設計し、エージェントが実行し人間が統治できるようにすることにある。</figcaption>
+    <blockquote>GitHub Copilot's next value is not generating more code; it is enabling teams to redesign modernization as bounded, verifiable work that agents execute and humans govern.</blockquote>
   </figure>
 
-<p>この主張は「何を作るか」ではなく「どう仕事を分割し、誰が責任を持つか」に関するものです。したがって本資料は、まず <strong>Delegation Contract</strong>（委譲契約）、<strong>Autonomy Budget</strong>（自律性の予算）、<strong>Agentic Modernization Loop</strong> といった<em>設計語彙</em>を定義し、そのうえで、それらを実際に GitHub 上で成立させる具体的な機能・ファイル・設定を 1 対 1 で対応づけます。抽象論で終わらせず、「どのファイルに何を書けばエージェントに効くのか」まで降ります。</p>
+<p>That claim is not about <em>what</em> you build. It is about how the work is divided and who is accountable for each part. So this guide first defines a <em>design vocabulary</em> — <strong>Delegation Contract</strong>, <strong>Autonomy Budget</strong>, <strong>Agentic Modernization Loop</strong> — and then maps each term one-to-one onto the concrete GitHub features, files, and settings that make it real. It does not stop at abstractions: it goes all the way down to which file you write what in for an agent to actually act on it.</p>
 
-<h3>具体的な導入シナリオ</h3>
-<p>月曜の朝、あなたのリポジトリにはレビュー待ちの PR が 3 本あります。いずれも週末のうちにエージェントが開いたものです —— 1 本目は依存ライブラリの CVE 修正、2 本目はレガシーな認証モジュールの特性テスト（characterization test）の追加、3 本目は非推奨 API の一括置換。3 本とも <code>copilot/…</code> ブランチ上にあり、ビルドと CodeQL は既に走り終え、結果が PR に添付されています。あなたがやるのは「コードを書くこと」ではなく、<strong>差分の背後にある判断を検証し、受け入れるかどうかを決めること</strong>です。<br>
-この朝の風景が成立するには、その前に多くの設計が要ります —— エージェントが触ってよい範囲、通らなければマージできない検証、触れた瞬間に必須レビューが発火する境界。本資料はこの「前提の設計」を順に組み立てます。</p>
+<h3>A concrete opening scenario</h3>
+<p>It is Monday morning and three pull requests are waiting for your review in your repository. An agent opened all three over the weekend — the first fixes a CVE in a dependency, the second adds characterization tests around a legacy authentication module, the third performs a bulk replacement of a deprecated API. All three sit on <code>copilot/…</code> branches, the build and CodeQL have already finished, and their results are attached to the PRs. Your job is not to write code. It is to <strong>check the judgement behind each diff and decide whether to accept it</strong>.<br>
+A great deal of design has to be in place before that Monday morning is possible — the surface an agent is allowed to touch, the verification that must pass before anything can merge, the boundaries that trigger a mandatory review the moment they are crossed. This guide builds up those preconditions in order.</p>
 
-<h3>人間とエージェントの役割分担</h3>
-<div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:44%"><col style="width:38%"></colgroup><thead><tr><th>フェーズ</th><th>人間が担うこと（統治）</th><th>エージェントが担うこと（実行）</th></tr></thead><tbody><tr><td>意図・優先度</td><td>何を・なぜやるかを決める</td><td>—</td></tr><tr><td>コンテキスト整備</td><td>情報を設計し所有・レビュー・保守する（§02）</td><td>与えられた情報を確実に見つけて利用する</td></tr><tr><td>計画・戦略・順序</td><td>戦略・順序・リスク受容を選ぶ</td><td>選択肢・根拠・移行計画を提示する（§05）</td></tr><tr><td>実装</td><td>境界と予算を与える（§03・§04）</td><td>境界内で変更を実装し証跡を返す</td></tr><tr><td>検証</td><td>受け入れ条件を定義し、最終判断を下す</td><td>決定的チェックを走らせ結果を添える（§08）</td></tr><tr><td>マージ・リリース</td><td>承認・マージ・リリースを決める（§09）</td><td><span class="neg">できない</span>（自分の PR を承認・マージ不可）</td></tr></tbody></table></div>
+<h3>Division of labour between humans and agents</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:44%"><col style="width:38%"></colgroup><thead><tr><th>Phase</th><th>Human (governance)</th><th>Agent (execution)</th></tr></thead><tbody><tr><td>Intent and priority</td><td>Decide what to do and why</td><td>—</td></tr><tr><td>Context</td><td>Design, own, review, and maintain the information (§02)</td><td>Reliably find and use the information provided</td></tr><tr><td>Plan, strategy, sequencing</td><td>Choose the strategy, the order, and the risk to accept</td><td>Propose options, rationale, and a migration plan (§05)</td></tr><tr><td>Implementation</td><td>Grant the boundaries and the budget (§03, §04)</td><td>Implement changes inside those boundaries and return evidence</td></tr><tr><td>Verification</td><td>Define the acceptance criteria and make the final call</td><td>Run the deterministic checks and attach the results (§08)</td></tr><tr><td>Merge and release</td><td>Decide on approval, merge, and release (§09)</td><td><span class="neg">Cannot</span> (an agent cannot approve or merge its own PR)</td></tr></tbody></table></div>
 
-<h3>3 種類のバッジ（凡例）</h3>
-<div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:48%"><col style="width:34%"></colgroup><thead><tr><th>バッジ</th><th>意味</th><th>扱い方</th></tr></thead><tbody><tr><td><span class="badge badge-official">公式</span></td><td>GitHub / Microsoft の公式ドキュメントに存在するプロダクト名・機能名</td><td>顧客への提案でそのまま使える</td></tr><tr><td><span class="badge badge-framework">本資料の整理</span></td><td>本資料が独自に導入した整理枠組み。公式用語ではない</td><td>「本資料の整理では」と明示して使う</td></tr><tr><td><span class="badge badge-ga">GA</span> <span class="badge badge-pp">Public Preview</span> <span class="badge badge-na">状態表記なし</span></td><td>一次情報での提供状態。「状態表記なし」はドキュメントに GA/Preview の明記がないもの</td><td>Preview は SLA・仕様変更リスクを添えて説明する</td></tr></tbody></table></div>
+<h3>The three kinds of badge (legend)</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:48%"><col style="width:34%"></colgroup><thead><tr><th>Badge</th><th>Meaning</th><th>How to use it</th></tr></thead><tbody><tr><td><span class="badge badge-official">Official</span></td><td>A product or feature name that appears in official GitHub / Microsoft documentation</td><td>Safe to use verbatim in a customer proposal</td></tr><tr><td><span class="badge badge-framework">This guide's framing</span></td><td>A framing this guide introduces on its own. Not official terminology</td><td>Use it only with an explicit &ldquo;in this guide&rsquo;s framing&rdquo; qualifier</td></tr><tr><td><span class="badge badge-ga">GA</span> <span class="badge badge-pp">Public Preview</span> <span class="badge badge-na">Status not stated</span></td><td>Availability as stated in the primary source. &ldquo;Status not stated&rdquo; means the documentation says neither GA nor Preview</td><td>Always present Preview features together with their SLA and change risk</td></tr></tbody></table></div>
 
 <aside class="callout callout-note">
     <div class="callout-mark" aria-hidden="true">i</div>
-    <div class="callout-body"><p class="callout-title">本資料は出典規律を持つ</p><p>本資料では、どこまでが GitHub の<strong>公式製品名・仕様</strong>で、どこからが<strong>本資料独自の整理語彙</strong>かを、上のバッジと §16「用語集」で明示的に分けています。技術的な断定はすべて §17「一次情報リンク集」の一次情報に基づいて検証済みです。「これは製品仕様」「これは当方の整理」を切り分けられることは、この種の技術資料の信頼性の根幹です。</p></div>
+    <div class="callout-body"><p class="callout-title">This guide keeps its sources straight</p><p>The badges above and the glossary in §16 draw an explicit line between what is an <strong>official GitHub product name or specification</strong> and what is <strong>vocabulary this guide introduces to organise the material</strong>. Every technical assertion has been checked against the primary sources collected in §17 &ldquo;Primary-source links&rdquo;. Being able to separate &ldquo;this is product behaviour&rdquo; from &ldquo;this is our framing&rdquo; is what makes a document of this kind trustworthy.</p></div>
   </aside>
 
-<h3>本資料が扱う SDLC の射程</h3>
-<p>「SDLC」を名乗る以上、どこからどこまでを扱うのかを正直に宣言します。本資料が扱うのは <strong>intent（意図）→ 設計 → 実行 → 検証 → ガバナンス境界（マージ／リリースゲート）</strong> までです。</p>
+<h3>The scope of the SDLC covered here</h3>
+<p>If a document calls itself an SDLC guide, it owes the reader an honest statement of where its coverage begins and ends. This guide covers <strong>intent → design → execution → verification → the governance boundary (the merge / release gate)</strong>.</p>
 <aside class="callout callout-key">
     <div class="callout-mark" aria-hidden="true">★</div>
-    <div class="callout-body"><p class="callout-title">デプロイ実行と本番運用観測は、本資料の射程外（＝ Copilot 製品ではない）</p><p><strong>デプロイの実行そのもの</strong>と、<strong>本番運用の観測（インシデント相関・流出欠陥・デプロイ成功率・復旧時間）</strong>は、GitHub Copilot の製品機能が担う領域ではありません。これらは<strong>既存のデプロイ基盤・可観測性基盤と、人間の運用プロセス</strong>が担います。<br>
-    したがって本資料でマージ／リリースゲート以降に触れるとき（§05 の PR → Learning、§14 の計測の限界）は、<strong>「ここは製品機能ではなく運用設計だ」と明示</strong>します。Agentic SDLC を「デプロイまで全自動」と誇張しないことが、エンタープライズ提案での誠実さの条件です。</p></div>
+    <div class="callout-body"><p class="callout-title">Running the deployment and observing production are out of scope here — they are not Copilot product features</p><p><strong>Carrying out the deployment itself</strong>, and <strong>observing production (incident correlation, escaped defects, deployment success rate, time to restore)</strong>, are not areas GitHub Copilot's product features cover. They are handled by <strong>your existing deployment and observability platforms and by human operational process</strong>.<br>
+    So wherever this guide does reach past the merge / release gate — PR → Learning in §05, the limits of measurement in §14 — it says plainly that <strong>this part is operational design, not a product feature</strong>. Not overstating the Agentic SDLC as &ldquo;fully automated all the way to deployment&rdquo; is a condition of arguing honestly in an enterprise setting.</p></div>
   </aside>
 
-<h3>6 つの枠組みの関係</h3>
-<p>本資料は複数の整理枠組みを使います。混乱を避けるため、その関係を 1 つの表にまとめます。背骨になるのは <strong>Five layers</strong>（Intent / Context / Agent / Execution / Governance）—— 委譲を「意図・文脈・エージェント・実行・統治」の 5 層で捉える整理層です。残りの枠組みは、それぞれ別の軸（様式・契約・予算・循環・成熟度）でこの背骨のどこかを詳細化します。</p>
-<div class="table-wrap"><table class=""><colgroup><col style="width:30%"><col style="width:24%"><col style="width:34%"><col style="width:12%"></colgroup><thead><tr><th>枠組み</th><th>何の軸か</th><th>Five layers 上での位置</th><th>節</th></tr></thead><tbody><tr><td><strong>Five layers</strong>（Intent / Context / Agent / Execution / Governance）</td><td><span class="badge badge-framework">本資料の整理</span> 全体を貫く<strong>整理層（背骨）</strong></td><td>5 層すべて</td><td>§00（本節）</td></tr><tr><td><strong>5 つの相互作用モード</strong></td><td><span class="badge badge-framework">本資料の整理</span> 関わり方の<strong>様式</strong></td><td>Intent → Agent（人がどれだけ手渡すか）</td><td>§01</td></tr><tr><td><strong>Delegation Contract</strong>（8 フィールド）</td><td><span class="badge badge-framework">本資料の整理</span> 委譲の<strong>契約</strong></td><td>Agent 層（境界・証拠・ゲートを仕様化）</td><td>§03</td></tr><tr><td><strong>Autonomy Budget</strong>（4 次元）</td><td><span class="badge badge-framework">本資料の整理</span> 権限の<strong>予算</strong></td><td>Agent 層（Scope / Capability / Compute / Decision）</td><td>§04</td></tr><tr><td><strong>Agentic Modernization Loop</strong>（5 変換）</td><td><span class="badge badge-framework">本資料の整理</span> 作業の<strong>循環</strong></td><td>Execution 層（Assess → … → Learning）</td><td>§05</td></tr><tr><td><strong>採用ラダー</strong>（5 段）</td><td><span class="badge badge-framework">本資料の整理</span> 組織の<strong>成熟度</strong></td><td>Governance 層（全層を運用に載せる深さ）</td><td>§12</td></tr></tbody></table></div>
+<h3>How the six frameworks relate</h3>
+<p>This guide uses several organising frameworks. To keep them from blurring together, one table maps how they relate. The backbone is <strong>Five layers</strong> (Intent / Context / Agent / Execution / Governance) — an organising layer that reads delegation as five stacked concerns. Each of the remaining frameworks takes a different axis (mode, contract, budget, cycle, maturity) and expands one place on that backbone.</p>
+<div class="table-wrap"><table class=""><colgroup><col style="width:30%"><col style="width:24%"><col style="width:34%"><col style="width:12%"></colgroup><thead><tr><th>Framework</th><th>Which axis</th><th>Where it sits on Five layers</th><th>Section</th></tr></thead><tbody><tr><td><strong>Five layers</strong> (Intent / Context / Agent / Execution / Governance)</td><td><span class="badge badge-framework">This guide's framing</span> the <strong>organising layer (backbone)</strong> running through the whole guide</td><td>All five layers</td><td>§00 (this section)</td></tr><tr><td><strong>Five interaction modes</strong></td><td><span class="badge badge-framework">This guide's framing</span> the <strong>style</strong> of engagement</td><td>Intent → Agent (how much the human hands over)</td><td>§01</td></tr><tr><td><strong>Delegation Contract</strong> (8 fields)</td><td><span class="badge badge-framework">This guide's framing</span> the <strong>contract</strong> for delegation</td><td>Agent layer (specifies boundaries, evidence, gates)</td><td>§03</td></tr><tr><td><strong>Autonomy Budget</strong> (4 dimensions)</td><td><span class="badge badge-framework">This guide's framing</span> the <strong>budget</strong> for authority</td><td>Agent layer (Scope / Capability / Compute / Decision)</td><td>§04</td></tr><tr><td><strong>Agentic Modernization Loop</strong> (5 transformations)</td><td><span class="badge badge-framework">This guide's framing</span> the <strong>cycle</strong> of the work</td><td>Execution layer (Assess → … → Learning)</td><td>§05</td></tr><tr><td><strong>Adoption ladder</strong> (5 rungs)</td><td><span class="badge badge-framework">This guide's framing</span> organisational <strong>maturity</strong></td><td>Governance layer (how deeply every layer is operationalised)</td><td>§12</td></tr></tbody></table></div>
 <aside class="callout callout-note">
     <div class="callout-mark" aria-hidden="true">i</div>
-    <div class="callout-body"><p class="callout-title">軸を取り違えない</p><p>相互作用モード（§01）は<strong>関わり方の様式</strong>、採用ラダー（§12）は<strong>組織の成熟度</strong>で、別軸です。「Delegation モードを使っている」ことと「組織が Delegate 段に達している」ことは同じではありません。§01 と §12 を混同しないための対応づけが、この表の目的です。</p></div>
+    <div class="callout-body"><p class="callout-title">Do not confuse the axes</p><p>Interaction modes (§01) are a <strong>style of engagement</strong>; the adoption ladder (§12) is <strong>organisational maturity</strong>. They are different axes. &ldquo;We are using Delegation mode&rdquo; is not the same statement as &ldquo;our organisation has reached the Delegate rung.&rdquo; Keeping §01 and §12 from being conflated is exactly what the table above is for.</p></div>
   </aside>
 
-<h3>この資料の読み方</h3>
-<p>本資料は 6 つのパートで構成されます。上から順に読めば「設計 → 実行 → 信頼 → 運用」の流れで Agentic SDLC を一巡できますが、各節は独立して参照できます。</p>
-<ul class="plain"><li><strong>PART 1 出発点</strong>：本節。運用モデルの全体像。</li><li><strong>PART 2 委譲できる形に設計する</strong>：相互作用モード（§01）、コンテキスト設計（§02）、委譲契約（§03）、自律性の予算（§04）。</li><li><strong>PART 3 実行する</strong>：モダナイゼーションのループ（§05）、並列委譲を成立させる Orchestration の実務（§06）、専用ツール（§07）。</li><li><strong>PART 4 信頼する</strong>：決定的検証（§08）、ガバナンス境界としての PR（§09）、セキュリティ（§10）、逸脱と回復（§11）。</li><li><strong>PART 5 運用する</strong>：採用ラダー（§12）、コスト構造（§13）、計測（§14）、委譲してはいけない作業（§15）。</li><li><strong>PART 6 リファレンス</strong>：用語集（§16）、一次情報リンク集（§17）、付録の対応表（§18）。</li></ul>
+<h3>How to read this guide</h3>
+<p>The guide is organised into six parts. Read it top to bottom and you get one full pass through the Agentic SDLC — design → execute → trust → operate — but every section also stands on its own as a reference.</p>
+<ul class="plain"><li><strong>PART 1 Starting point</strong>: this section. The operating model as a whole.</li><li><strong>PART 2 Designing work you can delegate</strong>: interaction modes (§01), context design (§02), the delegation contract (§03), the autonomy budget (§04).</li><li><strong>PART 3 Executing</strong>: the modernization loop (§05), the orchestration practice that makes parallel delegation work (§06), purpose-built tooling (§07).</li><li><strong>PART 4 Trusting the result</strong>: deterministic verification (§08), the PR as a governance boundary (§09), security (§10), drift and recovery (§11).</li><li><strong>PART 5 Operating</strong>: the adoption ladder (§12), cost structure (§13), measurement (§14), work that must not be delegated (§15).</li><li><strong>PART 6 Reference</strong>: glossary (§16), primary-source links (§17), and the appendix mapping table (§18).</li></ul>
 
-<h3>本資料が答える問い</h3>
-<ul class="plain"><li>GitHub Copilot の相互作用モードは実際にはどのプロダクトに対応し、いつどれを選ぶのか（§01）</li><li>「Context は大きなプロンプトではない」を、具体的にどのファイルで実現するのか（§02）</li><li>委譲を仕様化する 8 フィールドは、GitHub のどこに書けばエージェントに効くのか（§03）</li><li>「自律性は予算である」を、どの設定項目で配分するのか（§04）</li><li>モダナイゼーションのループの各段で、どの機能が何を生むのか（§05・§07）</li><li>「決定的に検証する」の決定的側とは具体的に何か（§08）</li><li>PR がガバナンス境界として機能する構造的な保証は何か（§09）</li><li>セキュリティ条件は、どの設定で成立し、どこに穴があるのか（§10）</li><li>採用ラダーの各段に上がる前提条件は何か（§12）、この運用モデルのコストはどう発生するのか（§13）</li><li>そもそも委譲してはいけない作業は何で、よくある失敗はどう避けるのか（§15）</li></ul>
+<h3>Questions this guide answers</h3>
+<ul class="plain"><li>Which products do GitHub Copilot's interaction modes actually correspond to, and when do you choose which (§01)</li><li>&ldquo;Context is not a big prompt&rdquo; — in which concrete files do you implement that (§02)</li><li>The 8 fields that specify a delegation — where in GitHub do you write them so an agent acts on them (§03)</li><li>&ldquo;Autonomy is a budget&rdquo; — which settings actually allocate it (§04)</li><li>At each step of the modernization loop, which feature produces what (§05, §07)</li><li>In &ldquo;reason probabilistically, verify deterministically&rdquo;, what exactly is the deterministic half (§08)</li><li>What structural guarantees make the PR function as a governance boundary (§09)</li><li>Which settings establish the security preconditions, and where do the gaps remain (§10)</li><li>What are the entry conditions for each rung of the adoption ladder (§12), and how does this operating model incur cost (§13)</li><li>Which work must never be delegated in the first place, and how do you avoid the common failure modes (§15)</li></ul>
 
 </section>
-<section class="section" id="continuum" aria-labelledby="continuum-title">
+<section class="section" id="continuum" lang="ja" aria-labelledby="continuum-title">
   <div class="section__head">
     <p class="section__num">01</p>
     <div class="section__headings">
@@ -180,6 +180,7 @@
       <h2 id="continuum-title">GitHub Copilot の 5 つの相互作用モード</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">GitHub Copilot との関わり方は、Completion → Conversation → Collaboration → Delegation → Orchestration という 5 つのモードに整理できます。これは本資料の分類軸です。各モードの定義と、対応する実プロダクト・実行場所・同期性・課金、そして「いつどれを選ぶか」を確定させます。</p>
 
 <figure class="principle">
@@ -291,7 +292,7 @@
   </aside>
 
 </section>
-<section class="section" id="context" aria-labelledby="context-title">
+<section class="section" id="context" lang="ja" aria-labelledby="context-title">
   <div class="section__head">
     <p class="section__num">02</p>
     <div class="section__headings">
@@ -299,6 +300,7 @@
       <h2 id="context-title">Context Engineering —— エージェントが確実に見つけられる情報設計</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">Context は「大きなプロンプト」ではありません。関連し・最新で・認可された情報を管理されたシステムとして設計することです。本資料は Context を Persistent / Task / Dynamic の 3 種に分け、discoverable・permission-aware・owned・reviewed・maintained という品質要件を課します。これはそのままリポジトリのファイル配置設計になります。</p>
 
 <figure class="principle">
@@ -340,7 +342,7 @@ excludeAgent: "code-review"
   </aside>
 
 </section>
-<section class="section" id="contract" aria-labelledby="contract-title">
+<section class="section" id="contract" lang="ja" aria-labelledby="contract-title">
   <div class="section__head">
     <p class="section__num">03</p>
     <div class="section__headings">
@@ -348,6 +350,7 @@ excludeAgent: "code-review"
       <h2 id="contract-title">Delegation Contract —— 委譲を仕様化する 8 フィールド</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">Delegation Contract は本資料の中心概念です。作業を始める前に、成功・境界・証拠・意思決定ゲートを検査可能にする 8 つのフィールドからなります。本節では、その各フィールドを GitHub のどこに書けば実際にエージェントに効くのかを確定させます —— ここが最も実用価値の高い節です。</p>
 
 <figure class="principle">
@@ -439,7 +442,7 @@ excludeAgent: "code-review"
 <div class="table-wrap"><table class=""><colgroup><col style="width:40%"><col style="width:60%"></colgroup><thead><tr><th>契約フィールドの値（認証モジュール例・抜粋）</th><th>対応する実物</th></tr></thead><tbody><tr><td>「認証のコード・構成・テスト・必要な依存を変更してよい。ロール・UI・スキーマ・ロールアウトは除外する」</td><td><code>.github/instructions/auth.instructions.md</code> に <code>applyTo: "**/auth/**"</code>。ロール・UI・スキーマの各パスは <strong>CODEOWNERS</strong> でセキュリティ／アーキ担当を必須レビュアに。ロールアウトは <strong>environment</strong> の required reviewers に分離。</td></tr><tr><td>「承認済み依存でリポジトリと CI のツールを使う。本番シークレットは一切露出しない」</td><td><strong>firewall allowlist</strong> を承認済み依存レジストリに限定。本番シークレットは <strong>Agents secrets に置かない</strong>（Actions / Codespaces / Dependabot の secrets は cloud agent に自動的に渡らない仕様）。</td></tr><tr><td>「ビルド・認証テスト・互換テスト・スキャンを通す。実行コマンド・結果・受け入れ条件への対応を返す」</td><td>required status checks に build / auth テスト / 互換テスト / CodeQL を登録。「コマンド・結果」は <strong>session log</strong> と Actions のログが担う。「受け入れ条件への対応づけ」は PR 本文に人が書かせる（自動化されない）。</td></tr><tr><td>「ロール・スキーマ・セキュリティ基準・振る舞いの曖昧さがあれば制御を返す」</td><td>該当パスを <strong>CODEOWNERS</strong> と ruleset で保護しておけば、エージェントがそこに触れた瞬間に必須レビューが発火する。<em>「エスカレーションを頼む」のではなく「触ると止まる」形にする</em>。</td></tr><tr><td>「計画・PR・リリース・本番公開を、それぞれ別に承認する」</td><td>plan → Agents UI での research/plan 段階レビュー。PR → required reviews。release / production → <strong>environments</strong> の deployment protection rules（reviewers・wait timer・branch 制限・admin bypass 禁止）。</td></tr></tbody></table></div>
 
 </section>
-<section class="section" id="autonomy" aria-labelledby="autonomy-title">
+<section class="section" id="autonomy" lang="ja" aria-labelledby="autonomy-title">
   <div class="section__head">
     <p class="section__num">04</p>
     <div class="section__headings">
@@ -447,6 +450,7 @@ excludeAgent: "code-review"
       <h2 id="autonomy-title">Autonomy Budget —— 自律性を 4 次元で配分する</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">自律性はオン／オフのスイッチではなく、タスクごとに配分する予算です。本資料は自律性を Scope / Capability / Compute / Decision の 4 次元に分解します。すべての予算は可逆性・影響範囲（blast radius）・証跡の質に応じて調整し、拡大は一度に 1 次元ずつ行います。各次元に対応する実際の設定項目を列挙します。</p>
 
 <figure class="principle">
@@ -552,7 +556,7 @@ excludeAgent: "code-review"
   </aside>
 
 </section>
-<section class="section" id="loop" aria-labelledby="loop-title">
+<section class="section" id="loop" lang="ja" aria-labelledby="loop-title">
   <div class="section__head">
     <p class="section__num">05</p>
     <div class="section__headings">
@@ -560,6 +564,7 @@ excludeAgent: "code-review"
       <h2 id="loop-title">Agentic Modernization Loop —— 5 つの変換と機能マップ</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">モダナイゼーションは、Code→Doc / Doc→Plan / Plan→Work / Work→PR / PR→Learning という 5 つの変換を回すループとして設計できます。ループは不確実性を小さくレビュー可能な変更に変え、レビュー済みの結果を組織知識へ戻します。各変換で「どの機能を使い、何を成果物として残すか」を確定させます。</p>
 
 <figure class="principle">
@@ -631,7 +636,7 @@ excludeAgent: "code-review"
   </aside>
 
 </section>
-<section class="section" id="orchestration" aria-labelledby="orchestration-title">
+<section class="section" id="orchestration" lang="ja" aria-labelledby="orchestration-title">
   <div class="section__head">
     <p class="section__num">06</p>
     <div class="section__headings">
@@ -639,6 +644,7 @@ excludeAgent: "code-review"
       <h2 id="orchestration-title">Orchestration の実務 —— 並列委譲を成立させる</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">§01 と §10 の両方で「オーケストレーション」を頂点に置きながら、本資料はこれまで操作方法を示していませんでした。本節はその欠落を埋めます —— 並列に動かせる 4 つの実体を区別し、何を並列に載せてよいかの分解規準を確定させ、並列度の上限がどこにあるかを明示します。</p>
 
 <figure class="principle">
@@ -687,7 +693,7 @@ excludeAgent: "code-review"
   </aside>
 
 </section>
-<section class="section" id="modernization" aria-labelledby="modernization-title">
+<section class="section" id="modernization" lang="ja" aria-labelledby="modernization-title">
   <div class="section__head">
     <p class="section__num">07</p>
     <div class="section__headings">
@@ -695,6 +701,7 @@ excludeAgent: "code-review"
       <h2 id="modernization-title">モダナイゼーション専用ツールの現状</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">モダナイゼーションには専用のツール群があります。この領域は名称と構成が変わっているため、傘の名称・エージェント・提供状態・前提を現状に即して整理し、汎用の Modernization Loop（§05）との対応を示します。</p>
 
 <div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:82%"></colgroup><thead><tr><th>項目</th><th>現行の内容</th></tr></thead><tbody><tr><td>傘の名称</td><td><span class="badge badge-official">公式</span> <strong>GitHub Copilot modernization</strong></td></tr><tr><td>エージェント / CLI</td><td><span class="badge badge-official">公式</span> <strong>GitHub Copilot modernization agent</strong>（<strong>Modernize CLI</strong> として提供）</td></tr><tr><td>対象</td><td>Java / .NET / <strong>C++</strong> のアップグレード、サポートされる Azure 移行シナリオ。<em>「Java 版と .NET 版が別々」という整理はもはや正確ではない</em>（言語別のドキュメント・体験は残る）</td></tr><tr><td>提供状態</td><td><span class="badge badge-ga">GA</span> IDE でのランタイム／フレームワーク／ツールセット アップグレード（.NET・Java・C++）、IDE の移行シナリオ（.NET・Java）<br><span class="badge badge-pp">Public Preview</span> <strong>Modernize CLI のアセスメントと計画立案</strong></td></tr><tr><td>前提</td><td>GitHub Copilot サブスクリプション ＋ GitHub CLI 2.45 以上。クイックスタートは Free / Pro / Pro+ / Business / Enterprise を列挙</td></tr><tr><td>cloud agent 連携</td><td>CLI から cloud agent に作業を委譲できる。その分は cloud agent の AI Credits ＋ Actions 分を消費する</td></tr></tbody></table></div>
@@ -748,7 +755,7 @@ brew install modernize</code></pre>
 <p>③ が ⑥ より前に来るのが要点で、これが「振る舞いの安全網を作る」の実務的な手順に対応します（§05）。<strong>実装を変える前に、期待される振る舞いを人間がレビューできる形にする</strong>という順序です。</p>
 
 </section>
-<section class="section" id="verification" aria-labelledby="verification-title">
+<section class="section" id="verification" lang="ja" aria-labelledby="verification-title">
   <div class="section__head">
     <p class="section__num">08</p>
     <div class="section__headings">
@@ -756,6 +763,7 @@ brew install modernize</code></pre>
       <h2 id="verification-title">確率的に推論し、決定的に検証する</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">「Reason probabilistically. Verify deterministically.（確率的に推論し、決定的に検証する）」は、この運用モデルで最も実装に近い主張です。確率的側は明らかですが、決定的側は何で構成されるのかを機能単位で確定させます。</p>
 
 <figure class="principle">
@@ -799,7 +807,7 @@ brew install modernize</code></pre>
   </aside>
 
 </section>
-<section class="section" id="pr" aria-labelledby="pr-title">
+<section class="section" id="pr" lang="ja" aria-labelledby="pr-title">
   <div class="section__head">
     <p class="section__num">09</p>
     <div class="section__headings">
@@ -807,6 +815,7 @@ brew install modernize</code></pre>
       <h2 id="pr-title">PR をガバナンス境界にする 5 つの構造的保証</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">「The pull request is the governance boundary（PR がガバナンス境界である）」と「Autonomous execution does not require autonomous acceptance（自律的な実行は、自律的な受け入れを必要としない）」は、比喩ではなく製品仕様で裏づけられます。何が保証され、何が保証されないのかを分けます。</p>
 
 <figure class="principle">
@@ -935,7 +944,7 @@ brew install modernize</code></pre>
 <p>並列委譲（§06）を進めると、<strong>同じ既定ブランチに向かう PR が同時に複数</strong>生まれます。各 PR は自分の作成時点の base では緑でも、順に取り込むと相互作用で壊れうる —— これは人間の PR と同じ問題ですが、エージェントの並列度が上がるほど頻度が増します。<strong>merge queue</strong> はこれを直列化します。</p>
 <ul class="plain"><li>queue は各 PR を<strong>先行 PR を取り込んだ状態で</strong>一時ブランチに構築し、required status checks を評価してから順にマージする —— 「マージ直前の組み合わせ」で緑を確認する</li><li>エージェント PR も人間 PR も同じ queue を通る。エージェント側に特別扱いは無く、<strong>ruleset（§08）で required checks を必須化しておけば queue がそれを強制する</strong></li><li>並列度の上限がレビュー容量なら、<strong>統合の直列点が merge queue</strong>。並列に作り、直列に受け入れる —— この非対称が「自律実行 ≠ 自律受け入れ」の運用面での現れです</li></ul>
 </section>
-<section class="section" id="security" aria-labelledby="security-title">
+<section class="section" id="security" lang="ja" aria-labelledby="security-title">
   <div class="section__head">
     <p class="section__num">10</p>
     <div class="section__headings">
@@ -943,6 +952,7 @@ brew install modernize</code></pre>
       <h2 id="security-title">委譲の前提となるセキュリティ設定と、残る穴</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">セキュリティは、作業を委譲してよいか・どう実行してよいか・受け入れる前に何が真でなければならないかを決めます。本節では Before execution / During execution / Before acceptance の 3 段に実設定を対応させ、さらに現場でよくある誤解を 1 点、技術的に正しい形に正します。</p>
 
 <figure class="principle">
@@ -1013,7 +1023,7 @@ brew install modernize</code></pre>
 <p>この既定は §09 の「write 権限のない人はエージェントを起動できない」と同じ思想の automation 版です。ただし前述のとおり <strong>automation 定義自体は Git 管理外</strong>（§09）なので、誰がどの automation を、どのトリガと tools で持っているかは<strong>コードレビューの外側で棚卸しする</strong>必要があります。</p>
 
 </section>
-<section class="section" id="recovery" aria-labelledby="recovery-title">
+<section class="section" id="recovery" lang="ja" aria-labelledby="recovery-title">
   <div class="section__head">
     <p class="section__num">11</p>
     <div class="section__headings">
@@ -1021,6 +1031,7 @@ brew install modernize</code></pre>
       <h2 id="recovery-title">逸脱と回復 —— エージェントが外れたときに何をするか</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">§15 は「委譲してはいけない作業」と運用上の失敗パターンを扱いますが、実行の最中にエージェントが外れたときの復旧手順は、これまで本資料に欠けていました。本節は、実行中の介入・停止・放棄・再試行の判断と、そのとき状態がどう残るかを確定させます。ここに書く事実はすべて一次情報で確認済みのものだけです。</p>
 
 <figure class="principle">
@@ -1066,7 +1077,7 @@ brew install modernize</code></pre>
   </aside>
 
 </section>
-<section class="section" id="ladder" aria-labelledby="ladder-title">
+<section class="section" id="ladder" lang="ja" aria-labelledby="ladder-title">
   <div class="section__head">
     <p class="section__num">12</p>
     <div class="section__headings">
@@ -1074,6 +1085,7 @@ brew install modernize</code></pre>
       <h2 id="ladder-title">採用ラダーと各段の Definition of Ready</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">Assist → Collaborate → Delegate → Standardize → Orchestrate という採用ラダーは、§01 の相互作用モードとは別軸です —— こちらは組織の成熟度、§01 は対話の様式を表します。ここでは「次の段に上がってよい」と判断するための、具体的なリポジトリ資産のチェックリスト（Definition of Ready）を置きます。</p>
 
 <figure class="principle">
@@ -1143,7 +1155,7 @@ brew install modernize</code></pre>
 <ol class="steps"><li><p class="step-title">① 対象領域の characterization テスト</p><div class="step-body">変更前の振る舞いを固定する。ここが無いと「検証」が空回りする（§08）。</div></li><li><p class="step-title">② required status checks</p><div class="step-body">そのテストとビルドが、通らなければマージできない状態になっていること。</div></li><li><p class="step-title">③ 8 フィールドを埋めた Issue</p><div class="step-body">Outcome+Why / Scope+Out / Context / Tools+Constraints / Acceptance / Verification+Evidence / Escalate / Human gates（§03）。</div></li><li><p class="step-title">④ CODEOWNERS</p><div class="step-body">契約の Escalate 欄に書いた「触ってほしくない領域」を、実際に必須レビューが発火する形にしておく。</div></li></ol>
 
 </section>
-<section class="section" id="billing" aria-labelledby="billing-title">
+<section class="section" id="billing" lang="ja" aria-labelledby="billing-title">
   <div class="section__head">
     <p class="section__num">13</p>
     <div class="section__headings">
@@ -1151,6 +1163,7 @@ brew install modernize</code></pre>
       <h2 id="billing-title">この運用モデルのコスト構造</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">Compute budget（§04）を実務で語るには、課金モデルの理解が不可欠です。2026 年 6 月に課金モデルが変わっている点にも注意が必要です。ここでは AI Credits と Actions 分の 2 系統を整理します。</p>
 
 <aside class="callout callout-warn">
@@ -1198,7 +1211,7 @@ brew install modernize</code></pre>
   </aside>
 
 </section>
-<section class="section" id="measurement" aria-labelledby="measurement-title">
+<section class="section" id="measurement" lang="ja" aria-labelledby="measurement-title">
   <div class="section__head">
     <p class="section__num">14</p>
     <div class="section__headings">
@@ -1206,6 +1219,7 @@ brew install modernize</code></pre>
       <h2 id="measurement-title">計測 —— 採用と効果を統治する</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">エンタープライズの導入評価で最初に問われるのは「これは機能しているか？」です。コスト（§13）を語れて効果を語れないのは、提案として致命的に非対称です。本節は、GitHub が実際に提供する計測面を製品事実として確定させ、その限界を正直に示し、§12 の採用ラダーを在庫チェックから証拠ベースへと引き上げます。</p>
 
 <figure class="principle">
@@ -1245,7 +1259,7 @@ brew install modernize</code></pre>
   </aside>
 
 </section>
-<section class="section" id="antipatterns" aria-labelledby="antipatterns-title">
+<section class="section" id="antipatterns" lang="ja" aria-labelledby="antipatterns-title">
   <div class="section__head">
     <p class="section__num">15</p>
     <div class="section__headings">
@@ -1253,6 +1267,7 @@ brew install modernize</code></pre>
       <h2 id="antipatterns-title">委譲してはいけない作業と、よくある失敗</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">委譲は万能ではありません。そもそも境界を切れない作業、検証手段のない作業は、委譲すると統治が空回りします。ここでは「非同期の委譲（Delegation）に載せてはいけない作業」と、載せられる作業でも起きがちな「運用上の失敗パターン」を、回避策とともに整理します。判断はすべて本資料の他節に裏づけられます。</p>
 
 <figure class="principle">
@@ -1295,7 +1310,7 @@ brew install modernize</code></pre>
   </aside>
 
 </section>
-<section class="section" id="glossary" aria-labelledby="glossary-title">
+<section class="section" id="glossary" lang="ja" aria-labelledby="glossary-title">
   <div class="section__head">
     <p class="section__num">16</p>
     <div class="section__headings">
@@ -1303,6 +1318,7 @@ brew install modernize</code></pre>
       <h2 id="glossary-title">用語集</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">本資料は、GitHub の公式製品名・仕様と、本資料が独自に導入した整理語彙とを混在させています。どちらであるかを取り違えると、製品仕様と主張の区別が曖昧になります。ここでは主要な語彙を、区分（公式か本資料の整理か）とともに一覧にします。この区別を保つことが、本資料の信頼性の根幹です。</p>
 
 <div class="table-wrap"><table class=""><colgroup><col style="width:26%"><col style="width:14%"><col style="width:60%"></colgroup><thead><tr><th>用語</th><th>区分</th><th>対応する公式概念・実装と、出典上の注記</th></tr></thead><tbody><tr><td><strong>5 つの相互作用モード</strong><br>Completion → Conversation → Collaboration → Delegation → Orchestration</td><td><span class="badge badge-framework">本資料の整理</span></td><td>GitHub は「Assistive features」と「Agentic features」の 2 分類を使う。この 5 段階モデルは公式には公表されていない（§01）</td></tr><tr><td><strong>Delegation Contract</strong>（8 フィールド）</td><td><span class="badge badge-framework">本資料の整理</span></td><td>対応する公式機能名なし。Issue 本文 ＋ instructions ＋ ruleset ＋ required checks の組み合わせで実装する（§03）</td></tr><tr><td><strong>Autonomy budget</strong>（Scope / Capability / Compute / Decision）</td><td><span class="badge badge-framework">本資料の整理</span></td><td>firewall・permissions・MCP 設定・required approvals などの個別制御に対応（§04）</td></tr><tr><td><strong>Five layers</strong>（Intent / Context / Agent / Execution / Governance）</td><td><span class="badge badge-framework">本資料の整理</span></td><td>公式のアーキテクチャ表現ではない。本資料が全体を貫く整理層として §00 で導入する背骨（各層に本資料の枠組みが対応）</td></tr><tr><td><strong>Agentic Modernization Loop</strong>（5 変換）</td><td><span class="badge badge-framework">本資料の整理</span></td><td>部分的に Modernize CLI の Assess → Plan → Execute に対応する（§07）</td></tr><tr><td><strong>Evidence Package</strong>（Code + Evidence + Uncertainty）</td><td><span class="badge badge-framework">本資料の整理</span></td><td>session log ＋ checks 結果 ＋ Verified 署名コミットが素材。<strong>受け入れ条件へのマッピングは自動化されない</strong>。§09 で本文導入</td></tr><tr><td><strong>Adoption ladder</strong>（Assist → … → Orchestrate）</td><td><span class="badge badge-framework">本資料の整理</span></td><td>対応する公式概念なし。§01 の相互作用モードとは別軸（組織の成熟度）</td></tr><tr><td><strong>Three forms of legacy</strong>（Code / Knowledge / Process）</td><td><span class="badge badge-framework">本資料の整理</span></td><td>対応する公式概念なし。§07 でレガシーの 3 形態として本文導入</td></tr><tr><td><strong>Copilot cloud agent</strong></td><td><span class="badge badge-official">公式</span></td><td>現行ドキュメントの正式名。旧名 <strong>Copilot coding agent</strong>（2025-09 に GA 告知）</td></tr><tr><td><strong>Agent HQ</strong></td><td><span class="badge badge-na">ブログ用語</span></td><td>GitHub Blog の傘ブランド。実 UI は <strong>Agents タブ / agents panel / agents ページ</strong>。<strong>mission control</strong> はコマンドセンターの概念名</td></tr></tbody></table></div>
@@ -1314,7 +1330,7 @@ brew install modernize</code></pre>
   </aside>
 
 </section>
-<section class="section" id="sources" aria-labelledby="sources-title">
+<section class="section" id="sources" lang="ja" aria-labelledby="sources-title">
   <div class="section__head">
     <p class="section__num">17</p>
     <div class="section__headings">
@@ -1322,6 +1338,7 @@ brew install modernize</code></pre>
       <h2 id="sources-title">一次情報リンク集</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">本資料の主張はすべて以下の一次情報に基づいています。仕様は変わるため、顧客提示前に該当ページの再確認を推奨します。</p>
 
 <h3>GitHub Copilot — エージェント</h3>
@@ -1357,7 +1374,7 @@ brew install modernize</code></pre>
   </aside>
 
 </section>
-<section class="section" id="deck-map" aria-labelledby="deck-map-title">
+<section class="section" id="deck-map" lang="ja" aria-labelledby="deck-map-title">
   <div class="section__head">
     <p class="section__num">18</p>
     <div class="section__headings">
@@ -1365,6 +1382,7 @@ brew install modernize</code></pre>
       <h2 id="deck-map-title">登壇資料との対応表</h2>
     </div>
   </div>
+  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
   <p class="lead">本資料は、プレゼンテーション『Starting Agentic SDLC with GitHub Copilot』（46 枚）と同じ運用モデルを、スライドなしで読める技術資料として再構成したものです。以下は、本資料の各節と対応するスライド番号の対応表です。登壇資料を併せて使う場合の参照用であり、本文を読むのにスライドは不要です。</p>
 
 <div class="table-wrap"><table class=""><colgroup><col style="width:55%"><col style="width:45%"></colgroup><thead><tr><th>本資料の節</th><th>対応するスライド</th></tr></thead><tbody><tr><td><strong>§00</strong> Agentic SDLC とは何か</td><td><span class="slides"><span class="slide-chip">S1</span><span class="slide-chip">S2</span><span class="slide-chip">S8</span><span class="slide-chip">S18</span><span class="slide-chip">S45</span><span class="slide-chip">S46</span></span></td></tr><tr><td><strong>§01</strong> 5 つの相互作用モード</td><td><span class="slides"><span class="slide-chip">S12</span><span class="slide-chip">S13</span><span class="slide-chip">S14</span><span class="slide-chip">S15</span><span class="slide-chip">S16</span><span class="slide-chip">S17</span></span></td></tr><tr><td><strong>§02</strong> Context Engineering</td><td><span class="slides"><span class="slide-chip">S20</span><span class="slide-chip">S21</span></span></td></tr><tr><td><strong>§03</strong> Delegation Contract</td><td><span class="slides"><span class="slide-chip">S22</span><span class="slide-chip">S34</span><span class="slide-chip">S44</span></span></td></tr><tr><td><strong>§04</strong> Autonomy Budget</td><td><span class="slides"><span class="slide-chip">S23</span></span></td></tr><tr><td><strong>§05</strong> Agentic Modernization Loop</td><td><span class="slides"><span class="slide-chip">S25</span><span class="slide-chip">S27</span><span class="slide-chip">S28</span><span class="slide-chip">S29</span><span class="slide-chip">S30</span><span class="slide-chip">S31</span><span class="slide-chip">S32</span><span class="slide-chip">S33</span><span class="slide-chip">S40</span></span></td></tr><tr><td><strong>§06</strong> Orchestration の実務</td><td><span class="muted">本資料で追加（対応スライドなし）</span></td></tr><tr><td><strong>§07</strong> モダナイゼーション専用ツール</td><td><span class="slides"><span class="slide-chip">S28</span><span class="slide-chip">S29</span><span class="slide-chip">S30</span></span></td></tr><tr><td><strong>§08</strong> 確率的推論・決定的検証</td><td><span class="slides"><span class="slide-chip">S24</span><span class="slide-chip">S28</span><span class="slide-chip">S35</span></span></td></tr><tr><td><strong>§09</strong> ガバナンス境界としての PR</td><td><span class="slides"><span class="slide-chip">S32</span><span class="slide-chip">S33</span><span class="slide-chip">S35</span><span class="slide-chip">S36</span><span class="slide-chip">S37</span></span></td></tr><tr><td><strong>§10</strong> セキュリティ</td><td><span class="slides"><span class="slide-chip">S38</span></span></td></tr><tr><td><strong>§11</strong> 逸脱と回復</td><td><span class="muted">本資料で追加（対応スライドなし）</span></td></tr><tr><td><strong>§12</strong> 採用ラダー</td><td><span class="slides"><span class="slide-chip">S42</span><span class="slide-chip">S43</span><span class="slide-chip">S44</span></span></td></tr><tr><td><strong>§13</strong> コスト構造</td><td><span class="muted">登壇資料は課金に触れていない（本資料で補った論点）</span></td></tr><tr><td><strong>§14</strong> 計測</td><td><span class="muted">本資料で追加（対応スライドなし）</span></td></tr><tr><td><strong>§15</strong> 委譲してはいけない作業</td><td><span class="muted">本資料で新規に加えた実践論点</span></td></tr><tr><td><strong>§16</strong> 用語集</td><td><span class="slides"><span class="slide-chip">S8</span><span class="slide-chip">S12</span><span class="slide-chip">S13</span><span class="slide-chip">S20</span><span class="slide-chip">S22</span><span class="slide-chip">S23</span><span class="slide-chip">S25</span><span class="slide-chip">S35</span><span class="slide-chip">S43</span></span></td></tr><tr><td><strong>§17</strong> 一次情報リンク集</td><td><span class="muted">一次情報のみ（スライド非依存）</span></td></tr><tr><td><strong>§18</strong> 本付録</td><td><span class="muted">—</span></td></tr></tbody></table></div>
@@ -1376,7 +1394,7 @@ brew install modernize</code></pre>
 
 </section>
     <footer class="page-footer">
-      <p>本資料は GitHub Copilot に関する非公式の技術資料です。製品の可用性、ポリシー、料金は各節の一次情報リンク（§17）で確認してください。</p>
+      <p>This is an unofficial technical guide to GitHub Copilot. Confirm product availability, policies, and pricing against the primary sources linked in each section (§17).</p>
     </footer>
   </div>
 </main>

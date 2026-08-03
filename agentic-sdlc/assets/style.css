@@ -223,6 +223,42 @@ a:hover {
   border-color: var(--fg-muted);
 }
 
+/* ── language switch ──────────────────────────────────── */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-small);
+  background: var(--bg-muted);
+}
+
+.lang-switch__item {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--fg-muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+a.lang-switch__item:hover {
+  color: var(--fg-default);
+  background: var(--bg-neutral-muted);
+  text-decoration: none;
+}
+
+.lang-switch__item.is-current {
+  border-color: var(--border-default);
+  background: var(--bg-default);
+  color: var(--fg-default);
+  font-weight: 600;
+}
+
 /* ── layout ───────────────────────────────────────────── */
 .layout {
   display: grid;
@@ -483,6 +519,18 @@ main {
   max-width: 82ch;
   font-size: 15px;
   line-height: 1.85;
+}
+
+/* ── untranslated fallback notice ─────────────────────── */
+.untranslated-note {
+  margin: 0 0 16px;
+  padding: 6px 12px;
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-small);
+  background: var(--bg-muted);
+  color: var(--fg-muted);
+  font-size: 12px;
+  line-height: 20px;
 }
 
 /* ── slide chips ──────────────────────────────────────── */
