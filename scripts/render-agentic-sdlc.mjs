@@ -1,33 +1,83 @@
 import { mkdir, writeFile } from "node:fs/promises";
 
 import { meta, parts, sections } from "./agentic-sdlc-content/content.mjs";
+import {
+  meta as metaEn,
+  parts as partsEn,
+  sections as sectionsEn,
+} from "./agentic-sdlc-content/content-en.mjs";
+import { ui } from "./agentic-sdlc-content/i18n.mjs";
 
 const OUT_DIR = "agentic-sdlc";
 const ASSET_DIR = `${OUT_DIR}/assets`;
-const DESCRIPTION =
-  "GitHub Copilot の技術的観点から Agentic SDLC を解説する自立した実践ガイド。境界のある検証可能な作業を設計・委譲・統治するための 19 節の日本語ディープダイブ。";
-const SLIDE_PDF = {
-  href: "slides/2026-08-03_agentic-sdlc-modernization.pdf",
-  label: "関連する登壇資料（PDF・46 ページ）",
-  note: "本文を読むのにスライドは不要です",
+const EN_DIR = `${OUT_DIR}/en`;
+const SITE_ORIGIN = "https://shinyay.github.io/something-something-something";
+const CANONICAL = {
+  ja: `${SITE_ORIGIN}/agentic-sdlc/`,
+  en: `${SITE_ORIGIN}/agentic-sdlc/en/`,
 };
+const SLIDE_PDF_FILE = "slides/2026-08-03_agentic-sdlc-modernization.pdf";
 
-if (sections.length !== 19) {
-  throw new Error(`Guide must contain 19 sections (got ${sections.length})`);
-}
-if (new Set(sections.map((section) => section.id)).size !== sections.length) {
-  throw new Error("Section ids must be unique");
-}
-{
-  const partIds = parts.flatMap((part) => part.ids);
-  if (partIds.length !== sections.length) {
+/**
+ * Everything that differs between the two editions. Assets are rendered once
+ * and shared: the English page reaches them with `../`.
+ */
+const EDITIONS = [
+  {
+    lang: "ja",
+    meta,
+    parts,
+    sections,
+    outFile: `${OUT_DIR}/index.html`,
+    assetPrefix: "./assets",
+    slidePrefix: "",
+    brandHref: "../",
+    altLang: "en",
+    altHref: "./en/",
+  },
+  {
+    lang: "en",
+    meta: metaEn,
+    parts: partsEn,
+    sections: sectionsEn,
+    outFile: `${EN_DIR}/index.html`,
+    assetPrefix: "../assets",
+    slidePrefix: "../",
+    brandHref: "../../",
+    altLang: "ja",
+    altHref: "../",
+  },
+];
+
+for (const edition of EDITIONS) {
+  if (edition.sections.length !== 19) {
     throw new Error(
-      `Part index lists ${partIds.length} sections but there are ${sections.length}`,
+      `Guide must contain 19 sections (${edition.lang} has ${edition.sections.length})`,
     );
   }
-  const sectionIds = new Set(sections.map((section) => section.id));
+  if (new Set(edition.sections.map((section) => section.id)).size !== edition.sections.length) {
+    throw new Error(`Section ids must be unique (${edition.lang})`);
+  }
+  const partIds = edition.parts.flatMap((part) => part.ids);
+  if (partIds.length !== edition.sections.length) {
+    throw new Error(
+      `Part index lists ${partIds.length} sections but there are ${edition.sections.length} (${edition.lang})`,
+    );
+  }
+  const sectionIds = new Set(edition.sections.map((section) => section.id));
   for (const id of partIds) {
-    if (!sectionIds.has(id)) throw new Error(`Part references unknown section id: ${id}`);
+    if (!sectionIds.has(id)) {
+      throw new Error(`Part references unknown section id: ${id} (${edition.lang})`);
+    }
+  }
+}
+{
+  // The two editions must stay aligned section-for-section so anchors, the TOC,
+  // and the language switch always land on the same content.
+  const jaIds = sections.map((section) => section.id).join(",");
+  const enIds = sectionsEn.map((section) => section.id).join(",");
+  if (jaIds !== enIds) {
+    throw new Error("Japanese and English editions must have identical section ids in order");
   }
 }
 
@@ -279,6 +329,42 @@ a:hover {
 .icon-button:hover {
   background: var(--bg-neutral-muted);
   border-color: var(--fg-muted);
+}
+
+/* ── language switch ──────────────────────────────────── */
+.lang-switch {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px;
+  border: 1px solid var(--border-default);
+  border-radius: var(--radius-small);
+  background: var(--bg-muted);
+}
+
+.lang-switch__item {
+  display: inline-flex;
+  align-items: center;
+  padding: 1px 10px;
+  border: 1px solid transparent;
+  border-radius: 4px;
+  color: var(--fg-muted);
+  font-size: 12px;
+  font-weight: 500;
+  line-height: 20px;
+  white-space: nowrap;
+}
+
+a.lang-switch__item:hover {
+  color: var(--fg-default);
+  background: var(--bg-neutral-muted);
+  text-decoration: none;
+}
+
+.lang-switch__item.is-current {
+  border-color: var(--border-default);
+  background: var(--bg-default);
+  color: var(--fg-default);
+  font-weight: 600;
 }
 
 /* ── layout ───────────────────────────────────────────── */
@@ -541,6 +627,18 @@ main {
   max-width: 82ch;
   font-size: 15px;
   line-height: 1.85;
+}
+
+/* ── untranslated fallback notice ─────────────────────── */
+.untranslated-note {
+  margin: 0 0 16px;
+  padding: 6px 12px;
+  border: 1px dashed var(--border-default);
+  border-radius: var(--radius-small);
+  background: var(--bg-muted);
+  color: var(--fg-muted);
+  font-size: 12px;
+  line-height: 20px;
 }
 
 /* ── slide chips ──────────────────────────────────────── */
@@ -1399,10 +1497,13 @@ const APP_JS = `/* Generated by scripts/render-agentic-sdlc.mjs — edit that sc
 
   function updateThemeToggles() {
     const nextTheme = root.dataset.theme === "dark" ? "light" : "dark";
+    const isJa = (root.getAttribute("lang") || "ja").toLowerCase().startsWith("ja");
     document.querySelectorAll("[data-theme-toggle]").forEach((button) => {
       button.setAttribute(
         "aria-label",
-        \`\${nextTheme === "dark" ? "ダーク" : "ライト"}テーマに切り替える\`,
+        isJa
+          ? \`\${nextTheme === "dark" ? "ダーク" : "ライト"}テーマに切り替える\`
+          : \`Switch to \${nextTheme} theme\`,
       );
       const label = button.querySelector("[data-toggle-label]");
       if (label) label.textContent = nextTheme === "dark" ? "Dark" : "Light";
@@ -1483,8 +1584,28 @@ const APP_JS = `/* Generated by scripts/render-agentic-sdlc.mjs — edit that sc
     sections.forEach((section) => observer.observe(section));
   }
 
+  function initializeLanguageSwitch() {
+    const links = Array.from(document.querySelectorAll("[data-lang-link]"));
+    if (!links.length) return;
+
+    // Carry the section being read across to the other language. The href is
+    // rewritten on load and on every hash change rather than in a click
+    // handler, so the link is always already correct when it is followed.
+    const bases = new Map(links.map((link) => [link, link.getAttribute("href")]));
+    const syncHash = () => {
+      const hash = window.location.hash;
+      links.forEach((link) => {
+        link.setAttribute("href", \`\${bases.get(link)}\${hash}\`);
+      });
+    };
+
+    syncHash();
+    window.addEventListener("hashchange", syncHash);
+  }
+
   initializeTheme();
   initializeToc();
+  initializeLanguageSwitch();
 })();
 `;
 
@@ -1507,16 +1628,22 @@ const themeScript = `<script>
   })();
 </script>`;
 
-function renderToc() {
-  const bySection = new Map(sections.map((section) => [section.id, section]));
-  const groups = parts
+function renderToc(edition) {
+  const { lang, meta: pageMeta, parts: pageParts, sections: pageSections } = edition;
+  const t = ui[lang];
+  const fallbackLang = lang === "ja" ? null : "ja";
+  const bySection = new Map(pageSections.map((section) => [section.id, section]));
+  const groups = pageParts
     .map((part) => {
       const items = part.ids
         .map((id) => bySection.get(id))
-        .map(
-          (section) =>
-            `        <li><a href="#${section.id}"><span class="toc__num">${escapeHtml(section.num)}</span><span>${escapeHtml(section.title)}</span></a></li>`,
-        )
+        .map((section) => {
+          // An untranslated entry still shows its Japanese title, so mark it up
+          // as Japanese for screen readers on the English page.
+          const titleLang =
+            section.untranslated && fallbackLang ? ` lang="${fallbackLang}"` : "";
+          return `        <li><a href="#${section.id}"><span class="toc__num">${escapeHtml(section.num)}</span><span${titleLang}>${escapeHtml(section.title)}</span></a></li>`;
+        })
         .join("\n");
       return `      <li class="toc__part">
         <p class="toc__part-title">${escapeHtml(part.title)}</p>
@@ -1528,76 +1655,102 @@ ${items}
     .join("\n");
 
   return `<details class="toc" data-toc open>
-  <summary class="toc__summary">${svg(icons.list)}<span>目次 — 全 ${sections.length} 節</span></summary>
-  <nav aria-label="セクション">
-    <p class="toc__title">目次</p>
+  <summary class="toc__summary">${svg(icons.list)}<span>${escapeHtml(t.tocSummary(pageSections.length))}</span></summary>
+  <nav aria-label="${escapeHtml(t.tocNavLabel)}">
+    <p class="toc__title">${escapeHtml(t.tocTitle)}</p>
     <ul class="toc__parts">
 ${groups}
     </ul>
   </nav>
-  <p class="toc__foot">${escapeHtml(meta.verified)}<br>Public Preview 表記の機能は仕様変更の可能性があります。</p>
+  <p class="toc__foot">${escapeHtml(pageMeta.verified)}<br>${escapeHtml(t.tocFoot)}</p>
 </details>`;
 }
 
-function renderSection(section) {
-  return `<section class="section" id="${section.id}" aria-labelledby="${section.id}-title">
+function renderLangSwitch(edition) {
+  const t = ui[edition.lang];
+  const alt = ui[edition.altLang];
+  const current = `<span class="lang-switch__item is-current" aria-current="true" lang="${edition.lang}">${escapeHtml(t.langName)}</span>`;
+  const other = `<a class="lang-switch__item" href="${escapeHtml(edition.altHref)}" hreflang="${edition.altLang}" lang="${edition.altLang}" data-lang-link>${escapeHtml(alt.langName)}</a>`;
+  const order = edition.lang === "ja" ? [current, other] : [other, current];
+  return `<div class="lang-switch" role="group" aria-label="${escapeHtml(t.langSwitchLabel)}">${order.join("")}</div>`;
+}
+
+function renderSection(section, edition) {
+  // Sections that are not translated yet keep their Japanese body. Tag the
+  // whole section as Japanese and say so, once, at the top.
+  const fallback = section.untranslated && edition.lang !== "ja";
+  const sectionLang = fallback ? ` lang="ja"` : "";
+  const notice = fallback
+    ? `\n  <p class="untranslated-note" lang="${edition.lang}">${escapeHtml(ui[edition.lang].untranslatedNotice)}</p>`
+    : "";
+  return `<section class="section" id="${section.id}"${sectionLang} aria-labelledby="${section.id}-title">
   <div class="section__head">
     <p class="section__num">${escapeHtml(section.num)}</p>
     <div class="section__headings">
       <p class="eyebrow">${escapeHtml(section.eyebrow)}</p>
       <h2 id="${section.id}-title">${escapeHtml(section.title)}</h2>
     </div>
-  </div>
+  </div>${notice}
   <p class="lead">${section.lead}</p>
   ${section.html}
 </section>`;
 }
 
-function renderPage() {
+function renderPage(edition) {
+  const { lang, meta: pageMeta, sections: pageSections } = edition;
+  const t = ui[lang];
+  const alternates = [
+    `<link rel="alternate" hreflang="ja" href="${CANONICAL.ja}">`,
+    `<link rel="alternate" hreflang="en" href="${CANONICAL.en}">`,
+    `<link rel="alternate" hreflang="x-default" href="${CANONICAL.ja}">`,
+  ].join("\n");
+
   return `<!DOCTYPE html>
-<html lang="ja">
+<html lang="${lang}">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <meta name="color-scheme" content="light dark">
-<meta name="description" content="${escapeHtml(DESCRIPTION)}">
-<title>${escapeHtml(meta.title)} — ${escapeHtml(meta.tagline)}</title>
+<meta name="description" content="${escapeHtml(t.description)}">
+<title>${escapeHtml(pageMeta.title)} — ${escapeHtml(pageMeta.tagline)}</title>
+${alternates}
 ${themeScript}
-<link rel="stylesheet" href="./assets/style.css">
-<script src="./assets/app.js" defer></script>
+<link rel="stylesheet" href="${edition.assetPrefix}/style.css">
+<script src="${edition.assetPrefix}/app.js" defer></script>
 </head>
 <body>
-<a class="skip-link" href="#main">本文へ移動</a>
+<a class="skip-link" href="#main">${escapeHtml(t.skipLink)}</a>
 <header class="site-header">
   <div class="site-header__inner">
-    <a class="brand" href="../"><span class="brand__mark">${svg(icons.mark, 24)}</span><span>Something Something Something</span></a>
+    <a class="brand" href="${escapeHtml(edition.brandHref)}"><span class="brand__mark">${svg(icons.mark, 24)}</span><span>Something Something Something</span></a>
     <span class="topic-pill">Agentic SDLC</span>
     <div class="header-nav">
+      ${renderLangSwitch(edition)}
       <button class="icon-button" type="button" data-theme-toggle>${svg(icons.sun)}<span data-toggle-label>Dark</span></button>
     </div>
   </div>
 </header>
 <div class="layout">
-${renderToc()}
+${renderToc(edition)}
 <main id="main">
   <div class="wrap">
     <header class="hero">
-      <p class="eyebrow">実践ガイド · 日本語</p>
-      <h1>${escapeHtml(meta.title)}</h1>
-      <p class="hero__subtitle">${escapeHtml(meta.subtitle)}</p>
-      <p class="hero__lede">GitHub Copilot のエージェント機能を前提に、モダナイゼーションを「境界のある・検証可能な作業」として設計し、エージェントに委譲し、人間が統治するための実践ガイドです。概念の定義から、それを GitHub 上で成立させる具体的な機能・ファイル・設定・ガバナンス境界までを、一次情報に基づいて一気通貫で扱います。全 ${sections.length} 節。</p>
+      <p class="eyebrow">${escapeHtml(t.heroEyebrow)}</p>
+      <h1>${escapeHtml(pageMeta.title)}</h1>
+      <p class="hero__subtitle">${escapeHtml(pageMeta.subtitle)}</p>
+      <p class="hero__lede">${escapeHtml(t.heroLede(pageSections.length))}</p>
       <ul class="hero__meta">
-        <li>${escapeHtml(meta.verified)}</li>
-        <li>全 ${sections.length} 節</li>
+        <li>${escapeHtml(pageMeta.verified)}</li>
+        <li>${escapeHtml(t.heroMetaSections(pageSections.length))}</li>
       </ul>
       <div class="hero__actions">
-        <a class="hero__download" href="${escapeHtml(SLIDE_PDF.href)}" download>${svg(icons.download)}<span>${escapeHtml(SLIDE_PDF.label)}</span></a>
-        <span class="hero__download-note">${escapeHtml(SLIDE_PDF.note)}</span>
+        <a class="hero__download" href="${escapeHtml(edition.slidePrefix + SLIDE_PDF_FILE)}" download>${svg(icons.download)}<span>${escapeHtml(t.slideLabel)}</span></a>
+        <span class="hero__download-note">${escapeHtml(t.slideNote)}</span>
       </div>
     </header>
-${sections.map(renderSection).join("\n")}
+${pageSections.map((section) => renderSection(section, edition)).join("\n")}
     <footer class="page-footer">
-      <p>本資料は GitHub Copilot に関する非公式の技術資料です。製品の可用性、ポリシー、料金は各節の一次情報リンク（§17）で確認してください。</p>
+      <p>${escapeHtml(t.footerDisclaimer)}</p>
     </footer>
   </div>
 </main>
@@ -1607,9 +1760,15 @@ ${sections.map(renderSection).join("\n")}
 }
 
 await mkdir(ASSET_DIR, { recursive: true });
+await mkdir(EN_DIR, { recursive: true });
 await writeFile(`${ASSET_DIR}/style.css`, cleanHtml(STYLE), "utf8");
 await writeFile(`${ASSET_DIR}/app.js`, cleanHtml(APP_JS), "utf8");
-await writeFile(`${OUT_DIR}/index.html`, cleanHtml(renderPage()), "utf8");
+for (const edition of EDITIONS) {
+  await writeFile(edition.outFile, cleanHtml(renderPage(edition)), "utf8");
+  const untranslated = edition.sections.filter((section) => section.untranslated).length;
+  console.log(
+    `Rendered ${edition.outFile} [${edition.lang}] with ${edition.sections.length} sections (${untranslated} untranslated)`,
+  );
+}
 
-console.log(`Rendered ${OUT_DIR}/index.html with ${sections.length} sections`);
-console.log(`Rendered ${ASSET_DIR}/style.css and ${ASSET_DIR}/app.js`);
+console.log(`Rendered ${ASSET_DIR}/style.css and ${ASSET_DIR}/app.js (shared by both editions)`);
