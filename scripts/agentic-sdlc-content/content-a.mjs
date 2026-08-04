@@ -217,7 +217,7 @@ ${table(
 ${callout(
     "note",
     "いつどのモードを選ぶか",
-    `<p>判断の軸は「作業をどこまで<strong>定義して手渡せるか</strong>」です。<strong>Completion / Conversation</strong> は探索・理解の段階、つまり作業がまだ言語化しきれていないときに使います。<strong>Collaboration</strong> は境界は見えているが自分の手元で確かめながら進めたいとき。<strong>Delegation</strong> は「成果・境界・受け入れ条件・検証手段」を書き切れたとき —— ここに来て初めて非同期で手渡せます。<strong>Orchestration</strong> はそれを複数同時に回す段で、実質的な上限は<strong>レビュー容量</strong>です（§12・§13）。可逆性・影響範囲・証跡の質が上がるほど、右のモードへ進めます。</p>`,
+    `<p>判断の軸は「作業をどこまで<strong>定義して手渡せるか</strong>」です。<strong>Completion / Conversation</strong> は探索・理解の段階、つまり作業がまだ言語化しきれていないときに使います。<strong>Collaboration</strong> は境界は見えているが自分の手元で確かめながら進めたいとき。<strong>Delegation</strong> は「成果・境界・受け入れ条件・検証手段」を書き切れたとき —— ここに来て初めて非同期で手渡せます。<strong>Orchestration</strong> はそれを複数同時に回す段で、実質的な上限は<strong>レビュー容量</strong>です（§12・§13）。可逆性が高く、影響範囲が小さく、証跡の質が良いほど、右のモードへ進めます。</p>`,
 )}
 
 ${callout(
@@ -351,7 +351,7 @@ ${table(
             "",
             `${PP} <strong>GitHub Copilot Memory</strong>`,
             "リポジトリ / ユーザー",
-            "リポジトリ事実とユーザー選好を永続化。事実は引用元を保持し現ブランチに対して検証される。<strong>28 日未使用で失効</strong>。cloud agent / code review / CLI が利用。",
+            "リポジトリ事実とユーザー選好を永続化。事実は引用元を保持し現ブランチに対して検証される。<strong>28 日未使用で失効</strong>（検証され使用されるたびにタイマーは再開されうる）。cloud agent / code review / CLI が利用。",
         ],
         [
             `<strong>Task context</strong><br><span class="muted">成果・スコープ・受け入れ条件・与えられた参照</span>`,

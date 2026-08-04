@@ -262,12 +262,12 @@ ${table(
     ["採用ラダーの段", "在庫チェック（現状）", "卒業を裏づける観測量（本節から）"],
     [
         [
-            "Assist / Delegate",
+            "Assist / Collaborate",
             "instructions・AGENTS.md が置いてある",
             "DAU の増加トレンド、採用 cohort が試用段で頭打ちになっていないこと",
         ],
         [
-            "Supervise",
+            "Delegate / Standardize",
             "検証手段（テスト・ruleset）がある",
             "Copilot 作成 PR のマージ数・マージ時間中央値が悪化していないこと",
         ],
