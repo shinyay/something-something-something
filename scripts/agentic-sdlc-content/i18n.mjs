@@ -236,7 +236,26 @@ export const TERMS = [
         note: "§02・§04 の公式機能名。小文字表記のまま維持する",
     },
 
-    // ── TOC part titles ─────────────────────────────────────────
+    // ── PART 5 vocabulary (§12 ladder, §13 billing, §14 measurement, §15 antipatterns) ──
+    { ja: "消費する", en: "Consumes", note: "§13 課金表。消費しない = Does not consume。両セルで統一する" },
+    { ja: "Actions 分", en: "Actions minutes", note: "§13。GitHub Actions の消費分。Actions credits とは書かない" },
+    { ja: "在庫チェック", en: "inventory check", note: "§12・§14。資産が置いてあるかの確認。stock check とは書かない" },
+    {
+        ja: "マージまでの時間中央値",
+        en: "median time to merge",
+        note: "§14。median time-to-merge とハイフンでは書かない。日本語版が括弧で median time to merge を併記",
+    },
+    { ja: "採用 cohort", en: "adoption cohort", note: "§14 impact ダッシュボード。cohort は訳さず維持する" },
+    { ja: "流出欠陥", en: "escaped defects", note: "§14。usage metrics で測れないものの例。常に複数形。leaked defects とは書かない" },
+    { ja: "卒業判定", en: "graduation", note: "§14。採用ラダーの各段を上がってよいかの判定。動詞は graduate" },
+    {
+        ja: "白紙委任",
+        en: "blank cheque",
+        note: "§15。仕様が未確定な委譲契約。英綴り cheque で固定（本資料は英綴り: behaviour / labour）",
+    },
+    { ja: "漏洩経路", en: "leak path", note: "§15。シークレットが漏れうる経路。leakage path とは書かない" },
+
+
     { ja: "PART 1 — 出発点", en: "PART 1 — Starting point", note: "TOC パートタイトル" },
     {
         ja: "PART 2 — 委譲できる形に設計する",
