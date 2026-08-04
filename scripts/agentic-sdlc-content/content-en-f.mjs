@@ -224,7 +224,7 @@ ${callout(
         id: "deck-map",
         num: "18",
         eyebrow: "Appendix",
-        title: "Mapping to the slide deck",
+        title: "Slide deck mapping",
         lead: `This guide takes the same operating model as the presentation "Starting Agentic SDLC with GitHub Copilot" (46 slides) and rebuilds it as a technical document you can read without the slides. Below is a mapping from each section of this guide to the slide numbers it corresponds to. It is there for reference if you are using the deck alongside this guide; you do not need the slides to read the text.`,
         html: `
 ${table(
