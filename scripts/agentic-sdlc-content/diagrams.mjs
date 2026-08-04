@@ -207,7 +207,7 @@ export function prDiagram() {
 /* ─────────────────────────────────────────────────────────────────────────
  * 3. Five interaction modes — continuum diagram (id: continuum)
  * ───────────────────────────────────────────────────────────────────────── */
-export function continuumDiagram() {
+export function continuumDiagram(lang = "ja") {
     const id = "dg-continuum";
     const w = 680;
     const h = 420;
@@ -216,6 +216,30 @@ export function continuumDiagram() {
     const yBottom = 336;
     const yTop = 78;
     const parts = [];
+    const L = {
+        ja: {
+            sync: "同期",
+            async: "非同期・並列",
+            xAxis: "実行の同期性 →",
+            cloud: "クラウド",
+            local: "ローカル",
+            yAxis: "実行場所 ↑",
+            prods: ["コード補完", "Copilot Chat", "Agent mode / CLI", "cloud agent", "Agents パネル"],
+            title: "5 つの相互作用モードの連続体図",
+            desc: "Completion、Conversation、Collaboration、Delegation、Orchestration の 5 モードを、横軸の同期から非同期・並列へ、縦軸のローカルからクラウドへの平面上に並べた図。左下の Completion から右上の Orchestration へと段階的に進む。",
+        },
+        en: {
+            sync: "Synchronous",
+            async: "Asynchronous, parallel",
+            xAxis: "Execution synchronicity →",
+            cloud: "Cloud",
+            local: "Local",
+            yAxis: "Where it runs ↑",
+            prods: ["Code completion", "Copilot Chat", "Agent mode / CLI", "cloud agent", "Agents panel"],
+            title: "Continuum of the five interaction modes",
+            desc: "The five modes — Completion, Conversation, Collaboration, Delegation, and Orchestration — placed on a plane whose horizontal axis runs from synchronous to asynchronous and parallel and whose vertical axis runs from local to cloud. The progression steps up from Completion at the lower left to Orchestration at the upper right.",
+        },
+    }[lang];
 
     // Axes.
     parts.push(
@@ -223,23 +247,23 @@ export function continuumDiagram() {
         arrowHead(x1, yBottom, 0, 9, "d-axis-arrow"),
         `  <line class="d-axis" x1="${x0}" y1="${yBottom}" x2="${x0}" y2="${yTop - 8}" stroke-width="1.6"></line>`,
         arrowHead(x0, yTop - 8, -90, 9, "d-axis-arrow"),
-        `  <text class="d-tm" x="${x0}" y="${yBottom + 26}" text-anchor="start" font-size="12">同期</text>`,
-        `  <text class="d-tm" x="${x1}" y="${yBottom + 26}" text-anchor="end" font-size="12">非同期・並列</text>`,
-        `  <text class="d-tm" x="${(x0 + x1) / 2}" y="${yBottom + 26}" text-anchor="middle" font-size="11" font-weight="600">実行の同期性 →</text>`,
+        `  <text class="d-tm" x="${x0}" y="${yBottom + 26}" text-anchor="start" font-size="12">${L.sync}</text>`,
+        `  <text class="d-tm" x="${x1}" y="${yBottom + 26}" text-anchor="end" font-size="12">${L.async}</text>`,
+        `  <text class="d-tm" x="${(x0 + x1) / 2}" y="${yBottom + 26}" text-anchor="middle" font-size="11" font-weight="600">${L.xAxis}</text>`,
     );
     // Y axis end labels (place as horizontal text near the axis ends).
     parts.push(
-        `  <text class="d-tm" x="${x0 - 12}" y="${yTop + 2}" text-anchor="end" font-size="12">クラウド</text>`,
-        `  <text class="d-tm" x="${x0 - 12}" y="${yBottom - 4}" text-anchor="end" font-size="12">ローカル</text>`,
-        `  <text class="d-tm" x="0" y="0" text-anchor="middle" font-size="11" font-weight="600" transform="translate(${x0 - 44} ${(yBottom + yTop) / 2}) rotate(-90)">実行場所 ↑</text>`,
+        `  <text class="d-tm" x="${x0 - 12}" y="${yTop + 2}" text-anchor="end" font-size="12">${L.cloud}</text>`,
+        `  <text class="d-tm" x="${x0 - 12}" y="${yBottom - 4}" text-anchor="end" font-size="12">${L.local}</text>`,
+        `  <text class="d-tm" x="0" y="0" text-anchor="middle" font-size="11" font-weight="600" transform="translate(${x0 - 44} ${(yBottom + yTop) / 2}) rotate(-90)">${L.yAxis}</text>`,
     );
 
     const modes = [
-        { name: "Completion", prod: "コード補完", cls: "d-box" },
-        { name: "Conversation", prod: "Copilot Chat", cls: "d-box" },
-        { name: "Collaboration", prod: "Agent mode / CLI", cls: "d-box-accent" },
-        { name: "Delegation", prod: "cloud agent", cls: "d-box-done" },
-        { name: "Orchestration", prod: "Agents パネル", cls: "d-box-done" },
+        { name: "Completion", cls: "d-box" },
+        { name: "Conversation", cls: "d-box" },
+        { name: "Collaboration", cls: "d-box-accent" },
+        { name: "Delegation", cls: "d-box-done" },
+        { name: "Orchestration", cls: "d-box-done" },
     ];
     const cw = 128;
     const ch = 40;
@@ -267,35 +291,67 @@ export function continuumDiagram() {
             `  <g>
     <rect class="${m.cls}" x="${bx}" y="${by}" width="${cw}" height="${ch}" rx="9"></rect>
     <text class="d-t" x="${mx}" y="${F(by + 17)}" text-anchor="middle" font-size="12.5" font-weight="600">${i + 1}. ${m.name}</text>
-    <text class="d-tm" x="${mx}" y="${F(by + 32)}" text-anchor="middle" font-size="10.5">${m.prod}</text>
+    <text class="d-tm" x="${mx}" y="${F(by + 32)}" text-anchor="middle" font-size="10.5">${L.prods[i]}</text>
   </g>`,
         );
     });
 
-    const title = "5 つの相互作用モードの連続体図";
-    const desc =
-        "Completion、Conversation、Collaboration、Delegation、Orchestration の 5 モードを、横軸の同期から非同期・並列へ、縦軸のローカルからクラウドへの平面上に並べた図。左下の Completion から右上の Orchestration へと段階的に進む。";
-    return wrap(id, title, desc, w, h, parts.join("\n"));
+    return wrap(id, L.title, L.desc, w, h, parts.join("\n"));
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
  * 4. Delegation Contract — 2×4 grid diagram (id: contract)
  * ───────────────────────────────────────────────────────────────────────── */
-export function contractDiagram() {
+export function contractDiagram(lang = "ja") {
     const id = "dg-contract";
     const w = 680;
     const h = 392;
     const parts = [];
-    const fields = [
-        { name: "Outcome + Why", jp: "成果と目的", kind: "soft" },
-        { name: "Scope + Out", jp: "範囲と除外", kind: "hard" },
-        { name: "Context", jp: "文脈・前提", kind: "soft" },
-        { name: "Tools + Constraints", jp: "能力・制約", kind: "hard" },
-        { name: "Acceptance", jp: "受け入れ条件", kind: "hard" },
-        { name: "Verification + Evidence", jp: "検証と証拠", kind: "hard" },
-        { name: "Escalate", jp: "エスカレーション", kind: "mid" },
-        { name: "Human gates", jp: "人間のゲート", kind: "hard" },
+    const names = [
+        "Outcome + Why",
+        "Scope + Out",
+        "Context",
+        "Tools + Constraints",
+        "Acceptance",
+        "Verification + Evidence",
+        "Escalate",
+        "Human gates",
     ];
+    const kinds = ["soft", "hard", "soft", "hard", "hard", "hard", "mid", "hard"];
+    const L = {
+        ja: {
+            subs: [
+                "成果と目的",
+                "範囲と除外",
+                "文脈・前提",
+                "能力・制約",
+                "受け入れ条件",
+                "検証と証拠",
+                "エスカレーション",
+                "人間のゲート",
+            ],
+            legend: ["構造的に強制可", "半構造的", "プロンプトのみ"],
+            title: "Delegation Contract の 8 フィールドの 2×4 グリッド図",
+            desc: "委譲契約の 8 フィールドを 2 列 4 行に並べた図。Outcome + Why、Scope + Out、Context、Tools + Constraints、Acceptance、Verification + Evidence、Escalate、Human gates。各フィールドは強制力（構造的に強制可・半構造的・プロンプトのみ）で色分けされる。",
+        },
+        en: {
+            // Short glosses of the field definitions from the table below the
+            // figure. Kept under 30 characters so they clear the box width.
+            subs: [
+                "the result and its purpose",
+                "what is in and what is out",
+                "repo knowledge, assumptions",
+                "allowed capabilities, limits",
+                "observable done conditions",
+                "repeatable checks, evidence",
+                "when to stop and hand back",
+                "named human decisions",
+            ],
+            legend: ["Structurally enforceable", "Semi-structural", "Prompt only"],
+            title: "The eight Delegation Contract fields as a 2×4 grid",
+            desc: "The eight fields of the delegation contract laid out in two columns and four rows: Outcome + Why, Scope + Out, Context, Tools + Constraints, Acceptance, Verification + Evidence, Escalate, and Human gates. Each field is colour-coded by how far it can be enforced — structurally enforceable, semi-structural, or prompt only.",
+        },
+    }[lang];
     const clsFor = { hard: "d-box-success", mid: "d-box-attention", soft: "d-box" };
     const cols = 2;
     const gx = 16;
@@ -304,58 +360,72 @@ export function contractDiagram() {
     const bw = F((w - gx * (cols + 1)) / cols);
     const bh = 66;
 
-    fields.forEach((f, i) => {
+    names.forEach((name, i) => {
         const r = Math.floor(i / cols);
         const col = i % cols;
         const x = F(gx + col * (bw + gx));
         const y = F(topPad + r * (bh + gy));
         parts.push(
             `  <g>
-    <rect class="${clsFor[f.kind]}" x="${x}" y="${y}" width="${bw}" height="${bh}" rx="10"></rect>
+    <rect class="${clsFor[kinds[i]]}" x="${x}" y="${y}" width="${bw}" height="${bh}" rx="10"></rect>
     <circle class="d-chip" cx="${F(x + 20)}" cy="${F(y + 20)}" r="11"></circle>
     <text class="d-te" x="${F(x + 20)}" y="${F(y + 24)}" text-anchor="middle" font-size="12" font-weight="600">${i + 1}</text>
-    <text class="d-t" x="${F(x + 40)}" y="${F(y + 25)}" text-anchor="start" font-size="13" font-weight="600">${f.name}</text>
-    <text class="d-tm" x="${F(x + 40)}" y="${F(y + 46)}" text-anchor="start" font-size="11.5">${f.jp}</text>
+    <text class="d-t" x="${F(x + 40)}" y="${F(y + 25)}" text-anchor="start" font-size="13" font-weight="600">${name}</text>
+    <text class="d-tm" x="${F(x + 40)}" y="${F(y + 46)}" text-anchor="start" font-size="11.5">${L.subs[i]}</text>
   </g>`,
         );
     });
 
-    // Legend.
+    // Legend. The advance between entries is estimated from the label length, so
+    // the per-character width has to follow the script: CJK glyphs are about one
+    // em wide, Latin ones about half that. Using the CJK figure for English
+    // would push the third entry past the right edge.
     const ly = topPad + 4 * (bh + gy) + 4;
-    const legend = [
-        { cls: "d-box-success", t: "構造的に強制可" },
-        { cls: "d-box-attention", t: "半構造的" },
-        { cls: "d-box", t: "プロンプトのみ" },
-    ];
+    const legendCls = ["d-box-success", "d-box-attention", "d-box"];
+    const legendCharW = lang === "ja" ? 12 : 6.5;
     let lx = gx;
-    legend.forEach((lg) => {
+    L.legend.forEach((text, i) => {
         parts.push(
-            `  <rect class="${lg.cls}" x="${lx}" y="${ly}" width="18" height="14" rx="4"></rect>`,
-            `  <text class="d-tm" x="${lx + 24}" y="${ly + 12}" text-anchor="start" font-size="11.5">${lg.t}</text>`,
+            `  <rect class="${legendCls[i]}" x="${F(lx)}" y="${ly}" width="18" height="14" rx="4"></rect>`,
+            `  <text class="d-tm" x="${F(lx + 24)}" y="${ly + 12}" text-anchor="start" font-size="11.5">${text}</text>`,
         );
-        lx += 24 + lg.t.length * 12 + 30;
+        lx += 24 + text.length * legendCharW + 30;
     });
 
-    const title = "Delegation Contract の 8 フィールドの 2×4 グリッド図";
-    const desc =
-        "委譲契約の 8 フィールドを 2 列 4 行に並べた図。Outcome + Why、Scope + Out、Context、Tools + Constraints、Acceptance、Verification + Evidence、Escalate、Human gates。各フィールドは強制力（構造的に強制可・半構造的・プロンプトのみ）で色分けされる。";
-    return wrap(id, title, desc, w, h, parts.join("\n"));
+    return wrap(id, L.title, L.desc, w, h, parts.join("\n"));
 }
 
 /* ─────────────────────────────────────────────────────────────────────────
  * 5. Autonomy Budget — four-dimension bar diagram (id: autonomy)
  * ───────────────────────────────────────────────────────────────────────── */
-export function autonomyDiagram() {
+export function autonomyDiagram(lang = "ja") {
     const id = "dg-autonomy";
     const w = 640;
     const h = 336;
     const parts = [];
-    const dims = [
-        { name: "Scope", jp: "範囲" },
-        { name: "Capability", jp: "能力" },
-        { name: "Compute", jp: "実行資源" },
-        { name: "Decision", jp: "意思決定" },
-    ];
+    const names = ["Scope", "Capability", "Compute", "Decision"];
+    const L = {
+        ja: {
+            heading: "自律性 = 予算（スイッチではない）",
+            subs: ["範囲", "能力", "実行資源", "意思決定"],
+            low: "低",
+            high: "高",
+            scale: "→ 一度に 1 次元ずつ拡大 →",
+            title: "Autonomy Budget の 4 次元バー図",
+            desc: "自律性を Scope（範囲）、Capability（能力）、Compute（実行資源）、Decision（意思決定）の 4 次元に分解し、それぞれを低から高へ段階的に濃くなる帯で表した図。自律性はオンオフのスイッチではなく、次元ごとに配分する予算であり、一度に 1 次元ずつ拡大する。",
+        },
+        en: {
+            heading: "Autonomy is a budget, not a switch",
+            // Kept under 22 characters so the sub-labels clear the bar track,
+            // which starts at x = 170.
+            subs: ["files and components", "tools and permissions", "runtime, concurrency", "approvals and stops"],
+            low: "low",
+            high: "high",
+            scale: "→ expand one dimension at a time →",
+            title: "The four dimensions of the Autonomy Budget as bars",
+            desc: "Autonomy broken into four dimensions — Scope, Capability, Compute, and Decision — each drawn as a bar that darkens in steps from low to high. Autonomy is not an on/off switch but a budget allocated per dimension, and it is widened one dimension at a time.",
+        },
+    }[lang];
     const labelW = 156;
     const barX = labelW + 14;
     const barW = w - barX - 24;
@@ -366,14 +436,14 @@ export function autonomyDiagram() {
     const segW = barW / segs;
 
     parts.push(
-        `  <text class="d-t" x="20" y="26" text-anchor="start" font-size="13" font-weight="600">自律性 = 予算（スイッチではない）</text>`,
+        `  <text class="d-t" x="20" y="26" text-anchor="start" font-size="13" font-weight="600">${L.heading}</text>`,
     );
 
-    dims.forEach((d, i) => {
+    names.forEach((name, i) => {
         const y = F(top + i * (barH + gap));
         parts.push(
-            `  <text class="d-t" x="20" y="${F(y + 15)}" text-anchor="start" font-size="13" font-weight="600">${d.name}</text>`,
-            `  <text class="d-tm" x="20" y="${F(y + 30)}" text-anchor="start" font-size="11">${d.jp}</text>`,
+            `  <text class="d-t" x="20" y="${F(y + 15)}" text-anchor="start" font-size="13" font-weight="600">${name}</text>`,
+            `  <text class="d-tm" x="20" y="${F(y + 30)}" text-anchor="start" font-size="11">${L.subs[i]}</text>`,
             `  <rect class="d-track" x="${barX}" y="${y}" width="${F(barW)}" height="${barH}" rx="7"></rect>`,
         );
         for (let s = 0; s < segs; s += 1) {
@@ -388,15 +458,12 @@ export function autonomyDiagram() {
     // Scale labels under the bars.
     const sy = F(top + segs * (barH + gap) - gap + 22);
     parts.push(
-        `  <text class="d-tm" x="${barX}" y="${sy}" text-anchor="start" font-size="11">低</text>`,
-        `  <text class="d-tm" x="${F(barX + barW / 2)}" y="${sy}" text-anchor="middle" font-size="11">→ 一度に 1 次元ずつ拡大 →</text>`,
-        `  <text class="d-tm" x="${F(barX + barW)}" y="${sy}" text-anchor="end" font-size="11">高</text>`,
+        `  <text class="d-tm" x="${barX}" y="${sy}" text-anchor="start" font-size="11">${L.low}</text>`,
+        `  <text class="d-tm" x="${F(barX + barW / 2)}" y="${sy}" text-anchor="middle" font-size="11">${L.scale}</text>`,
+        `  <text class="d-tm" x="${F(barX + barW)}" y="${sy}" text-anchor="end" font-size="11">${L.high}</text>`,
     );
 
-    const title = "Autonomy Budget の 4 次元バー図";
-    const desc =
-        "自律性を Scope（範囲）、Capability（能力）、Compute（実行資源）、Decision（意思決定）の 4 次元に分解し、それぞれを低から高へ段階的に濃くなる帯で表した図。自律性はオンオフのスイッチではなく、次元ごとに配分する予算であり、一度に 1 次元ずつ拡大する。";
-    return wrap(id, title, desc, w, h, parts.join("\n"));
+    return wrap(id, L.title, L.desc, w, h, parts.join("\n"));
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

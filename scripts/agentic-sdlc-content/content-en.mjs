@@ -9,6 +9,7 @@
 // of sections and register it in TRANSLATED below. Nothing else changes.
 import { parts as jaParts, sections as jaSections } from "./content.mjs";
 import { sectionsEnA } from "./content-en-a.mjs";
+import { sectionsEnB } from "./content-en-b.mjs";
 
 export const meta = {
     title: "Agentic SDLC Practical Guide",
@@ -18,7 +19,7 @@ export const meta = {
     verified: "Verified against primary sources as of August 2026",
 };
 
-const TRANSLATED = [...sectionsEnA];
+const TRANSLATED = [...sectionsEnA, ...sectionsEnB];
 
 const byId = new Map(TRANSLATED.map((section) => [section.id, section]));
 if (byId.size !== TRANSLATED.length) {
