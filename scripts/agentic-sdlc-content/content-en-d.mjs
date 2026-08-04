@@ -93,7 +93,7 @@ ${callout(
 )}
 
 <h3>Deterministic merge gates — using rulesets to design "cannot merge unless it passes"</h3>
-<p>What turns verification from "reference information" into a "gate" is the ruleset. The agent's PRs, like a human's, cannot merge unless they pass these gates. On top of branch protection, required status checks, linear history, and signed commits, there is a full set of rules that can make the analysis results themselves a merge condition.</p>
+<p>What turns verification from "reference information" into a "gate" is the ruleset. The agent's PRs, like a human's, cannot merge unless they pass these gates. On top of branch protection, required status checks, linear history, and signed commits, there is a full set of rules that <strong>can make the analysis results themselves a merge condition</strong>.</p>
 ${table(
     ["Ruleset rule", "What blocks the merge", "Status"],
     [
@@ -234,7 +234,7 @@ ${table(
             "Put the contract in the Issue body and keep its edit history. Templatize it to prevent any of the 8 fields from being missing",
         ],
         [
-            `"Map evidence to every acceptance criterion"`,
+            `"Map evidence to all acceptance criteria"`,
             `<span class="neg">None</span> The pass/fail of checks appears, but <strong>the mapping onto acceptance criteria is not generated automatically</strong>`,
             "Put an acceptance-criteria checklist in the PR body template, and have the reviewer fill it in",
         ],
@@ -256,7 +256,7 @@ ${table(
         [
             `"Version the agent's automated execution itself alongside the code"`,
             `<span class="neg">None</span> <strong>The automations definition is not committed to Git</strong>. It is stored separately from the repository's contents and can be changed without going through a PR`,
-            `An automation is a loophole in the "PR is the governance boundary" thesis. Inventory who holds which automation separately, and catch it on the ruleset of the output (the PR) side (§06, §10)`,
+            `An automation is a <strong>loophole</strong> in the "PR is the governance boundary" thesis. Inventory who holds which automation separately, and catch it on the ruleset of the output (the PR) side (§06, §10)`,
         ],
     ],
     { widths: ["30%", "34%", "36%"] },
@@ -401,7 +401,7 @@ ${ul([
 <p>The principle "stop and escalate on unexpected dependencies, sensitive data, permission gaps, or policy violations" is most accurately read as a design requirement to close these holes on the human side. <strong>A decision to add an MCP server is a decision to add one more path that does not pass through the firewall</strong>, and it is something to handle explicitly in the Tools + Constraints fields of the Delegation Contract (§03).</p>
 
 <h3>The automations prompt-injection default — ignoring external triggers by default</h3>
-<p>Automations (§06) can fire the cloud agent unattended on repository events such as issue creation or PR open. This creates an attack surface — "an external contributor opens an issue and drives Copilot on their own" — but it is closed by default.</p>
+<p>Automations (§06) can <strong>fire the cloud agent unattended on repository events</strong> such as issue creation or PR open. This creates an attack surface — "an external contributor opens an issue and drives Copilot on their own" — but it is closed by default.</p>
 ${docQuote(
     "By default, automations ignore events triggered by users who do not have write access to the repository.",
     "https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-automations",
@@ -412,7 +412,7 @@ ${ul([
     "Automations are <strong>only on private / internal repositories</strong>, are <strong>scoped to a single repository</strong>, and can act only within that repository",
     `The main means of scope control is <strong>the selection of tools</strong> — "Grant only the tools that the task needs"`,
 ])}
-<p>This default is the automation version of §09's "someone without write access cannot start the agent." But as noted, <strong>the automation definition itself is outside Git management</strong> (§09), so who holds which automation, with which trigger and tools, must be inventoried outside of code review.</p>
+<p>This default is the automation version of §09's "someone without write access cannot start the agent." But as noted, <strong>the automation definition itself is outside Git management</strong> (§09), so who holds which automation, with which trigger and tools, must be <strong>inventoried outside of code review</strong>.</p>
 `,
     },
 
@@ -473,7 +473,7 @@ ${docQuote(
     "https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/troubleshoot-cloud-agent",
     "docs.github.com — Troubleshooting GitHub Copilot cloud agent",
 )}
-<p>${FRAMEWORK} On the other hand, the public documentation does not say there is any cap on the running time of a session that is progressing normally. So it is wrong to rely on "one hour" as a design ceiling for how much work you can pack into a single session. Even so, §06's decomposition criteria (bring work down to a unit that can be reviewed and merged independently) still hold, and the grounds are not the timeout but <strong>the size of what you lose when a stall or drift occurs</strong> — the longer a single session is, the wider the range you have to roll back and the higher the cost of re-running.</p>
+<p>${FRAMEWORK} On the other hand, <strong>the public documentation does not say there is any cap on the running time of a session that is progressing normally</strong>. So it is wrong to rely on "one hour" as a design ceiling for how much work you can pack into a single session. Even so, §06's decomposition criteria (bring work down to a unit that can be reviewed and merged independently) still hold, and the grounds are not the timeout but <strong>the size of what you lose when a stall or drift occurs</strong> — the longer a single session is, the wider the range you have to roll back and the higher the cost of re-running.</p>
 
 <h3>The criteria for iterate versus abandon</h3>
 ${cards(
@@ -529,7 +529,7 @@ ${table(
 ${callout(
     "key",
     `Measure recovery by "whether the next delegation goes off course at the same place"`,
-    `<p>Stopping and rolling back are symptomatic treatment. Recovery is complete only once you have fully reduced the drift into one of instructions / agent skills / characterization tests / ruleset. Whether you have done so can be observed through the measurement covered from the next section on (§14), as "whether drift of the same kind is decreasing." Leaving recovery in an individual's memory is a governance failure.</p>`,
+    `<p>Stopping and rolling back are symptomatic treatment. <strong>Recovery is complete only once you have fully reduced the drift into one of instructions / agent skills / characterization tests / ruleset</strong>. Whether you have done so can be observed through the measurement covered from the next section on (§14), as "whether drift of the same kind is decreasing." Leaving recovery in an individual's memory is a governance failure.</p>`,
 )}
 `,
     },
