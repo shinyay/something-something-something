@@ -351,7 +351,7 @@ ${table(
             "",
             `${PP} <strong>GitHub Copilot Memory</strong>`,
             "リポジトリ / ユーザー",
-            "リポジトリ事実とユーザー選好を永続化。事実は引用元を保持し現ブランチに対して検証される。<strong>28 日未使用で失効</strong>（検証され使用されるたびにタイマーは再開されうる）。cloud agent / code review / CLI が利用。",
+            "リポジトリ事実とユーザー選好を永続化。事実は引用元を保持し現ブランチに対して検証される。<strong>28 日未使用で失効</strong>（検証され使用されるたびにタイマーはリセットされうる）。cloud agent / code review / CLI が利用。",
         ],
         [
             `<strong>Task context</strong><br><span class="muted">成果・スコープ・受け入れ条件・与えられた参照</span>`,

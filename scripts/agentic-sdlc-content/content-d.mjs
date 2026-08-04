@@ -263,12 +263,12 @@ ${table(
     [
         [
             "Assist / Collaborate",
-            "instructions・AGENTS.md が置いてある",
+            "instructions が置いてある",
             "DAU の増加トレンド、採用 cohort が試用段で頭打ちになっていないこと",
         ],
         [
             "Delegate / Standardize",
-            "検証手段（テスト・ruleset）がある",
+            "AGENTS.md・検証手段（テスト・ruleset）がある",
             "Copilot 作成 PR のマージ数・マージ時間中央値が悪化していないこと",
         ],
         [

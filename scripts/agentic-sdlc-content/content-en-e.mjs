@@ -277,12 +277,12 @@ ${table(
     [
         [
             "Assist / Collaborate",
-            "instructions and AGENTS.md are in place",
+            "instructions are in place",
             "A rising DAU trend, and adoption cohorts not plateauing at the trial stage",
         ],
         [
             "Delegate / Standardize",
-            "Verification means (tests, rulesets) exist",
+            "AGENTS.md and verification means (tests, rulesets) exist",
             "Merge counts and median time to merge for Copilot-authored PRs are not deteriorating",
         ],
         [
