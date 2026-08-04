@@ -166,6 +166,20 @@ export const TERMS = [
     { ja: "並列ワークスペース", en: "parallel workspaces", note: "§06。GitHub Copilot app の機能名" },
     { ja: "傘の名称", en: "umbrella name", note: "§07。umbrella brand とは書かない" },
     { ja: "移行の波", en: "migration waves", note: "§05・§07。migration phases とは書かない" },
+
+    // ── PART 4 vocabulary (§08 verification, §09 pr, §10 security, §11 recovery) ──
+    { ja: "確率的", en: "probabilistic", note: "§08。「確率的に推論する」= reason probabilistically。決定的 deterministic と対にする" },
+    { ja: "決定的", en: "deterministic", note: "§08。「決定的に検証する」= verify deterministically。§08 deterministic verification と整合" },
+    { ja: "証跡", en: "record", note: "§09 Evidence の説明で使う「検証の証跡」= the record of verification。既存の 証跡=evidence（核となる語）は据え置き" },
+    { ja: "隔離", en: "quarantine", note: "§08。flaky テストを必須ゲートから外すこと。isolate とは書かない" },
+    { ja: "停滞", en: "stuck", note: "§11。停滞したセッション = a stuck session。一次情報 troubleshoot-cloud-agent の \"stuck\" に合わせる。stalled とは書かない" },
+    { ja: "軌道修正", en: "steering", note: "§11 の 4 介入の 1 つ。動詞は steer。course-correct とは書かない" },
+    { ja: "停止", en: "stop", note: "§11 の 4 介入の 1 つ。stop session。halt とは書かない" },
+    { ja: "放棄", en: "abandon", note: "§11 の 4 介入の 1 つ。discard は説明語としてのみ可、介入名は abandon" },
+    { ja: "再試行", en: "retry", note: "§11 の 4 介入の 1 つ。re-run はボタン名の説明でのみ使う" },
+    { ja: "巻き戻し", en: "rollback", note: "§11。CLI の /undo・/rewind。動詞は roll back（2 語）、名詞は rollback" },
+    { ja: "退行", en: "regression", note: "§11。once-fixed が再び壊れること。regress とは書かない" },
+    { ja: "介入", en: "intervention", note: "§11 の 4 介入（軌道修正・停止・放棄・再試行）を束ねる語" },
     {
         ja: "決定的ゲート",
         en: "deterministic gate",

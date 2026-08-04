@@ -140,14 +140,59 @@ export function loopDiagram(lang = "ja") {
 /* ─────────────────────────────────────────────────────────────────────────
  * 2. PR governance swimlanes — lane diagram (id: pr)
  * ───────────────────────────────────────────────────────────────────────── */
-export function prDiagram() {
+export function prDiagram(lang = "ja") {
     const id = "dg-pr";
     const w = 680;
     const h = 384;
     const labelW = 96;
     const laneH = 72;
     const top = 52;
-    const lanes = ["人間", "エージェント", "PR", "CI"];
+    // Latin box sub-labels are wider than the Japanese ones. The 486/3 box is the
+    // only one whose English sub-label reaches its budget, so that box widens to
+    // 150 in English (right edge 636 < 680, and it lines up with the 486/0 box).
+    // Every ja value below is frozen so the Japanese output stays byte-identical.
+    const box3w = lang === "ja" ? 128 : 150;
+    const L = {
+        ja: {
+            lanes: ["人間", "エージェント", "PR", "CI"],
+            phaseLeft: "自律的な実行",
+            phaseRight: "人間による受け入れ",
+            boundary: "エージェントが越えられない境界",
+            b1main: "Issue を委譲",
+            b1sub: "Delegation Contract",
+            b2main: "実装 & push",
+            b2sub: "copilot/… ブランチ 1 本",
+            b3main: "draft PR",
+            b3sub: "Ready にできない",
+            b4main: "checks 実行",
+            b4sub: "Approve and run 後",
+            b5main: "レビュー & Merge",
+            b5sub: "required reviews",
+            blockedSuffix: " 不可",
+            title: "PR をガバナンス境界とするレーン図",
+            desc: "人間・エージェント・PR・CI の 4 レーン。エージェントは Issue の委譲を受けて copilot/… ブランチ 1 本に実装し draft PR を作るが、境界線の右側にある Ready 化・Approve・Merge は実行できず、人間がレビューしてマージする。自律的な実行は自律的な受け入れを意味しない。",
+        },
+        en: {
+            lanes: ["Human", "Agent", "PR", "CI"],
+            phaseLeft: "Autonomous execution",
+            phaseRight: "Human acceptance",
+            boundary: "The boundary the agent cannot cross",
+            b1main: "Delegate an Issue",
+            b1sub: "Delegation Contract",
+            b2main: "Build & push",
+            b2sub: "one copilot/… branch",
+            b3main: "draft PR",
+            b3sub: "Cannot reach Ready",
+            b4main: "Run checks",
+            b4sub: "After Approve and run",
+            b5main: "Review & Merge",
+            b5sub: "required reviews",
+            blockedSuffix: " blocked",
+            title: "Swimlane diagram with the PR as the governance boundary",
+            desc: "Four lanes — human, agent, PR, and CI. The agent takes a delegated Issue, implements it on a single copilot/… branch, and opens a draft PR, but it cannot do any of the actions to the right of the boundary line — making the PR Ready, Approve, or Merge (×); a human reviews and merges to accept. Autonomous execution does not mean autonomous acceptance.",
+        },
+    }[lang];
+    const lanes = L.lanes;
     const laneY = (i) => top + i * laneH;
     const laneMid = (i) => laneY(i) + laneH / 2;
     const parts = [];
@@ -164,15 +209,15 @@ export function prDiagram() {
 
     // Phase captions (top).
     parts.push(
-        `  <text class="d-tm" x="270" y="34" text-anchor="middle" font-size="12" font-weight="600">自律的な実行</text>`,
-        `  <text class="d-tm" x="566" y="34" text-anchor="middle" font-size="12" font-weight="600">人間による受け入れ</text>`,
+        `  <text class="d-tm" x="270" y="34" text-anchor="middle" font-size="12" font-weight="600">${L.phaseLeft}</text>`,
+        `  <text class="d-tm" x="566" y="34" text-anchor="middle" font-size="12" font-weight="600">${L.phaseRight}</text>`,
     );
 
     // Boundary line the agent cannot cross.
     const bx = 452;
     parts.push(
         `  <line class="d-boundary" x1="${bx}" y1="${top - 6}" x2="${bx}" y2="${top + lanes.length * laneH + 6}" stroke-width="2" stroke-dasharray="6 5"></line>`,
-        `  <text class="d-danger" x="${bx}" y="${top + lanes.length * laneH + 22}" text-anchor="middle" font-size="11.5" font-weight="600">エージェントが越えられない境界</text>`,
+        `  <text class="d-danger" x="${bx}" y="${top + lanes.length * laneH + 22}" text-anchor="middle" font-size="11.5" font-weight="600">${L.boundary}</text>`,
     );
 
     const box = (cls, x, midI, tw, main, sub) => {
@@ -188,25 +233,25 @@ export function prDiagram() {
     };
 
     // Flow boxes.
-    parts.push(box("d-box-accent", 118, 0, 128, "Issue を委譲", "Delegation Contract"));
-    parts.push(box("d-box", 262, 1, 150, "実装 & push", "copilot/… ブランチ 1 本"));
-    parts.push(box("d-box", 262, 2, 150, "draft PR", "Ready にできない"));
-    parts.push(box("d-box-attention", 486, 3, 128, "checks 実行", "Approve and run 後"));
-    parts.push(box("d-box-success", 486, 0, 150, "レビュー & Merge", "required reviews"));
+    parts.push(box("d-box-accent", 118, 0, 128, L.b1main, L.b1sub));
+    parts.push(box("d-box", 262, 1, 150, L.b2main, L.b2sub));
+    parts.push(box("d-box", 262, 2, 150, L.b3main, L.b3sub));
+    parts.push(box("d-box-attention", 486, 3, box3w, L.b4main, L.b4sub));
+    parts.push(box("d-box-success", 486, 0, 150, L.b5main, L.b5sub));
 
     // Connective arrows.
     const arrow = (x1, y1, x2, y2, cls = "d-conn") => {
         const dir = (Math.atan2(y2 - y1, x2 - x1) * 180) / Math.PI;
         return `  <line class="${cls}" x1="${F(x1)}" y1="${F(y1)}" x2="${F(x2)}" y2="${F(y2)}" stroke-width="1.6"></line>\n${arrowHead(x2, y2, dir, 8, "d-conn-arrow")}`;
     };
-    parts.push(arrow(246, laneMid(0), 262, laneMid(1) - 6)); // 委譲 → 実装
-    parts.push(arrow(337, laneMid(1) + 23, 337, laneMid(2) - 23)); // 実装 → draft PR
+    parts.push(arrow(246, laneMid(0), 262, laneMid(1) - 6)); // delegate → implement
+    parts.push(arrow(337, laneMid(1) + 23, 337, laneMid(2) - 23)); // implement → draft PR
     parts.push(arrow(412, laneMid(2), 486, laneMid(3) - 6)); // draft PR → checks
-    parts.push(arrow(550, laneMid(3) - 23, 561, laneMid(0) + 23)); // checks → レビュー(via human gate)
+    parts.push(arrow(550, laneMid(3) - 23, 561, laneMid(0) + 23)); // checks → review (via human gate)
 
     // Blocked actions the agent cannot perform (crossing the boundary).
     const blocked = ["Ready", "Approve", "Merge"];
-    const boxEdge = 262 + 150; // right edge of the 実装 & push box
+    const boxEdge = 262 + 150; // right edge of the implement & push box
     const cxBlock = 432; // × centre sits outside the box edge, left of the boundary
     blocked.forEach((label, i) => {
         const y = F(laneMid(1) - 18 + i * 18);
@@ -215,15 +260,12 @@ export function prDiagram() {
     <line class="d-block" x1="${boxEdge + 4}" y1="${y}" x2="448" y2="${y}" stroke-width="1.4" stroke-dasharray="4 3"></line>
     <circle class="d-block-x" cx="${cxBlock}" cy="${y}" r="8"></circle>
     <text class="d-danger" x="${cxBlock}" y="${F(y + 3.5)}" text-anchor="middle" font-size="11" font-weight="700">×</text>
-    <text class="d-danger" x="${F(bx + 8)}" y="${F(y + 4)}" text-anchor="start" font-size="11">${label} 不可</text>
+    <text class="d-danger" x="${F(bx + 8)}" y="${F(y + 4)}" text-anchor="start" font-size="11">${label}${L.blockedSuffix}</text>
   </g>`,
         );
     });
 
-    const title = "PR をガバナンス境界とするレーン図";
-    const desc =
-        "人間・エージェント・PR・CI の 4 レーン。エージェントは Issue の委譲を受けて copilot/… ブランチ 1 本に実装し draft PR を作るが、境界線の右側にある Ready 化・Approve・Merge は実行できず、人間がレビューしてマージする。自律的な実行は自律的な受け入れを意味しない。";
-    return wrap(id, title, desc, w, h, parts.join("\n"));
+    return wrap(id, L.title, L.desc, w, h, parts.join("\n"));
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

@@ -74,10 +74,10 @@
       <li class="toc__part">
         <p class="toc__part-title">PART 4 — Trusting the result</p>
         <ul class="toc__list">
-        <li><a href="#verification"><span class="toc__num">08</span><span lang="ja">確率的に推論し、決定的に検証する</span></a></li>
-        <li><a href="#pr"><span class="toc__num">09</span><span lang="ja">PR をガバナンス境界にする 5 つの構造的保証</span></a></li>
-        <li><a href="#security"><span class="toc__num">10</span><span lang="ja">委譲の前提となるセキュリティ設定と、残る穴</span></a></li>
-        <li><a href="#recovery"><span class="toc__num">11</span><span lang="ja">逸脱と回復 —— エージェントが外れたときに何をするか</span></a></li>
+        <li><a href="#verification"><span class="toc__num">08</span><span>Reason probabilistically, verify deterministically</span></a></li>
+        <li><a href="#pr"><span class="toc__num">09</span><span>Five structural guarantees that make the PR a governance boundary</span></a></li>
+        <li><a href="#security"><span class="toc__num">10</span><span>The security settings delegation presupposes, and the holes that remain</span></a></li>
+        <li><a href="#recovery"><span class="toc__num">11</span><span>Drift and recovery — what to do when an agent goes off course</span></a></li>
         </ul>
       </li>
       <li class="toc__part">
@@ -749,112 +749,111 @@ brew install modernize</code></pre>
 <p>The point is that ③ comes before ⑥, which corresponds to the practical procedure of &ldquo;building a behavioural safety net&rdquo; (§05). The order is: <strong>before you change the implementation, put the expected behaviour into a form a human can review</strong>.</p>
 
 </section>
-<section class="section" id="verification" lang="ja" aria-labelledby="verification-title">
+<section class="section" id="verification" aria-labelledby="verification-title">
   <div class="section__head">
     <p class="section__num">08</p>
     <div class="section__headings">
-      <p class="eyebrow">検証</p>
-      <h2 id="verification-title">確率的に推論し、決定的に検証する</h2>
+      <p class="eyebrow">Verification</p>
+      <h2 id="verification-title">Reason probabilistically, verify deterministically</h2>
     </div>
   </div>
-  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
-  <p class="lead">「Reason probabilistically. Verify deterministically.（確率的に推論し、決定的に検証する）」は、この運用モデルで最も実装に近い主張です。確率的側は明らかですが、決定的側は何で構成されるのかを機能単位で確定させます。</p>
+  <p class="lead">"Reason probabilistically. Verify deterministically." is the most implementation-near claim in this operating model. The probabilistic side is obvious; this section pins down, feature by feature, what the deterministic side is actually made of.</p>
 
 <figure class="principle">
-    <blockquote>Use agent reasoning to interpret, explore, and propose. Accept work through repeatable checks with explicit pass or fail criteria.</blockquote><figcaption>エージェントの推論は「解釈・探索・提案」に使う。作業の受け入れは、明示的な合否基準を持つ〈繰り返し可能なチェック〉を通して行う。</figcaption>
+    <blockquote>Use agent reasoning to interpret, explore, and propose. Accept work through repeatable checks with explicit pass or fail criteria.</blockquote>
   </figure>
 
-<div class="table-wrap"><table class=""><colgroup><col style="width:10%"><col style="width:24%"><col style="width:32%"><col style="width:34%"></colgroup><thead><tr><th>層</th><th>機能</th><th>何を保証するか</th><th>cloud agent での扱い</th></tr></thead><tbody><tr><td><span class="prob">確率的</span></td><td>Copilot Chat / Agent mode / cloud agent の推論</td><td>意図の解釈、パターンの発見、選択肢の提案</td><td>session log に推論・ツール実行の履歴が残る</td></tr><tr><td><span class="det">決定的</span></td><td><strong>GitHub Actions</strong>（ビルド・テスト）</td><td>コンパイルと、仕様化された振る舞い</td><td><strong>既定では自動実行されない</strong>。write 権限者が「Approve and run workflows」を押すまで待つ</td></tr><tr><td><span class="det">決定的</span></td><td><strong>CodeQL</strong>（code scanning）</td><td>設定したクエリ・ルールに対する評価</td><td><strong>GHAS / Code Security なしでも cloud agent に組み込まれている</strong></td></tr><tr><td><span class="det">決定的</span></td><td><strong>Dependabot / GitHub Advisory Database</strong></td><td>既知脆弱性を持つ依存の検出、承認済み依存範囲の逸脱検出</td><td>同上（組み込み）</td></tr><tr><td><span class="det">決定的</span></td><td><strong>secret scanning</strong></td><td>コミットされたシークレットの検出</td><td>同上（組み込み）</td></tr><tr><td><span class="det">決定的</span></td><td><strong>required status checks</strong></td><td>上記のどれが「通らないとマージできない」かの定義</td><td>エージェントの PR にも同じく適用される</td></tr><tr><td><span class="mixed">中間</span></td><td><strong>Copilot code review</strong></td><td>問題の可能性の指摘と修正提案</td><td><span class="badge badge-ga">GA</span>。ただし<strong>常に "Comment" レビュー</strong>で、Approve も Request changes もしない ＝ <strong>マージゲートにはならない</strong></td></tr></tbody></table></div>
+<div class="table-wrap"><table class=""><colgroup><col style="width:10%"><col style="width:24%"><col style="width:32%"><col style="width:34%"></colgroup><thead><tr><th>Layer</th><th>Feature</th><th>What it guarantees</th><th>How it works with the cloud agent</th></tr></thead><tbody><tr><td><span class="prob">Probabilistic</span></td><td>Reasoning in Copilot Chat / Agent mode / the cloud agent</td><td>Interpreting intent, spotting patterns, proposing options</td><td>The reasoning and tool-call history is kept in the session log</td></tr><tr><td><span class="det">Deterministic</span></td><td><strong>GitHub Actions</strong> (build and test)</td><td>Compilation, and behaviour that has been specified</td><td><strong>Does not run automatically by default</strong>. It waits until someone with write access clicks "Approve and run workflows"</td></tr><tr><td><span class="det">Deterministic</span></td><td><strong>CodeQL</strong> (code scanning)</td><td>Evaluation against the queries and rules you have configured</td><td><strong>Built into the cloud agent even without GHAS / Code Security</strong></td></tr><tr><td><span class="det">Deterministic</span></td><td><strong>Dependabot / GitHub Advisory Database</strong></td><td>Detecting dependencies with known vulnerabilities, and drift outside the approved dependency set</td><td>Same as above (built in)</td></tr><tr><td><span class="det">Deterministic</span></td><td><strong>secret scanning</strong></td><td>Detecting committed secrets</td><td>Same as above (built in)</td></tr><tr><td><span class="det">Deterministic</span></td><td><strong>required status checks</strong></td><td>Defining which of the above must pass before a merge is allowed</td><td>Applies to the agent's PRs just the same</td></tr><tr><td><span class="mixed">Mixed</span></td><td><strong>Copilot code review</strong></td><td>Flagging possible problems and suggesting fixes</td><td><span class="badge badge-ga">GA</span>. But it <strong>always leaves a "Comment" review</strong> — never Approve or Request changes — so it <strong>is not a merge gate</strong></td></tr></tbody></table></div>
 
 <aside class="callout callout-key">
     <div class="callout-mark" aria-hidden="true">★</div>
-    <div class="callout-body"><p class="callout-title">見落とされやすい重要事実：cloud agent には GHAS なしでセキュリティ検証が組み込まれている</p><p>公式の risks-and-mitigations は、cloud agent の作業に対して <strong>CodeQL・Advisory Database による依存チェック・secret scanning・Copilot code review</strong> が働き、これらは <strong>GHAS / Code Security の契約を必要としない</strong>と明記しています。<br>
-    静的解析と CodeQL が設定済みのルール・クエリを評価する仕組みは、GHAS 顧客だけの話ではありません。これは提案の敷居を下げる材料になります。</p></div>
+    <div class="callout-body"><p class="callout-title">An easily missed fact: the cloud agent has security verification built in without GHAS</p><p>The official risks-and-mitigations page states explicitly that, for the cloud agent's work, <strong>CodeQL, dependency checks against the Advisory Database, secret scanning, and Copilot code review</strong> all apply, and that these <strong>do not require a GHAS / Code Security contract</strong>.<br>
+    The way static analysis and CodeQL evaluate configured rules and queries is not something reserved for GHAS customers. That lowers the bar for proposing this work.</p></div>
   </aside>
 
-<h3>決定的マージゲート —— ruleset で「通らなければマージできない」を設計する</h3>
-<p>検証を「参考情報」から「関門」へ変えるのは ruleset です。エージェントの PR も人間の PR と同じく、これらのゲートを通らなければマージできません。branch protection / required status checks / linear history / signed commits に加え、<strong>解析結果そのものをマージ条件にできる</strong>ルールが揃っています。</p>
-<div class="table-wrap"><table class=""><colgroup><col style="width:26%"><col style="width:56%"><col style="width:18%"></colgroup><thead><tr><th>ruleset ルール</th><th>何がマージをブロックするか</th><th>状態</th></tr></thead><tbody><tr><td><strong>Require code scanning results</strong></td><td>必須ツールが指定重大度のアラートを検出／解析が進行中／ツールが未設定 —— のいずれか</td><td><span class="badge badge-official">公式</span></td></tr><tr><td><strong>Require code quality results</strong></td><td>GitHub Code Quality の解析が進行中／失敗／指定重大度以上の結果 —— のいずれか</td><td><span class="badge badge-official">公式</span> <span class="muted">Code Quality は 2026-07-20 GA</span></td></tr><tr><td><strong>Restrict code coverage</strong></td><td>2 つの閾値でブロック：<strong>Minimum coverage percentage</strong>（PR ブランチの集約カバレッジが設定値未満）と <strong>Maximum coverage drop</strong>（既定ブランチ比で設定ポイント数以上低下）。Code Quality 有効かつカバレッジデータのアップロードが前提</td><td><span class="badge badge-pp">Public Preview</span></td></tr><tr><td><strong>Require deployments to succeed before merging</strong></td><td>指定環境へのデプロイ成功を必須化（例：既定ブランチへのマージ前に staging へのデプロイ成功を要求）</td><td><span class="badge badge-official">公式</span></td></tr></tbody></table></div>
+<h3>Deterministic merge gates — using rulesets to design "cannot merge unless it passes"</h3>
+<p>What turns verification from "reference information" into a "gate" is the ruleset. The agent's PRs, like a human's, cannot merge unless they pass these gates. On top of branch protection, required status checks, linear history, and signed commits, there is a full set of rules that can make the analysis results themselves a merge condition.</p>
+<div class="table-wrap"><table class=""><colgroup><col style="width:26%"><col style="width:56%"><col style="width:18%"></colgroup><thead><tr><th>Ruleset rule</th><th>What blocks the merge</th><th>Status</th></tr></thead><tbody><tr><td><strong>Require code scanning results</strong></td><td>A required tool has found an alert at the specified severity, an analysis is still in progress, or a tool has not been configured — any of these</td><td><span class="badge badge-official">Official</span></td></tr><tr><td><strong>Require code quality results</strong></td><td>A GitHub Code Quality analysis is in progress, has failed, or has produced a result at or above the specified severity — any of these</td><td><span class="badge badge-official">Official</span> <span class="muted">Code Quality reached GA on 2026-07-20</span></td></tr><tr><td><strong>Restrict code coverage</strong></td><td>Blocks on two thresholds: <strong>Minimum coverage percentage</strong> (the PR branch's aggregate coverage is below the configured value) and <strong>Maximum coverage drop</strong> (a fall of at least the configured number of points relative to the default branch). Requires Code Quality to be enabled and coverage data to be uploaded</td><td><span class="badge badge-pp">Public Preview</span></td></tr><tr><td><strong>Require deployments to succeed before merging</strong></td><td>Requires a successful deployment to a specified environment (for example, requiring a successful deployment to staging before merging to the default branch)</td><td><span class="badge badge-official">Official</span></td></tr></tbody></table></div>
 <figure class="doc-quote">
     <blockquote>This feature is in public preview and subject to change.</blockquote>
-    <figcaption><a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets" target="_blank" rel="noopener noreferrer">GitHub Docs — Available rules for rulesets（Restrict code coverage）</a></figcaption>
+    <figcaption><a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/managing-rulesets/available-rules-for-rulesets" target="_blank" rel="noopener noreferrer">GitHub Docs — Available rules for rulesets (Restrict code coverage)</a></figcaption>
   </figure>
-<p>「Copilot code review は Comment のみでブロックしない」（上表）ことと合わせて読むべきです —— <strong>ブロックしたい検証は、レビューコメントではなく ruleset 側に置く</strong>。これが決定的検証の設計原則です（§09）。</p>
+<p>Read this together with "Copilot code review only comments and never blocks" (the table above) — <strong>put the verification you want to block on, on the ruleset side, not in review comments</strong>. That is the design principle of deterministic verification (§09).</p>
 
-<h3>エージェントがテストも書くときは「テストの意図」を先にレビューする</h3>
-<p>エージェントに実装とテストの両方を任せると、<strong>実装に都合よくテストが書かれる</strong>危険があります（通ることを目的にテストが歪む）。§07 の modernize-legacy-code の手順が「<strong>業務ロジックのテスト計画を先に作り、それに対してテストを生成する</strong>」順序を採るのはこのためです。これを一般化します。</p>
-<ol class="steps"><li><p class="step-title">1. テストの意図を人がレビューする</p><div class="step-body">「何を・なぜ守るのか」（テスト計画・受け入れ条件）を、実装より先に人が確認する。ここが検証の網の設計点。</div></li><li><p class="step-title">2. 意図に沿ってテストを生成させる</p><div class="step-body">承認された意図に対してエージェントがテストを書く。characterization テストは observed behavior を固定する（§05・§07）。</div></li><li><p class="step-title">3. 実装を生成させ、テストと ruleset で検証する</p><div class="step-body">テストが先に存在するので、実装がテストを通すために歪む余地が減る。決定的ゲート（上表）が最終判定を担う。</div></li></ol>
+<h3>When the agent also writes the tests, review the "intent of the tests" first</h3>
+<p>If you let the agent write both the implementation and the tests, there is a risk that the <strong>tests are written to suit the implementation</strong> (the tests bend toward simply passing). That is why the modernize-legacy-code procedure in §07 takes the order of "<strong>first build a test plan for the business logic, then generate tests against it</strong>." Here we generalize that.</p>
+<ol class="steps"><li><p class="step-title">1. A person reviews the intent of the tests</p><div class="step-body">A person confirms "what is protected and why" (the test plan and acceptance criteria) before the implementation. This is the design point of the verification net.</div></li><li><p class="step-title">2. Have tests generated in line with that intent</p><div class="step-body">The agent writes tests against the approved intent. Characterization tests pin down observed behaviour (§05, §07).</div></li><li><p class="step-title">3. Have the implementation generated, and verify it with the tests and the ruleset</p><div class="step-body">Because the tests already exist, there is less room for the implementation to bend just to pass them. The deterministic gates (the table above) carry the final decision.</div></li></ol>
 
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">flaky テストはゲートを非決定にする —— 隔離する</p><p>実行のたびに成否が揺れる <strong>flaky（不安定）テスト</strong>は、決定的マージゲートの前提を壊します。ゲートに載った flaky テストは「再現可能に判定する」という決定性を失わせ、<strong>エージェントの PR を理由なく落とすか、逆に再実行で無理やり通す</strong>運用を招きます。<br>対処は<strong>隔離</strong>です —— flaky と判明したテストを必須ゲートから外し（quarantine）、別枠で原因を追跡する。決定的検証を名乗るには、ゲートに載せるテストが決定的であることが前提です。</p></div>
+    <div class="callout-body"><p class="callout-title">Flaky tests make a gate non-deterministic — quarantine them</p><p>A <strong>flaky (unstable) test</strong>, whose pass or fail wobbles from run to run, breaks the premise of a deterministic merge gate. A flaky test sitting on a gate destroys the determinism of "decide reproducibly," and leads to a practice of either <strong>failing the agent's PR for no reason or force-passing it by re-running</strong>.<br>
+    The remedy is <strong>quarantine</strong> — take a test that has proven flaky off the required gates (quarantine it) and track down the cause separately. To call something deterministic verification, the tests placed on the gate must first be deterministic.</p></div>
   </aside>
 
-<h3>「決定的」の意味を誤解させないための注記</h3>
-<p>ここでの「決定的（deterministic）」とは、<em>設定された入力の範囲で明示的かつ再現可能</em>という意味であって、<strong>無謬という意味ではありません</strong>。CodeQL は<strong>設定したクエリしか見ません</strong>。テストは<strong>書いた振る舞いしか守りません</strong>。<br>だから characterization テスト（§05）が先に来ます —— 検証の網が存在しない状態では、決定的検証は「何も検出しない」を再現可能に返すだけです。</p>
+<h3>A note so "deterministic" is not misread</h3>
+<p>"Deterministic" here means <em>explicit and reproducible within the range of configured inputs</em>, not <strong>infallible</strong>. CodeQL <strong>only sees the queries you configured</strong>. Tests <strong>only protect the behaviour you wrote</strong>.<br>That is why characterization tests (§05) come first — with no verification net in place, deterministic verification merely returns "detects nothing" reproducibly.</p>
 
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">characterization test という機能名は存在しない</p><p>「characterization testing」という名前の GitHub 機能は<strong>ありません</strong>。実装手段は次のいずれかです：<br>
-    ① Copilot Chat のユニットテスト生成、② <a href="https://docs.github.com/en/copilot/tutorials/modernize-legacy-code" target="_blank" rel="noopener noreferrer">modernize-legacy-code チュートリアル</a>が教える「業務ロジックのテスト計画を先に作り、それに対してテストを生成する」手順、③ App modernization for Java の既存テスト移行＋新規ユニットテスト生成（behavioral-integrity 検証を含む）。<br>
-    characterization テストは<strong>正しさではなく、観測された振る舞いを保存する</strong>もの —— レガシー改修の一般原則としては正しく、製品機能名としては提示すべきではありません。</p></div>
+    <div class="callout-body"><p class="callout-title">There is no feature called "characterization test"</p><p>There is <strong>no</strong> GitHub feature named "characterization testing." You implement it in one of these ways:<br>
+    ① unit-test generation in Copilot Chat; ② the procedure the <a href="https://docs.github.com/en/copilot/tutorials/modernize-legacy-code" target="_blank" rel="noopener noreferrer">modernize-legacy-code tutorial</a> teaches — "first build a test plan for the business logic, then generate tests against it"; ③ App modernization for Java migrating existing tests and generating new unit tests (including behavioral-integrity verification).<br>
+    Characterization tests <strong>preserve observed behaviour, not correctness</strong> — correct as a general principle of legacy remediation, but not something to present as a product feature name.</p></div>
   </aside>
 
 </section>
-<section class="section" id="pr" lang="ja" aria-labelledby="pr-title">
+<section class="section" id="pr" aria-labelledby="pr-title">
   <div class="section__head">
     <p class="section__num">09</p>
     <div class="section__headings">
-      <p class="eyebrow">ガバナンス</p>
-      <h2 id="pr-title">PR をガバナンス境界にする 5 つの構造的保証</h2>
+      <p class="eyebrow">Governance</p>
+      <h2 id="pr-title">Five structural guarantees that make the PR a governance boundary</h2>
     </div>
   </div>
-  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
-  <p class="lead">「The pull request is the governance boundary（PR がガバナンス境界である）」と「Autonomous execution does not require autonomous acceptance（自律的な実行は、自律的な受け入れを必要としない）」は、比喩ではなく製品仕様で裏づけられます。何が保証され、何が保証されないのかを分けます。</p>
+  <p class="lead">"The pull request is the governance boundary" and "Autonomous execution does not require autonomous acceptance" are backed by product specification, not metaphor. This section separates what is guaranteed from what is not.</p>
 
 <figure class="principle">
-    <blockquote>The pull request reconnects intent, delegated execution, verification, and accountable human acceptance.<br>Autonomous execution does not require autonomous acceptance.</blockquote><figcaption>PR は「意図・委譲された実行・検証・説明責任を持つ人間の受け入れ」を再接続する点である。自律的な実行は、自律的な受け入れを必要としない。</figcaption>
+    <blockquote>The pull request reconnects intent, delegated execution, verification, and accountable human acceptance.<br>Autonomous execution does not require autonomous acceptance.</blockquote>
   </figure>
 
 <figure class="diagram"><svg viewBox="0 0 680 384" role="img" aria-labelledby="dg-pr-t dg-pr-d" preserveAspectRatio="xMidYMid meet">
-  <title id="dg-pr-t">PR をガバナンス境界とするレーン図</title>
-  <desc id="dg-pr-d">人間・エージェント・PR・CI の 4 レーン。エージェントは Issue の委譲を受けて copilot/… ブランチ 1 本に実装し draft PR を作るが、境界線の右側にある Ready 化・Approve・Merge は実行できず、人間がレビューしてマージする。自律的な実行は自律的な受け入れを意味しない。</desc>
+  <title id="dg-pr-t">Swimlane diagram with the PR as the governance boundary</title>
+  <desc id="dg-pr-d">Four lanes — human, agent, PR, and CI. The agent takes a delegated Issue, implements it on a single copilot/… branch, and opens a draft PR, but it cannot do any of the actions to the right of the boundary line — making the PR Ready, Approve, or Merge (×); a human reviews and merges to accept. Autonomous execution does not mean autonomous acceptance.</desc>
   <rect class="d-lane" x="0" y="52" width="680" height="72"></rect>
-  <text class="d-tm" x="82" y="92" text-anchor="end" font-size="13" font-weight="600">人間</text>
+  <text class="d-tm" x="82" y="92" text-anchor="end" font-size="13" font-weight="600">Human</text>
   <rect class="d-lane-alt" x="0" y="124" width="680" height="72"></rect>
-  <text class="d-tm" x="82" y="164" text-anchor="end" font-size="13" font-weight="600">エージェント</text>
+  <text class="d-tm" x="82" y="164" text-anchor="end" font-size="13" font-weight="600">Agent</text>
   <rect class="d-lane" x="0" y="196" width="680" height="72"></rect>
   <text class="d-tm" x="82" y="236" text-anchor="end" font-size="13" font-weight="600">PR</text>
   <rect class="d-lane-alt" x="0" y="268" width="680" height="72"></rect>
   <text class="d-tm" x="82" y="308" text-anchor="end" font-size="13" font-weight="600">CI</text>
   <line class="d-line" x1="96" y1="52" x2="96" y2="340"></line>
-  <text class="d-tm" x="270" y="34" text-anchor="middle" font-size="12" font-weight="600">自律的な実行</text>
-  <text class="d-tm" x="566" y="34" text-anchor="middle" font-size="12" font-weight="600">人間による受け入れ</text>
+  <text class="d-tm" x="270" y="34" text-anchor="middle" font-size="12" font-weight="600">Autonomous execution</text>
+  <text class="d-tm" x="566" y="34" text-anchor="middle" font-size="12" font-weight="600">Human acceptance</text>
   <line class="d-boundary" x1="452" y1="46" x2="452" y2="346" stroke-width="2" stroke-dasharray="6 5"></line>
-  <text class="d-danger" x="452" y="362" text-anchor="middle" font-size="11.5" font-weight="600">エージェントが越えられない境界</text>
+  <text class="d-danger" x="452" y="362" text-anchor="middle" font-size="11.5" font-weight="600">The boundary the agent cannot cross</text>
   <g>
     <rect class="d-box-accent" x="118" y="65" width="128" height="46" rx="9"></rect>
-    <text class="d-t" x="182" y="85" text-anchor="middle" font-size="12.5" font-weight="600">Issue を委譲</text>
+    <text class="d-t" x="182" y="85" text-anchor="middle" font-size="12.5" font-weight="600">Delegate an Issue</text>
     <text class="d-tm" x="182" y="101" text-anchor="middle" font-size="10.5">Delegation Contract</text>
   </g>
   <g>
     <rect class="d-box" x="262" y="137" width="150" height="46" rx="9"></rect>
-    <text class="d-t" x="337" y="157" text-anchor="middle" font-size="12.5" font-weight="600">実装 & push</text>
-    <text class="d-tm" x="337" y="173" text-anchor="middle" font-size="10.5">copilot/… ブランチ 1 本</text>
+    <text class="d-t" x="337" y="157" text-anchor="middle" font-size="12.5" font-weight="600">Build & push</text>
+    <text class="d-tm" x="337" y="173" text-anchor="middle" font-size="10.5">one copilot/… branch</text>
   </g>
   <g>
     <rect class="d-box" x="262" y="209" width="150" height="46" rx="9"></rect>
     <text class="d-t" x="337" y="229" text-anchor="middle" font-size="12.5" font-weight="600">draft PR</text>
-    <text class="d-tm" x="337" y="245" text-anchor="middle" font-size="10.5">Ready にできない</text>
+    <text class="d-tm" x="337" y="245" text-anchor="middle" font-size="10.5">Cannot reach Ready</text>
   </g>
   <g>
-    <rect class="d-box-attention" x="486" y="281" width="128" height="46" rx="9"></rect>
-    <text class="d-t" x="550" y="301" text-anchor="middle" font-size="12.5" font-weight="600">checks 実行</text>
-    <text class="d-tm" x="550" y="317" text-anchor="middle" font-size="10.5">Approve and run 後</text>
+    <rect class="d-box-attention" x="486" y="281" width="150" height="46" rx="9"></rect>
+    <text class="d-t" x="561" y="301" text-anchor="middle" font-size="12.5" font-weight="600">Run checks</text>
+    <text class="d-tm" x="561" y="317" text-anchor="middle" font-size="10.5">After Approve and run</text>
   </g>
   <g>
     <rect class="d-box-success" x="486" y="65" width="150" height="46" rx="9"></rect>
-    <text class="d-t" x="561" y="85" text-anchor="middle" font-size="12.5" font-weight="600">レビュー & Merge</text>
+    <text class="d-t" x="561" y="85" text-anchor="middle" font-size="12.5" font-weight="600">Review & Merge</text>
     <text class="d-tm" x="561" y="101" text-anchor="middle" font-size="10.5">required reviews</text>
   </g>
   <line class="d-conn" x1="246" y1="88" x2="262" y2="154" stroke-width="1.6"></line>
@@ -869,205 +868,203 @@ brew install modernize</code></pre>
     <line class="d-block" x1="416" y1="142" x2="448" y2="142" stroke-width="1.4" stroke-dasharray="4 3"></line>
     <circle class="d-block-x" cx="432" cy="142" r="8"></circle>
     <text class="d-danger" x="432" y="145.5" text-anchor="middle" font-size="11" font-weight="700">×</text>
-    <text class="d-danger" x="460" y="146" text-anchor="start" font-size="11">Ready 不可</text>
+    <text class="d-danger" x="460" y="146" text-anchor="start" font-size="11">Ready blocked</text>
   </g>
   <g>
     <line class="d-block" x1="416" y1="160" x2="448" y2="160" stroke-width="1.4" stroke-dasharray="4 3"></line>
     <circle class="d-block-x" cx="432" cy="160" r="8"></circle>
     <text class="d-danger" x="432" y="163.5" text-anchor="middle" font-size="11" font-weight="700">×</text>
-    <text class="d-danger" x="460" y="164" text-anchor="start" font-size="11">Approve 不可</text>
+    <text class="d-danger" x="460" y="164" text-anchor="start" font-size="11">Approve blocked</text>
   </g>
   <g>
     <line class="d-block" x1="416" y1="178" x2="448" y2="178" stroke-width="1.4" stroke-dasharray="4 3"></line>
     <circle class="d-block-x" cx="432" cy="178" r="8"></circle>
     <text class="d-danger" x="432" y="181.5" text-anchor="middle" font-size="11" font-weight="700">×</text>
-    <text class="d-danger" x="460" y="182" text-anchor="start" font-size="11">Merge 不可</text>
+    <text class="d-danger" x="460" y="182" text-anchor="start" font-size="11">Merge blocked</text>
   </g>
-</svg><figcaption>人間・エージェント・PR・CI の 4 レーン。エージェントは委譲を受けて copilot/… ブランチ 1 本に実装し draft PR を作るが、境界線の右側にある Ready 化・Approve・Merge はどれも実行できない（×）。受け入れは人間がレビューして行う。各保証の詳細は直後の一覧で確認できる。</figcaption></figure>
+</svg><figcaption>Four lanes — human, agent, PR, and CI. The agent takes the delegation, implements it on a single copilot/… branch, and opens a draft PR, but it can do none of making the PR Ready, Approve, or Merge on the right of the boundary line (×). Acceptance is done by a human reviewing. The details of each guarantee are in the list immediately below.</figcaption></figure>
 
-<h3>製品仕様で保証されること</h3>
-<ol class="steps"><li><p class="step-title">書き込み権限のない人はエージェントを起動できない</p><div class="step-body">リポジトリへの write アクセスを持つユーザーだけがトリガーできます。write 権限のない人のコメントはプロンプトに渡されません。さらに、隠し文字と HTML コメントはプロンプト到達前にフィルタされます（プロンプトインジェクション対策）。</div></li><li><p class="step-title">エージェントは 1 本のブランチにしか push できない</p><div class="step-body">通常は新規に <code>copilot/…</code> ブランチが作られ、そこにしか push できません。<code>@copilot</code> で既存 PR に呼んだ場合はその PR のブランチ。<strong>エージェントは直接 git コマンドを実行できず</strong>、単純な push 操作に限定されます。ブランチ保護と required checks は当然に適用されます。</div></li><li><p class="step-title">エージェントは自分の PR を Ready にも Approve にも Merge にもできない</p><div class="step-body">加えて、<strong>タスクを依頼した本人の承認も required approvals にカウントされません</strong>。「投げた人が承認する」抜け道が構造的に塞がれています。</div></li><li><p class="step-title">ワークフローは既定で自動実行されない</p><div class="step-body">write 権限者が <strong>Approve and run workflows</strong> をクリックするまで走りません。自動実行させることは可能ですが、それは明示的なオプトインです。</div></li><li><p class="step-title">成果物は追跡可能</p><div class="step-body">コミットは Copilot が author、依頼者が co-author の <strong>Verified 署名コミット</strong>で、session log にリンクします。Enterprise の監査ログは <code>actor:Copilot</code> で過去 180 日を検索でき、<code>actor_is_agent</code>・<code>agent_session_id</code>・<code>user</code> フィールドを持ちます。</div></li></ol>
+<h3>What the product specification guarantees</h3>
+<ol class="steps"><li><p class="step-title">Someone without write access cannot start the agent</p><div class="step-body">Only users with write access to the repository can trigger it. Comments from people without write access are not passed to the prompt. On top of that, hidden characters and HTML comments are filtered out before they reach the prompt (a defence against prompt injection).</div></li><li><p class="step-title">The agent can push to only one branch</p><div class="step-body">Normally a new <code>copilot/…</code> branch is created and it can push only there. If you call it on an existing PR with <code>@copilot</code>, it is that PR's branch. <strong>The agent cannot run git commands directly</strong> and is limited to simple push operations. Branch protection and required checks naturally apply.</div></li><li><p class="step-title">The agent cannot make its own PR Ready, Approve it, or Merge it</p><div class="step-body">In addition, <strong>the approval of the very person who requested the task does not count toward required approvals</strong>. The "whoever asked approves it" loophole is structurally closed.</div></li><li><p class="step-title">Workflows do not run automatically by default</p><div class="step-body">They do not run until someone with write access clicks <strong>Approve and run workflows</strong>. You can make them run automatically, but that is an explicit opt-in.</div></li><li><p class="step-title">The outputs are traceable</p><div class="step-body">Commits are <strong>Verified signed commits</strong> with Copilot as author and the requester as co-author, linked to the session log. The Enterprise audit log can be searched with <code>actor:Copilot</code> over the past 180 days, and carries <code>actor_is_agent</code>, <code>agent_session_id</code>, and <code>user</code> fields.</div></li></ol>
 
-<h3>Evidence Package —— PR に「何を根拠に受け入れるか」を束ねる <span class="badge badge-framework">本資料の整理</span></h3>
-<p>本資料は、エージェントが PR で返すべき成果物のまとまりを <strong>Evidence Package</strong> と呼びます。これは公式の製品機能名ではなく<strong>本資料の整理語彙</strong>で（§16）、次の 3 つの素材からなります。人がマージを判断するのは、コードそのものではなく、この束に対してです。</p>
+<h3>Evidence Package — bundling "on what grounds to accept" onto the PR <span class="badge badge-framework">This guide's framing</span></h3>
+<p>This guide calls the bundle of outputs the agent should return on the PR the <strong>Evidence Package</strong>. This is not an official product feature name but <strong>this guide's own organising vocabulary</strong> (§16), and it consists of the following three materials. What a person judges when merging is not the code itself but this bundle.</p>
 <div class="cards cards-3"><div class="card">
-        <p class="card-title">Code —— 変更そのもの <span class="badge badge-official">公式</span></p>
-        <div class="card-body"><code>copilot/…</code> ブランチ上の <strong>Verified 署名コミット</strong>と diff。author は Copilot、co-author は依頼者で、session log へ辿れます。</div>
+        <p class="card-title">Code — the change itself <span class="badge badge-official">Official</span></p>
+        <div class="card-body">The <strong>Verified signed commits</strong> and diff on the <code>copilot/…</code> branch. The author is Copilot, the co-author is the requester, and it traces back to the session log.</div>
       </div><div class="card">
-        <p class="card-title">Evidence —— 検証の証跡 <span class="badge badge-official">公式</span></p>
-        <div class="card-body">ビルド・テスト・CodeQL・依存チェック・secret scanning・Copilot code review の結果が PR に添付されます。<strong>決定的ゲート（§08）を通ったという事実</strong>がここに現れます。</div>
+        <p class="card-title">Evidence — the record of verification <span class="badge badge-official">Official</span></p>
+        <div class="card-body">The results of build, test, CodeQL, dependency checks, secret scanning, and Copilot code review are attached to the PR. <strong>The fact that it passed the deterministic gates (§08)</strong> shows up here.</div>
       </div><div class="card">
-        <p class="card-title">Uncertainty —— 未解決事項と前提 <span class="badge badge-framework">本資料の整理</span></p>
-        <div class="card-body">未解決の論点・置いた前提・明示的な質問。<strong>エージェントは書けますが、書くことは強制されません</strong>（下表）。<code>AGENTS.md</code> で Uncertainty セクションを必須化して埋めます。</div>
+        <p class="card-title">Uncertainty — open questions and assumptions <span class="badge badge-framework">This guide's framing</span></p>
+        <div class="card-body">Open points, the assumptions made, and explicit questions. <strong>The agent can write them, but is not forced to</strong> (the table below). You make an Uncertainty section mandatory in <code>AGENTS.md</code> and fill it in.</div>
       </div></div>
 <aside class="callout callout-note">
     <div class="callout-mark" aria-hidden="true">i</div>
-    <div class="callout-body"><p class="callout-title">Evidence Package は「素材」であって「判定」ではない</p><p>3 つの素材は自動で揃いますが、<strong>受け入れ条件への対応づけ（この証跡がこの条件を満たす、という写像）は自動生成されません</strong>（下表）。Evidence Package はレビューを不要にするものではなく、<strong>レビューを「コードを読む」から「証跡と条件を突き合わせる」へ引き上げる</strong>ための整理です。§08 の決定的ゲートが Evidence の質を、この節の PR 構造が受け入れの説明責任を担保します。</p></div>
+    <div class="callout-body"><p class="callout-title">The Evidence Package is "material," not a "decision"</p><p>The three materials assemble automatically, but <strong>the mapping onto the acceptance criteria (the mapping that says this piece of evidence satisfies this criterion) is not generated automatically</strong> (the table below). The Evidence Package does not remove the need for review; it is an arrangement that <strong>raises review from "reading the code" to "matching evidence against criteria."</strong> The deterministic gates of §08 underwrite the quality of the Evidence, and the PR structure of this section underwrites accountability for acceptance.</p></div>
   </aside>
 
-<h3>保証されないこと（人が設計する必要がある部分）</h3>
-<div class="table-wrap"><table class=""><colgroup><col style="width:30%"><col style="width:34%"><col style="width:36%"></colgroup><thead><tr><th>この運用モデルが要求すること</th><th>現状</th><th>運用でどう埋めるか</th></tr></thead><tbody><tr><td>「Delegation Contract と Issue を、エージェントのセッション・ブランチ・結果の変更にリンクする」</td><td><span class="mid">部分的</span> Issue → PR → session log のリンクは自動。<strong>Delegation Contract 自体の版管理は自動化されない</strong></td><td>契約を Issue 本文に置き、編集履歴を残す。テンプレート化して 8 フィールドの欠落を防ぐ</td></tr><tr><td>「すべての受け入れ条件に証拠を対応づける」</td><td><span class="neg">なし</span> checks の pass/fail は出るが、<strong>受け入れ条件への対応づけは自動生成されない</strong></td><td>PR 本文テンプレートに受け入れ条件のチェックリストを置き、レビュアが埋める</td></tr><tr><td>「未解決事項と前提を列挙する」「明示的な質問をする」（不確実性の申告）</td><td><span class="mid">プロンプト依存</span> エージェントは書けるが、<strong>書くことは強制されない</strong></td><td><code>AGENTS.md</code> に「PR 本文には必ず Uncertainty セクションを設け、未解決事項と前提を列挙すること」を明記する</td></tr><tr><td>「アーキテクチャ適合性・互換性・運用影響をレビューする」</td><td><span class="neg">人間のみ</span> Copilot code review は <strong>常に Comment レビュー</strong>で承認判断をしない</td><td>CODEOWNERS でアーキテクチャ／セキュリティ担当を必須レビュアに割り当てる</td></tr><tr><td>「マージ・リリース・本番デプロイを、明示的で、場合によっては別々のゲートとして扱う」</td><td><span class="pos">可能</span></td><td>environments ＋ deployment protection rules で 3 つを分離。required reviewers、wait timer、self-review 禁止、admin bypass 禁止を設定</td></tr><tr><td>「エージェントの自動実行そのものを、コードと一緒にバージョン管理する」</td><td><span class="neg">なし</span> <strong>automations の定義は Git にコミットされない</strong>。リポジトリのコンテンツとは別に保存され、PR を経由せず変更できる</td><td>automation は「PR がガバナンス境界」テーゼの<strong>抜け道</strong>。誰がどの automation を持つかを別途棚卸しし、生成物（PR）側の ruleset で受け止める（§06・§10）</td></tr></tbody></table></div>
+<h3>What is not guaranteed (the parts a person must design)</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:30%"><col style="width:34%"><col style="width:36%"></colgroup><thead><tr><th>What this operating model requires</th><th>Where it stands today</th><th>How to fill the gap in practice</th></tr></thead><tbody><tr><td>"Link the Delegation Contract and the Issue to the agent's session, branch, and resulting changes"</td><td><span class="mid">Partial</span> The Issue → PR → session log links are automatic. <strong>Versioning of the Delegation Contract itself is not automated</strong></td><td>Put the contract in the Issue body and keep its edit history. Templatize it to prevent any of the 8 fields from being missing</td></tr><tr><td>"Map evidence to every acceptance criterion"</td><td><span class="neg">None</span> The pass/fail of checks appears, but <strong>the mapping onto acceptance criteria is not generated automatically</strong></td><td>Put an acceptance-criteria checklist in the PR body template, and have the reviewer fill it in</td></tr><tr><td>"List open questions and assumptions" and "ask explicit questions" (declaring uncertainty)</td><td><span class="mid">Prompt-dependent</span> The agent can write them, but <strong>is not forced to</strong></td><td>Spell out in <code>AGENTS.md</code> that "the PR body must always include an Uncertainty section listing open questions and assumptions"</td></tr><tr><td>"Review architectural fit, compatibility, and operational impact"</td><td><span class="neg">Humans only</span> Copilot code review <strong>always leaves a Comment review</strong> and makes no approval decision</td><td>Use CODEOWNERS to assign the architecture / security owners as required reviewers</td></tr><tr><td>"Treat merge, release, and production deployment as explicit and, where appropriate, separate gates"</td><td><span class="pos">Possible</span></td><td>Separate the three with environments plus deployment protection rules. Configure required reviewers, a wait timer, no self-review, and no admin bypass</td></tr><tr><td>"Version the agent's automated execution itself alongside the code"</td><td><span class="neg">None</span> <strong>The automations definition is not committed to Git</strong>. It is stored separately from the repository's contents and can be changed without going through a PR</td><td>An automation is a loophole in the "PR is the governance boundary" thesis. Inventory who holds which automation separately, and catch it on the ruleset of the output (the PR) side (§06, §10)</td></tr></tbody></table></div>
 
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">統治上の穴：automations は Git 管理外・バージョン管理外</p><figure class="doc-quote">
+    <div class="callout-body"><p class="callout-title">A governance hole: automations are outside Git and outside version control</p><figure class="doc-quote">
     <blockquote>Automations are stored separately from your repository's contents. They are not committed to Git, so they are not versioned alongside your code or managed through pull requests.</blockquote>
     <figcaption><a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-automations" target="_blank" rel="noopener noreferrer">GitHub Docs — About Copilot automations</a></figcaption>
   </figure>
-    <p>automations（§06）は cloud agent をスケジュール／イベントで無人実行しますが、その<strong>定義自体は PR を通らず、Git 履歴にも残りません</strong>。「PR がガバナンス境界」という本資料のテーゼに対する実在の抜け道です。ただし automation が<strong>生み出す</strong> PR は通常どおり ruleset・required reviews を通るため、<strong>入口（automation 定義）は棚卸しで、出口（生成 PR）は決定的ゲートで</strong>二重に受け止めるのが現実的な統治です。</p></div>
+    <p>Automations (§06) run the cloud agent unattended on a schedule or an event, but <strong>the definition itself does not go through a PR and leaves no trace in the Git history</strong>. It is a real loophole in this guide's "the PR is the governance boundary" thesis. That said, the PRs an automation <strong>produces</strong> pass through the ruleset and required reviews as usual, so the practical governance is to catch it twice — <strong>the entrance (the automation definition) by inventory, and the exit (the generated PR) by the deterministic gates</strong>.</p></div>
   </aside>
 
 <aside class="callout callout-note">
     <div class="callout-mark" aria-hidden="true">i</div>
-    <div class="callout-body"><p class="callout-title">Copilot code review の位置づけを間違えない</p><figure class="doc-quote">
+    <div class="callout-body"><p class="callout-title">Do not misplace Copilot code review</p><figure class="doc-quote">
     <blockquote>Copilot always leaves a 'Comment' review, not an 'Approve' review or a 'Request changes' review.</blockquote>
     <figcaption><a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/request-a-code-review/use-code-review" target="_blank" rel="noopener noreferrer">docs.github.com — Using Copilot code review</a></figcaption>
   </figure>
-  <p>つまり Copilot code review は<strong>ゲートではなくシグナル</strong>です。人間に求められるのは「差分だけでなく判断をレビューする」こと —— Copilot が指摘しない層、すなわちアーキテクチャ適合性、互換性、運用影響、残存する不確実性 —— の判断です。自動レビューが入ることで人間のレビューが不要になるのではなく、<strong>人間のレビューが上位の論点に集中できる</strong>という整理が正確です。</p>
-  <p class="muted">なお Copilot code review は既定で手動（PR の Reviewers から Copilot を指名）。新規 PR に対する自動レビューは設定で有効化でき、draft や新規 push も対象にできます。custom instructions・<code>AGENTS.md</code>・path-specific instructions・agent skills・MCP を尊重します（agent skills と MCP のサポートは 2026-07-29 に GA）。</p></div>
+  <p>In other words, Copilot code review is a <strong>signal, not a gate</strong>. What is asked of a human is to "review the judgement, not just the diff" — judgement about the layer Copilot does not flag: architectural fit, compatibility, operational impact, and residual uncertainty. The accurate framing is not that an automated review removes the need for human review, but that <strong>human review can concentrate on the higher-order questions</strong>.</p>
+  <p class="muted">Note that Copilot code review is manual by default (nominate Copilot from the PR's Reviewers). Automatic review of new PRs can be enabled in settings, and can also cover drafts and new pushes. It respects custom instructions, <code>AGENTS.md</code>, path-specific instructions, agent skills, and MCP (agent skills and MCP support reached GA on 2026-07-29).</p></div>
   </aside>
 
 <aside class="callout callout-update">
     <div class="callout-mark" aria-hidden="true">⟳</div>
-    <div class="callout-body"><p class="callout-title">code review のエージェント的機能 —— 全体解析と、cloud agent への修正受け渡し</p><p>Copilot code review は単なる差分コメンタではなく、エージェント的な機能を備えます。ただし前段の「Comment のみ・非ブロッキング」という性質はこれらでも変わりません。</p>
-  <ul class="plain"><li><strong>full project context gathering</strong> <a href="https://docs.github.com/en/copilot/concepts/agents/code-review" target="_blank" rel="noopener noreferrer">（公式）</a>：差分だけでなくリポジトリ全体を解析し、変更の波及を踏まえた指摘を行う</li><li><strong>提案を cloud agent に渡して修正適用 PR を自動作成</strong> <span class="badge badge-pp">Public Preview</span>：レビュー指摘をそのまま cloud agent に委譲し、修正 PR を起こせる。ただし生成された PR は通常どおり ruleset・required reviews を通る（§08）</li><li>対象外ファイル：依存管理ファイル（<code>package.json</code>・<code>Gemfile.lock</code> 等）、ログファイル、SVG はレビューされない</li></ul>
-  <p class="muted">利用可能面には <strong>Azure DevOps</strong> <span class="badge badge-pp">Public Preview</span> も含まれます。Copilot ライセンスを持たない組織メンバーにも GitHub.com 上で利用可能にできます（Business / Enterprise・2 つのポリシーを有効化・既定は無効）。</p></div>
+    <div class="callout-body"><p class="callout-title">The agentic capabilities of code review — whole-project analysis and handing fixes to the cloud agent</p><p>Copilot code review is not merely a diff commenter; it has agentic capabilities. The earlier property — "Comment only, non-blocking" — still holds for these, though.</p>
+  <ul class="plain"><li><strong>full project context gathering</strong> <a href="https://docs.github.com/en/copilot/concepts/agents/code-review" target="_blank" rel="noopener noreferrer">(official)</a>: it analyses the whole repository, not just the diff, and comments with the ripple effects of the change in mind</li><li><strong>handing a suggestion to the cloud agent to auto-create a fix PR</strong> <span class="badge badge-pp">Public Preview</span>: you can delegate a review comment straight to the cloud agent and raise a fix PR. The generated PR still passes through the ruleset and required reviews as usual (§08)</li><li>Out-of-scope files: dependency-management files (<code>package.json</code>, <code>Gemfile.lock</code>, etc.), log files, and SVGs are not reviewed</li></ul>
+  <p class="muted">The available surfaces also include <strong>Azure DevOps</strong> <span class="badge badge-pp">Public Preview</span>. It can be made available on GitHub.com even to organization members without a Copilot license (Business / Enterprise, enable two policies, off by default).</p></div>
   </aside>
 
-<h3>merge queue —— 複数のエージェント PR を直列に統合する</h3>
-<p>並列委譲（§06）を進めると、<strong>同じ既定ブランチに向かう PR が同時に複数</strong>生まれます。各 PR は自分の作成時点の base では緑でも、順に取り込むと相互作用で壊れうる —— これは人間の PR と同じ問題ですが、エージェントの並列度が上がるほど頻度が増します。<strong>merge queue</strong> はこれを直列化します。</p>
-<ul class="plain"><li>queue は各 PR を<strong>先行 PR を取り込んだ状態で</strong>一時ブランチに構築し、required status checks を評価してから順にマージする —— 「マージ直前の組み合わせ」で緑を確認する</li><li>エージェント PR も人間 PR も同じ queue を通る。エージェント側に特別扱いは無く、<strong>ruleset（§08）で required checks を必須化しておけば queue がそれを強制する</strong></li><li>並列度の上限がレビュー容量なら、<strong>統合の直列点が merge queue</strong>。並列に作り、直列に受け入れる —— この非対称が「自律実行 ≠ 自律受け入れ」の運用面での現れです</li></ul>
+<h3>merge queue — integrating multiple agent PRs serially</h3>
+<p>As you push parallel delegation (§06) further, <strong>several PRs aimed at the same default branch appear at once</strong>. Each PR may be green against the base at the time it was created, yet break through interaction as they are merged in turn — the same problem as with human PRs, but one whose frequency rises as the agent's concurrency grows. <strong>merge queue</strong> serializes this.</p>
+<ul class="plain"><li>The queue builds each PR on a temporary branch <strong>with the preceding PRs merged in</strong>, evaluates the required status checks, and then merges them in turn — it confirms green on "the combination just before merge"</li><li>Agent PRs and human PRs go through the same queue. There is no special treatment for the agent, and <strong>if you make required checks mandatory in the ruleset (§08), the queue enforces them</strong></li><li>If the ceiling on concurrency is review capacity, then <strong>the serial point of integration is the merge queue</strong>. Build in parallel, accept in series — this asymmetry is the operational face of "autonomous execution ≠ autonomous acceptance"</li></ul>
 </section>
-<section class="section" id="security" lang="ja" aria-labelledby="security-title">
+<section class="section" id="security" aria-labelledby="security-title">
   <div class="section__head">
     <p class="section__num">10</p>
     <div class="section__headings">
-      <p class="eyebrow">セキュリティ</p>
-      <h2 id="security-title">委譲の前提となるセキュリティ設定と、残る穴</h2>
+      <p class="eyebrow">Security</p>
+      <h2 id="security-title">The security settings delegation presupposes, and the holes that remain</h2>
     </div>
   </div>
-  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
-  <p class="lead">セキュリティは、作業を委譲してよいか・どう実行してよいか・受け入れる前に何が真でなければならないかを決めます。本節では Before execution / During execution / Before acceptance の 3 段に実設定を対応させ、さらに現場でよくある誤解を 1 点、技術的に正しい形に正します。</p>
+  <p class="lead">Security decides whether work may be delegated, how it may execute, and what must be true before acceptance. This section maps real settings onto the three stages Before execution / During execution / Before acceptance, and then corrects one common misunderstanding into its technically correct form.</p>
 
 <figure class="principle">
-    <blockquote>Security determines whether work may be delegated, how it may execute, and what must be true before humans can accept it.<br>Stop and escalate on unexpected dependencies, sensitive data, permission gaps, or policy violations.</blockquote><figcaption>セキュリティは、委譲の可否・実行の仕方・受け入れ前に満たすべき条件を決める。予期しない依存・機微データ・権限の欠落・ポリシー違反があれば、止めてエスカレーションする。</figcaption>
+    <blockquote>Security determines whether work may be delegated, how it may execute, and what must be true before humans can accept it.<br>Stop and escalate on unexpected dependencies, sensitive data, permission gaps, or policy violations.</blockquote>
   </figure>
 
 <div class="cards cards-3"><div class="card">
         <p class="card-title">① Before execution</p>
-        <div class="card-body"><p class="muted">情報源・ツール・ネットワーク・スコープ・依存・シークレット取り扱いを承認する</p>
+        <div class="card-body"><p class="muted">Approve the information sources, tools, network, scope, dependencies, and secret handling</p>
       <ul class="plain tight">
-        <li><strong>firewall allowlist</strong>（既定 ON・推奨依存 allowlist 付き）</li>
-        <li>リポジトリ MCP 設定（tools のみ・GitHub 既定トークンは読み取り専用）</li>
-        <li><strong>Agents secrets / variables</strong>（Actions・Codespaces・Dependabot の secrets は渡らない）</li>
-        <li><strong>AI Controls</strong>：cloud agent / third-party agents / custom agents / code review / MCP / モデルを個別に許可</li>
-        <li><strong>content exclusion</strong>（Business・Enterprise）</li>
+        <li><strong>firewall allowlist</strong> (on by default, with a recommended dependency allowlist)</li>
+        <li>Repository MCP configuration (tools only; the default GitHub token is read-only)</li>
+        <li><strong>Agents secrets / variables</strong> (Actions, Codespaces, and Dependabot secrets are not passed through)</li>
+        <li><strong>AI Controls</strong>: allow the cloud agent / third-party agents / custom agents / code review / MCP / models individually</li>
+        <li><strong>content exclusion</strong> (Business, Enterprise)</li>
       </ul></div>
       </div><div class="card">
         <p class="card-title">② During execution</p>
-        <div class="card-body"><p class="muted">最小権限・隔離・ビルド・テスト・スキャン・帰属可能なログ</p>
+        <div class="card-body"><p class="muted">Least privilege, isolation, build, test, scan, and attributable logs</p>
       <ul class="plain tight">
-        <li>write 権限者のみトリガー可。非 write 権限者のコメントは渡らない</li>
-        <li>隠し文字・HTML コメントをフィルタ</li>
-        <li><code>copilot/…</code> ブランチ 1 本に限定。git 直接実行不可</li>
-        <li>ephemeral 環境（Ubuntu 既定。Ubuntu x64 / Windows 64-bit 対応、macOS 非対応）</li>
-        <li>組み込みの CodeQL・依存チェック・secret scanning</li>
-        <li>secret 値は session log 上でマスク</li>
+        <li>Only those with write access can trigger it; comments from non-write users are not passed through</li>
+        <li>Hidden characters and HTML comments are filtered out</li>
+        <li>Limited to one <code>copilot/…</code> branch; no direct git execution</li>
+        <li>An ephemeral environment (Ubuntu by default; Ubuntu x64 / Windows 64-bit supported, macOS not supported)</li>
+        <li>Built-in CodeQL, dependency checks, and secret scanning</li>
+        <li>Secret values are masked in the session log</li>
       </ul></div>
       </div><div class="card">
         <p class="card-title">③ Before acceptance</p>
-        <div class="card-body"><p class="muted">チェック・セキュリティレビュー・人間の承認・保持される監査証跡</p>
+        <div class="card-body"><p class="muted">Checks, security review, human approval, and a retained audit trail</p>
       <ul class="plain tight">
         <li>required status checks</li>
         <li>required reviews / CODEOWNERS</li>
-        <li>ワークフローは <strong>Approve and run workflows</strong> まで停止</li>
-        <li>Verified 署名コミット ＋ session log</li>
-        <li>監査ログ <code>actor:Copilot</code>（180 日）、AI Controls のセッション一覧</li>
-        <li><span class="badge badge-pp">Public Preview</span> agentic audit-log streaming（EMU・特定のデータレジデンシー環境）</li>
+        <li>Workflows are held until <strong>Approve and run workflows</strong></li>
+        <li>Verified signed commits + the session log</li>
+        <li>The audit log <code>actor:Copilot</code> (180 days), and the AI Controls session list</li>
+        <li><span class="badge badge-pp">Public Preview</span> agentic audit-log streaming (EMU, specific data-residency environments)</li>
       </ul></div>
       </div></div>
 
 <aside class="callout callout-update">
     <div class="callout-mark" aria-hidden="true">⟳</div>
-    <div class="callout-body"><p class="callout-title">よくある誤解：content exclusion は cloud agent に適用されない、という理解は誤り</p><p>「content exclusion は Copilot cloud agent には効かない」と説明されることがありますが、これは<strong>現行ドキュメントと食い違います</strong>。<a href="https://docs.github.com/en/copilot/reference/supported-surfaces-for-policies" target="_blank" rel="noopener noreferrer">Supported surfaces for GitHub Copilot policies</a> の表では、content exclusion は次のように示されています：</p>
-  <div class="table-wrap"><table class=""><colgroup><col style="width:60%"><col style="width:40%"></colgroup><thead><tr><th>サーフェス</th><th>content exclusion</th></tr></thead><tbody><tr><td>IDEs</td><td><span class="pos">適用される</span></td></tr><tr><td><strong>Copilot cloud agent</strong></td><td><span class="pos">適用される</span></td></tr><tr><td>Copilot Chat in GitHub</td><td><span class="pos">適用される</span></td></tr><tr><td>Copilot code review</td><td><span class="pos">適用される</span></td></tr><tr><td>Third-party agents</td><td><span class="neg">適用されない</span></td></tr><tr><td>Copilot CLI</td><td><span class="neg">適用されない</span></td></tr><tr><td>GitHub Copilot app</td><td><span class="neg">適用されない</span></td></tr><tr><td>Spark</td><td><span class="neg">適用されない</span></td></tr></tbody></table></div>
-  <p>正しくは「content exclusion は cloud agent に適用されるが、<strong>third-party agents と Copilot CLI には適用されない</strong>」です。委譲先を Claude / Codex などのサードパーティエージェントに広げる判断は、この点で意味が変わります。</p></div>
+    <div class="callout-body"><p class="callout-title">A common misunderstanding: the belief that content exclusion does not apply to the cloud agent is wrong</p><p>It is sometimes explained that "content exclusion does not apply to the Copilot cloud agent," but this <strong>contradicts the current documentation</strong>. In the table on <a href="https://docs.github.com/en/copilot/reference/supported-surfaces-for-policies" target="_blank" rel="noopener noreferrer">Supported surfaces for GitHub Copilot policies</a>, content exclusion is shown as follows:</p>
+  <div class="table-wrap"><table class=""><colgroup><col style="width:60%"><col style="width:40%"></colgroup><thead><tr><th>Surface</th><th>content exclusion</th></tr></thead><tbody><tr><td>IDEs</td><td><span class="pos">Applies</span></td></tr><tr><td><strong>Copilot cloud agent</strong></td><td><span class="pos">Applies</span></td></tr><tr><td>Copilot Chat in GitHub</td><td><span class="pos">Applies</span></td></tr><tr><td>Copilot code review</td><td><span class="pos">Applies</span></td></tr><tr><td>Third-party agents</td><td><span class="neg">Does not apply</span></td></tr><tr><td>Copilot CLI</td><td><span class="neg">Does not apply</span></td></tr><tr><td>GitHub Copilot app</td><td><span class="neg">Does not apply</span></td></tr><tr><td>Spark</td><td><span class="neg">Does not apply</span></td></tr></tbody></table></div>
+  <p>Correctly stated: "content exclusion applies to the cloud agent, but <strong>does not apply to third-party agents or Copilot CLI</strong>." A decision to widen delegation to third-party agents such as Claude / Codex changes meaning on exactly this point.</p></div>
   </aside>
 
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">content exclusion のもう 1 つの重要な限界</p><figure class="doc-quote">
+    <div class="callout-body"><p class="callout-title">Another important limit of content exclusion</p><figure class="doc-quote">
     <blockquote>Content exclusion is currently not supported in Edit and Agent modes of Copilot Chat in Visual Studio Code and other editors.</blockquote>
     <figcaption><a href="https://docs.github.com/en/copilot/concepts/context/content-exclusion" target="_blank" rel="noopener noreferrer">docs.github.com — Content exclusion</a></figcaption>
   </figure>
-  <p>つまり IDE の Agent mode では content exclusion が効きません。さらに、IDE が提供するセマンティック情報や型情報から間接的に文脈が漏れうること、シンボリックリンクとリモートファイルシステム上のリポジトリは非対応であることも明記されています。</p></div>
+  <p>In other words, content exclusion does not take effect in the IDE's Agent mode. It is also documented that context can leak indirectly through the semantic and type information the IDE provides, and that symbolic links and repositories on remote file systems are not supported.</p></div>
   </aside>
 
-<h3>firewall の穴（現在も有効）</h3>
-<ul class="plain"><li>firewall がカバーするのは <strong>Actions アプライアンス内で Bash から起動されたエージェントプロセスのみ</strong></li><li><strong>MCP サーバーはカバーしない</strong></li><li><strong><code>copilot-setup-steps.yml</code> の setup steps はカバーしない</strong></li><li>高度な攻撃は回避しうる、と公式ドキュメント自身が述べている</li></ul>
-<p>「予期しない依存・機微データ・権限の欠落・ポリシー違反で止めてエスカレーションする」という原則は、この穴を人間の側で塞ぐ設計要求として読むのが正確です。<strong>MCP サーバーを追加する判断は、firewall を通らない経路を 1 本増やす判断</strong>であり、Delegation Contract の Tools + Constraints フィールドで明示的に扱うべき事項です（§03）。</p>
+<h3>The firewall's holes (still in effect)</h3>
+<ul class="plain"><li>The firewall covers <strong>only the agent process started from Bash inside the Actions appliance</strong></li><li><strong>It does not cover MCP servers</strong></li><li><strong>It does not cover the setup steps in <code>copilot-setup-steps.yml</code></strong></li><li>The official documentation itself says a sophisticated attack may evade it</li></ul>
+<p>The principle "stop and escalate on unexpected dependencies, sensitive data, permission gaps, or policy violations" is most accurately read as a design requirement to close these holes on the human side. <strong>A decision to add an MCP server is a decision to add one more path that does not pass through the firewall</strong>, and it is something to handle explicitly in the Tools + Constraints fields of the Delegation Contract (§03).</p>
 
-<h3>automations のプロンプトインジェクション既定 —— 外部からの発火を既定で無視する</h3>
-<p>automations（§06）は issue 作成や PR オープンといった<strong>リポジトリのイベントで cloud agent を無人発火</strong>できます。ここには「外部コントリビュータが issue を開いて Copilot を勝手に動かす」という攻撃面が生まれますが、既定で塞がれています。</p>
+<h3>The automations prompt-injection default — ignoring external triggers by default</h3>
+<p>Automations (§06) can fire the cloud agent unattended on repository events such as issue creation or PR open. This creates an attack surface — "an external contributor opens an issue and drives Copilot on their own" — but it is closed by default.</p>
 <figure class="doc-quote">
     <blockquote>By default, automations ignore events triggered by users who do not have write access to the repository.</blockquote>
     <figcaption><a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-automations" target="_blank" rel="noopener noreferrer">GitHub Docs — About Copilot automations</a></figcaption>
   </figure>
-<ul class="plain"><li>既定で <strong>write 権限を持たないユーザーが発火させたイベントは無視</strong>される（オプトインで許可は可能）</li><li>automations は <strong>private / internal リポジトリのみ</strong>で、<strong>1 つのリポジトリにスコープ</strong>され、そのリポジトリ内でしか行動できない</li><li>スコープ制御の主手段は <strong>tools の選択</strong> ——「Grant only the tools that the task needs（タスクに必要なツールだけを与える）」</li></ul>
-<p>この既定は §09 の「write 権限のない人はエージェントを起動できない」と同じ思想の automation 版です。ただし前述のとおり <strong>automation 定義自体は Git 管理外</strong>（§09）なので、誰がどの automation を、どのトリガと tools で持っているかは<strong>コードレビューの外側で棚卸しする</strong>必要があります。</p>
+<ul class="plain"><li>By default, <strong>events triggered by users without write access are ignored</strong> (you can allow them by opt-in)</li><li>Automations are <strong>only on private / internal repositories</strong>, are <strong>scoped to a single repository</strong>, and can act only within that repository</li><li>The main means of scope control is <strong>the selection of tools</strong> — "Grant only the tools that the task needs"</li></ul>
+<p>This default is the automation version of §09's "someone without write access cannot start the agent." But as noted, <strong>the automation definition itself is outside Git management</strong> (§09), so who holds which automation, with which trigger and tools, must be inventoried outside of code review.</p>
 
 </section>
-<section class="section" id="recovery" lang="ja" aria-labelledby="recovery-title">
+<section class="section" id="recovery" aria-labelledby="recovery-title">
   <div class="section__head">
     <p class="section__num">11</p>
     <div class="section__headings">
       <p class="eyebrow">Deviation &amp; Recovery</p>
-      <h2 id="recovery-title">逸脱と回復 —— エージェントが外れたときに何をするか</h2>
+      <h2 id="recovery-title">Drift and recovery — what to do when an agent goes off course</h2>
     </div>
   </div>
-  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
-  <p class="lead">§15 は「委譲してはいけない作業」と運用上の失敗パターンを扱いますが、実行の最中にエージェントが外れたときの復旧手順は、これまで本資料に欠けていました。本節は、実行中の介入・停止・放棄・再試行の判断と、そのとき状態がどう残るかを確定させます。ここに書く事実はすべて一次情報で確認済みのものだけです。</p>
+  <p class="lead">§15 covers "work you must not delegate" and operational failure patterns, but the recovery procedure for when an agent goes off course mid-execution has been missing from this guide until now. This section pins down the decision to steer, stop, abandon, or retry during execution, and what state is left behind in each case. Every fact stated here is one confirmed against a primary source, and only those.</p>
 
 <figure class="principle">
-    <blockquote>When an agent goes off course, recovery is a decision—steer, stop, abandon, or retry—and every choice leaves state behind.</blockquote><figcaption>エージェントが外れたときの回復は「軌道修正・停止・放棄・再試行」の意思決定であり、どれを選んでも状態が残る。何が残るかを知らないまま止めるのが最悪の一手である。</figcaption>
+    <blockquote>When an agent goes off course, recovery is a decision—steer, stop, abandon, or retry—and every choice leaves state behind.</blockquote>
   </figure>
 
-<h3>4 つの介入 —— いつ何を選ぶか</h3>
-<div class="table-wrap"><table class=""><colgroup><col style="width:16%"><col style="width:26%"><col style="width:28%"><col style="width:30%"></colgroup><thead><tr><th>介入</th><th>何をする操作か</th><th>選ぶ状況</th><th>残る状態 / 注意</th></tr></thead><tbody><tr><td><strong>軌道修正（steering）</strong></td><td>セッション実行中に追加プロンプトを送って方向を変える</td><td>方向は合っているが細部を直したい / 前提を補足したい</td><td><strong>現在のツール呼び出しが完了してから反映</strong>される。<span class="neg">AI Credits を消費</span>。<strong>サードパーティ連携のエージェントには送れない</strong></td></tr><tr><td><strong>停止（stop session）</strong></td><td>実行中のセッションを止める</td><td>明らかに誤った方向に進んでいて、続けても無駄なとき</td><td><strong>Actions の実行は終了するが、<span class="neg">すでに push 済みのコミットはブランチに残る</span></strong>。停止＝巻き戻しではない</td></tr><tr><td><strong>放棄（abandon）</strong></td><td>そのセッションの成果を採用せず捨てる</td><td>やり直した方が早い / 前提そのものが誤っていた</td><td>クラウドセッションは <strong>archive はできるが削除はできない</strong>（ローカルセッションのみ削除可）。履歴は残る</td></tr><tr><td><strong>再試行（retry）</strong></td><td>同じ依頼をもう一度エージェントに実行させる</td><td>一時的な失敗・タイムアウトで、依頼自体は妥当なとき</td><td>汎用の「再実行」ボタンは無い。<strong>Issue なら unassign → 再 assign、PR コメントなら同じコメントを再投稿</strong></td></tr></tbody></table></div>
+<h3>Four interventions — when to choose which</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:16%"><col style="width:26%"><col style="width:28%"><col style="width:30%"></colgroup><thead><tr><th>Intervention</th><th>What the action does</th><th>When to choose it</th><th>State left / caveats</th></tr></thead><tbody><tr><td><strong>Steering</strong></td><td>Send an extra prompt during the session to change direction</td><td>The direction is right but you want to fix details / add to the premises</td><td><strong>Takes effect after the current tool call completes</strong>. <span class="neg">Consumes AI Credits</span>. <strong>Cannot be sent to third-party-integrated agents</strong></td></tr><tr><td><strong>Stop (stop session)</strong></td><td>Stop the running session</td><td>It is clearly heading the wrong way and continuing is pointless</td><td><strong>The Actions run ends, but <span class="neg">commits already pushed remain on the branch</span></strong>. Stopping is not the same as rolling back</td></tr><tr><td><strong>Abandon</strong></td><td>Discard the session's output without adopting it</td><td>Starting over is faster / the premise itself was wrong</td><td>A cloud session can be <strong>archived but not deleted</strong> (only local sessions can be deleted). The history remains</td></tr><tr><td><strong>Retry</strong></td><td>Have the agent run the same request again</td><td>A transient failure or timeout, where the request itself is sound</td><td>There is no general "re-run" button. <strong>For an Issue, unassign → reassign; for a PR comment, repost the same comment</strong></td></tr></tbody></table></div>
 
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">止めても状態は消えない —— push 済みコミットの扱い</p><p>停止操作は Actions の実行を終わらせますが、<strong>エージェントがすでに <code>copilot/…</code> ブランチに push したコミットはそのまま残ります</strong>。したがって「止めた ＝ 何も起きなかったことになる」ではありません。残ったブランチ・draft PR をどう扱うか（放棄するのか、人が引き継ぐのか）まで含めて判断する必要があります。§09 の「PR がガバナンス境界」というテーゼは、ここでも効きます —— 未レビューのコミットが残っても、マージ関門を越えない限り既定ブランチには入りません。</p></div>
+    <div class="callout-body"><p class="callout-title">Stopping does not erase state — handling pushed commits</p><p>A stop ends the Actions run, but <strong>the commits the agent has already pushed to the <code>copilot/…</code> branch remain as they are</strong>. So "I stopped it = nothing happened" does not hold. You must decide, including what to do with the branch and draft PR left behind (abandon them, or have a person take over). §09's "the PR is the governance boundary" thesis holds here too — even if unreviewed commits remain, they do not enter the default branch unless they clear the merge gate.</p></div>
   </aside>
 
-<h3>停滞したセッションのタイムアウト</h3>
-<p><span class="badge badge-official">公式</span> 一次情報が定めているのは<strong>停滞したセッションの扱い</strong>です。セッションはしばらく停滞して見えたあとに再び動き出すことがあり、停滞したままの場合に<strong>1 時間でタイムアウト</strong>します。復帰手段も決まっていて、Issue 割り当てなら <strong>unassign → 再 assign</strong>、PR コメントへの応答中に停滞したなら<strong>同じコメントをもう一度投稿</strong>します（上表の「再試行」に対応）。</p>
+<h3>The timeout for a stuck session</h3>
+<p><span class="badge badge-official">Official</span> What the primary source defines is <strong>the handling of a stuck session</strong>. A session can appear stuck for a while and then start moving again, and if it stays stuck it <strong>times out after one hour</strong>. The recovery means are fixed too: for an issue assignment, <strong>unassign → reassign</strong>; if it stalled while responding to a PR comment, <strong>post the same comment again</strong> (matching "Retry" in the table above).</p>
 <figure class="doc-quote">
     <blockquote>If the session remains stuck, it will time out after an hour. You can retry by unassigning the issue and then reassigning it to Copilot.</blockquote>
     <figcaption><a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/troubleshoot-cloud-agent" target="_blank" rel="noopener noreferrer">docs.github.com — Troubleshooting GitHub Copilot cloud agent</a></figcaption>
   </figure>
-<p><span class="badge badge-framework">本資料の整理</span> 一方で、<strong>正常に進行しているセッションの実行時間そのものに上限があるとは公開ドキュメントに書かれていません</strong>。したがって「1 時間」を、1 セッションに詰め込める作業量の設計上限として当てにするのは誤りです。それでも §06 の分解規準（独立してレビュー・マージできる単位まで下げる）は有効で、根拠はタイムアウトではなく<strong>停滞や逸脱が起きたときに失うものの大きさ</strong>にあります —— 1 セッションが長大なほど、巻き戻す範囲が広く、再実行のコストも高くなります。</p>
+<p><span class="badge badge-framework">This guide's framing</span> On the other hand, the public documentation does not say there is any cap on the running time of a session that is progressing normally. So it is wrong to rely on "one hour" as a design ceiling for how much work you can pack into a single session. Even so, §06's decomposition criteria (bring work down to a unit that can be reviewed and merged independently) still hold, and the grounds are not the timeout but <strong>the size of what you lose when a stall or drift occurs</strong> — the longer a single session is, the wider the range you have to roll back and the higher the cost of re-running.</p>
 
-<h3>iterate と abandon の判断基準</h3>
+<h3>The criteria for iterate versus abandon</h3>
 <div class="cards cards-2"><div class="card">
-        <p class="card-title">iterate（続けて直す）を選ぶ <span class="badge badge-framework">本資料の整理</span></p>
-        <div class="card-body">方向は正しく、Diff の大半が採用できる。残りの誤りは追加プロンプト（steering）や PR コメントで収束させられる見込みがある。<strong>前提は生きている</strong>。</div>
+        <p class="card-title">Choose iterate (keep going and fix) <span class="badge badge-framework">This guide's framing</span></p>
+        <div class="card-body">The direction is right and most of the diff is usable. The remaining errors look likely to converge through an extra prompt (steering) or PR comments. <strong>The premises are still alive</strong>.</div>
       </div><div class="card">
-        <p class="card-title">abandon（捨ててやり直す）を選ぶ <span class="badge badge-framework">本資料の整理</span></p>
-        <div class="card-body">前提そのものが誤っていた、または Diff が広範に誤っていて手直しより再委譲が速い。<strong>Delegation Contract（§03）の Scope や Acceptance を書き直してから</strong>やり直すのが正しい。同じ契約で再試行しても同じ所で外れる。</div>
+        <p class="card-title">Choose abandon (discard and start over) <span class="badge badge-framework">This guide's framing</span></p>
+        <div class="card-body">The premise itself was wrong, or the diff is broadly wrong and re-delegating is faster than patching. The right move is to <strong>rewrite the Scope or Acceptance of the Delegation Contract (§03) before starting over</strong>. Retrying with the same contract will go off course at the same place.</div>
       </div></div>
 
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">CLI のローカル巻き戻し（/undo・/rewind）は手作業を上書きしうる</p><p>GitHub Copilot CLI の <code>/undo</code>（別名 <code>/rewind</code>、二重 Esc でも起動）はスナップショットを復元しますが、<strong>スナップショット以降のすべての変更を元に戻し、その間に作られた新規ファイルを削除します</strong>。エージェントの変更と<strong>人が手で加えた変更を区別しない</strong>ため、巻き戻しは手作業を巻き添えにしえます。しかもこの操作は取り消せません。巻き戻す前に、手元の未コミット変更を退避してください。</p></div>
+    <div class="callout-body"><p class="callout-title">The CLI's local rollback (/undo, /rewind) can overwrite manual work</p><p>The GitHub Copilot CLI's <code>/undo</code> (also <code>/rewind</code>, also triggered by a double Esc) restores a snapshot, but it <strong>reverts every change made since the snapshot and deletes the new files created in between</strong>. Because it <strong>does not distinguish the agent's changes from changes a person made by hand</strong>, a rollback can take manual work down with it. And this action cannot be undone. Before you roll back, stash your local uncommitted changes.</p></div>
   </aside>
 
-<h3>失敗を構造に還す —— PR → Learning の実務版</h3>
-<p>回復の最後の一手は、同じ失敗を<strong>二度と起こさない仕組みに落とす</strong>ことです。これは §05 の変換ループ「PR → Learning」を、逸脱という具体的な入力に対して回した姿にほかなりません。逸脱の型ごとに、落とし先が決まっています。</p>
-<div class="table-wrap"><table class=""><colgroup><col style="width:34%"><col style="width:44%"><col style="width:22%"></colgroup><thead><tr><th>逸脱の型</th><th>落とし先</th><th>接続する節</th></tr></thead><tbody><tr><td>エージェントが同じ勘違い（規約・前提）を繰り返す</td><td><code>*.instructions.md</code> / <code>AGENTS.md</code> / <strong>agent skills</strong>（<code>.github/skills</code>）に明文化する</td><td>§02 Context Engineering</td></tr><tr><td>退行（once-fixed が再び壊れる）</td><td>その挙動を固定する <strong>characterization テスト</strong>を追加し、以後の PR で必ず走らせる</td><td>§07 modernization / §08 verification</td></tr><tr><td>危険な操作・ポリシー違反に踏み込んだ</td><td><strong>hooks の <code>preToolUse</code></strong> で当該ツール実行を拒否する / <code>ruleset</code> で関門を足す</td><td>§04 autonomy / §08 verification</td></tr><tr><td>未レビューの変更がマージ関門を越えかけた</td><td>required checks・required reviews・CODEOWNERS を締める（<code>ruleset</code>）</td><td>§08 verification / §09 pr</td></tr></tbody></table></div>
+<h3>Returning failure to structure — the practical version of PR → Learning</h3>
+<p>The last move in recovery is to <strong>reduce the same failure to a mechanism that never lets it happen again</strong>. This is nothing but §05's transform loop "PR → Learning" run against the concrete input of drift. For each type of drift, the destination is fixed.</p>
+<div class="table-wrap"><table class=""><colgroup><col style="width:34%"><col style="width:44%"><col style="width:22%"></colgroup><thead><tr><th>Type of drift</th><th>Where it lands</th><th>Section it connects to</th></tr></thead><tbody><tr><td>The agent repeats the same misunderstanding (conventions, premises)</td><td>Write it out explicitly in <code>*.instructions.md</code> / <code>AGENTS.md</code> / <strong>agent skills</strong> (<code>.github/skills</code>)</td><td>§02 Context Engineering</td></tr><tr><td>Regression (something once-fixed breaks again)</td><td>Add <strong>characterization tests</strong> that pin that behaviour down, and run them on every PR thereafter</td><td>§07 modernization / §08 verification</td></tr><tr><td>It stepped into a dangerous operation or policy violation</td><td>Deny that tool call with <strong>the <code>preToolUse</code> hook</strong> / add a gate with <code>ruleset</code></td><td>§04 autonomy / §08 verification</td></tr><tr><td>Unreviewed changes nearly crossed the merge gate</td><td>Tighten required checks, required reviews, and CODEOWNERS (<code>ruleset</code>)</td><td>§08 verification / §09 pr</td></tr></tbody></table></div>
 <aside class="callout callout-key">
     <div class="callout-mark" aria-hidden="true">★</div>
-    <div class="callout-body"><p class="callout-title">回復の成否は「次の委譲が同じ所で外れないか」で測る</p><p>停止や巻き戻しは対症療法です。<strong>逸脱を instructions / agent skills / characterization テスト / ruleset のいずれかに落とし切って初めて回復は完了</strong>します。落とし切れたかどうかは、次節以降で扱う計測（§14）で「同種の逸脱が減っているか」として観測できます。回復を個人の記憶に留めるのは、統治の失敗です。</p></div>
+    <div class="callout-body"><p class="callout-title">Measure recovery by "whether the next delegation goes off course at the same place"</p><p>Stopping and rolling back are symptomatic treatment. Recovery is complete only once you have fully reduced the drift into one of instructions / agent skills / characterization tests / ruleset. Whether you have done so can be observed through the measurement covered from the next section on (§14), as "whether drift of the same kind is decreasing." Leaving recovery in an individual's memory is a governance failure.</p></div>
   </aside>
 
 </section>
