@@ -96,6 +96,43 @@ export const TERMS = [
     { ja: "自律性の予算", en: "autonomy budget", note: "固有名としては Autonomy Budget（大文字）を維持" },
     { ja: "委譲契約", en: "delegation contract", note: "固有名としては Delegation Contract（大文字）を維持" },
 
+    // ── enforcement vocabulary (§03 表の第 4 列 ＝ contract 図の凡例) ──
+    // 表と図で同じ語を使う。ここがずれると読者が対応づけを失う。
+    { ja: "強制力", en: "enforcement", note: "§03 表の列見出し。enforceability とは書かない" },
+    {
+        ja: "構造的に強制可",
+        en: "Structurally enforceable",
+        note: "§03 表セル・contract 図の凡例。ruleset や required checks に落とせるもの",
+    },
+    { ja: "半構造的", en: "Semi-structural", note: "§03 表セル・contract 図の凡例" },
+    { ja: "プロンプトのみ", en: "Prompt only", note: "§03 表セル・contract 図の凡例。prompt-only とハイフンでは書かない" },
+
+    // ── autonomy vocabulary (§04。§09・§11・§12 でも反復する) ──
+    { ja: "予算", en: "budget", note: "§04。allowance / quota には置き換えない" },
+    { ja: "次元", en: "dimension", note: "§04 の 4 次元。axis とは書かない（axis は §00 の枠組み比較で使う語）" },
+    { ja: "可逆性", en: "reversibility", note: "「可逆な」= reversible" },
+    { ja: "影響範囲", en: "blast radius", note: "§04。日本語版も括弧で blast radius を併記している。scope とは書かない" },
+    { ja: "停止条件", en: "stop condition", note: "§04 Decision budget" },
+    { ja: "並列度", en: "concurrency", note: "§04・§06。parallelism は「並列」一般を指すときのみ" },
+    { ja: "実行資源", en: "compute", note: "§04 の Compute budget。resources とは書かない" },
+    { ja: "レビュー容量", en: "review capacity", note: "§01・§12・§13。並列度の実質的上限を指す語" },
+
+    // ── execution-model vocabulary (§01。§05・§06・§13 でも反復する) ──
+    { ja: "実行場所", en: "where it runs", note: "§01 の表の列見出し。execution location とは書かない" },
+    { ja: "同期性", en: "synchronicity", note: "§01。同期 = synchronous、非同期 = asynchronous" },
+    { ja: "非同期・並列", en: "asynchronous, parallel", note: "§01 の Orchestration 行と continuum 図の軸" },
+    { ja: "投入経路", en: "entry point", note: "§01。cloud agent にタスクを投入する経路。channel / route とは書かない" },
+    {
+        ja: "経路",
+        en: "entry point / path",
+        note: "投入経路を指す裸の「経路」は entry point に揃える（例: Issue アサインの経路）。それ以外の一般的な経路は path。route とは書かない",
+    },
+    { ja: "課金", en: "billing", note: "§01・§13。charging とは書かない" },
+    { ja: "使い捨て環境", en: "ephemeral environment", note: "§01。disposable とは書かない" },
+    { ja: "差し戻し", en: "hand back", note: "§03 Escalate。return / reject とは書かない" },
+    { ja: "既定", en: "default", note: "「既定で ON」= on by default。preset とは書かない" },
+    { ja: "宣言的", en: "declarative", note: "§04 hooks。宣言 ⇄ 強制 = declarative ⇄ enforced の対比を保つ" },
+
     // ── proper nouns kept in English verbatim (never translate) ──
     { ja: "Delegation Contract", en: null, note: "翻訳せず維持。日本語版でも英語のまま" },
     { ja: "Autonomy Budget", en: null, note: "翻訳せず維持" },
@@ -105,6 +142,27 @@ export const TERMS = [
     { ja: "Five layers", en: null, note: "翻訳せず維持。Intent / Context / Agent / Execution / Governance" },
     { ja: "Definition of Ready", en: null, note: "翻訳せず維持" },
     { ja: "Agentic SDLC", en: null, note: "翻訳せず維持" },
+    {
+        ja: "Completion / Conversation / Collaboration / Delegation / Orchestration",
+        en: null,
+        note: "§01 の 5 モード名。両言語で英語のまま。Completion を「補完モード」等と訳さない",
+    },
+    {
+        ja: "Persistent context / Task context / Dynamic context",
+        en: null,
+        note: "§02 の Context 3 分類。両言語で英語のまま",
+    },
+    { ja: "session log", en: null, note: "§01・§03。cloud agent のセッションログ。小文字のまま維持" },
+    {
+        ja: "cloud agent",
+        en: null,
+        note: "正式名は GitHub Copilot cloud agent。小文字で維持し「クラウドエージェント」と訳さない",
+    },
+    {
+        ja: "custom instructions / agent skills / prompt files / custom agents / hooks",
+        en: null,
+        note: "§02・§04 の公式機能名。小文字表記のまま維持する",
+    },
 
     // ── TOC part titles ─────────────────────────────────────────
     { ja: "PART 1 — 出発点", en: "PART 1 — Starting point", note: "TOC パートタイトル" },
