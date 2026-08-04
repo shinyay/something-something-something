@@ -311,7 +311,7 @@ ${ul([
     "⑥ Generate Jest unit and integration tests from the plan in ③",
     "⑦ Run the tests, fix the failures, and refine",
 ])}
-<p>The point is that ③ comes before ⑥, which corresponds to the practical procedure of &ldquo;building a behavioural safety net&rdquo; (§05). The order is: before you change the implementation, put the expected behaviour into a form a human can review.</p>
+<p>The point is that ③ comes before ⑥, which corresponds to the practical procedure of &ldquo;building a behavioural safety net&rdquo; (§05). The order is: <strong>before you change the implementation, put the expected behaviour into a form a human can review</strong>.</p>
 `,
     },
 ];

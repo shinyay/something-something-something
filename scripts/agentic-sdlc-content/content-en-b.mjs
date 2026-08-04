@@ -519,7 +519,7 @@ ${table(
         [`<code>userPromptSubmitted</code>`, "When the user submits a prompt", "Audit logging of requests, usage analysis"],
         [`<strong><code>preToolUse</code></strong>`, "<strong>Before</strong> the agent uses a tool", `<strong>Approving or denying the tool execution</strong>, blocking dangerous commands, enforcing policy, requiring approval for sensitive operations, usage logging`],
         [`<code>postToolUse</code>`, "After a tool completes, whether it succeeded or not", "Logging results, statistics, audit trails, performance monitoring"],
-        [`<code>agentStop</code> / <code>subagentStop</code>`, "When the main or a sub-agent finishes responding", "Inspecting sub-agent results (§06), completion notifications"],
+        [`<code>agentStop</code> / <code>subagentStop</code>`, "When the main agent or a subagent finishes responding", "Inspecting subagent results (§06), completion notifications"],
         [`<code>errorOccurred</code>`, "When an error occurs during execution", "Error logging, notifications, pattern tracking"],
     ],
     { widths: ["26%", "34%", "40%"] },
