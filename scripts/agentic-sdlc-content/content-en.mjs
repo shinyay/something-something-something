@@ -13,6 +13,7 @@ import { sectionsEnB } from "./content-en-b.mjs";
 import { sectionsEnC } from "./content-en-c.mjs";
 import { sectionsEnD } from "./content-en-d.mjs";
 import { sectionsEnE } from "./content-en-e.mjs";
+import { sectionsEnF } from "./content-en-f.mjs";
 
 export const meta = {
     title: "Agentic SDLC Practical Guide",
@@ -22,7 +23,7 @@ export const meta = {
     verified: "Verified against primary sources as of August 2026",
 };
 
-const TRANSLATED = [...sectionsEnA, ...sectionsEnB, ...sectionsEnC, ...sectionsEnD, ...sectionsEnE];
+const TRANSLATED = [...sectionsEnA, ...sectionsEnB, ...sectionsEnC, ...sectionsEnD, ...sectionsEnE, ...sectionsEnF];
 
 const byId = new Map(TRANSLATED.map((section) => [section.id, section]));
 if (byId.size !== TRANSLATED.length) {
