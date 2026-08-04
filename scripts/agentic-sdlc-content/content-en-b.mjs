@@ -225,7 +225,7 @@ ${table(
             "",
             `${PP} <strong>GitHub Copilot Memory</strong>`,
             "Repository / user",
-            "Persists repository facts and user preferences. Facts keep their citation and are verified against the current branch. <strong>They expire after 28 days without use.</strong> Used by the cloud agent, code review, and the CLI.",
+            "Persists repository facts and user preferences. Facts keep their citation and are verified against the current branch. <strong>They expire after 28 days without use</strong> (the timer may reset each time an entry is successfully validated and used). Used by the cloud agent, code review, and the CLI.",
         ],
         [
             `<strong>Task context</strong><br><span class="muted">outcome, scope, acceptance criteria, the references you were given</span>`,

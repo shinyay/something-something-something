@@ -276,13 +276,13 @@ ${table(
     ["Adoption ladder step", "Inventory check (current)", "Observable quantity that backs graduation (from this section)"],
     [
         [
-            "Assist / Delegate",
-            "instructions and AGENTS.md are in place",
+            "Assist / Collaborate",
+            "instructions are in place",
             "A rising DAU trend, and adoption cohorts not plateauing at the trial stage",
         ],
         [
-            "Supervise",
-            "Verification means (tests, rulesets) exist",
+            "Delegate / Standardize",
+            "AGENTS.md and verification means (tests, rulesets) exist",
             "Merge counts and median time to merge for Copilot-authored PRs are not deteriorating",
         ],
         [
