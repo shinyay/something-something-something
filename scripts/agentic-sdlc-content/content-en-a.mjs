@@ -94,7 +94,7 @@ ${table(
 ${callout(
     "note",
     "This guide keeps its sources straight",
-    `<p>The badges above and the glossary in §16 draw an explicit line between what is an <strong>official GitHub product name or specification</strong> and what is <strong>vocabulary this guide introduces to organise the material</strong>. Every technical assertion has been checked against the primary sources collected in §17 &ldquo;Primary-source links&rdquo;. Being able to separate &ldquo;this is product behaviour&rdquo; from &ldquo;this is our framing&rdquo; is what makes a document of this kind trustworthy.</p>`,
+    `<p>The badges above and the glossary in §16 draw an explicit line between what is an <strong>official GitHub product name or specification</strong> and what is <strong>vocabulary this guide introduces to organize the material</strong>. Every technical assertion has been checked against the primary sources collected in §17 &ldquo;Primary-source links&rdquo;. Being able to separate &ldquo;this is product behaviour&rdquo; from &ldquo;this is our framing&rdquo; is what makes a document of this kind trustworthy.</p>`,
 )}
 
 <h3>The scope of the SDLC covered here</h3>
@@ -107,13 +107,13 @@ ${callout(
 )}
 
 <h3>How the six frameworks relate</h3>
-<p>This guide uses several organising frameworks. To keep them from blurring together, one table maps how they relate. The backbone is <strong>Five layers</strong> (Intent / Context / Agent / Execution / Governance) — an organising layer that reads delegation as five stacked concerns. Each of the remaining frameworks takes a different axis (mode, contract, budget, cycle, maturity) and expands one place on that backbone.</p>
+<p>This guide uses several organizing frameworks. To keep them from blurring together, one table maps how they relate. The backbone is <strong>Five layers</strong> (Intent / Context / Agent / Execution / Governance) — an organizing layer that reads delegation as five stacked concerns. Each of the remaining frameworks takes a different axis (mode, contract, budget, cycle, maturity) and expands one place on that backbone.</p>
 ${table(
     ["Framework", "Which axis", "Where it sits on Five layers", "Section"],
     [
         [
             `<strong>Five layers</strong> (Intent / Context / Agent / Execution / Governance)`,
-            `${FRAMEWORK} the <strong>organising layer (backbone)</strong> running through the whole guide`,
+            `${FRAMEWORK} the <strong>organizing layer (backbone)</strong> running through the whole guide`,
             "All five layers",
             "§00 (this section)",
         ],
@@ -143,8 +143,8 @@ ${table(
         ],
         [
             "<strong>Adoption ladder</strong> (5 rungs)",
-            `${FRAMEWORK} organisational <strong>maturity</strong>`,
-            "Governance layer (how deeply every layer is operationalised)",
+            `${FRAMEWORK} organizational <strong>maturity</strong>`,
+            "Governance layer (how deeply every layer is operationalized)",
             "§12",
         ],
     ],
@@ -153,11 +153,11 @@ ${table(
 ${callout(
     "note",
     "Do not confuse the axes",
-    `<p>Interaction modes (§01) are a <strong>style of engagement</strong>; the adoption ladder (§12) is <strong>organisational maturity</strong>. They are different axes. &ldquo;We are using Delegation mode&rdquo; is not the same statement as &ldquo;our organisation has reached the Delegate rung.&rdquo; Keeping §01 and §12 from being conflated is exactly what the table above is for.</p>`,
+    `<p>Interaction modes (§01) are a <strong>style of engagement</strong>; the adoption ladder (§12) is <strong>organizational maturity</strong>. They are different axes. &ldquo;We are using Delegation mode&rdquo; is not the same statement as &ldquo;our organization has reached the Delegate rung.&rdquo; Keeping §01 and §12 from being conflated is exactly what the table above is for.</p>`,
 )}
 
 <h3>How to read this guide</h3>
-<p>The guide is organised into six parts. Read it top to bottom and you get one full pass through the Agentic SDLC — design → execute → trust → operate — but every section also stands on its own as a reference.</p>
+<p>The guide is organized into six parts. Read it top to bottom and you get one full pass through the Agentic SDLC — design → execute → trust → operate — but every section also stands on its own as a reference.</p>
 ${ul([
     "<strong>PART 1 Starting point</strong>: this section. The operating model as a whole.",
     "<strong>PART 2 Designing work you can delegate</strong>: interaction modes (§01), context design (§02), the delegation contract (§03), the autonomy budget (§04).",

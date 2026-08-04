@@ -116,7 +116,7 @@ ${callout(
     "warn",
     "Mind the changes of name",
     `<p>The name in the current documentation is <strong>GitHub Copilot cloud agent</strong>. At the time of the GA announcement in September 2025 the name was <strong>Copilot coding agent</strong>. No formal rename announcement has been confirmed, so the safe way to describe it is that <em>the term used in the documentation changed</em>.<br>
-    In the same way, <strong>Agent HQ</strong> is an umbrella brand from the GitHub Blog: the names that actually appear in the UI are <strong>Agents tab / agents panel / agents page</strong>, and <strong>mission control</strong> is a conceptual name for the command centre.</p>`,
+    In the same way, <strong>Agent HQ</strong> is an umbrella name from the GitHub Blog: the names that actually appear in the UI are <strong>Agents tab / agents panel / agents page</strong>, and <strong>mission control</strong> is a conceptual name for the command centre.</p>`,
 )}
 
 <h3>What "the unit of management changes" looks like in practice — from diffs to sessions</h3>
@@ -165,7 +165,7 @@ ${cards(
 ${callout(
     "note",
     "The GitHub Copilot app policy is a separate policy from the Copilot CLI policy",
-    `<p>The GitHub Copilot app is available on every Copilot plan. On Business / Enterprise the <strong>GitHub Copilot app policy</strong> must be enabled, and that is <strong>a different policy from the Copilot CLI policy</strong> (both are enabled by default). When checking what is enabled for an organisation, do not conflate the two.</p>`,
+    `<p>The GitHub Copilot app is available on every Copilot plan. On Business / Enterprise the <strong>GitHub Copilot app policy</strong> must be enabled, and that is <strong>a different policy from the Copilot CLI policy</strong> (both are enabled by default). When checking what is enabled for an organization, do not conflate the two.</p>`,
 )}
 
 ${callout(
@@ -320,7 +320,7 @@ ${callout(
         lead: "The Delegation Contract is the central concept of this guide. It consists of eight fields that make success, boundaries, proof, and decision gates inspectable before work begins. This section settles where in GitHub each of those fields has to be written for an agent to actually act on it — which makes it the most directly useful section here.",
         html: `
 ${principle(
-    "A Delegation Contract makes success, boundaries, proof, and decision gates inspectable before work begins.<br>The contract grants bounded authority—not a blank check.",
+    "A Delegation Contract makes success, boundaries, proof, and decision gates inspectable before work begins.<br>The contract grants bounded authority—not a blank cheque.",
 )}
 
 ${diagram(

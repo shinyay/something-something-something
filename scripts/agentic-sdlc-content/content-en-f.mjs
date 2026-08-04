@@ -59,7 +59,7 @@ ${table(
         [
             "<strong>Five layers</strong> (Intent / Context / Agent / Execution / Governance)",
             FRAMEWORK,
-            "Not an official architectural description. It is the backbone this guide introduces in §00 as the organising layer that runs through the whole document (each layer has a framework in this guide that corresponds to it)",
+            "Not an official architectural description. It is the backbone this guide introduces in §00 as the organizing layer that runs through the whole document (each layer has a framework in this guide that corresponds to it)",
         ],
         [
             "<strong>Agentic Modernization Loop</strong> (five transforms)",

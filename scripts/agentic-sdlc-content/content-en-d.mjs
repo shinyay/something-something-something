@@ -197,7 +197,7 @@ ${steps([
 ])}
 
 <h3>Evidence Package — bundling "on what grounds to accept" onto the PR ${FRAMEWORK}</h3>
-<p>This guide calls the bundle of outputs the agent should return on the PR the <strong>Evidence Package</strong>. This is not an official product feature name but <strong>this guide's own organising vocabulary</strong> (§16), and it consists of the following three materials. What a person judges when merging is not the code itself but this bundle.</p>
+<p>This guide calls the bundle of outputs the agent should return on the PR the <strong>Evidence Package</strong>. This is not an official product feature name but <strong>this guide's own organizing vocabulary</strong> (§16), and it consists of the following three materials. What a person judges when merging is not the code itself but this bundle.</p>
 ${cards(
     [
         {
