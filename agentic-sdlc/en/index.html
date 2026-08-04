@@ -66,9 +66,9 @@
       <li class="toc__part">
         <p class="toc__part-title">PART 3 — Executing</p>
         <ul class="toc__list">
-        <li><a href="#loop"><span class="toc__num">05</span><span lang="ja">Agentic Modernization Loop —— 5 つの変換と機能マップ</span></a></li>
-        <li><a href="#orchestration"><span class="toc__num">06</span><span lang="ja">Orchestration の実務 —— 並列委譲を成立させる</span></a></li>
-        <li><a href="#modernization"><span class="toc__num">07</span><span lang="ja">モダナイゼーション専用ツールの現状</span></a></li>
+        <li><a href="#loop"><span class="toc__num">05</span><span>The Agentic Modernization Loop — Five Transforms and a Capability Map</span></a></li>
+        <li><a href="#orchestration"><span class="toc__num">06</span><span>Orchestration in Practice — Making Parallel Delegation Work</span></a></li>
+        <li><a href="#modernization"><span class="toc__num">07</span><span>The Current State of Modernization-Specific Tooling</span></a></li>
         </ul>
       </li>
       <li class="toc__part">
@@ -552,24 +552,23 @@ Do not change the signatures of public APIs.</code></pre>
   </aside>
 
 </section>
-<section class="section" id="loop" lang="ja" aria-labelledby="loop-title">
+<section class="section" id="loop" aria-labelledby="loop-title">
   <div class="section__head">
     <p class="section__num">05</p>
     <div class="section__headings">
       <p class="eyebrow">Modernization Loop</p>
-      <h2 id="loop-title">Agentic Modernization Loop —— 5 つの変換と機能マップ</h2>
+      <h2 id="loop-title">The Agentic Modernization Loop — Five Transforms and a Capability Map</h2>
     </div>
   </div>
-  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
-  <p class="lead">モダナイゼーションは、Code→Doc / Doc→Plan / Plan→Work / Work→PR / PR→Learning という 5 つの変換を回すループとして設計できます。ループは不確実性を小さくレビュー可能な変更に変え、レビュー済みの結果を組織知識へ戻します。各変換で「どの機能を使い、何を成果物として残すか」を確定させます。</p>
+  <p class="lead">Modernization can be designed as a loop that cycles through five transforms — Code→Doc / Doc→Plan / Plan→Work / Work→PR / PR→Learning. The loop turns uncertainty into small, reviewable changes and feeds every reviewed result back into organizational knowledge. Each transform settles which feature you use and what artefact you leave behind.</p>
 
 <figure class="principle">
-    <blockquote>The loop turns uncertainty into small, reviewable changes and feeds every reviewed result back into organizational knowledge.<br>Bounded delegation sits at the center; human gates connect every stage.</blockquote><figcaption>ループは不確実性を、小さくレビュー可能な変更へと変え、レビュー済みの結果をすべて組織知識へ戻す。中心には境界のある委譲があり、各段を人間のゲートがつなぐ。</figcaption>
+    <blockquote>The loop turns uncertainty into small, reviewable changes and feeds every reviewed result back into organizational knowledge.<br>Bounded delegation sits at the center; human gates connect every stage.</blockquote>
   </figure>
 
 <figure class="diagram"><svg viewBox="0 0 560 480" role="img" aria-labelledby="dg-loop-t dg-loop-d" preserveAspectRatio="xMidYMid meet">
-  <title id="dg-loop-t">Agentic Modernization Loop の循環図</title>
-  <desc id="dg-loop-d">5 つの変換 Code→Doc、Doc→Plan、Plan→Work、Work→PR、PR→Learning が時計回りに一周し、PR→Learning から Code→Doc に戻る円環。中心には境界のある委譲が置かれ、各変換をつなぐ。</desc>
+  <title id="dg-loop-t">Cyclic diagram of the Agentic Modernization Loop</title>
+  <desc id="dg-loop-d">The five transforms Code→Doc, Doc→Plan, Plan→Work, Work→PR, and PR→Learning run clockwise around the ring, with PR→Learning returning to Code→Doc. Bounded delegation sits at the centre and connects each transform.</desc>
   <circle class="d-flow" cx="280" cy="252" r="178" stroke-width="2.4" stroke-dasharray="5 5"></circle>
 <polygon class="d-flow-arrow" points="384.6,108 374.7,106.3 379.9,99.2"></polygon>
 <polygon class="d-flow-arrow" points="449.3,307 447.9,297.1 456.2,299.8"></polygon>
@@ -577,159 +576,158 @@ Do not change the signatures of public APIs.</code></pre>
 <polygon class="d-flow-arrow" points="110.7,307 117.6,314.2 109.3,316.9"></polygon>
 <polygon class="d-flow-arrow" points="175.4,108 170.7,116.8 165.5,109.7"></polygon>
   <circle class="d-box-emphasis" cx="280" cy="252" r="56"></circle>
-  <text class="d-te" x="280" y="246" text-anchor="middle" font-size="15" font-weight="600">境界のある</text>
-  <text class="d-te" x="280" y="266" text-anchor="middle" font-size="15" font-weight="600">委譲</text>
+  <text class="d-te" x="280" y="246" text-anchor="middle" font-size="15" font-weight="600">Bounded</text>
+  <text class="d-te" x="280" y="266" text-anchor="middle" font-size="15" font-weight="600">delegation</text>
   <g>
-    <rect class="d-box-accent" x="211" y="45" width="138" height="58" rx="10"></rect>
-    <circle class="d-chip" cx="229" cy="74" r="10"></circle>
-    <text class="d-te" x="229" y="78" text-anchor="middle" font-size="12" font-weight="600">1</text>
-    <text class="d-t" x="249" y="70" text-anchor="start" font-size="13" font-weight="600">Code → Doc</text>
-    <text class="d-tm" x="249" y="88" text-anchor="start" font-size="11">構造復元</text>
+    <rect class="d-box-accent" x="205" y="45" width="150" height="58" rx="10"></rect>
+    <circle class="d-chip" cx="223" cy="74" r="10"></circle>
+    <text class="d-te" x="223" y="78" text-anchor="middle" font-size="12" font-weight="600">1</text>
+    <text class="d-t" x="243" y="70" text-anchor="start" font-size="13" font-weight="600">Code → Doc</text>
+    <text class="d-tm" x="243" y="88" text-anchor="start" font-size="11">Recover structure</text>
   </g>
   <g>
-    <rect class="d-box-accent" x="380.3" y="168" width="138" height="58" rx="10"></rect>
-    <circle class="d-chip" cx="398.3" cy="197" r="10"></circle>
-    <text class="d-te" x="398.3" y="201" text-anchor="middle" font-size="12" font-weight="600">2</text>
-    <text class="d-t" x="418.3" y="193" text-anchor="start" font-size="13" font-weight="600">Doc → Plan</text>
-    <text class="d-tm" x="418.3" y="211" text-anchor="start" font-size="11">計画</text>
+    <rect class="d-box-accent" x="374.3" y="168" width="150" height="58" rx="10"></rect>
+    <circle class="d-chip" cx="392.3" cy="197" r="10"></circle>
+    <text class="d-te" x="392.3" y="201" text-anchor="middle" font-size="12" font-weight="600">2</text>
+    <text class="d-t" x="412.3" y="193" text-anchor="start" font-size="13" font-weight="600">Doc → Plan</text>
+    <text class="d-tm" x="412.3" y="211" text-anchor="start" font-size="11">Plan</text>
   </g>
   <g>
-    <rect class="d-box-accent" x="315.6" y="367" width="138" height="58" rx="10"></rect>
-    <circle class="d-chip" cx="333.6" cy="396" r="10"></circle>
-    <text class="d-te" x="333.6" y="400" text-anchor="middle" font-size="12" font-weight="600">3</text>
-    <text class="d-t" x="353.6" y="392" text-anchor="start" font-size="13" font-weight="600">Plan → Work</text>
-    <text class="d-tm" x="353.6" y="410" text-anchor="start" font-size="11">Issue 化</text>
+    <rect class="d-box-accent" x="309.6" y="367" width="150" height="58" rx="10"></rect>
+    <circle class="d-chip" cx="327.6" cy="396" r="10"></circle>
+    <text class="d-te" x="327.6" y="400" text-anchor="middle" font-size="12" font-weight="600">3</text>
+    <text class="d-t" x="347.6" y="392" text-anchor="start" font-size="13" font-weight="600">Plan → Work</text>
+    <text class="d-tm" x="347.6" y="410" text-anchor="start" font-size="11">Into Issues</text>
   </g>
   <g>
-    <rect class="d-box-accent" x="106.4" y="367" width="138" height="58" rx="10"></rect>
-    <circle class="d-chip" cx="124.4" cy="396" r="10"></circle>
-    <text class="d-te" x="124.4" y="400" text-anchor="middle" font-size="12" font-weight="600">4</text>
-    <text class="d-t" x="144.4" y="392" text-anchor="start" font-size="13" font-weight="600">Work → PR</text>
-    <text class="d-tm" x="144.4" y="410" text-anchor="start" font-size="11">実装・検証</text>
+    <rect class="d-box-accent" x="100.4" y="367" width="150" height="58" rx="10"></rect>
+    <circle class="d-chip" cx="118.4" cy="396" r="10"></circle>
+    <text class="d-te" x="118.4" y="400" text-anchor="middle" font-size="12" font-weight="600">4</text>
+    <text class="d-t" x="138.4" y="392" text-anchor="start" font-size="13" font-weight="600">Work → PR</text>
+    <text class="d-tm" x="138.4" y="410" text-anchor="start" font-size="11">Build & verify</text>
   </g>
   <g>
-    <rect class="d-box-accent" x="41.7" y="168" width="138" height="58" rx="10"></rect>
-    <circle class="d-chip" cx="59.7" cy="197" r="10"></circle>
-    <text class="d-te" x="59.7" y="201" text-anchor="middle" font-size="12" font-weight="600">5</text>
-    <text class="d-t" x="79.7" y="193" text-anchor="start" font-size="13" font-weight="600">PR → Learning</text>
-    <text class="d-tm" x="79.7" y="211" text-anchor="start" font-size="11">知識還元</text>
+    <rect class="d-box-accent" x="35.7" y="168" width="150" height="58" rx="10"></rect>
+    <circle class="d-chip" cx="53.7" cy="197" r="10"></circle>
+    <text class="d-te" x="53.7" y="201" text-anchor="middle" font-size="12" font-weight="600">5</text>
+    <text class="d-t" x="73.7" y="193" text-anchor="start" font-size="13" font-weight="600">PR → Learning</text>
+    <text class="d-tm" x="73.7" y="211" text-anchor="start" font-size="11">Return knowledge</text>
   </g>
-</svg><figcaption>Code→Doc / Doc→Plan / Plan→Work / Work→PR / PR→Learning の 5 変換が時計回りに一周し、PR→Learning がふたたび Code→Doc に戻る循環。中心には「境界のある委譲」があり、各変換をつなぐのは人間のゲートである。各変換で使う機能・残す成果物・人間のゲートは直後の表で確認できる。</figcaption></figure>
+</svg><figcaption>The five transforms — Code→Doc / Doc→Plan / Plan→Work / Work→PR / PR→Learning — run clockwise around the ring, and PR→Learning returns to Code→Doc. Bounded delegation sits at the centre, and what connects each transform is a human gate. The feature used, the artefact left behind, and the human gate for each transform are laid out in the table just below.</figcaption></figure>
 
-<div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:26%"><col style="width:30%"><col style="width:26%"></colgroup><thead><tr><th>変換</th><th>使う機能</th><th>リポジトリに残す成果物</th><th>人間のゲート</th></tr></thead><tbody><tr><td><strong>Code → Doc</strong><br><span class="muted">構造・振る舞い・ルール・不確実性を復元する</span></td><td>Copilot Chat（リポジトリ横断の説明）<br>Copilot Spaces（対象範囲を束ねる）<br><span class="badge badge-pp">Public Preview</span> Modernize CLI の assess</td><td><code>docs/</code> 配下の構造・フロー・業務ルール記述<br><strong>「前提と未確定事項」の一覧</strong></td><td>ドメインオーナーによる検証。<em>復元されたドキュメントは、検証されるまで仮説にすぎない</em></td></tr><tr><td><strong>（安全網）</strong><br><span class="muted">振る舞いの安全網を作る</span></td><td>Copilot Chat のテスト生成<br>App modernization for Java（既存テスト移行 ＋ 新規ユニットテスト生成、behavioral-integrity 検証）</td><td>characterization テスト（現行の観測可能な振る舞いを固定するテスト）</td><td><strong>どれが意図した振る舞いでどれが欠陥か</strong>を人が判定する</td></tr><tr><td><strong>Doc → Plan</strong><br><span class="muted">目標・選択肢・リスク・移行の波を定義する</span></td><td><span class="badge badge-pp">Public Preview</span> <strong>modernization agent（Modernize CLI）</strong> の assess → plan<br>Dependabot / Advisory Database（既知脆弱性）<br>CodeQL（セキュリティ所見）</td><td>編集可能・順序付きのタスクと成功条件を持つ計画ファイル</td><td><strong>戦略・順序・リスクは人が選ぶ</strong>。アセスメントは事実であって戦略決定ではない</td></tr><tr><td><strong>Plan → Work</strong><br><span class="muted">境界があり独立に検証可能なタスクを作る</span></td><td>GitHub Issues（＝ Delegation Contract の器）<br>Issue テンプレート／ラベル</td><td>1 つの観測可能な成果・明示的依存・境界・検証手段・ロールバック手順を持つ Issue 群</td><td>Issue の粒度承認（＝スプリント計画）</td></tr><tr><td><strong>Work → PR</strong><br><span class="muted">実装・検証・報告し、人間のレビューを求める</span></td><td><strong>GitHub Copilot cloud agent</strong><br>GitHub Actions / CodeQL / secret scanning<br>Copilot code review</td><td><code>copilot/…</code> ブランチ、draft PR、Verified 署名コミット、session log</td><td>required reviews / CODEOWNERS / environments。<strong>エージェントは承認もマージもできない</strong></td></tr><tr><td><strong>PR → Learning</strong><br><span class="muted">instructions・テスト・計画・今後の作業を改善する</span></td><td>既存のテレメトリ・インシデント・サポート基盤<br><span class="badge badge-pp">Public Preview</span> Copilot Memory<br>custom instructions / custom agents の更新</td><td>更新された <code>AGENTS.md</code> / <code>*.instructions.md</code>、強化されたテスト、runbook、次の Delegation Contract</td><td>どのシグナルが優先度・統制・ロールアウトを変えるかをオーナーが決める</td></tr></tbody></table></div>
+<div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:26%"><col style="width:30%"><col style="width:26%"></colgroup><thead><tr><th>Transform</th><th>Feature used</th><th>Artefact left in the repository</th><th>Human gate</th></tr></thead><tbody><tr><td><strong>Code → Doc</strong><br><span class="muted">recover the structure, behaviour, rules, and uncertainties</span></td><td>Copilot Chat (cross-repository explanation)<br>Copilot Spaces (bundling the scope)<br><span class="badge badge-pp">Public Preview</span> Modernize CLI assess</td><td>Structure, flow, and business-rule write-ups under <code>docs/</code><br><strong>A list of assumptions and open questions</strong></td><td>Verification by the domain owner. <em>Recovered documentation is only a hypothesis until it is verified.</em></td></tr><tr><td><strong>(safety net)</strong><br><span class="muted">build a behavioural safety net</span></td><td>Copilot Chat test generation<br>App modernization for Java (migrating existing tests + generating new unit tests, behavioral-integrity verification)</td><td>characterization tests (tests that pin down the current observable behaviour)</td><td><strong>A person decides which behaviour is intended and which is a defect.</strong></td></tr><tr><td><strong>Doc → Plan</strong><br><span class="muted">define the goals, options, risks, and migration waves</span></td><td><span class="badge badge-pp">Public Preview</span> <strong>modernization agent (Modernize CLI)</strong> assess → plan<br>Dependabot / Advisory Database (known vulnerabilities)<br>CodeQL (security findings)</td><td>A plan file with editable, ordered tasks and success conditions</td><td><strong>A person chooses the strategy, the order, and the risks.</strong> An assessment is a set of facts, not a strategy decision.</td></tr><tr><td><strong>Plan → Work</strong><br><span class="muted">create bounded, independently verifiable tasks</span></td><td>GitHub Issues (the container for the Delegation Contract)<br>Issue templates / labels</td><td>A set of Issues, each with one observable outcome, explicit dependencies, boundaries, a means of verification, and a rollback procedure</td><td>Approval of the Issue granularity (i.e. sprint planning)</td></tr><tr><td><strong>Work → PR</strong><br><span class="muted">implement, verify, report, and ask for human review</span></td><td><strong>GitHub Copilot cloud agent</strong><br>GitHub Actions / CodeQL / secret scanning<br>Copilot code review</td><td>A <code>copilot/…</code> branch, a draft PR, Verified-signed commits, and the session log</td><td>required reviews / CODEOWNERS / environments. <strong>The agent can neither approve nor merge.</strong></td></tr><tr><td><strong>PR → Learning</strong><br><span class="muted">improve the instructions, the tests, the plan, and future work</span></td><td>Existing telemetry, incident, and support infrastructure<br><span class="badge badge-pp">Public Preview</span> Copilot Memory<br>updates to custom instructions / custom agents</td><td>An updated <code>AGENTS.md</code> / <code>*.instructions.md</code>, strengthened tests, a runbook, and the next Delegation Contract</td><td>The owner decides which signals change the priorities, the governance, and the rollout.</td></tr></tbody></table></div>
 
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">PR → Learning に対応する専用の Copilot 製品は存在しない</p><p>自律的なデプロイ後モニタリングやインシデント相関を担う専用の Copilot 機能は、確認できる範囲では<strong>存在しません</strong>。この段は運用モデルの合成であって、専用の Copilot 監視機能ではありません。<br>
-    したがってこの段は<strong>既存の可観測性基盤 ＋ 人間の運用プロセス</strong>で実装するしかありません。Copilot 側で唯一この方向にあるのが <span class="badge badge-pp">Public Preview</span> <strong>Copilot Memory</strong>（リポジトリ事実の永続化・28 日で失効）ですが、これは運用シグナルの取り込み機構ではありません。提案時に「ここは製品機能ではなく運用設計」と明示することが誠実です。</p></div>
+    <div class="callout-body"><p class="callout-title">There is no dedicated Copilot product for PR → Learning</p><p>As far as can be confirmed, there is <strong>no</strong> dedicated Copilot feature that performs autonomous post-deployment monitoring or incident correlation. This stage is a synthesis of the operating model, not a dedicated Copilot monitoring feature.<br>
+    That means this stage can only be implemented with <strong>existing observability infrastructure plus a human operational process</strong>. The one thing on the Copilot side that points in this direction is <span class="badge badge-pp">Public Preview</span> <strong>Copilot Memory</strong> (persisting repository facts, expiring after 28 days without use), but that is not a mechanism for ingesting operational signals. When you propose this, the honest thing is to state plainly that <strong>this is operational design, not a product feature</strong>.</p></div>
   </aside>
 
-<h3>Agents UI の research / plan / iterate 段階</h3>
-<p>Agents UI から起動した場合、cloud agent は次の流れをたどります —— 承認された Issue → エージェントの調査 → 提案された計画 → 人による確認・軌道修正 → ブランチ作業 → チェック実行 → draft PR。「人が範囲・アプローチ・前提を確認または軌道修正する」ステップが挟まるのは、この投入経路の特徴です。</p>
+<h3>The research / plan / iterate stages in the Agents UI</h3>
+<p>Started from the Agents UI, the cloud agent follows this flow — an approved Issue → the agent's research → a proposed plan → human confirmation or course-correction → work on a branch → running the checks → a draft PR. The step where a person confirms or course-corrects the scope, the approach, and the assumptions is what characterises this entry point.</p>
 <aside class="callout callout-note">
     <div class="callout-mark" aria-hidden="true">i</div>
-    <div class="callout-body"><p class="callout-title">投入経路によって挙動が違う</p><p>Agents UI から起動した場合、cloud agent は PR を作る前に調査・計画・反復ができます。<strong>それ以外の多くの投入経路（Issue アサイン、<code>@copilot</code> など）では、すぐに PR を開きます。</strong><br>「人が範囲・アプローチ・前提を確認または軌道修正する」ステップを実際に成立させたいなら、<strong>Agents UI から投入する</strong>必要があります。この差は運用設計に直結します。</p></div>
+    <div class="callout-body"><p class="callout-title">Behaviour differs by entry point</p><p>Started from the Agents UI, the cloud agent can research, plan, and iterate before it creates a PR. <strong>From most of the other entry points (assigning an Issue, <code>@copilot</code>, and so on) it opens a PR straight away.</strong><br>
+    If you actually want the step where a person confirms or course-corrects the scope, the approach, and the assumptions, you have to <strong>start the work from the Agents UI</strong>. This difference bears directly on operational design.</p></div>
   </aside>
 
 </section>
-<section class="section" id="orchestration" lang="ja" aria-labelledby="orchestration-title">
+<section class="section" id="orchestration" aria-labelledby="orchestration-title">
   <div class="section__head">
     <p class="section__num">06</p>
     <div class="section__headings">
       <p class="eyebrow">Orchestration</p>
-      <h2 id="orchestration-title">Orchestration の実務 —— 並列委譲を成立させる</h2>
+      <h2 id="orchestration-title">Orchestration in Practice — Making Parallel Delegation Work</h2>
     </div>
   </div>
-  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
-  <p class="lead">§01 と §10 の両方で「オーケストレーション」を頂点に置きながら、本資料はこれまで操作方法を示していませんでした。本節はその欠落を埋めます —— 並列に動かせる 4 つの実体を区別し、何を並列に載せてよいかの分解規準を確定させ、並列度の上限がどこにあるかを明示します。</p>
+  <p class="lead">Both §01 and §10 place orchestration at the top, yet this guide has so far not shown how to operate it. This section fills that gap — it distinguishes the four things you can run in parallel, settles the decomposition criteria for what may be placed in parallel, and makes plain where the ceiling on concurrency lies.</p>
 
 <figure class="principle">
-    <blockquote>Parallelism is bounded by review capacity, not by how many agents you can launch.</blockquote><figcaption>並列度を決めるのは「何体のエージェントを起動できるか」ではなく「人がレビューし切れる量」である。委譲を増やすほど、律速は生成側からレビュー側へ移る。</figcaption>
+    <blockquote>Parallelism is bounded by review capacity, not by how many agents you can launch.</blockquote>
   </figure>
 
-<h3>並列実行の 4 つの実体 —— 階層が違う</h3>
-<p>「エージェントを並列に動かす」と一言で言っても、GitHub には<strong>階層の異なる 4 つの仕組み</strong>があります。サブエージェントは<strong>1 セッションの内側</strong>で、cloud agent タスクや automations は<strong>セッションをまたいで</strong>並列化します。混同すると分解の粒度を誤ります。</p>
+<h3>The four things that run in parallel — at different levels</h3>
+<p>&ldquo;Run agents in parallel&rdquo; is one phrase, but GitHub has <strong>four mechanisms at different levels</strong>. Subagents parallelise <strong>inside a single session</strong>; cloud agent tasks and automations parallelise <strong>across sessions</strong>. Confuse them and you will get the granularity of decomposition wrong.</p>
 
-<div class="table-wrap"><table class=""><colgroup><col style="width:20%"><col style="width:22%"><col style="width:18%"><col style="width:22%"><col style="width:18%"></colgroup><thead><tr><th>並列の実体</th><th>面 / 起動経路</th><th>並列の単位</th><th>コンテキストの分離</th><th>課金・状態の帰結</th></tr></thead><tbody><tr><td><strong><code>/fleet</code> サブエージェント</strong> <span class="badge badge-official">公式</span></td><td>GitHub Copilot CLI（1 セッション内）</td><td>サブタスク（メインがオーケストレータ）</td><td><strong>各サブエージェントが独立したコンテキスト窓</strong>（メインとも他のサブエージェントとも別）</td><td><span class="neg">AI Credits の消費が増える</span>（§13）。状態は 1 ワークツリー内</td></tr><tr><td><strong>並列ワークスペース</strong> <span class="badge badge-ga">GA</span></td><td>GitHub Copilot app（デスクトップ）</td><td>セッション（複数を同時実行）</td><td><strong>各セッションが専用の git worktree とブランチ</strong></td><td>セッションごとに独立したブランチ。クラウドサンドボックス実行時は Actions も消費 <span class="badge badge-pp">Public Preview</span></td></tr><tr><td><strong>cloud agent の複数タスク</strong> <span class="badge badge-official">公式</span></td><td>GitHub.com の Agents タブ / <code>gh agent-task</code> / agent-tasks REST API</td><td>タスク＝セッション（セッション間）</td><td>各タスクが独立したエフェメラル環境と <code>copilot/…</code> ブランチ</td><td>AI Credits ＋ Actions minutes。push 済みコミットとして残る</td></tr><tr><td><strong>automations</strong> <span class="badge badge-official">公式</span></td><td>スケジュール / リポジトリイベント（無人）</td><td>実行ごとに 1 セッション</td><td>リポジトリの cloud agent 設定を継承（1 リポジトリにスコープ）</td><td>AI Credits ＋ Actions minutes。<span class="neg">定義は Git 管理外</span>（§09）</td></tr></tbody></table></div>
+<div class="table-wrap"><table class=""><colgroup><col style="width:20%"><col style="width:22%"><col style="width:18%"><col style="width:22%"><col style="width:18%"></colgroup><thead><tr><th>What runs in parallel</th><th>Surface / how it starts</th><th>Unit of parallelism</th><th>Context isolation</th><th>Billing and state consequences</th></tr></thead><tbody><tr><td><strong><code>/fleet</code> subagents</strong> <span class="badge badge-official">Official</span></td><td>GitHub Copilot CLI (within one session)</td><td>Subtasks (the main agent is the orchestrator)</td><td><strong>Each subagent has its own context window</strong> (separate from the main agent and from the other subagents)</td><td><span class="neg">It consumes more AI Credits</span> (§13). State stays within one worktree</td></tr><tr><td><strong>Parallel workspaces</strong> <span class="badge badge-ga">GA</span></td><td>GitHub Copilot app (desktop)</td><td>Sessions (several run at once)</td><td><strong>Each session gets its own git worktree and branch</strong></td><td>A separate branch per session. Running in a cloud sandbox also consumes Actions <span class="badge badge-pp">Public Preview</span></td></tr><tr><td><strong>Multiple cloud agent tasks</strong> <span class="badge badge-official">Official</span></td><td>The Agents tab on GitHub.com / <code>gh agent-task</code> / the agent-tasks REST API</td><td>Task = session (across sessions)</td><td>Each task gets its own ephemeral environment and a <code>copilot/…</code> branch</td><td>AI Credits + Actions minutes. Persists as pushed commits</td></tr><tr><td><strong>automations</strong> <span class="badge badge-official">Official</span></td><td>A schedule / a repository event (unattended)</td><td>One session per run</td><td>Inherits the repository's cloud agent settings (scoped to one repository)</td><td>AI Credits + Actions minutes. <span class="neg">The definition lives outside Git</span> (§09)</td></tr></tbody></table></div>
 
 <figure class="doc-quote">
     <blockquote>the main Copilot agent … will act as orchestrator, managing the workflow and dependencies between the subtasks. Each subagent has its own context window, separate from the main agent and other subagents.</blockquote>
     <figcaption><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/fleet" target="_blank" rel="noopener noreferrer">GitHub Docs — Fleet for Copilot CLI</a></figcaption>
   </figure>
 
-<h3>並列に載せてよいタスクの分解規準</h3>
-<p>並列化が利益を生むのは、タスクが<strong>本当に独立している</strong>ときだけです。分解の可否は次の 3 点で判定します。</p>
+<h3>The decomposition criteria for tasks you may place in parallel</h3>
+<p>Parallelisation only pays off when tasks are <strong>genuinely independent</strong>. Whether a decomposition is sound is judged on the following three points.</p>
 <div class="cards cards-3"><div class="card">
-        <p class="card-title">① 独立性 —— 逐次依存がないこと <span class="badge badge-official">公式</span></p>
-        <div class="card-body">一方の出力が他方の入力になる依頼は並列化しても待ちが発生するだけです。ドキュメント原文も <em>「your request is inherently sequential なら <code>/fleet</code> は利益をもたらさないことがある」</em>と明言します。<strong>本質的に逐次な依頼を無理に並列化しない</strong> —— これが第一規準です。</div>
+        <p class="card-title">① Independence — no sequential dependency <span class="badge badge-official">Official</span></p>
+        <div class="card-body">A request whose one output becomes the other's input only produces waiting even when it is parallelised. The documentation itself is explicit: <em>&ldquo;If your request is inherently sequential, using the <code>/fleet</code> slash command mode may not provide any benefit.&rdquo;</em> <strong>Do not force an inherently sequential request into parallel</strong> — that is the first criterion.</div>
       </div><div class="card">
-        <p class="card-title">② 衝突面をパスで分離する <span class="badge badge-framework">本資料の整理</span></p>
-        <div class="card-body">並列タスクが同じファイルを触ると、ブランチ統合時に衝突します。§02 の <code>applyTo</code>（instruction のスコープ）と §03 の <strong>CODEOWNERS</strong> を再利用し、<strong>タスクごとに触るパスを重ならないよう割り当てる</strong>。衝突面を設計時に分離するのがオーケストレータの仕事です。</div>
+        <p class="card-title">② Separate the collision surface by path <span class="badge badge-framework">This guide's framing</span></p>
+        <div class="card-body">When parallel tasks touch the same file, they collide at branch-integration time. Reuse <code>applyTo</code> (the scope of an instruction) from §02 and <strong>CODEOWNERS</strong> from §03, and <strong>assign each task a non-overlapping set of paths to touch</strong>. Separating the collision surface at design time is the orchestrator's job.</div>
       </div><div class="card">
-        <p class="card-title">③ 1 タスク 1 ブランチの帰結 <span class="badge badge-framework">本資料の整理</span></p>
-        <div class="card-body">並列ワークスペースも cloud agent タスクも <strong>1 タスク＝1 ブランチ＝1 PR</strong> が単位です。したがって分解の粒度は「独立してレビュー・マージできる単位」まで下げる必要があります。粒度が粗いと衝突し、細か過ぎるとレビュー負荷（＝律速）が増えます。</div>
+        <p class="card-title">③ The consequence of one task, one branch <span class="badge badge-framework">This guide's framing</span></p>
+        <div class="card-body">For both parallel workspaces and cloud agent tasks the unit is <strong>one task = one branch = one PR</strong>. The granularity of decomposition therefore has to come down to &ldquo;a unit that can be reviewed and merged independently&rdquo;. Too coarse and it collides; too fine and the review load — the bottleneck — goes up.</div>
       </div></div>
 
-<h3>並列化が向く仕事・向かない仕事</h3>
-<div class="table-wrap"><table class=""><colgroup><col style="width:14%"><col style="width:50%"><col style="width:36%"></colgroup><thead><tr><th>向き / 不向き</th><th>例</th><th>根拠</th></tr></thead><tbody><tr><td><span class="pos">向く</span></td><td>複数ファイルの独立したリファクタ、依存更新、モジュール横断のテスト実行、<strong>新機能のテストスイート作成</strong></td><td>ドキュメントが「複数ステップの独立作業」「新機能のテストスイート作成は並列化に向く」と明記</td></tr><tr><td><span class="neg">向かない</span></td><td>設計→実装→検証のように前段の結論が次段の前提になる一連の作業</td><td>逐次依存があると <code>/fleet</code> は利益をもたらさない（AI Credits だけ増える）</td></tr></tbody></table></div>
+<h3>Work that suits parallelisation and work that does not</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:14%"><col style="width:50%"><col style="width:36%"></colgroup><thead><tr><th>Suited / not suited</th><th>Examples</th><th>Basis</th></tr></thead><tbody><tr><td><span class="pos">Suited</span></td><td>Independent refactors across several files, dependency updates, running tests across modules, <strong>building a test suite for a new feature</strong></td><td>The documentation names these explicitly — &ldquo;multiple independent steps, such as refactoring several files, updating dependencies, or running tests across modules&rdquo; — and calls &ldquo;creating a suite of tests for a new feature … well suited to parallelization.&rdquo;</td></tr><tr><td><span class="neg">Not suited</span></td><td>A chain of work like design → implementation → verification, where the conclusion of one stage becomes the premise of the next</td><td>When there is a sequential dependency, <code>/fleet</code> provides no benefit (only the AI Credits go up)</td></tr></tbody></table></div>
 
 <aside class="callout callout-key">
     <div class="callout-mark" aria-hidden="true">★</div>
-    <div class="callout-body"><p class="callout-title">専門化 —— サブエージェントにモデルとカスタムエージェントを割り当てる</p><p><code>/fleet</code> のサブエージェントは既定で低コストモデルを使いますが、プロンプト内でモデルを指定できます（例: <em>「… Use GPT-5.3-Codex, to create …」</em>）。<code>@CUSTOM-AGENT-NAME</code> でカスタムエージェントを明示指定すれば、タスクごとに専門化した振る舞いを割り当てられます。<strong>難所には高性能モデル、定型には低コストモデル</strong>という配分が、そのままコスト設計（§13）になります。</p></div>
+    <div class="callout-body"><p class="callout-title">Specialisation — assign a model and a custom agent to each subagent</p><p><code>/fleet</code> subagents use a low-cost model by default, but you can specify the model in the prompt (for example, <em>&ldquo;… Use GPT-5.3-Codex, to create …&rdquo;</em>). Name a custom agent explicitly with <code>@CUSTOM-AGENT-NAME</code> and you can assign specialised behaviour per task. Allocating <strong>a high-capability model to the hard parts and a low-cost model to the routine ones</strong> is, in itself, cost design (§13).</p></div>
   </aside>
 
 <aside class="callout callout-note">
     <div class="callout-mark" aria-hidden="true">i</div>
-    <div class="callout-body"><p class="callout-title">monorepo と polyrepo の違いは「分解規準」の中に吸収される</p><p>monorepo では衝突面の分離がパス割り当て（規準②）で完結し、CODEOWNERS も 1 リポジトリで一元管理できます。polyrepo では 1 タスク 1 ブランチが自然にリポジトリ境界と一致する一方、リポジトリ横断の変更は automations が <strong>1 リポジトリにしか作用できない</strong>制約（§09）に突き当たります。いずれの場合も規準①〜③は変わりません。</p></div>
+    <div class="callout-body"><p class="callout-title">The difference between a monorepo and a polyrepo is absorbed into the decomposition criteria</p><p>In a monorepo, separating the collision surface is complete once paths are assigned (criterion ②), and CODEOWNERS can be managed centrally in one repository. In a polyrepo, one task, one branch aligns naturally with the repository boundary, but a cross-repository change runs into the constraint that <strong>automations can only act on one repository</strong> (§09). Either way, criteria ①–③ do not change.</p></div>
   </aside>
 
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">並列度を上げてもレビュー容量は増えない</p><p>4 つの仕組みのどれを使っても、生成された PR は最終的に<strong>人のレビューという同じ関門</strong>を通ります。並列度を上げるほど律速はレビュー側に移動し、AI Credits（§13）は線形に増えます。<strong>「同時に何体動かせるか」ではなく「同時に何本レビューし切れるか」で並列度を決める</strong> —— これが本資料を貫くテーゼの、オーケストレーションにおける現れです。</p></div>
+    <div class="callout-body"><p class="callout-title">Raising concurrency does not raise review capacity</p><p>Whichever of the four mechanisms you use, the PRs that get generated all pass through <strong>the same gate — human review</strong> in the end. The more you raise concurrency, the more the bottleneck moves to the review side, and the AI Credits (§13) grow linearly. <strong>Decide concurrency by how many PRs you can review at once, not by how many agents you can run at once</strong> — this is how the thesis that runs through this guide shows up in orchestration.</p></div>
   </aside>
 
 </section>
-<section class="section" id="modernization" lang="ja" aria-labelledby="modernization-title">
+<section class="section" id="modernization" aria-labelledby="modernization-title">
   <div class="section__head">
     <p class="section__num">07</p>
     <div class="section__headings">
-      <p class="eyebrow">モダナイゼーション</p>
-      <h2 id="modernization-title">モダナイゼーション専用ツールの現状</h2>
+      <p class="eyebrow">Modernization</p>
+      <h2 id="modernization-title">The Current State of Modernization-Specific Tooling</h2>
     </div>
   </div>
-  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
-  <p class="lead">モダナイゼーションには専用のツール群があります。この領域は名称と構成が変わっているため、傘の名称・エージェント・提供状態・前提を現状に即して整理し、汎用の Modernization Loop（§05）との対応を示します。</p>
+  <p class="lead">Modernization has a dedicated set of tools. Because the names and the make-up of this area have changed, this section sets out the umbrella name, the agent, the availability, and the prerequisites as they currently stand, and shows how they map onto the general Modernization Loop (§05).</p>
 
-<div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:82%"></colgroup><thead><tr><th>項目</th><th>現行の内容</th></tr></thead><tbody><tr><td>傘の名称</td><td><span class="badge badge-official">公式</span> <strong>GitHub Copilot modernization</strong></td></tr><tr><td>エージェント / CLI</td><td><span class="badge badge-official">公式</span> <strong>GitHub Copilot modernization agent</strong>（<strong>Modernize CLI</strong> として提供）</td></tr><tr><td>対象</td><td>Java / .NET / <strong>C++</strong> のアップグレード、サポートされる Azure 移行シナリオ。<em>「Java 版と .NET 版が別々」という整理はもはや正確ではない</em>（言語別のドキュメント・体験は残る）</td></tr><tr><td>提供状態</td><td><span class="badge badge-ga">GA</span> IDE でのランタイム／フレームワーク／ツールセット アップグレード（.NET・Java・C++）、IDE の移行シナリオ（.NET・Java）<br><span class="badge badge-pp">Public Preview</span> <strong>Modernize CLI のアセスメントと計画立案</strong></td></tr><tr><td>前提</td><td>GitHub Copilot サブスクリプション ＋ GitHub CLI 2.45 以上。クイックスタートは Free / Pro / Pro+ / Business / Enterprise を列挙</td></tr><tr><td>cloud agent 連携</td><td>CLI から cloud agent に作業を委譲できる。その分は cloud agent の AI Credits ＋ Actions 分を消費する</td></tr></tbody></table></div>
+<div class="table-wrap"><table class=""><colgroup><col style="width:18%"><col style="width:82%"></colgroup><thead><tr><th>Item</th><th>Current content</th></tr></thead><tbody><tr><td>Umbrella name</td><td><span class="badge badge-official">Official</span> <strong>GitHub Copilot modernization</strong></td></tr><tr><td>Agent / CLI</td><td><span class="badge badge-official">Official</span> <strong>GitHub Copilot modernization agent</strong> (delivered as the <strong>Modernize CLI</strong>)</td></tr><tr><td>Scope</td><td>Upgrades for Java / .NET / <strong>C++</strong>, and the supported Azure migration scenarios. <em>Describing it as &ldquo;a separate Java edition and .NET edition&rdquo; is no longer accurate</em> (the per-language documentation and experiences remain)</td></tr><tr><td>Availability</td><td><span class="badge badge-ga">GA</span> Runtime / framework / toolset upgrades in the IDE (.NET, Java, C++) and the IDE migration scenarios (.NET, Java)<br><span class="badge badge-pp">Public Preview</span> <strong>Assessment and planning in the Modernize CLI</strong></td></tr><tr><td>Prerequisites</td><td>A GitHub Copilot subscription + GitHub CLI 2.45 or later. The quickstart lists Free / Pro / Pro+ / Business / Enterprise</td></tr><tr><td>cloud agent integration</td><td>The CLI can delegate work to the cloud agent; that work consumes the cloud agent's AI Credits + Actions minutes</td></tr></tbody></table></div>
 
 <figure class="doc-quote">
     <blockquote>The modernization agent, delivered via the Modernize CLI, enables architects and application owners to orchestrate assessment, migration planning, and framework upgrade automation across multiple applications simultaneously.</blockquote>
     <figcaption><a href="https://learn.microsoft.com/en-us/azure/developer/github-copilot-app-modernization/overview" target="_blank" rel="noopener noreferrer">learn.microsoft.com — GitHub Copilot app modernization overview</a></figcaption>
   </figure>
 
-<h3>レガシーの 3 つの形 —— Three forms of legacy（Code / Knowledge / Process）<span class="badge badge-framework">本資料の整理</span></h3>
-<p>モダナイゼーションを「古いコードを新しいコードに変える」だけと捉えると、最も難しい部分を取りこぼします。本資料は、レガシーが <strong>3 つの形</strong>で存在すると整理します（公式の製品区分ではなく<strong>本資料の整理語彙</strong>です・§16）。ツールが直接扱えるのは 1 つ目だけで、残り 2 つは委譲の設計で埋めます。</p>
+<h3>The three forms of legacy — Code / Knowledge / Process <span class="badge badge-framework">This guide's framing</span></h3>
+<p>If you treat modernization as nothing more than &ldquo;turning old code into new code,&rdquo; you miss the hardest part. This guide frames legacy as existing in <strong>three forms</strong> (this is <strong>this guide's own vocabulary, not an official product distinction</strong>, §16). The tools can handle only the first directly; the other two are filled in by the design of the delegation.</p>
 <div class="cards cards-3"><div class="card">
-        <p class="card-title">Code —— コードのレガシー <span class="badge badge-framework">本資料の整理</span></p>
-        <div class="card-body">古い言語・フレームワーク・依存・ランタイム。<strong>Modernize CLI / upgrade agent が直接扱える</strong>のはここ（Assess → Plan → Execute）。3 つの中で最も自動化が進んでいる層です。</div>
+        <p class="card-title">Code — legacy in the code <span class="badge badge-framework">This guide's framing</span></p>
+        <div class="card-body">Old languages, frameworks, dependencies, and runtimes. This is where <strong>the Modernize CLI / upgrade agent can act directly</strong> (Assess → Plan → Execute). It is the most automated of the three layers.</div>
       </div><div class="card">
-        <p class="card-title">Knowledge —— 知識のレガシー <span class="badge badge-framework">本資料の整理</span></p>
-        <div class="card-body">「なぜこう書かれたか」が失われた状態 —— ドキュメント不在、設計意図の消失、暗黙の業務ルール。<strong>characterization テストと Copilot による説明</strong>（コード→自然言語）で観測可能な形に復元します（§05・§08）。</div>
+        <p class="card-title">Knowledge — legacy in the knowledge <span class="badge badge-framework">This guide's framing</span></p>
+        <div class="card-body">The state where &ldquo;why it was written this way&rdquo; has been lost — missing documentation, vanished design intent, implicit business rules. You recover it into an observable form with <strong>characterization tests and Copilot explanations</strong> (code → natural language) (§05, §08).</div>
       </div><div class="card">
-        <p class="card-title">Process —— プロセスのレガシー <span class="badge badge-framework">本資料の整理</span></p>
-        <div class="card-body">手作業のビルド・属人的なリリース・検証の欠如。ここが埋まっていないと、変換したコードを<strong>安全に受け入れる関門</strong>が無い。ruleset・CI・Evidence Package（§08・§09）で決定的ゲートを先に作ります。</div>
+        <p class="card-title">Process — legacy in the process <span class="badge badge-framework">This guide's framing</span></p>
+        <div class="card-body">Manual builds, person-dependent releases, an absence of verification. Until this is filled in, there is <strong>no gate that safely accepts</strong> the transformed code. You build the deterministic gates first, with rulesets, CI, and the Evidence Package (§08, §09).</div>
       </div></div>
 <aside class="callout callout-note">
     <div class="callout-mark" aria-hidden="true">i</div>
-    <div class="callout-body"><p class="callout-title">順序が逆になりやすい</p><p>直感に反して、<strong>Code を変える前に Process を、Process の前に Knowledge を</strong>固めるのが安全です。知識（期待される振る舞い）が無ければ検証の網は書けず、検証の網（決定的ゲート）が無ければコード変換を安全に受け入れられません。だからこそ modernize-legacy-code チュートリアル（後述）は「テスト計画を先に作る」順序を採ります —— これは Knowledge → Process → Code の実務的な現れです。</p></div>
+    <div class="callout-body"><p class="callout-title">The order tends to get reversed</p><p>Counter-intuitively, it is safer to firm up <strong>the Process before you change the Code, and the Knowledge before the Process</strong>. Without the knowledge (the expected behaviour) you cannot write the net of verification, and without that net (the deterministic gates) you cannot safely accept a code transformation. That is exactly why the modernize-legacy-code tutorial (below) takes the order of &ldquo;write the test plan first&rdquo; — it is Knowledge → Process → Code made practical.</p></div>
   </aside>
 
-<h3>Assess → Plan → Execute と、Loop の各段の対応</h3>
-<div class="table-wrap"><table class=""><colgroup><col style="width:16%"><col style="width:54%"><col style="width:30%"></colgroup><thead><tr><th>Modernize CLI の段階</th><th>内容</th><th>Loop の対応段（§05）</th></tr></thead><tbody><tr><td><strong>Assess</strong></td><td>コード・構成・依存・クラウド適合性・リスク・機会を分析。<strong>複数リポジトリを横断して集約できる</strong></td><td>Doc → Plan の前半（証拠に基づく機会評価）</td></tr><tr><td><strong>Plan</strong></td><td>編集可能・レビュー可能な順序付きタスクと成功条件を生成</td><td>Doc → Plan の後半（目標と移行戦略の定義）</td></tr><tr><td><strong>Execute</strong></td><td>変換・依存アップグレードの適用、ビルド／テスト検証、CVE のスキャンと修復、追跡可能なコミット、cloud agent への委譲</td><td>Work → PR（実装を委譲し、判断は保持する）</td></tr></tbody></table></div>
+<h3>How Assess → Plan → Execute maps onto the stages of the Loop</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:16%"><col style="width:54%"><col style="width:30%"></colgroup><thead><tr><th>Modernize CLI stage</th><th>What it does</th><th>Matching Loop stage (§05)</th></tr></thead><tbody><tr><td><strong>Assess</strong></td><td>Analyses the code, the configuration, the dependencies, cloud fit, risks, and opportunities. <strong>It can aggregate across several repositories.</strong></td><td>The first half of Doc → Plan (evidence-based opportunity assessment)</td></tr><tr><td><strong>Plan</strong></td><td>Generates editable, reviewable, ordered tasks with success conditions</td><td>The second half of Doc → Plan (defining the goals and the migration strategy)</td></tr><tr><td><strong>Execute</strong></td><td>Applies the transformations and dependency upgrades, verifies with builds and tests, scans and remediates CVEs, produces traceable commits, and delegates to the cloud agent</td><td>Work → PR (delegate the implementation, keep the judgement)</td></tr></tbody></table></div>
 
 <aside class="callout callout-key">
     <div class="callout-mark" aria-hidden="true">★</div>
-    <div class="callout-body"><p class="callout-title">「人が戦略を選ぶ」という原則は、この製品構造と一致する</p><p>アセスメントは<em>事実の把握であって、戦略決定ではありません</em>。戦略・順序・リスク受容は人が選びます。Modernize CLI の Plan 段が生成するのは<strong>「編集可能・レビュー可能」な計画</strong>であり、実行前に人が変更できる形になっています。運用モデルの原則と製品の設計思想がここで一致しており、説明の説得力が高い箇所です。</p></div>
+    <div class="callout-body"><p class="callout-title">The principle that a person chooses the strategy lines up with how this product is built</p><p>An assessment is <em>a grasp of the facts, not a strategy decision</em>. A person chooses the strategy, the order, and the risk acceptance. What the Plan stage of the Modernize CLI generates is an <strong>editable, reviewable plan</strong> — a form a person can change before execution. The principle of the operating model and the design philosophy of the product coincide here, which makes this an especially convincing point to explain.</p></div>
   </aside>
 
 <pre class="code" data-lang="powershell"><code># Windows
@@ -738,17 +736,17 @@ winget install GitHub.Copilot.modernization.agent
 # macOS / Linux
 brew tap microsoft/modernize https://github.com/microsoft/modernize-cli
 brew install modernize</code></pre>
-<p class="muted">対話型 TUI の <code>modernize</code> と、ヘッドレスの <code>modernize &lt;command&gt;</code> の両方をサポート。</p>
+<p class="muted">Supports both the interactive TUI <code>modernize</code> and the headless <code>modernize &lt;command&gt;</code>.</p>
 
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">状態ファイルのパスは統一されていない</p><p>ドキュメント上、Modernize CLI のページは <code>.github/modernize/…</code> を示し、実行に関する 1 ページは <code>.github/modernization/…</code> を参照し、IDE のアップグレードエージェントは <code>.github/upgrades/{scenarioId}</code> を使います。<strong>これらを 1 つのパスに正規化して説明しないでください</strong>（ドキュメントに存在しないパスになります）。</p></div>
+    <div class="callout-body"><p class="callout-title">The state-file paths are not unified</p><p>In the documentation, the Modernize CLI page shows <code>.github/modernize/…</code>, one page about execution refers to <code>.github/modernization/…</code>, and the IDE upgrade agent uses <code>.github/upgrades/{scenarioId}</code>. <strong>Do not normalise these into a single path when you explain them</strong> (you would end up with a path that does not exist in the documentation).</p></div>
   </aside>
 
-<h3>docs.github.com の「Modernizing legacy code」チュートリアルは別物</h3>
-<p><a href="https://docs.github.com/en/copilot/tutorials/modernize-legacy-code" target="_blank" rel="noopener noreferrer">docs.github.com/copilot/tutorials/modernize-legacy-code</a> は <strong>Modernize CLI のチュートリアルではありません</strong>。Copilot Chat 主導の COBOL → Node.js 変換ワークフローを教えるものです：</p>
-<ul class="plain"><li>① clone してコンパイル・実行し、現状を動かす</li><li>② ファイルとデータフローを Copilot に説明させる</li><li>③ <strong>業務ロジックのテスト計画を先に作る</strong></li><li>④ COBOL ファイルを反復的に Node.js へ翻訳</li><li>⑤ Node アプリを組み立ててデバッグ</li><li>⑥ ③ の計画から Jest のユニット／統合テストを生成</li><li>⑦ テスト実行、失敗修正、リファイン</li></ul>
-<p>③ が ⑥ より前に来るのが要点で、これが「振る舞いの安全網を作る」の実務的な手順に対応します（§05）。<strong>実装を変える前に、期待される振る舞いを人間がレビューできる形にする</strong>という順序です。</p>
+<h3>The &ldquo;Modernizing legacy code&rdquo; tutorial on docs.github.com is a different thing</h3>
+<p><a href="https://docs.github.com/en/copilot/tutorials/modernize-legacy-code" target="_blank" rel="noopener noreferrer">docs.github.com/copilot/tutorials/modernize-legacy-code</a> is <strong>not a Modernize CLI tutorial</strong>. It teaches a Copilot Chat-driven COBOL → Node.js conversion workflow:</p>
+<ul class="plain"><li>① Clone, compile, and run it so the current state works</li><li>② Have Copilot explain the files and the data flow</li><li>③ <strong>Write the test plan for the business logic first</strong></li><li>④ Translate the COBOL files into Node.js iteratively</li><li>⑤ Assemble the Node app and debug it</li><li>⑥ Generate Jest unit and integration tests from the plan in ③</li><li>⑦ Run the tests, fix the failures, and refine</li></ul>
+<p>The point is that ③ comes before ⑥, which corresponds to the practical procedure of &ldquo;building a behavioural safety net&rdquo; (§05). The order is: before you change the implementation, put the expected behaviour into a form a human can review.</p>
 
 </section>
 <section class="section" id="verification" lang="ja" aria-labelledby="verification-title">

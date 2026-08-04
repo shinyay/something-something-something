@@ -47,22 +47,47 @@ ${body}
 /* ─────────────────────────────────────────────────────────────────────────
  * 1. Agentic Modernization Loop — cyclic diagram (id: loop)
  * ───────────────────────────────────────────────────────────────────────── */
-export function loopDiagram() {
+export function loopDiagram(lang = "ja") {
     const id = "dg-loop";
     const w = 560;
     const h = 480;
     const cx = 280;
     const cy = 252;
     const R = 178;
-    const bw = 138;
+    // Latin sub-labels are wider than the Japanese ones, so the English boxes get
+    // a little more room (same technique as legendCharW). The ja value is frozen
+    // at 138 so the Japanese output stays byte-for-byte identical.
+    const bw = lang === "ja" ? 138 : 150;
     const bh = 58;
-    const nodes = [
-        { main: "Code → Doc", sub: "構造復元" },
-        { main: "Doc → Plan", sub: "計画" },
-        { main: "Plan → Work", sub: "Issue 化" },
-        { main: "Work → PR", sub: "実装・検証" },
-        { main: "PR → Learning", sub: "知識還元" },
-    ];
+    const L = {
+        ja: {
+            nodes: [
+                { main: "Code → Doc", sub: "構造復元" },
+                { main: "Doc → Plan", sub: "計画" },
+                { main: "Plan → Work", sub: "Issue 化" },
+                { main: "Work → PR", sub: "実装・検証" },
+                { main: "PR → Learning", sub: "知識還元" },
+            ],
+            hub1: "境界のある",
+            hub2: "委譲",
+            title: "Agentic Modernization Loop の循環図",
+            desc: "5 つの変換 Code→Doc、Doc→Plan、Plan→Work、Work→PR、PR→Learning が時計回りに一周し、PR→Learning から Code→Doc に戻る円環。中心には境界のある委譲が置かれ、各変換をつなぐ。",
+        },
+        en: {
+            nodes: [
+                { main: "Code → Doc", sub: "Recover structure" },
+                { main: "Doc → Plan", sub: "Plan" },
+                { main: "Plan → Work", sub: "Into Issues" },
+                { main: "Work → PR", sub: "Build & verify" },
+                { main: "PR → Learning", sub: "Return knowledge" },
+            ],
+            hub1: "Bounded",
+            hub2: "delegation",
+            title: "Cyclic diagram of the Agentic Modernization Loop",
+            desc: "The five transforms Code→Doc, Doc→Plan, Plan→Work, Work→PR, and PR→Learning run clockwise around the ring, with PR→Learning returning to Code→Doc. Bounded delegation sits at the centre and connects each transform.",
+        },
+    }[lang];
+    const nodes = L.nodes;
     const n = nodes.length;
     const parts = [];
 
@@ -84,8 +109,8 @@ export function loopDiagram() {
     // Centre hub.
     parts.push(
         `  <circle class="d-box-emphasis" cx="${cx}" cy="${cy}" r="56"></circle>`,
-        `  <text class="d-te" x="${cx}" y="${cy - 6}" text-anchor="middle" font-size="15" font-weight="600">境界のある</text>`,
-        `  <text class="d-te" x="${cx}" y="${cy + 14}" text-anchor="middle" font-size="15" font-weight="600">委譲</text>`,
+        `  <text class="d-te" x="${cx}" y="${cy - 6}" text-anchor="middle" font-size="15" font-weight="600">${L.hub1}</text>`,
+        `  <text class="d-te" x="${cx}" y="${cy + 14}" text-anchor="middle" font-size="15" font-weight="600">${L.hub2}</text>`,
     );
 
     // Node boxes on the ring. The badge and label are laid out as a fixed
@@ -109,10 +134,7 @@ export function loopDiagram() {
         );
     });
 
-    const title = "Agentic Modernization Loop の循環図";
-    const desc =
-        "5 つの変換 Code→Doc、Doc→Plan、Plan→Work、Work→PR、PR→Learning が時計回りに一周し、PR→Learning から Code→Doc に戻る円環。中心には境界のある委譲が置かれ、各変換をつなぐ。";
-    return wrap(id, title, desc, w, h, parts.join("\n"));
+    return wrap(id, L.title, L.desc, w, h, parts.join("\n"));
 }
 
 /* ─────────────────────────────────────────────────────────────────────────

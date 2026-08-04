@@ -133,6 +133,64 @@ export const TERMS = [
     { ja: "既定", en: "default", note: "「既定で ON」= on by default。preset とは書かない" },
     { ja: "宣言的", en: "declarative", note: "§04 hooks。宣言 ⇄ 強制 = declarative ⇄ enforced の対比を保つ" },
 
+    // ── PART 3 vocabulary (§05 loop, §06 orchestration, §07 modernization) ──
+    { ja: "変換", en: "transform", note: "§05 Loop の 5 変換。conversion とは書かない" },
+    { ja: "人間のゲート", en: "human gate", note: "§05。human checkpoint とは書かない" },
+    { ja: "安全網", en: "safety net", note: "§05・§07。「振る舞いの安全網」= behavioural safety net" },
+    {
+        ja: "characterization テスト",
+        en: "characterization tests",
+        note: "§05・§07。米綴りで固定し常に複数形。translate せず characterization のまま",
+    },
+    {
+        ja: "分解規準",
+        en: "decomposition criteria",
+        note: "§06。単数は decomposition criterion。granularity rules とは書かない",
+    },
+    { ja: "分解の粒度", en: "granularity of decomposition", note: "§06。語順を固定する" },
+    {
+        ja: "律速",
+        en: "bottleneck",
+        note: "§06・§13。「レビューが律速」= review is the bottleneck。rate-limiting とは書かない",
+    },
+    {
+        ja: "衝突面",
+        en: "collision surface",
+        note: "§06。並列タスクが同じパスに触れる面。conflict surface とは書かない",
+    },
+    {
+        ja: "サブエージェント",
+        en: "subagent",
+        note: "§06。/fleet のサブエージェント。sub-agent とハイフンでは書かない",
+    },
+    { ja: "並列ワークスペース", en: "parallel workspaces", note: "§06。GitHub Copilot app の機能名" },
+    { ja: "傘の名称", en: "umbrella name", note: "§07。umbrella brand とは書かない" },
+    { ja: "移行の波", en: "migration waves", note: "§05・§07。migration phases とは書かない" },
+    {
+        ja: "決定的ゲート",
+        en: "deterministic gate",
+        note: "§07・§08・§09。§08 の deterministic verification と整合させる",
+    },
+    {
+        ja: "レガシーの 3 つの形",
+        en: "the three forms of legacy",
+        note: "§07 FRAMEWORK。Code / Knowledge / Process。公式の製品区分ではない旨を必ず残す",
+    },
+    { ja: "automations", en: null, note: "§06・§09 の機能名。両言語で小文字のまま維持し訳さない" },
+    { ja: "Modernize CLI", en: null, note: "§05・§07 の製品名。両言語で維持し訳さない" },
+    { ja: "modernization agent", en: null, note: "§07。GitHub Copilot modernization agent。小文字で維持" },
+    { ja: "upgrade agent", en: null, note: "§07。IDE の upgrade agent。小文字で維持" },
+    {
+        ja: "Assess / Plan / Execute",
+        en: null,
+        note: "§07 Modernize CLI の 3 段階。両言語で英語のまま。§05 Loop の段と対応づける",
+    },
+    {
+        ja: "Modernization Loop",
+        en: null,
+        note: "§05。Agentic Modernization Loop の略称としても英語のまま維持",
+    },
+
     // ── proper nouns kept in English verbatim (never translate) ──
     { ja: "Delegation Contract", en: null, note: "翻訳せず維持。日本語版でも英語のまま" },
     { ja: "Autonomy Budget", en: null, note: "翻訳せず維持" },
