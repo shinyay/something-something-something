@@ -83,7 +83,7 @@ export const TERMS = [
     { ja: "受け入れ条件", en: "acceptance criteria", note: "単数形 acceptance criterion は使わず常に複数形" },
     { ja: "一次情報", en: "primary source", note: "「一次情報リンク集」= primary-source links (§17)" },
     { ja: "節", en: "section", note: "節番号は §NN 表記を両言語で維持する" },
-    { ja: "整理層", en: "organising layer", note: "Five layers を指すときの語" },
+    { ja: "整理層", en: "organizing layer", note: "Five layers を指すときの語" },
     { ja: "相互作用モード", en: "interaction mode", note: "§01。engagement mode とは書かない" },
     { ja: "採用ラダー", en: "adoption ladder", note: "§12。maturity ladder とは書かない" },
     { ja: "逸脱と回復", en: "drift and recovery", note: "§11" },

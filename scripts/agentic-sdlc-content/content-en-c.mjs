@@ -33,7 +33,7 @@ export const sectionsEnC = [
         lead: "Modernization can be designed as a loop that cycles through five transforms — Code→Doc / Doc→Plan / Plan→Work / Work→PR / PR→Learning. The loop turns uncertainty into small, reviewable changes and feeds every reviewed result back into organizational knowledge. Each transform settles which feature you use and what artefact you leave behind.",
         html: `
 ${principle(
-    "The loop turns uncertainty into small, reviewable changes and feeds every reviewed result back into organizational knowledge.<br>Bounded delegation sits at the center; human gates connect every stage.",
+    "The loop turns uncertainty into small, reviewable changes and feeds every reviewed result back into organizational knowledge.<br>Bounded delegation sits at the centre; human gates connect every stage.",
 )}
 
 ${diagram(
@@ -115,7 +115,7 @@ ${principle(
 )}
 
 <h3>The four things that run in parallel — at different levels</h3>
-<p>&ldquo;Run agents in parallel&rdquo; is one phrase, but GitHub has <strong>four mechanisms at different levels</strong>. Subagents parallelise <strong>inside a single session</strong>; cloud agent tasks and automations parallelise <strong>across sessions</strong>. Confuse them and you will get the granularity of decomposition wrong.</p>
+<p>&ldquo;Run agents in parallel&rdquo; is one phrase, but GitHub has <strong>four mechanisms at different levels</strong>. Subagents parallelize <strong>inside a single session</strong>; cloud agent tasks and automations parallelize <strong>across sessions</strong>. Confuse them and you will get the granularity of decomposition wrong.</p>
 
 ${table(
     ["What runs in parallel", "Surface / how it starts", "Unit of parallelism", "Context isolation", "Billing and state consequences"],
@@ -159,13 +159,13 @@ ${docQuote(
 )}
 
 <h3>The decomposition criteria for tasks you may place in parallel</h3>
-<p>Parallelisation only pays off when tasks are <strong>genuinely independent</strong>. Whether a decomposition is sound is judged on the following three points.</p>
+<p>Parallelization only pays off when tasks are <strong>genuinely independent</strong>. Whether a decomposition is sound is judged on the following three points.</p>
 ${cards(
     [
         {
             title: "① Independence — no sequential dependency",
             badge: OFFICIAL,
-            body: `A request whose one output becomes the other's input only produces waiting even when it is parallelised. The documentation itself is explicit: <em>&ldquo;If your request is inherently sequential, using the <code>/fleet</code> slash command mode may not provide any benefit.&rdquo;</em> <strong>Do not force an inherently sequential request into parallel</strong> — that is the first criterion.`,
+            body: `A request whose one output becomes the other's input only produces waiting even when it is parallelized. The documentation itself is explicit: <em>&ldquo;If your request is inherently sequential, using the <code>/fleet</code> slash command mode may not provide any benefit.&rdquo;</em> <strong>Do not force an inherently sequential request into parallel</strong> — that is the first criterion.`,
         },
         {
             title: "② Separate the collision surface by path",
@@ -181,7 +181,7 @@ ${cards(
     { cols: 3 },
 )}
 
-<h3>Work that suits parallelisation and work that does not</h3>
+<h3>Work that suits parallelization and work that does not</h3>
 ${table(
     ["Suited / not suited", "Examples", "Basis"],
     [
@@ -201,8 +201,8 @@ ${table(
 
 ${callout(
     "key",
-    "Specialisation — assign a model and a custom agent to each subagent",
-    `<p><code>/fleet</code> subagents use a low-cost model by default, but you can specify the model in the prompt (for example, <em>&ldquo;… Use GPT-5.3-Codex, to create …&rdquo;</em>). Name a custom agent explicitly with <code>@CUSTOM-AGENT-NAME</code> and you can assign specialised behaviour per task. Allocating <strong>a high-capability model to the hard parts and a low-cost model to the routine ones</strong> is, in itself, cost design (§13).</p>`,
+    "Specialization — assign a model and a custom agent to each subagent",
+    `<p><code>/fleet</code> subagents use a low-cost model by default, but you can specify the model in the prompt (for example, <em>&ldquo;… Use GPT-5.3-Codex, to create …&rdquo;</em>). Name a custom agent explicitly with <code>@CUSTOM-AGENT-NAME</code> and you can assign specialized behaviour per task. Allocating <strong>a high-capability model to the hard parts and a low-cost model to the routine ones</strong> is, in itself, cost design (§13).</p>`,
 )}
 
 ${callout(
@@ -297,7 +297,7 @@ ${pre("powershell", "# Windows\nwinget install GitHub.Copilot.modernization.agen
 ${callout(
     "warn",
     "The state-file paths are not unified",
-    `<p>In the documentation, the Modernize CLI page shows <code>.github/modernize/…</code>, one page about execution refers to <code>.github/modernization/…</code>, and the IDE upgrade agent uses <code>.github/upgrades/{scenarioId}</code>. <strong>Do not normalise these into a single path when you explain them</strong> (you would end up with a path that does not exist in the documentation).</p>`,
+    `<p>In the documentation, the Modernize CLI page shows <code>.github/modernize/…</code>, one page about execution refers to <code>.github/modernization/…</code>, and the IDE upgrade agent uses <code>.github/upgrades/{scenarioId}</code>. <strong>Do not normalize these into a single path when you explain them</strong> (you would end up with a path that does not exist in the documentation).</p>`,
 )}
 
 <h3>The &ldquo;Modernizing legacy code&rdquo; tutorial on docs.github.com is a different thing</h3>
