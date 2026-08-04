@@ -533,18 +533,47 @@ export function autonomyDiagram(lang = "ja") {
 /* ─────────────────────────────────────────────────────────────────────────
  * 6. Adoption ladder — staircase diagram (id: ladder)
  * ───────────────────────────────────────────────────────────────────────── */
-export function ladderDiagram() {
+export function ladderDiagram(lang = "ja") {
     const id = "dg-ladder";
     const w = 680;
     const h = 372;
+    // Only the axis label, the five step sub-titles, the <title>, and the <desc>
+    // are language-dependent. The step names (Assist … Orchestrate) are already
+    // English in both editions, and every coordinate, rect size, and connector is
+    // shared, so the Japanese output stays byte-for-byte identical.
+    const L = {
+        ja: {
+            axis: "コンテキストと検証の成熟 → 委譲の拡大",
+            steps: [
+                "人が全ステップを所有",
+                "調査・計画・実装を共有",
+                "契約を実行し PR を返す",
+                "instructions/skills を再利用",
+                "統治下で並列に走らせる",
+            ],
+            title: "採用ラダーの階段図",
+            desc:
+                "Assist、Collaborate、Delegate、Standardize、Orchestrate の 5 段が左下から右上へ上る階段。上の段ほど委譲の範囲が広がるが、上がる前提はリポジトリのコンテキストと検証の成熟である。",
+        },
+        en: {
+            axis: "Context & verification mature → more delegation",
+            steps: [
+                "A human owns every step",
+                "Research, planning, and implementation shared",
+                "Executes the contract and returns a PR",
+                "Reuse instructions and skills",
+                "Run in parallel under governance",
+            ],
+            title: "Staircase diagram of the adoption ladder",
+            desc:
+                "A staircase of five steps — Assist, Collaborate, Delegate, Standardize, Orchestrate — rising from bottom-left to top-right. Higher steps widen the scope of delegation, but climbing depends on the repository's context and verification maturing, not on the agent's capability.",
+        },
+    }[lang];
     const parts = [];
-    const steps = [
-        { name: "Assist", jp: "人が全ステップを所有" },
-        { name: "Collaborate", jp: "調査・計画・実装を共有" },
-        { name: "Delegate", jp: "契約を実行し PR を返す" },
-        { name: "Standardize", jp: "instructions/skills を再利用" },
-        { name: "Orchestrate", jp: "統治下で並列に走らせる" },
-    ];
+    const steps = L.steps.map((jp, i) => ({
+        name: ["Assist", "Collaborate", "Delegate", "Standardize", "Orchestrate"][i],
+        jp,
+    }));
     const n = steps.length;
     const treadW = 340;
     const stepH = 46;
@@ -556,7 +585,7 @@ export function ladderDiagram() {
     parts.push(
         `  <line class="d-axis" x1="26" y1="${baseY + 8}" x2="26" y2="30" stroke-width="1.6"></line>`,
         arrowHead(26, 30, -90, 9, "d-axis-arrow"),
-        `  <text class="d-tm" x="0" y="0" text-anchor="middle" font-size="11.5" transform="translate(16 ${(baseY) / 2}) rotate(-90)">コンテキストと検証の成熟 → 委譲の拡大</text>`,
+        `  <text class="d-tm" x="0" y="0" text-anchor="middle" font-size="11.5" transform="translate(16 ${(baseY) / 2}) rotate(-90)">${L.axis}</text>`,
     );
 
     steps.forEach((s, i) => {
@@ -584,8 +613,7 @@ export function ladderDiagram() {
         }
     });
 
-    const title = "採用ラダーの階段図";
-    const desc =
-        "Assist、Collaborate、Delegate、Standardize、Orchestrate の 5 段が左下から右上へ上る階段。上の段ほど委譲の範囲が広がるが、上がる前提はリポジトリのコンテキストと検証の成熟である。";
+    const title = L.title;
+    const desc = L.desc;
     return wrap(id, title, desc, w, h, parts.join("\n"));
 }

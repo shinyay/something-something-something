@@ -83,10 +83,10 @@
       <li class="toc__part">
         <p class="toc__part-title">PART 5 — Operating</p>
         <ul class="toc__list">
-        <li><a href="#ladder"><span class="toc__num">12</span><span lang="ja">採用ラダーと各段の Definition of Ready</span></a></li>
-        <li><a href="#billing"><span class="toc__num">13</span><span lang="ja">この運用モデルのコスト構造</span></a></li>
-        <li><a href="#measurement"><span class="toc__num">14</span><span lang="ja">計測 —— 採用と効果を統治する</span></a></li>
-        <li><a href="#antipatterns"><span class="toc__num">15</span><span lang="ja">委譲してはいけない作業と、よくある失敗</span></a></li>
+        <li><a href="#ladder"><span class="toc__num">12</span><span>The adoption ladder and each step&#039;s Definition of Ready</span></a></li>
+        <li><a href="#billing"><span class="toc__num">13</span><span>The cost structure of this operating model</span></a></li>
+        <li><a href="#measurement"><span class="toc__num">14</span><span>Measurement — governing adoption and impact</span></a></li>
+        <li><a href="#antipatterns"><span class="toc__num">15</span><span>Work you must not delegate, and common failures</span></a></li>
         </ul>
       </li>
       <li class="toc__part">
@@ -1068,33 +1068,32 @@ brew install modernize</code></pre>
   </aside>
 
 </section>
-<section class="section" id="ladder" lang="ja" aria-labelledby="ladder-title">
+<section class="section" id="ladder" aria-labelledby="ladder-title">
   <div class="section__head">
     <p class="section__num">12</p>
     <div class="section__headings">
-      <p class="eyebrow">導入</p>
-      <h2 id="ladder-title">採用ラダーと各段の Definition of Ready</h2>
+      <p class="eyebrow">Adoption</p>
+      <h2 id="ladder-title">The adoption ladder and each step&#039;s Definition of Ready</h2>
     </div>
   </div>
-  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
-  <p class="lead">Assist → Collaborate → Delegate → Standardize → Orchestrate という採用ラダーは、§01 の相互作用モードとは別軸です —— こちらは組織の成熟度、§01 は対話の様式を表します。ここでは「次の段に上がってよい」と判断するための、具体的なリポジトリ資産のチェックリスト（Definition of Ready）を置きます。</p>
+  <p class="lead">The Assist → Collaborate → Delegate → Standardize → Orchestrate adoption ladder is a different axis from the interaction modes of §01 — this one represents organizational maturity, while §01 represents the style of the dialogue. Here we lay out a concrete checklist of repository assets (a Definition of Ready) for deciding that you may climb to the next step.</p>
 
 <figure class="principle">
-    <blockquote>Increase delegation only after repository context and verification mature enough to support the next level safely.<br>Context and verification mature first; autonomy and orchestration follow.</blockquote><figcaption>委譲を増やしてよいのは、リポジトリのコンテキストと検証が、次の段を安全に支えられるだけ成熟したあとだけ。まずコンテキストと検証が成熟し、自律性とオーケストレーションはそのあとに続く。</figcaption>
+    <blockquote>Increase delegation only after repository context and verification mature enough to support the next level safely.<br>Context and verification mature first; autonomy and orchestration follow.</blockquote>
   </figure>
 
 <figure class="diagram"><svg viewBox="0 0 680 372" role="img" aria-labelledby="dg-ladder-t dg-ladder-d" preserveAspectRatio="xMidYMid meet">
-  <title id="dg-ladder-t">採用ラダーの階段図</title>
-  <desc id="dg-ladder-d">Assist、Collaborate、Delegate、Standardize、Orchestrate の 5 段が左下から右上へ上る階段。上の段ほど委譲の範囲が広がるが、上がる前提はリポジトリのコンテキストと検証の成熟である。</desc>
+  <title id="dg-ladder-t">Staircase diagram of the adoption ladder</title>
+  <desc id="dg-ladder-d">A staircase of five steps — Assist, Collaborate, Delegate, Standardize, Orchestrate — rising from bottom-left to top-right. Higher steps widen the scope of delegation, but climbing depends on the repository's context and verification maturing, not on the agent's capability.</desc>
   <line class="d-axis" x1="26" y1="328" x2="26" y2="30" stroke-width="1.6"></line>
 <polygon class="d-axis-arrow" points="26,30 29.9,38.1 22.1,38.1"></polygon>
-  <text class="d-tm" x="0" y="0" text-anchor="middle" font-size="11.5" transform="translate(16 160) rotate(-90)">コンテキストと検証の成熟 → 委譲の拡大</text>
+  <text class="d-tm" x="0" y="0" text-anchor="middle" font-size="11.5" transform="translate(16 160) rotate(-90)">Context & verification mature → more delegation</text>
   <g>
     <rect class="d-box-accent" x="42" y="274" width="340" height="46" rx="9"></rect>
     <circle class="d-chip" cx="64" cy="297" r="12"></circle>
     <text class="d-te" x="64" y="301" text-anchor="middle" font-size="12.5" font-weight="600">1</text>
     <text class="d-t" x="86" y="294" text-anchor="start" font-size="13.5" font-weight="600">Assist</text>
-    <text class="d-tm" x="86" y="311" text-anchor="start" font-size="11">人が全ステップを所有</text>
+    <text class="d-tm" x="86" y="311" text-anchor="start" font-size="11">A human owns every step</text>
   </g>
   <line class="d-conn" x1="342" y1="274" x2="130" y2="266" stroke-width="1.5" stroke-dasharray="4 3"></line>
 <polygon class="d-conn-arrow" points="130,266 136.4,263.2 136.2,269.3"></polygon>
@@ -1103,7 +1102,7 @@ brew install modernize</code></pre>
     <circle class="d-chip" cx="130" cy="243" r="12"></circle>
     <text class="d-te" x="130" y="247" text-anchor="middle" font-size="12.5" font-weight="600">2</text>
     <text class="d-t" x="152" y="240" text-anchor="start" font-size="13.5" font-weight="600">Collaborate</text>
-    <text class="d-tm" x="152" y="257" text-anchor="start" font-size="11">調査・計画・実装を共有</text>
+    <text class="d-tm" x="152" y="257" text-anchor="start" font-size="11">Research, planning, and implementation shared</text>
   </g>
   <line class="d-conn" x1="408" y1="220" x2="196" y2="212" stroke-width="1.5" stroke-dasharray="4 3"></line>
 <polygon class="d-conn-arrow" points="196,212 202.4,209.2 202.2,215.3"></polygon>
@@ -1112,7 +1111,7 @@ brew install modernize</code></pre>
     <circle class="d-chip" cx="196" cy="189" r="12"></circle>
     <text class="d-te" x="196" y="193" text-anchor="middle" font-size="12.5" font-weight="600">3</text>
     <text class="d-t" x="218" y="186" text-anchor="start" font-size="13.5" font-weight="600">Delegate</text>
-    <text class="d-tm" x="218" y="203" text-anchor="start" font-size="11">契約を実行し PR を返す</text>
+    <text class="d-tm" x="218" y="203" text-anchor="start" font-size="11">Executes the contract and returns a PR</text>
   </g>
   <line class="d-conn" x1="474" y1="166" x2="262" y2="158" stroke-width="1.5" stroke-dasharray="4 3"></line>
 <polygon class="d-conn-arrow" points="262,158 268.4,155.2 268.2,161.3"></polygon>
@@ -1121,7 +1120,7 @@ brew install modernize</code></pre>
     <circle class="d-chip" cx="262" cy="135" r="12"></circle>
     <text class="d-te" x="262" y="139" text-anchor="middle" font-size="12.5" font-weight="600">4</text>
     <text class="d-t" x="284" y="132" text-anchor="start" font-size="13.5" font-weight="600">Standardize</text>
-    <text class="d-tm" x="284" y="149" text-anchor="start" font-size="11">instructions/skills を再利用</text>
+    <text class="d-tm" x="284" y="149" text-anchor="start" font-size="11">Reuse instructions and skills</text>
   </g>
   <line class="d-conn" x1="540" y1="112" x2="328" y2="104" stroke-width="1.5" stroke-dasharray="4 3"></line>
 <polygon class="d-conn-arrow" points="328,104 334.4,101.2 334.2,107.3"></polygon>
@@ -1130,174 +1129,171 @@ brew install modernize</code></pre>
     <circle class="d-chip" cx="328" cy="81" r="12"></circle>
     <text class="d-te" x="328" y="85" text-anchor="middle" font-size="12.5" font-weight="600">5</text>
     <text class="d-t" x="350" y="78" text-anchor="start" font-size="13.5" font-weight="600">Orchestrate</text>
-    <text class="d-tm" x="350" y="95" text-anchor="start" font-size="11">統治下で並列に走らせる</text>
+    <text class="d-tm" x="350" y="95" text-anchor="start" font-size="11">Run in parallel under governance</text>
   </g>
-</svg><figcaption>Assist → Collaborate → Delegate → Standardize → Orchestrate の 5 段が左下から右上へ上る階段。上の段ほど委譲の範囲が広がるが、上がる前提はエージェントの能力ではなくリポジトリ側のコンテキストと検証の成熟である。各段の Definition of Ready は直後の表で確認できる。</figcaption></figure>
+</svg><figcaption>Five steps — Assist → Collaborate → Delegate → Standardize → Orchestrate — climb from bottom-left to top-right. Higher steps widen the scope of delegation, but what gates the climb is not the agent's capability; it is the maturity of the repository's own context and verification. The Definition of Ready for each step is in the table that follows.</figcaption></figure>
 
-<div class="table-wrap"><table class=""><colgroup><col style="width:12%"><col style="width:26%"><col style="width:62%"></colgroup><thead><tr><th>段</th><th>定義</th><th>この段に上がる前に揃っているべきもの（Definition of Ready）</th></tr></thead><tbody><tr><td><strong>1. Assist</strong></td><td>人がすべてのステップを所有し、境界のある提案に Copilot を使う</td><td><ul class="plain"><li>Copilot ライセンスの割り当て</li><li>組織ポリシー（AI Controls）の初期設定：どのクライアント・どのモデルを許可するか</li><li>必要なら content exclusion の設定（Business / Enterprise）</li></ul></td></tr><tr><td><strong>2. Collaborate</strong></td><td>人とエージェントが調査・計画・実装・検証を共有する</td><td><ul class="plain"><li><strong><code>.github/copilot-instructions.md</code> が存在し、実際に守られている</strong></li><li>ビルドとテストが 1 コマンドで再現できる</li><li>IDE Agent mode / Copilot CLI の利用ポリシーが決まっている</li><li><span class="warn-inline">注意：IDE の Agent mode では content exclusion が効かない</span></li></ul></td></tr><tr><td><strong>3. Delegate</strong></td><td>エージェントが境界のある契約を実行し、判断可能な PR を返す</td><td><ul class="plain"><li><strong>required status checks が定義され、実際にマージを止める</strong></li><li>CODEOWNERS が設定され、重要領域に必須レビュアがいる</li><li><code>copilot-setup-steps.yml</code> で依存解決が再現する</li><li>firewall allowlist が承認済みレジストリに限定されている</li><li><strong>Delegation Contract の 8 フィールドを持つ Issue テンプレート</strong></li><li>characterization テストが、委譲対象領域に存在する</li></ul></td></tr><tr><td><strong>4. Standardize</strong></td><td>チームが instructions・skills・workflows・evidence formats・gates を再利用する</td><td><ul class="plain"><li><code>AGENTS.md</code> ＋ パス別 <code>*.instructions.md</code> の体系ができている</li><li><span class="badge badge-pp">Public Preview</span> <code>.github/agents/*.md</code> による custom agents（役割ごとの委譲先の型）</li><li>PR 本文テンプレート（受け入れ条件マッピング欄・Uncertainty 欄を含む）</li><li>組織レベル instructions（Business / Enterprise）</li><li>environments と deployment protection rules による merge / release / production の分離</li></ul></td></tr><tr><td><strong>5. Orchestrate</strong></td><td>複数の境界ある作業を、統治とレビュー容量の範囲内でポートフォリオ横断に走らせる</td><td><ul class="plain"><li>Agents パネルでの複数タスク運用ルール</li><li><strong>レビュー容量の実測値</strong>（＝並列度の実質的な上限）</li><li>監査ログ <code>actor:Copilot</code> の定期レビュー運用</li><li>AI Credits / Actions 分の budgets 設定と監視</li><li>third-party agents を使う場合、<span class="warn-inline">content exclusion が適用されない</span>ことを踏まえたポリシー</li></ul></td></tr></tbody></table></div>
+<div class="table-wrap"><table class=""><colgroup><col style="width:12%"><col style="width:26%"><col style="width:62%"></colgroup><thead><tr><th>Step</th><th>Definition</th><th>What must be in place before you climb to this step (Definition of Ready)</th></tr></thead><tbody><tr><td><strong>1. Assist</strong></td><td>A human owns every step and uses Copilot for bounded suggestions</td><td><ul class="plain"><li>Copilot licenses assigned</li><li>Initial organization policy (AI Controls): which clients and which models are allowed</li><li>content exclusion configured if needed (Business / Enterprise)</li></ul></td></tr><tr><td><strong>2. Collaborate</strong></td><td>A human and the agent share research, planning, implementation, and verification</td><td><ul class="plain"><li><strong><code>.github/copilot-instructions.md</code> exists and is actually followed</strong></li><li>Build and test reproduce with a single command</li><li>A usage policy for IDE Agent mode / Copilot CLI is decided</li><li><span class="warn-inline">Caution: content exclusion does not apply in the IDE's Agent mode</span></li></ul></td></tr><tr><td><strong>3. Delegate</strong></td><td>The agent executes a bounded contract and returns a PR you can act on</td><td><ul class="plain"><li><strong>required status checks are defined and actually block merges</strong></li><li>CODEOWNERS is configured, with required reviewers on critical areas</li><li><code>copilot-setup-steps.yml</code> makes dependency resolution reproducible</li><li>The firewall allowlist is limited to approved registries</li><li><strong>An Issue template with the 8 fields of the Delegation Contract</strong></li><li>characterization tests exist for the area being delegated</li></ul></td></tr><tr><td><strong>4. Standardize</strong></td><td>The team reuses instructions, skills, workflows, evidence formats, and gates</td><td><ul class="plain"><li>A system of <code>AGENTS.md</code> plus path-scoped <code>*.instructions.md</code> is in place</li><li><span class="badge badge-pp">Public Preview</span> custom agents via <code>.github/agents/*.md</code> (a typed delegation target per role)</li><li>A PR body template (including an acceptance-criteria mapping field and an Uncertainty field)</li><li>Organization-level instructions (Business / Enterprise)</li><li>Separation of merge / release / production via environments and deployment protection rules</li></ul></td></tr><tr><td><strong>5. Orchestrate</strong></td><td>Run multiple bounded units of work across a portfolio, within governance and review capacity</td><td><ul class="plain"><li>Rules for operating multiple tasks in the Agents panel</li><li><strong>A measured value for review capacity</strong> (= the practical ceiling on concurrency)</li><li>A routine of periodically reviewing the audit log <code>actor:Copilot</code></li><li>budgets set and monitored for AI Credits / Actions minutes</li><li>A policy that accounts for the fact that <span class="warn-inline">content exclusion does not apply</span> when using third-party agents</li></ul></td></tr></tbody></table></div>
 
 <aside class="callout callout-key">
     <div class="callout-mark" aria-hidden="true">★</div>
-    <div class="callout-body"><p class="callout-title">土台は context と verification —— 段が上がるほど増えるのはリポジトリ側の資産</p><p>採用ラダーの土台にあるのは <em>context &amp; verification</em> です。上の表を見ると、段が上がるほど増えるのは<strong>エージェントの能力ではなくリポジトリ側の資産</strong>であることが分かります。Delegate 段に必要なものはほぼすべて「リポジトリに何が置いてあるか」であり、Copilot の設定ではありません。<br>つまり導入プロジェクトの実作業の大半は、<strong>Copilot の導入ではなくリポジトリの整備</strong>です。これは提案の工数見積もりに直結する洞察です。</p></div>
+    <div class="callout-body"><p class="callout-title">The foundation is context and verification — what grows as you climb is repository-side assets</p><p>At the foundation of the adoption ladder is <em>context &amp; verification</em>. The table above shows that what grows as you climb is <strong>not the agent's capability but repository-side assets</strong>. Almost everything the Delegate step needs is "what is placed in the repository", not Copilot settings.<br>In other words, most of the real work in an adoption project is <strong>getting the repository in shape, not adopting Copilot</strong>. This is an insight that feeds directly into the effort estimate for a proposal.</p></div>
   </aside>
 
-<h3>最初の 1 件を「委譲」まで持っていく最小セット</h3>
-<p>可逆で重要なモダナイゼーションタスクを 1 件選び、その Delegation Contract を書く —— そこから本当に委譲まで到達するために最低限必要なのは、次の 4 つだけです：</p>
-<ol class="steps"><li><p class="step-title">① 対象領域の characterization テスト</p><div class="step-body">変更前の振る舞いを固定する。ここが無いと「検証」が空回りする（§08）。</div></li><li><p class="step-title">② required status checks</p><div class="step-body">そのテストとビルドが、通らなければマージできない状態になっていること。</div></li><li><p class="step-title">③ 8 フィールドを埋めた Issue</p><div class="step-body">Outcome+Why / Scope+Out / Context / Tools+Constraints / Acceptance / Verification+Evidence / Escalate / Human gates（§03）。</div></li><li><p class="step-title">④ CODEOWNERS</p><div class="step-body">契約の Escalate 欄に書いた「触ってほしくない領域」を、実際に必須レビューが発火する形にしておく。</div></li></ol>
+<h3>The minimum set to carry your first task all the way to delegation</h3>
+<p>Pick one reversible, important modernization task and write its Delegation Contract — the minimum you actually need to reach delegation from there is just these four:</p>
+<ol class="steps"><li><p class="step-title">① characterization tests for the target area</p><div class="step-body">Pin down the behaviour before the change. Without this, "verification" spins in place (§08).</div></li><li><p class="step-title">② required status checks</p><div class="step-body">So that those tests and the build must pass before anything can merge.</div></li><li><p class="step-title">③ an Issue with all 8 fields filled in</p><div class="step-body">Outcome+Why / Scope+Out / Context / Tools+Constraints / Acceptance / Verification+Evidence / Escalate / Human gates (§03).</div></li><li><p class="step-title">④ CODEOWNERS</p><div class="step-body">Turn the "areas you don't want touched" from the contract's Escalate field into something that actually fires a required review.</div></li></ol>
 
 </section>
-<section class="section" id="billing" lang="ja" aria-labelledby="billing-title">
+<section class="section" id="billing" aria-labelledby="billing-title">
   <div class="section__head">
     <p class="section__num">13</p>
     <div class="section__headings">
-      <p class="eyebrow">コスト</p>
-      <h2 id="billing-title">この運用モデルのコスト構造</h2>
+      <p class="eyebrow">Cost</p>
+      <h2 id="billing-title">The cost structure of this operating model</h2>
     </div>
   </div>
-  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
-  <p class="lead">Compute budget（§04）を実務で語るには、課金モデルの理解が不可欠です。2026 年 6 月に課金モデルが変わっている点にも注意が必要です。ここでは AI Credits と Actions 分の 2 系統を整理します。</p>
+  <p class="lead">To discuss the Compute budget (§04) in practice, understanding the billing model is essential. Note too that the billing model changed in June 2026. Here we lay out the two streams: AI Credits and Actions minutes.</p>
 
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">premium requests はもう既定の課金モデルではない</p><figure class="doc-quote">
+    <div class="callout-body"><p class="callout-title">premium requests are no longer the default billing model</p><figure class="doc-quote">
     <blockquote>Model multipliers are a concept specific to the legacy premium request-based billing system, and do not apply to GitHub's new usage-based billing model.</blockquote>
     <figcaption><a href="https://docs.github.com/en/copilot/reference/copilot-billing/request-based-billing-legacy/model-multipliers-for-annual-plans" target="_blank" rel="noopener noreferrer">docs.github.com — Model multipliers for annual plans (legacy)</a></figcaption>
   </figure>
-  <p>premium requests とモデル乗数が適用されるのは、2026 年 6 月 1 日以降もレガシー請求に留まった<strong>既存の年額 Copilot Pro / Pro+ 契約者のみ</strong>です。新規の説明では <strong>GitHub AI Credits</strong> を使ってください。</p></div>
+  <p>premium requests and model multipliers apply only to <strong>existing annual Copilot Pro / Pro+ subscribers who stayed on legacy billing after 1 June 2026</strong>. For any new explanation, use <strong>GitHub AI Credits</strong>.</p></div>
   </aside>
 
-<h3>現行モデル：GitHub AI Credits</h3>
+<h3>The current model: GitHub AI Credits</h3>
 <div class="cards cards-3"><div class="card">
-        <p class="card-title">単位</p>
+        <p class="card-title">Unit</p>
         <div class="card-body"><p class="big">1 AI Credit = <strong>$0.01 USD</strong></p></div>
       </div><div class="card">
-        <p class="card-title">計算方法</p>
-        <div class="card-body"><p>入力・出力・キャッシュの<strong>トークン消費量</strong> × モデル別公開価格。<span class="neg">リクエスト乗数モデルではない</span></p></div>
+        <p class="card-title">How it's calculated</p>
+        <div class="card-body"><p><strong>Token consumption</strong> for input, output, and cache × the published per-model price. <span class="neg">Not a request-multiplier model</span></p></div>
       </div><div class="card">
-        <p class="card-title">自動モデル選択の割引</p>
-        <div class="card-body"><p>有料ユーザーは Chat・CLI・Copilot app・cloud agent で <strong>10% のコスト割引</strong></p></div>
+        <p class="card-title">Automatic model selection discount</p>
+        <div class="card-body"><p>Paid users get a <strong>10% cost discount</strong> in Chat, CLI, the Copilot app, and the cloud agent</p></div>
       </div></div>
 
-<div class="table-wrap"><table class=""><colgroup><col style="width:28%"><col style="width:16%"><col style="width:18%"><col style="width:38%"></colgroup><thead><tr><th>機能</th><th>AI Credits</th><th>GitHub Actions 分</th><th>備考</th></tr></thead><tbody><tr><td>code completions / next edit suggestions</td><td><span class="pos">消費しない</span></td><td><span class="pos">消費しない</span></td><td>従来の completion カウントモデルが継続</td></tr><tr><td>Copilot Chat</td><td><span class="neg">消費する</span></td><td>—</td><td></td></tr><tr><td>Agent mode（IDE）</td><td><span class="neg">消費する</span></td><td>—</td><td>プロンプトごとに消費</td></tr><tr><td>Copilot CLI</td><td><span class="neg">消費する</span></td><td>—</td><td></td></tr><tr><td><strong>Copilot cloud agent</strong></td><td><span class="neg">消費する</span></td><td><span class="neg">消費する</span></td><td><strong>2 種類のコストが同時に発生する</strong></td></tr><tr><td>Copilot code review</td><td><span class="neg">消費する</span></td><td><span class="neg">消費する</span></td><td>agentic なコンテキスト／ツール実行分</td></tr><tr><td>agentic autofix</td><td><span class="neg">消費する</span></td><td><span class="neg">消費する</span></td><td><span class="badge badge-pp">Public Preview</span>（2026-07-10〜）</td></tr><tr><td>Copilot Autofix（従来型）</td><td><span class="pos">消費しない</span></td><td><span class="pos">消費しない</span></td><td>Copilot サブスクリプション不要</td></tr><tr><td>third-party coding agents</td><td><span class="neg">消費する</span></td><td><span class="neg">消費する</span></td><td><span class="badge badge-pp">Public Preview</span> Anthropic Claude / OpenAI Codex</td></tr><tr><td>Copilot Spaces</td><td><span class="neg">消費する</span></td><td>—</td><td>質問は Chat インタラクションとして計上</td></tr></tbody></table></div>
+<div class="table-wrap"><table class=""><colgroup><col style="width:28%"><col style="width:16%"><col style="width:18%"><col style="width:38%"></colgroup><thead><tr><th>Feature</th><th>AI Credits</th><th>GitHub Actions minutes</th><th>Notes</th></tr></thead><tbody><tr><td>code completions / next edit suggestions</td><td><span class="pos">Does not consume</span></td><td><span class="pos">Does not consume</span></td><td>The existing completion-count model continues</td></tr><tr><td>Copilot Chat</td><td><span class="neg">Consumes</span></td><td>—</td><td></td></tr><tr><td>Agent mode (IDE)</td><td><span class="neg">Consumes</span></td><td>—</td><td>Consumes per prompt</td></tr><tr><td>Copilot CLI</td><td><span class="neg">Consumes</span></td><td>—</td><td></td></tr><tr><td><strong>Copilot cloud agent</strong></td><td><span class="neg">Consumes</span></td><td><span class="neg">Consumes</span></td><td><strong>Two kinds of cost are incurred at once</strong></td></tr><tr><td>Copilot code review</td><td><span class="neg">Consumes</span></td><td><span class="neg">Consumes</span></td><td>For agentic context / tool execution</td></tr><tr><td>agentic autofix</td><td><span class="neg">Consumes</span></td><td><span class="neg">Consumes</span></td><td><span class="badge badge-pp">Public Preview</span> (from 2026-07-10)</td></tr><tr><td>Copilot Autofix (legacy)</td><td><span class="pos">Does not consume</span></td><td><span class="pos">Does not consume</span></td><td>No Copilot subscription required</td></tr><tr><td>third-party coding agents</td><td><span class="neg">Consumes</span></td><td><span class="neg">Consumes</span></td><td><span class="badge badge-pp">Public Preview</span> Anthropic Claude / OpenAI Codex</td></tr><tr><td>Copilot Spaces</td><td><span class="neg">Consumes</span></td><td>—</td><td>Questions are counted as Chat interactions</td></tr></tbody></table></div>
 
-<h3>プラン別の月次 AI Credits</h3>
-<div class="table-wrap"><table class=""><colgroup><col style="width:16%"><col style="width:18%"><col style="width:38%"><col style="width:28%"></colgroup><thead><tr><th>プラン</th><th>価格</th><th>含まれる AI Credits</th><th>cloud agent</th></tr></thead><tbody><tr><td>Free</td><td>無料</td><td>自動モデル選択経由の割当 ＋ 2,000 completions/月</td><td><span class="neg">対象外</span></td></tr><tr><td>Student</td><td>無料</td><td>自動モデル選択経由の割当 ＋ completions 無制限</td><td><span class="pos">含まれる</span></td></tr><tr><td>Pro</td><td>$10/月</td><td>1,500（base 1,000 ＋ flex 500）</td><td><span class="pos">既定で有効</span></td></tr><tr><td>Pro+</td><td>$39/月</td><td>7,000（base 3,900 ＋ flex 3,100）</td><td><span class="pos">既定で有効</span></td></tr><tr><td>Max</td><td>$100/月</td><td>20,000（base 10,000 ＋ flex 10,000）</td><td><span class="pos">既定で有効</span></td></tr><tr><td>Business</td><td>$19/付与シート/月</td><td>1,900/ユーザー/月（請求主体でプール）</td><td><span class="mid">管理者が有効化するまで無効</span></td></tr><tr><td>Enterprise</td><td>$39/付与シート/月</td><td>3,900/ユーザー/月（請求主体でプール）</td><td><span class="mid">管理者が有効化するまで無効</span></td></tr></tbody></table></div>
-<p class="muted">2026 年 6 月 1 日〜9 月 1 日の移行プロモーションとして、既存 Business / Enterprise 顧客はそれぞれ 3,000 / 7,000 クレジット（ユーザー/月）。<strong>未使用分は翌月に繰り越されない。</strong></p>
+<h3>Monthly AI Credits by plan</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:16%"><col style="width:18%"><col style="width:38%"><col style="width:28%"></colgroup><thead><tr><th>Plan</th><th>Price</th><th>Included AI Credits</th><th>cloud agent</th></tr></thead><tbody><tr><td>Free</td><td>Free</td><td>An allowance via automatic model selection + 2,000 completions/month</td><td><span class="neg">Not included</span></td></tr><tr><td>Student</td><td>Free</td><td>An allowance via automatic model selection + unlimited completions</td><td><span class="pos">Included</span></td></tr><tr><td>Pro</td><td>$10/month</td><td>1,500 (base 1,000 + flex 500)</td><td><span class="pos">On by default</span></td></tr><tr><td>Pro+</td><td>$39/month</td><td>7,000 (base 3,900 + flex 3,100)</td><td><span class="pos">On by default</span></td></tr><tr><td>Max</td><td>$100/month</td><td>20,000 (base 10,000 + flex 10,000)</td><td><span class="pos">On by default</span></td></tr><tr><td>Business</td><td>$19/assigned seat/month</td><td>1,900/user/month (pooled at the billing entity)</td><td><span class="mid">Off until an admin enables it</span></td></tr><tr><td>Enterprise</td><td>$39/assigned seat/month</td><td>3,900/user/month (pooled at the billing entity)</td><td><span class="mid">Off until an admin enables it</span></td></tr></tbody></table></div>
+<p class="muted">As a migration promotion from 1 June to 1 September 2026, existing Business / Enterprise customers get 3,000 / 7,000 credits respectively (per user/month). <strong>Unused credits do not carry over to the next month.</strong></p>
 
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">並列化はコストに直接効く —— /fleet のサブエージェントは AI Credits を増やす</p><p>CLI の <code>/fleet</code>（§06）はタスクを分解し、<strong>サブエージェントが並列に LLM とやり取りします</strong>。各サブエージェントは独立したコンテキスト窓を持って個別に推論するため、<strong>逐次実行より AI Credits の消費が増えます</strong>。公式ドキュメントも「本質的に逐次な依頼では <code>/fleet</code> は利益をもたらさない」と明記しています。</p>
+    <div class="callout-body"><p class="callout-title">Parallelization hits cost directly — /fleet subagents increase AI Credits</p><p>The CLI's <code>/fleet</code> (§06) decomposes a task, and <strong>the subagents interact with the LLM in parallel</strong>. Because each subagent holds its own context window and reasons independently, it <strong>consumes more AI Credits than sequential execution does</strong>. The official documentation also states plainly that <code>/fleet</code> brings no benefit for inherently sequential requests.</p>
     <figure class="doc-quote">
     <blockquote>Because each subagent interacts with the LLM independently, using /fleet may increase your AI Credits consumption. For tasks that are inherently sequential, /fleet is unlikely to provide any benefit.</blockquote>
     <figcaption><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/speed-up-task-completion" target="_blank" rel="noopener noreferrer">GitHub Docs — Speed up task completion with Copilot CLI</a></figcaption>
   </figure>
-    <p>したがって並列度を上げる判断は <strong>3 つの予算に同時に効きます</strong>：AI Credits（サブエージェント分）、Actions 分（cloud agent に委譲する場合）、そして<strong>レビュー容量</strong>（真のボトルネック）。並列化の効果は「独立したタスクか」で決まり、コストは無条件に増える —— この非対称を計測（§14）で確かめます。</p></div>
+    <p>So the decision to raise concurrency <strong>hits three budgets at once</strong>: AI Credits (for the subagents), Actions minutes (when delegating to the cloud agent), and <strong>review capacity</strong> (the real bottleneck). The benefit of parallelization depends on whether the tasks are independent, while the cost rises unconditionally — an asymmetry you confirm through measurement (§14).</p></div>
   </aside>
 
 <aside class="callout callout-note">
     <div class="callout-mark" aria-hidden="true">i</div>
-    <div class="callout-body"><p class="callout-title">Compute budget を実務で語るときの要点</p><p>cloud agent は <strong>AI Credits と Actions 分の 2 系統</strong>を同時に消費します。したがって「並列度を上げる」判断は 2 種類の予算に同時に効きます（§04）。<br>
-    ただし実務上のボトルネックは通常コストではなく<strong>レビュー容量</strong>です。採用ラダーの Orchestrate 段が「統治とレビュー容量の範囲内で」と条件づけているのはそのためで、人間が「作業のループ」から「意思決定のループ」へ移るという転換も、同じ制約を別角度から述べたものです。<strong>投入できるタスク数の上限は、承認できる人の数で決まります</strong>（§12）。<br>
-    このコストが「見合っているか」は主観では決められません —— 採用と PR outcome を実測して評価します（§14）。</p></div>
+    <div class="callout-body"><p class="callout-title">Key points when discussing the Compute budget in practice</p><p>The cloud agent consumes <strong>two streams — AI Credits and Actions minutes</strong> — at the same time. So the decision to "raise concurrency" hits two kinds of budget at once (§04).<br>
+    But the practical bottleneck is usually not cost; it is <strong>review capacity</strong>. That is why the Orchestrate step of the adoption ladder is conditioned on "within governance and review capacity", and the shift where humans move from a "loop of doing the work" to a "loop of making decisions" states the same constraint from another angle. <strong>The ceiling on how many tasks you can submit is set by the number of people who can approve them</strong> (§12).<br>
+    Whether this cost is "worth it" cannot be settled by opinion — you evaluate it by measuring adoption and PR outcomes (§14).</p></div>
   </aside>
 
 </section>
-<section class="section" id="measurement" lang="ja" aria-labelledby="measurement-title">
+<section class="section" id="measurement" aria-labelledby="measurement-title">
   <div class="section__head">
     <p class="section__num">14</p>
     <div class="section__headings">
       <p class="eyebrow">Measurement</p>
-      <h2 id="measurement-title">計測 —— 採用と効果を統治する</h2>
+      <h2 id="measurement-title">Measurement — governing adoption and impact</h2>
     </div>
   </div>
-  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
-  <p class="lead">エンタープライズの導入評価で最初に問われるのは「これは機能しているか？」です。コスト（§13）を語れて効果を語れないのは、提案として致命的に非対称です。本節は、GitHub が実際に提供する計測面を製品事実として確定させ、その限界を正直に示し、§12 の採用ラダーを在庫チェックから証拠ベースへと引き上げます。</p>
+  <p class="lead">The first question in an enterprise adoption evaluation is "is this working?". Being able to talk about cost (§13) but not about impact is a fatally asymmetric proposal. This section fixes, as product fact, the measurement surfaces GitHub actually provides, shows their limits honestly, and lifts the §12 adoption ladder from an inventory check to something evidence-based.</p>
 
 <figure class="principle">
-    <blockquote>Measure what the metrics actually measure—activity and pull request outcomes—and never claim causal productivity you cannot observe.</blockquote><figcaption>計測できるのは「活動量」と「PR の結果」である。そこから観測できない因果的生産性を主張しないこと —— 誠実な計測が、誇張された ROI 主張より強い。</figcaption>
+    <blockquote>Measure what the metrics actually measure—activity and pull request outcomes—and never claim causal productivity you cannot observe.</blockquote>
   </figure>
 
-<h3>取得できる面 —— 4 つのダッシュボードと API 階層</h3>
-<p>Copilot usage metrics は複数の面から取得できます。いずれも製品として提供されており <span class="badge badge-ga">GA</span>、repository 単位のメトリクスは 2026-07-17 に GA になりました。</p>
-<div class="table-wrap"><table class=""><colgroup><col style="width:24%"><col style="width:50%"><col style="width:26%"></colgroup><thead><tr><th>取得面</th><th>何が取れるか</th><th>粒度 / 形式</th></tr></thead><tbody><tr><td><strong>usage metrics API</strong></td><td>完了・チャット・エージェントモードを横断した統合テレメトリ。feature / IDE / 言語 / モデル / ユーザー別の内訳と、リポジトリ単位の PR 活動レポート</td><td><strong>enterprise / organization / repository / user</strong> レベル</td></tr><tr><td><strong>usage metrics ダッシュボード</strong></td><td>採用・エンゲージメントの推移</td><td>28 日トレンド</td></tr><tr><td><strong>code generation ダッシュボード</strong></td><td>コード生成の内訳を <strong>ユーザーとエージェント別</strong>に分解</td><td>enterprise / organization</td></tr><tr><td><strong>impact ダッシュボード</strong></td><td>ユーザーを <strong>adoption cohort（採用の深さ）に分類</strong>し、その採用を <strong>PR 出力に接続</strong></td><td>cohort 別</td></tr><tr><td><strong>NDJSON エクスポート</strong></td><td>カスタム BI ツール・長期保管向けの生データ</td><td>raw</td></tr></tbody></table></div>
+<h3>What you can capture — four dashboards and an API hierarchy</h3>
+<p>Copilot usage metrics can be captured from several surfaces. All of them ship as product <span class="badge badge-ga">GA</span>, and repository-level metrics became GA on 2026-07-17.</p>
+<div class="table-wrap"><table class=""><colgroup><col style="width:24%"><col style="width:50%"><col style="width:26%"></colgroup><thead><tr><th>Surface</th><th>What you get</th><th>Granularity / format</th></tr></thead><tbody><tr><td><strong>usage metrics API</strong></td><td>Unified telemetry across completion, chat, and agent mode. Breakdowns by feature / IDE / language / model / user, plus a repository-level PR activity report</td><td><strong>enterprise / organization / repository / user</strong> levels</td></tr><tr><td><strong>usage metrics dashboard</strong></td><td>Adoption and engagement over time</td><td>28-day trend</td></tr><tr><td><strong>code generation dashboard</strong></td><td>Breaks down code generation <strong>by user versus agent</strong></td><td>enterprise / organization</td></tr><tr><td><strong>impact dashboard</strong></td><td>Classifies users into <strong>adoption cohorts (depth of adoption)</strong> and connects that adoption <strong>to PR output</strong></td><td>by cohort</td></tr><tr><td><strong>NDJSON export</strong></td><td>Raw data for custom BI tools and long-term retention</td><td>raw</td></tr></tbody></table></div>
 
 <figure class="doc-quote">
     <blockquote>measure engagement, identify opportunities to increase value, and assess how AI-assisted workflows influence pull request throughput and time to merge.</blockquote>
     <figcaption><a href="https://docs.github.com/en/copilot/concepts/copilot-usage-metrics/copilot-metrics" target="_blank" rel="noopener noreferrer">GitHub Docs — Copilot usage metrics</a></figcaption>
   </figure>
 
-<h3>エージェント次元と PR outcome —— SDLC として意味のある量</h3>
-<p>このメトリクスの要点は、<strong>エージェントの活動と PR の結果を接続して見られる</strong>ことです。取れる PR ライフサイクル量には、PR の作成数・マージ数、<strong>マージまでの時間中央値（median time to merge）</strong>、レビュー提案の活動が含まれます。code generation ダッシュボードはユーザーとエージェントの生成内訳を分け、Copilot が作成した PR を全体の PR 活動と比較できます。§14 が §13 のコストと対になるのはこの点です —— <strong>「いくら使ったか」と「スループット／サイクルタイムがどう動いたか」を並べて初めて導入評価になります</strong>。</p>
+<h3>The agent dimension and PR outcomes — quantities that matter as an SDLC</h3>
+<p>The point of these metrics is that <strong>you can see agent activity connected to PR outcomes</strong>. The PR-lifecycle quantities you get include PRs created and merged, the <strong>median time to merge</strong>, and review-suggestion activity. The code generation dashboard separates user and agent generation, letting you compare PRs authored by Copilot against overall PR activity. This is where §14 pairs with the cost of §13 — <strong>an adoption evaluation only exists once you set "how much you spent" next to "how throughput / cycle time moved"</strong>.</p>
 
-<h3>限界 —— 測れないものを測れると言わない</h3>
+<h3>Limits — do not claim you can measure what you cannot</h3>
 <aside class="callout callout-warn">
     <div class="callout-mark" aria-hidden="true">!</div>
-    <div class="callout-body"><p class="callout-title">このメトリクスで測れないこと（必ず提案に明記する）</p><p><strong>(a) IDE テレメトリ前提。</strong> 大半のメトリクスは<strong>クライアント側 IDE テレメトリ由来</strong>で、ユーザーが IDE のテレメトリを有効にしていないと十分なデータが出ません。サーバ側テレメトリはアクティブユーザーの補足には使われますが、<code>totals_by_feature</code> や LoC 系の内訳は、より豊富なテレメトリが揃うまで空のままです。<br>
-    <strong>(b) 対象外の面がある。</strong> <strong>GitHub.com の Copilot Chat と GitHub Mobile は含まれません</strong>。<br>
-    <strong>(c) ライセンス情報は別。</strong> シート／ライセンス情報はこのレポートに含まれず、<code>Copilot user management API</code> が source of truth です。<br>
-    <strong>(d) 因果ではない。</strong> 測れるのは<span class="neg">活動量と PR outcome</span>であって、<strong>因果的な生産性・流出欠陥（escaped defects）・デプロイ成功率ではありません</strong>。これらを測るには本資料の射程外（§00）にある既存のプラットフォームと人間のプロセスが要ります。</p></div>
+    <div class="callout-body"><p class="callout-title">What these metrics cannot measure (always state this in a proposal)</p><p><strong>(a) IDE telemetry is assumed.</strong> Most of the metrics <strong>come from client-side IDE telemetry</strong>, so if users have not enabled IDE telemetry, insufficient data is produced. Server-side telemetry is used to capture active users, but <code>totals_by_feature</code> and LoC-style breakdowns stay empty until richer telemetry is available.<br>
+    <strong>(b) Some surfaces are out of scope.</strong> <strong>Copilot Chat on GitHub.com and GitHub Mobile are not included</strong>.<br>
+    <strong>(c) License information is separate.</strong> Seat / license information is not in this report; the <code>Copilot user management API</code> is the source of truth.<br>
+    <strong>(d) It is not causal.</strong> What you can measure is <span class="neg">activity and PR outcomes</span>, <strong>not causal productivity, escaped defects, or deployment success rate</strong>. Measuring those needs the existing platform and human processes that sit outside this guide's scope (§00).</p></div>
   </aside>
 
-<h3>監査ログとの役割分担</h3>
-<p>「何が起きたか（活動量・PR 結果）」は usage metrics が、「誰が・いつ・どのエージェントとして操作したか」は<strong>監査ログ</strong>が担います。§17 の <code>agentic-audit-log-events</code> と <code>actor:Copilot</code> / <code>actor_is_agent</code> は、メトリクスでは辿れない<strong>個々の操作の帰属と時系列</strong>を与えます。統治には両方が要ります —— メトリクスは傾向を、監査ログは説明責任を担保します。</p>
+<h3>Division of labour with the audit log</h3>
+<p>"What happened (activity, PR outcomes)" is carried by usage metrics; "who did what, when, and as which agent" is carried by the <strong>audit log</strong>. §17's <code>agentic-audit-log-events</code> and <code>actor:Copilot</code> / <code>actor_is_agent</code> give you the <strong>attribution and timeline of individual operations</strong> that metrics cannot trace. Governance needs both — metrics secure the trend, the audit log secures accountability.</p>
 
-<h3>採用ラダー（§12）を証拠ベースにする</h3>
-<p>現状の §12 の Definition of Ready は「資産が置いてあるか」の<strong>在庫チェック</strong>であって、成果の測定ではありません。各段の卒業判定に、このメトリクスから取れる<strong>観測量</strong>を対応づけます。</p>
-<div class="table-wrap"><table class=""><colgroup><col style="width:22%"><col style="width:34%"><col style="width:44%"></colgroup><thead><tr><th>採用ラダーの段</th><th>在庫チェック（現状）</th><th>卒業を裏づける観測量（本節から）</th></tr></thead><tbody><tr><td>Assist / Delegate</td><td>instructions・AGENTS.md が置いてある</td><td>DAU の増加トレンド、採用 cohort が試用段で頭打ちになっていないこと</td></tr><tr><td>Supervise</td><td>検証手段（テスト・ruleset）がある</td><td>Copilot 作成 PR のマージ数・マージ時間中央値が悪化していないこと</td></tr><tr><td>Orchestrate</td><td>オーケストレーションの型がある</td><td>エージェント次元の PR 出力とレビュー提案の適用状況（レビュー容量が律速になっていないか）</td></tr></tbody></table></div>
+<h3>Making the adoption ladder (§12) evidence-based</h3>
+<p>As it stands, the Definition of Ready in §12 is an <strong>inventory check</strong> of "are the assets in place", not a measurement of outcomes. We map an <strong>observable quantity</strong> from these metrics onto the graduation test for each step.</p>
+<div class="table-wrap"><table class=""><colgroup><col style="width:22%"><col style="width:34%"><col style="width:44%"></colgroup><thead><tr><th>Adoption ladder step</th><th>Inventory check (current)</th><th>Observable quantity that backs graduation (from this section)</th></tr></thead><tbody><tr><td>Assist / Delegate</td><td>instructions and AGENTS.md are in place</td><td>A rising DAU trend, and adoption cohorts not plateauing at the trial stage</td></tr><tr><td>Supervise</td><td>Verification means (tests, rulesets) exist</td><td>Merge counts and median time to merge for Copilot-authored PRs are not deteriorating</td></tr><tr><td>Orchestrate</td><td>Orchestration patterns exist</td><td>Agent-dimension PR output and how review suggestions are applied (whether review capacity is the bottleneck)</td></tr></tbody></table></div>
 <aside class="callout callout-note">
     <div class="callout-mark" aria-hidden="true">i</div>
-    <div class="callout-body"><p class="callout-title">DORA などの外部枠組みに触れるときの作法</p><p>DORA（デプロイ頻度・変更のリードタイム・変更失敗率・復旧時間）のような外部枠組みに言及すること自体は有用ですが、それらは <strong><span class="badge badge-framework">本資料の整理</span> 本資料が導入評価を構造化するために参照する外部枠組み</strong>であって、Copilot usage metrics が直接算出する製品指標ではありません。とくに変更失敗率・復旧時間はデプロイと本番運用の観測（§00 の射程外）を必要とします。<strong>メトリクスが出す数字（活動量・PR outcome）と、外部枠組みが要求する成果指標を混同しない</strong>ことが、誠実な提案の条件です。因果を主張してはいけません。</p></div>
+    <div class="callout-body"><p class="callout-title">How to handle references to external frameworks such as DORA</p><p>Referring to external frameworks such as DORA (deployment frequency, lead time for changes, change failure rate, time to restore) is useful in itself, but they are <strong><span class="badge badge-framework">This guide's framing</span> an external framework this guide references to structure an adoption evaluation</strong>, not product metrics that Copilot usage metrics computes directly. Change failure rate and time to restore in particular require observing deployment and production operation (outside §00's scope). A condition for an honest proposal is to <strong>not conflate the numbers the metrics produce (activity, PR outcomes) with the outcome indicators those external frameworks demand</strong>. You must not claim causation.</p></div>
   </aside>
 
 </section>
-<section class="section" id="antipatterns" lang="ja" aria-labelledby="antipatterns-title">
+<section class="section" id="antipatterns" aria-labelledby="antipatterns-title">
   <div class="section__head">
     <p class="section__num">15</p>
     <div class="section__headings">
-      <p class="eyebrow">アンチパターン</p>
-      <h2 id="antipatterns-title">委譲してはいけない作業と、よくある失敗</h2>
+      <p class="eyebrow">Anti-patterns</p>
+      <h2 id="antipatterns-title">Work you must not delegate, and common failures</h2>
     </div>
   </div>
-  <p class="untranslated-note" lang="en">Not yet translated — the Japanese text is shown below.</p>
-  <p class="lead">委譲は万能ではありません。そもそも境界を切れない作業、検証手段のない作業は、委譲すると統治が空回りします。ここでは「非同期の委譲（Delegation）に載せてはいけない作業」と、載せられる作業でも起きがちな「運用上の失敗パターン」を、回避策とともに整理します。判断はすべて本資料の他節に裏づけられます。</p>
+  <p class="lead">Delegation is not a cure-all. Work you cannot bound in the first place, or work with no means of verification, makes governance spin in place when delegated. Here we lay out, with mitigations, both "work you must not put on asynchronous Delegation" and the "operational failure patterns" that tend to arise even with work you can delegate. Every judgement is backed by other sections of this guide.</p>
 
 <figure class="principle">
-    <blockquote>If you cannot draw the boundary, define the check, or reverse the change, the work is not ready to delegate—make it ready first.</blockquote><figcaption>境界を引けない・チェックを定義できない・変更を巻き戻せない作業は、まだ委譲できる状態にない。まず委譲できる状態にすることが先。</figcaption>
+    <blockquote>If you cannot draw the boundary, define the check, or reverse the change, the work is not ready to delegate—make it ready first.</blockquote>
   </figure>
 
-<h3>委譲（非同期）に載せてはいけない作業</h3>
-<div class="table-wrap"><table class=""><colgroup><col style="width:24%"><col style="width:40%"><col style="width:36%"></colgroup><thead><tr><th>作業の型</th><th>なぜ委譲に向かないか</th><th>先にやるべきこと</th></tr></thead><tbody><tr><td><strong>境界を切れない横断的リファクタ</strong></td><td>1 タスク ＝ 1 ブランチ ＝ 1 PR の制約に収まらず、Scope budget を定義できない。巨大 PR になりレビュー不能に</td><td>波（wave）に分割し、独立に検証可能な Issue 群に落とす（§05 Plan → Work）。Scope を <code>applyTo</code> と CODEOWNERS で構造化する（§03・§04）</td></tr><tr><td><strong>検証手段のない作業</strong></td><td>決定的チェックが存在しないと、受け入れが人間の目視に逆戻りする。「決定的に検証する」の決定的側が空になる</td><td>先に characterization テストと required status checks を用意する（§08）。網が無いなら、網を張る作業を先に委譲する</td></tr><tr><td><strong>仕様が未確定な作業</strong></td><td>受け入れ条件（Acceptance）が書けないため、契約が「白紙委任」になる。エージェントは確率的に埋めてしまう</td><td>Conversation / Collaboration モードで仕様を固めてから委譲する（§01）。未確定なら Agents UI の research/plan 段で人が軌道修正する（§05）</td></tr><tr><td><strong>ロールバック不能な変更</strong></td><td>可逆性が低い作業は Autonomy budget を上げてはいけない対象。失敗の blast radius が大きい</td><td>environments と deployment protection rules でマージ／リリース／本番を分離し、人間ゲートを置く（§09）。まず可逆な部分だけを委譲する</td></tr><tr><td><strong>機密情報へのアクセスが必要な作業</strong></td><td>本番シークレットは Agents secrets に置くべきでなく、firewall は MCP・setup steps をカバーしない。漏洩経路になりうる</td><td>シークレットに触れない形に作業を切り直す（§10）。どうしても必要なら委譲対象から外し、人間が実施する</td></tr></tbody></table></div>
+<h3>Work you must not put on delegation (async)</h3>
+<div class="table-wrap"><table class=""><colgroup><col style="width:24%"><col style="width:40%"><col style="width:36%"></colgroup><thead><tr><th>Type of work</th><th>Why it is unsuited to delegation</th><th>What to do first</th></tr></thead><tbody><tr><td><strong>Cross-cutting refactors you cannot bound</strong></td><td>They do not fit the one task = one branch = one PR constraint, so you cannot define a Scope budget. They become a huge PR that cannot be reviewed</td><td>Split into waves and land them as a set of independently verifiable Issues (§05 Plan → Work). Structure Scope with <code>applyTo</code> and CODEOWNERS (§03, §04)</td></tr><tr><td><strong>Work with no means of verification</strong></td><td>With no deterministic check, acceptance falls back to human eyeballing. The deterministic side of "verify deterministically" is left empty</td><td>Prepare characterization tests and required status checks first (§08). If there is no net, delegate the work of stringing the net first</td></tr><tr><td><strong>Work whose spec is not settled</strong></td><td>Because you cannot write the acceptance criteria, the contract becomes a "blank cheque". The agent will fill it in probabilistically</td><td>Settle the spec in Conversation / Collaboration mode before delegating (§01). If it is unsettled, a human steers at the research/plan stage of the Agents UI (§05)</td></tr><tr><td><strong>Changes that cannot be rolled back</strong></td><td>Work with low reversibility is exactly what you must not raise the Autonomy budget for. The blast radius of failure is large</td><td>Separate merge / release / production with environments and deployment protection rules, and place a human gate (§09). Delegate only the reversible parts first</td></tr><tr><td><strong>Work that needs access to secrets</strong></td><td>Production secrets should not be placed in Agents secrets, and the firewall does not cover MCP or setup steps. It can become a leak path</td><td>Re-cut the work into a form that does not touch secrets (§10). If it is truly required, take it out of scope for delegation and have a human do it</td></tr></tbody></table></div>
 
-<h3>載せられる作業でも起きる、運用上の失敗パターン</h3>
+<h3>Operational failure patterns that occur even with work you can delegate</h3>
 <div class="cards cards-3"><div class="card">
-        <p class="card-title">コンテキストを整えずに委譲する <span class="badge badge-warn">失敗</span></p>
-        <div class="card-body"><p class="muted">症状：エージェントが規約を無視した実装を返す。レビューで指摘が積み上がる。</p>
-      <p>原因は Persistent context の不足です。トークンを増やしても直りません —— <code>AGENTS.md</code> と <code>*.instructions.md</code> を先に整える（§02）。矛盾する指示を複数階層に置かない。</p></div>
+        <p class="card-title">Delegating without preparing context <span class="badge badge-warn">Failure</span></p>
+        <div class="card-body"><p class="muted">Symptom: the agent returns an implementation that ignores conventions. Review comments pile up.</p>
+      <p>The cause is a lack of Persistent context. Adding more tokens will not fix it — get <code>AGENTS.md</code> and <code>*.instructions.md</code> in order first (§02). Do not place contradictory instructions across multiple layers.</p></div>
       </div><div class="card">
-        <p class="card-title">検証を人間の目視に戻す <span class="badge badge-warn">失敗</span></p>
-        <div class="card-body"><p class="muted">症状：レビュアが差分を目で追って正しさを判断している。</p>
-      <p>決定的チェックが弱いサインです。required status checks・CodeQL・テストを厚くし、人間のレビューは「差分ではなく判断」（アーキ適合・互換・運用影響）に集中させる（§08・§09）。</p></div>
+        <p class="card-title">Reverting verification to human eyeballing <span class="badge badge-warn">Failure</span></p>
+        <div class="card-body"><p class="muted">Symptom: reviewers follow the diff by eye to decide whether it is correct.</p>
+      <p>A sign that deterministic checks are weak. Thicken required status checks, CodeQL, and tests, and focus human review on "judgement, not the diff" (architectural fit, compatibility, operational impact) (§08, §09).</p></div>
       </div><div class="card">
-        <p class="card-title">PR を巨大化させる <span class="badge badge-warn">失敗</span></p>
-        <div class="card-body"><p class="muted">症状：1 つの PR が数十ファイルに及び、レビューされないまま滞留する。</p>
-      <p>Scope budget が広すぎます。Plan → Work で「1 つの観測可能な成果」に割る（§05）。ループは<em>小さくレビュー可能な変更</em>を生むためにある。</p></div>
+        <p class="card-title">Letting the PR grow huge <span class="badge badge-warn">Failure</span></p>
+        <div class="card-body"><p class="muted">Symptom: a single PR spans dozens of files and stalls, unreviewed.</p>
+      <p>The Scope budget is too wide. Split it into "one observable outcome" with Plan → Work (§05). The loop exists to produce <em>small, reviewable changes</em>.</p></div>
       </div><div class="card">
-        <p class="card-title">レビュー容量を超えて並列投入する <span class="badge badge-warn">失敗</span></p>
-        <div class="card-body"><p class="muted">症状：エージェント PR が承認待ちで積み上がる。</p>
-      <p>並列度の実質的な上限は<strong>承認できる人の数</strong>です。コストではなくレビュー容量で並列度を決める（§12・§13）。</p></div>
+        <p class="card-title">Submitting in parallel beyond review capacity <span class="badge badge-warn">Failure</span></p>
+        <div class="card-body"><p class="muted">Symptom: agent PRs pile up waiting for approval.</p>
+      <p>The practical ceiling on concurrency is <strong>the number of people who can approve</strong>. Decide concurrency by review capacity, not cost (§12, §13).</p></div>
       </div><div class="card">
-        <p class="card-title">Copilot code review を承認ゲート扱いする <span class="badge badge-warn">失敗</span></p>
-        <div class="card-body"><p class="muted">症状：自動レビューが付いたから安全、とみなしてマージする。</p>
-      <p>Copilot code review は<strong>常に Comment</strong>で、ゲートではなくシグナルです。CODEOWNERS で人間の必須レビューを別に置く（§09）。</p></div>
+        <p class="card-title">Treating Copilot code review as an approval gate <span class="badge badge-warn">Failure</span></p>
+        <div class="card-body"><p class="muted">Symptom: treating "an automated review was added" as safe and merging.</p>
+      <p>Copilot code review is <strong>always Comment</strong> — a signal, not a gate. Place a required human review separately with CODEOWNERS (§09).</p></div>
       </div><div class="card">
-        <p class="card-title">エスカレーションを「お願い」で済ませる <span class="badge badge-warn">失敗</span></p>
-        <div class="card-body"><p class="muted">症状：「危険なら止めて」とプロンプトに書くが、実際には止まらない。</p>
-      <p>プロンプトは確率的です。触れてほしくない領域は CODEOWNERS と ruleset で「触ると必須レビューが発火する」構造にする —— <em>頼むのではなく、止まる形にする</em>（§03・§04）。</p></div>
+        <p class="card-title">Handling escalation with a "please" <span class="badge badge-warn">Failure</span></p>
+        <div class="card-body"><p class="muted">Symptom: you write "stop if it's dangerous" in the prompt, but it does not actually stop.</p>
+      <p>Prompts are probabilistic. Turn areas you do not want touched into a structure — via CODEOWNERS and rulesets — where "touching them fires a required review" — <em>make it stop, rather than asking it to</em> (§03, §04).</p></div>
       </div></div>
 
 <aside class="callout callout-key">
     <div class="callout-mark" aria-hidden="true">★</div>
-    <div class="callout-body"><p class="callout-title">アンチパターンの共通構造</p><p>上のどの失敗も、根は同じです —— <strong>確率的な指示（プロンプト）で済ませられるはずのない統治を、プロンプトに委ねている</strong>こと。委譲が安全に回るのは、境界・検証・ゲートが<em>構造</em>になっているときだけです（§03 の「8 フィールドのうち 5 つは構造にできる」）。委譲してよいかどうか迷ったら、「境界を引けるか」「チェックを定義できるか」「巻き戻せるか」の 3 問に答えてください。1 つでも No なら、まずその No を Yes にする作業が先です。</p></div>
+    <div class="callout-body"><p class="callout-title">The common structure of the anti-patterns</p><p>Every failure above has the same root — <strong>entrusting to the prompt a piece of governance that a probabilistic instruction (the prompt) could never carry</strong>. Delegation runs safely only when boundaries, verification, and gates are <em>structure</em> (§03's "5 of the 8 fields can be made structural"). When unsure whether to delegate, answer three questions: "Can I draw the boundary?", "Can I define the check?", "Can I roll it back?" If even one is No, the work of turning that No into a Yes comes first.</p></div>
   </aside>
 
 </section>
