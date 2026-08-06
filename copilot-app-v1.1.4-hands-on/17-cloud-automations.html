@@ -1,0 +1,395 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Trigger Copilot cloud agent automatically in a private or internal repository so overnight tasks finish even while your computer is off.">
+<title>GitHub Copilot App v1.1.4 — Create cloud automations</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="17" data-guide-count="25">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.4 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.4</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="lab-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">ラボ 17 / 25</span><span class="en" lang="en">Lab 17 of 25</span></p>
+    <h1 id="lab-title"><span class="ja" lang="ja">クラウド自動化を作成する</span><span class="en" lang="en">Create cloud automations</span></h1>
+    <p class="lede"><span class="ja" lang="ja">プライベートまたは内部リポジトリで Copilot cloud agent をトリガーで自動実行し、パソコンの電源が切れていても夜間タスクを完了させます。</span><span class="en" lang="en">Trigger Copilot cloud agent automatically in a private or internal repository so overnight tasks finish even while your computer is off.</span></p>
+    <div class="meta-row" aria-label="Lab metadata">
+      <span class="badge"><span class="ja" lang="ja">上級</span><span class="en" lang="en">Advanced</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.4 向け再公開（中核フローは v1.1.2 で検証、現在差分を source-check）</span><span class="en" lang="en">Republished for v1.1.4 (core flow verified at v1.1.2; current deltas source-checked)</span></span>
+      <span class="badge"><span class="ja" lang="ja">約60分</span><span class="en" lang="en">About 60 min</span></span>
+      <span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span>
+    </div>
+    <div class="chips" aria-label="Journeys and tracks"><a class="badge badge--accent" href="index.html#journey-j4"><span class="ja" lang="ja">自動化されたリポジトリ運用</span><span class="en" lang="en">Automated repository operations</span></a> <a class="badge" href="index.html#track-t7"><span class="ja" lang="ja">automations、filter、スケジュール、権限、リトライ</span><span class="en" lang="en">Automations, filters, schedules, permissions, and retries</span></a></div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#labs"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">25 ラボ一覧</span><span class="en" lang="en">All 25 labs</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="persona">
+        <div class="section-heading"><p class="eyebrow">Scenario &amp; persona</p><h2><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">プライベートなサンプルリポジトリで、毎晩 main ブランチの失敗テストを確認し、安全な修正案を下書き PR として提案させたい状況を扱います。</span><span class="en" lang="en">You want a private sample repository to check for failing tests on main every night and propose a safe fix as a draft pull request.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">担当者像</span><span class="en" lang="en">Persona</span></h3><p><span class="ja" lang="ja">繰り返し作業を自動化する担当者として、cloud automationsとポリシー依存の可用性を扱います。</span><span class="en" lang="en">As someone automating repetitive work, this lab covers cloud automations and their policy-dependent availability.</span></p></article>
+        </div>
+        <div class="callout"><strong><span class="ja" lang="ja">なぜ重要か</span><span class="en" lang="en">Why it matters</span>:</strong> <span class="ja" lang="ja">トリガー条件と最小権限を誤ると、意図しない大量実行や過剰な権限を持つ自動化が生まれます。</span><span class="en" lang="en">Misconfigured trigger conditions and privileges create either unintended mass runs or an over-privileged automation.</span></div>
+      </section>
+
+      <section class="section" id="objectives">
+        <div class="section-heading"><p class="eyebrow">Goals</p><h2><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Learning objectives</span></h2></div>
+        <ul><li><span class="ja" lang="ja">手動・定期・イベントトリガーを構成する</span><span class="en" lang="en">Configure manual, scheduled, and event triggers</span></li>
+<li><span class="ja" lang="ja">smart queryや変更ファイル条件で対象を絞る</span><span class="en" lang="en">Narrow scope with a smart query or changed-file condition</span></li>
+<li><span class="ja" lang="ja">実行状態を確認し、schedule-triggered startup retryの公式範囲を説明する</span><span class="en" lang="en">Inspect run status and explain the documented scope of schedule-triggered startup retry</span></li></ul>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">対象リポジトリがプライベートまたは内部であること。クラウド自動化はパブリックリポジトリでは利用できません。</span><span class="en" lang="en">The target repository is private or internal. Cloud automations are not available in public repositories.</span></li>
+<li><span class="ja" lang="ja">その組織で Copilot cloud agent ポリシーが有効になっており、Business/Enterprise の場合は管理者が有効化していること。</span><span class="en" lang="en">The Copilot cloud agent policy is enabled for the organization, and an administrator has enabled it for Business or Enterprise plans.</span></li>
+<li><span class="ja" lang="ja">対象リポジトリに書き込み権限（write access）があること。自動化を作成できるのは書き込み権限を持つユーザーだけです。</span><span class="en" lang="en">You have write access to the target repository. Only users with write access can create automations.</span></li>
+<li><span class="ja" lang="ja">Copilot Pro、Pro+、Max、Business、Enterprise のいずれかのプランを利用していること。</span><span class="en" lang="en">You are on the Copilot Pro, Pro+, Max, Business, or Enterprise plan.</span></li></ul>
+      </section>
+
+      <section class="section" id="availability">
+        <div class="section-heading"><p class="eyebrow">Availability</p><h2><span class="ja" lang="ja">公式な提供状況とスコープ</span><span class="en" lang="en">Official availability and scope</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></h3><p><span class="ja" lang="ja">v1.1.4 版として再公開。中核フローは v1.1.2 で検証され、v1.1.3 / v1.1.4 差分と情報源を source-check しています。Copilot Pro、Pro+、Max、Business、Enterprise プランで利用でき、プライベートまたは内部リポジトリで Copilot cloud agent と自動化が有効な場合に使えます。</span><span class="en" lang="en">Republished for v1.1.4. The core flow was verified for v1.1.2; v1.1.3/v1.1.4 deltas and source provenance were checked. Available on the Copilot Pro, Pro+, Max, Business, and Enterprise plans, for private or internal repositories where Copilot cloud agent and automations are enabled.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">対象範囲</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドは GitHub Copilot App の Automations 画面で「Run in the cloud」を有効にして作成するクラウド自動化を扱います。同じ自動化はリポジトリの GitHub.com 上の Agents タブからも作成できますが、それは App とは別のクライアント面として触れるにとどめます。ローカル自動化（ラボ16）や GitHub Actions のスケジュール実行（ラボ14 の CI とは別物）は対象外です。</span><span class="en" lang="en">This guide covers cloud automations created from the GitHub Copilot app&#039;s Automations screen with Run in the cloud enabled. The same automations can also be created from a repository&#039;s Agents tab on GitHub.com, which is only mentioned as an adjacent client surface. Local automations (lab 16) and GitHub Actions scheduled workflows (distinct from the CI in lab 14) are out of scope.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">時間の見積もり</span><span class="en" lang="en">Time estimate</span></h3><p><span class="ja" lang="ja">hands-on操作の目安は約60分です。schedule到来、cloud session start、service latencyは含まず、検証を複数回に分ける場合があります。</span><span class="en" lang="en">Hands-on work is estimated at about 60 minutes. This excludes schedule windows, cloud-session startup, and service latency, so verification may span multiple sittings.</span></p></article>
+          <article class="card"><h3><span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span> <span class="ja" lang="ja">情報源の裏付け</span><span class="en" lang="en">Source provenance</span></h3><p><span class="ja" lang="ja">自動化・ワークフローという一般的な概念は docs-grounded な裏付けがあります。smart query、トリガーの具体的な UI とふるまいは release-note-grounded です。 手順内の正確なメニュー名・ボタン名・クリック順は変更履歴（changelog）に基づく記述であり、スクリーンショット付きの公式ウォークスルーで検証されたものではありません。実際の画面がここと異なる場合は、画面に表示されている表記を優先してください。</span><span class="en" lang="en">Automation and workflow concepts in general have docs-grounded support. The specific UI and behavior of smart queries and triggers are release-note-grounded. Exact menu names, button labels, and click order in the steps are grounded in changelog entries, not an illustrated official walkthrough. If your running build&#039;s UI differs from this text, follow what the screen actually shows instead.</span></p></article>
+        </div>
+      </section>
+
+      <section class="section" id="before-you-start">
+        <div class="section-heading"><p class="eyebrow">Before you start</p><h2><span class="ja" lang="ja">開始前の安全確認</span><span class="en" lang="en">Before-you-start safety check</span></h2></div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全・データ・コスト・権限への影響</span><span class="en" lang="en">Safety, data, cost, and permission implications</span>:</strong> <span class="ja" lang="ja">プロンプトや検索クエリにシークレットを含めないでください。クラウド自動化が開始するセッションのログとプロンプトは、そのリポジトリにアクセスできる全員に見えます。機密値は Copilot cloud agent のリポジトリシークレットとして渡してください。 automation definition は作成者だけに見えますが、それが開始した session、log、pull request は repository access を持つ人に見えます。automation PR は作成者に帰属するため、その作成者自身は承認できません。</span><span class="en" lang="en">Never include secrets in a prompt or search query. The prompt and session logs started by a cloud automation are visible to everyone with access to the repository. Pass sensitive values as Copilot cloud agent repository secrets instead. The automation definition is visible only to its creator, while the sessions, logs, and pull requests it starts are visible to people with repository access. Automation pull requests are attributed to the creator, who therefore cannot approve them.</span></div>
+      </section>
+
+      <section class="section" id="launchers">
+        <div class="section-heading"><p class="eyebrow">Open safely</p><h2><span class="ja" lang="ja">コピー可能なプロンプト／コマンドとランチャー</span><span class="en" lang="en">Copyable prompts/commands and launchers</span></h2></div>
+
+        <div class="card-grid"><article class="card">
+  <h3><span class="ja" lang="ja">Automations を開く</span><span class="en" lang="en">Open Automations</span></h3>
+  <p><span class="ja" lang="ja">サイドバーの Automations 画面を安全なホスト型ランチャーで開きます。ローカルとクラウドの両方の自動化がここに並びます。</span><span class="en" lang="en">Opens the Automations screen using the safe hosted launcher. Both local and cloud automations are listed here.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fautomations" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card">
+  <h3><span class="ja" lang="ja">クラウド自動化の下書きを開く</span><span class="en" lang="en">Open a cloud automation draft</span></h3>
+  <p><span class="ja" lang="ja">夜間のテスト修正プロンプトを事前入力した新規自動化ダイアログを開きます。Run in the cloud はダイアログが開いた後にアプリ内で自分で有効にしてください（URL パラメーターではありません）。</span><span class="en" lang="en">Opens the new automation dialog pre-filled with a nightly test-fix prompt. Enable Run in the cloud yourself inside the app after the dialog opens — it is not a URL parameter.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fautomations%2Fnew%3Fname%3DNightly%2520failing%2520test%2520triage%2520(cloud)%26trigger%3Ddaily%26time%3D02%253A00%26prompt%3DCheck%2520for%2520failing%2520tests%2520on%2520the%2520main%2520branch%252C%2520attempt%2520a%2520safe%2520fix%252C%2520and%2520open%2520a%2520draft%2520pull%2520request%2520for%2520review." rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+      </section>
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="mono">1.</span> <span class="ja" lang="ja">リポジトリの公開設定と権限を確認する</span><span class="en" lang="en">Confirm repository visibility and permissions</span></h3>
+  <p><span class="ja" lang="ja">クラウド自動化はプライベートまたは内部リポジトリでのみ有効です。下のコマンドで対象リポジトリの visibility を確認し、自分に書き込み権限があることも確認します。</span><span class="en" lang="en">Cloud automations only work on private or internal repositories. Use the command below to confirm the target repository&#039;s visibility, and confirm you have write access.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">リポジトリの公開設定を確認</span><span class="en" lang="en">Verify repository visibility</span></span>
+    <button class="copy-button" type="button" data-copy="lab-17-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-17-code-1" data-language="shell">gh repo view OWNER/REPO --json visibility</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">visibility が private または internal と表示され、書き込み権限があることが分かります。</span><span class="en" lang="en">The visibility shows private or internal, and you confirm you have write access.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">2.</span> <span class="ja" lang="ja">Automations 画面を開く</span><span class="en" lang="en">Open the Automations screen</span></h3>
+  <p><span class="ja" lang="ja">アプリの Automations タブを開くか、下のランチャーで開きます。同じ画面はリポジトリの GitHub.com 上の Agents タブの Automations パネルからも開けますが、ここではアプリから進めます。</span><span class="en" lang="en">Open the app&#039;s Automations tab, or use the launcher below. The same screen is also reachable from the Agents tab&#039;s Automations pane on the repository&#039;s GitHub.com page, but continue from the app here.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">Automations 画面が開き、New automation ボタンが見えます。</span><span class="en" lang="en">The Automations screen opens and the New automation button is visible.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">3.</span> <span class="ja" lang="ja">New automation でトリガーを選ぶ（スマート検索を利用）</span><span class="en" lang="en">Choose a trigger in New automation, using smart search</span></h3>
+  <p><span class="ja" lang="ja">Manual、On a schedule、When an issue is created、When a pull request is opened/synchronized から1つ以上選びます。v1.1.2 では、クエリ欄を持つトリガーが Issue トリガーと同じスマート検索の入力になり、修飾子のオートコンプリートとヒントテキストが使えます。</span><span class="en" lang="en">Choose one or more triggers from Manual, On a schedule, When an issue is created, and When a pull request is opened or synchronized. In v1.1.2, triggers with a query field use the same smart search input as issue triggers, with qualifier autocomplete and hint text.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">選んだトリガーにクエリ欄がある場合、入力に応じてオートコンプリートの候補が表示されます。</span><span class="en" lang="en">If the chosen trigger has a query field, autocomplete suggestions appear as you type.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">4.</span> <span class="ja" lang="ja">Run in the cloud を有効にし、ツールを最小権限で選ぶ</span><span class="en" lang="en">Enable Run in the cloud and select least-privilege tools</span></h3>
+  <p><span class="ja" lang="ja">Run in the cloud を有効にします。Tools では、このタスクに必要な操作だけを選びます。迷う場合は Suggest tools でプロンプトに基づく候補を確認してから絞り込みます。</span><span class="en" lang="en">Enable Run in the cloud. In Tools, select only the actions this task actually needs. If unsure, use Suggest tools to get prompt-based suggestions, then narrow them down.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">Run in the cloud が有効になり、選んだツールだけがハイライトされています。</span><span class="en" lang="en">Run in the cloud is enabled, and only the tools you selected are highlighted.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">5.</span> <span class="ja" lang="ja">書き込み権限のない実行者を無視する設定を確認する</span><span class="en" lang="en">Confirm the setting that ignores actors without write access</span></h3>
+  <p><span class="ja" lang="ja">既定では、書き込み権限のないユーザーが起こしたイベントは無視され、プロンプトインジェクションのリスクを減らします。外部コントリビューターのイベントでも動かしたい場合だけ、Copilot cloud agent のリポジトリ設定で「Only allow automations to be triggered by users with write access」を無効にします（v1.1.0 以降で切り替え可能）。</span><span class="en" lang="en">By default, events from users without write access are ignored, reducing the risk of prompt injection. Only disable “Only allow automations to be triggered by users with write access” in the Copilot cloud agent repository settings, toggleable since v1.1.0, if you specifically want external-contributor events to trigger it.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">設定を変更しない限り、書き込み権限のない実行者のイベントは自動化を起動しません。</span><span class="en" lang="en">Unless you change the setting, events from actors without write access do not start the automation.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">6.</span> <span class="ja" lang="ja">プロンプト、モデル、推論の強さを設定して保存する</span><span class="en" lang="en">Configure the prompt, model, and reasoning effort, then save</span></h3>
+  <p><span class="ja" lang="ja">下のプロンプトのようにシークレットを含まない指示を入力し、モデルと推論の強さを選びます（v1.0.13 以降、編集時も選択が保持されます）。Create and run で保存とテスト実行を同時に行います。</span><span class="en" lang="en">Enter a secret-free instruction like the prompt below, and choose a model and reasoning effort, which are remembered when you edit the automation later, since v1.0.13. Use Create and run to save and test in one step.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">夜間のテスト修正プロンプト</span><span class="en" lang="en">Nightly test-fix prompt</span></span>
+    <button class="copy-button" type="button" data-copy="lab-17-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-17-code-2" data-language="text">Check for failing tests on the main branch, attempt a safe fix, and open a draft pull request for review. Do not merge or force-push.</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">夜間のテスト修正プロンプト（日本語）</span><span class="en" lang="en">Nightly test-fix prompt (Japanese)</span></span>
+    <button class="copy-button" type="button" data-copy="lab-17-code-3" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-17-code-3" data-language="text">main ブランチで失敗しているテストを確認し、安全な修正を試みて、レビュー用の下書きプルリクエストを作成してください。マージや force-push は行わないでください。</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">テスト実行のセッションが開始し、Recent runs にクラウド自動化として表示されます。</span><span class="en" lang="en">A test-run session starts and appears in Recent runs marked as a cloud automation.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">7.</span> <span class="ja" lang="ja">セッションログと使用量を確認する</span><span class="en" lang="en">Review the session log and usage</span></h3>
+  <p><span class="ja" lang="ja">作成したセッションはリポジトリへのアクセス権を持つ全員に見えます。プロンプトと差分を確認し、想定外のツール実行がないことを確かめます。あわせて、この実行が GitHub Actions の分数と AI クレジットを消費していることも確認します。</span><span class="en" lang="en">The session you created is visible to everyone with access to the repository. Review the prompt and diff to confirm no unexpected tool use occurred, and confirm this run consumed GitHub Actions minutes and AI credits.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">セッションログが公開範囲内のメンバーに見え、想定したツールだけが使われ、使用量に記録が残っています。</span><span class="en" lang="en">The session log is visible to members within the sharing scope, only the intended tools were used, and the usage is recorded.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="decision-points">
+        <div class="section-heading"><p class="eyebrow">Decide</p><h2><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></h2></div>
+        <ul class="decision-list"><li><span class="ja" lang="ja">このトリガーは手動に留めるか、定期実行にするか。</span><span class="en" lang="en">Keep this trigger manual, or make it scheduled?</span></li>
+<li><span class="ja" lang="ja">最小権限のツールセットで十分か、追加権限が必要か。</span><span class="en" lang="en">Is the least-privilege toolset enough, or is more access needed?</span></li></ul>
+      </section>
+
+      <section class="section" id="checkpoints">
+        <div class="section-heading"><p class="eyebrow">Checkpoints</p><h2><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></h2></div>
+        <ul class="checkpoint-list"><li><span class="ja" lang="ja">チェックポイント1: トリガー条件どおりに自動化が起動する。</span><span class="en" lang="en">Checkpoint 1: the automation fires according to its trigger condition.</span></li>
+<li><span class="ja" lang="ja">チェックポイント2: 最終実行状態を確認し、一時的ネットワーク障害のretryはscheduled workflowのsession start時に内部で短時間行われ、run historyに表示されるとは限らないと説明できる。</span><span class="en" lang="en">Checkpoint 2: you inspect the latest run status and can explain that brief retry after a transient network error is internal to scheduled-workflow session startup and may not be visible in run history.</span></li></ul>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">Automations 一覧でこの自動化が cloud として表示され、対象リポジトリがプライベートまたは内部である。</span><span class="en" lang="en">The automation appears marked as cloud in the Automations list, and the target repository is private or internal.</span></li>
+<li><span class="ja" lang="ja">テスト実行のセッションログがリポジトリへのアクセス権を持つメンバーに見え、プロンプトにシークレットが含まれていない。</span><span class="en" lang="en">The test-run session log is visible to members with repository access, and the prompt contains no secrets.</span></li>
+<li><span class="ja" lang="ja">選んだツールだけが実行時に使われ、書き込み権限のない実行者のイベントは既定で無視される。</span><span class="en" lang="en">Only the selected tools are used at runtime, and events from actors without write access are ignored by default.</span></li>
+<li><span class="ja" lang="ja">実行が GitHub Actions の分数と AI クレジットの使用量に反映されている。</span><span class="en" lang="en">The run is reflected in GitHub Actions minutes and AI credit usage.</span></li></ul>
+      </section>
+
+      <section class="section" id="under-the-hood">
+        <div class="section-heading"><p class="eyebrow">Mental model</p><h2><span class="ja" lang="ja">Under the hood: 内部で何が起きているか</span><span class="en" lang="en">Under the hood: what happens internally</span></h2></div>
+        <p><span class="ja" lang="ja">automationは保存したprompt、trigger、filter、tool permissionsからsessionを開始します。cloud automationはcloud agentを使い、plan、policy、private/internal repository、write accessなどの条件に依存します。v1.1.4ではscheduled workflowのsession start時に一時的なnetwork errorが起きると短時間retryしますが、retryの内部詳細やrun history上の表示は公式ソースで説明されていません。</span><span class="en" lang="en">An automation starts a session from its saved prompt, trigger, filters, and tool permissions. Cloud automation uses the cloud agent and depends on plan, policy, a private/internal repository, write access, and related conditions. In v1.1.4, a scheduled workflow briefly retries a transient network error while starting its session, but official sources do not describe internal retry details or a run-history indicator.</span></p>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング（症状から探す）</span><span class="en" lang="en">Troubleshooting (start from your symptom)</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja">Run in the cloud のトグルが無効（グレーアウト）になっている</span><span class="en" lang="en">The Run in the cloud toggle is disabled (greyed out)</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">リポジトリがパブリックである、または組織で Copilot cloud agent ポリシーが無効になっている可能性があります。プライベート/内部リポジトリであることを確認し、管理者にポリシーの有効化を依頼してください。</span><span class="en" lang="en">The repository may be public, or the organization&#039;s Copilot cloud agent policy may be disabled. Confirm the repository is private or internal, and ask an administrator to enable the policy.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">外部コントリビューターが Issue を開いても自動化が起動しない</span><span class="en" lang="en">The automation does not start when an external contributor opens an issue</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">これは既定の安全な挙動です。書き込み権限のない実行者のイベントは無視されます。意図的に許可したい場合のみ、Copilot cloud agent のリポジトリ設定でその制限を無効にしてください。</span><span class="en" lang="en">This is the default, safer behavior — events from actors without write access are ignored. Only disable that restriction in the Copilot cloud agent repository settings if you intentionally want to allow it.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">クエリトリガーの検索フィルターが期待した Issue や PR にマッチしない</span><span class="en" lang="en">The query trigger&#039;s search filter does not match the expected issues or pull requests</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">v1.1.2 のスマート検索は Issue トリガーと同じ修飾子オートコンプリートを使います。プレースホルダーとヒントテキストを確認しながら <code>is:</code> や <code>label:</code> などの修飾子を入力し直してください。</span><span class="en" lang="en">The v1.1.2 smart search uses the same qualifier autocomplete as issue triggers. Re-enter qualifiers such as <code>is:</code> or <code>label:</code> while checking the placeholders and hint text.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">自動化から始まったセッションにレビューパネルや Create PR ボタンが表示されない</span><span class="en" lang="en">A session started by the automation shows no review panel or Create PR button</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">この不具合は v1.1.0 で修正済みです。v1.1.4（最新版） に更新し、直っていない場合はアプリを再起動してください。</span><span class="en" lang="en">This bug was fixed in v1.1.0. Update to the latest version (v1.1.4) and restart the app if the panel is still missing.</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="recovery">
+        <div class="section-heading"><p class="eyebrow">Recovery path</p><h2><span class="ja" lang="ja">明示的な復旧手順</span><span class="en" lang="en">Explicit recovery path</span></h2></div>
+        <div class="callout callout--danger"><span class="ja" lang="ja">自動化が実行されない場合は、まずトリガー条件とリポジトリ権限を確認し、cloud automationの場合はポリシーで無効化されていないかを管理者に確認してください。</span><span class="en" lang="en">If an automation does not run, first check its trigger condition and repository permissions; for a cloud automation, confirm with an administrator that policy has not disabled it.</span></div>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">テスト用のクラウド自動化はコンテキストメニューから無効化するか削除します。</span><span class="en" lang="en">Disable or delete the test cloud automation from its context menu.</span></li>
+<li><span class="ja" lang="ja">テスト実行で作成された下書き PR やブランチを確認し、不要であればクローズ・削除します。</span><span class="en" lang="en">Review any draft pull request or branch created by the test run, and close or delete it if it is not needed.</span></li>
+<li><span class="ja" lang="ja">テストのために緩めたツール選択や「書き込み権限が必要」設定は、本番運用前に元の最小権限に戻します。</span><span class="en" lang="en">Restore any tool selection or the write-access requirement you loosened for testing back to least privilege before relying on this in production.</span></li>
+<li><span class="ja" lang="ja">Actions の分数や AI クレジットの使用状況を確認し、想定外の消費がないか見ておきます。</span><span class="en" lang="en">Check Actions minutes and AI credit usage to confirm there was no unexpected consumption.</span></li></ol>
+      </section>
+
+      <section class="section" id="rubric">
+        <div class="section-heading"><p class="eyebrow">Success rubric</p><h2><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></h2></div>
+        <ul class="rubric-list"><li><span class="ja" lang="ja">少なくとも1種類のトリガーを実際に発火させた。</span><span class="en" lang="en">You actually fired at least one kind of trigger.</span></li>
+<li><span class="ja" lang="ja">Recent runsで成功または失敗の状態を確認し、内部retryが表示されるとは断定していない。</span><span class="en" lang="en">You inspected success or failure in Recent runs without claiming internal retries are displayed.</span></li>
+<li><span class="ja" lang="ja">最小権限のツールセットを意図的に選んだ。</span><span class="en" lang="en">You deliberately chose a least-privilege toolset.</span></li></ul>
+      </section>
+
+      <section class="section" id="stretch">
+        <div class="section-heading"><p class="eyebrow">Go further</p><h2><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></h2></div>
+        <div class="callout callout--success"><span class="ja" lang="ja">変更ファイルパスの条件を追加し、条件に一致しない変更では自動化が起動しないことを確認してください。</span><span class="en" lang="en">Add a changed-file-path condition and confirm the automation does not fire for a change that does not match it.</span></div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">Windows のアプリからでもクラウド自動化の作成・管理は同じ画面で行えます。実行自体は GitHub がホストするクラウド環境で行われるため、Windows 端末の電源状態は実行に影響しません。</span><span class="en" lang="en">Creating and managing cloud automations from the Windows app uses the same screen. Execution itself happens in a GitHub-hosted cloud environment, so the Windows machine&#039;s power state does not affect the run.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">macOS でも同様に、作成後は端末をスリープさせても実行は継続します。通知が必要な場合はアプリの通知設定を確認してください。</span><span class="en" lang="en">On macOS, the run continues even if you let the machine sleep after creating the automation. Check the app&#039;s notification settings if you want to be notified.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">Linux の AppImage 版でも作成フローは同じです。テスト実行の結果を確認するためにアプリを開き続ける必要はありません。</span><span class="en" lang="en">The creation flow is the same on the Linux AppImage build. You do not need to keep the app open to see the result of a test run.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">WSL リモート環境のプロジェクトでもクラウド自動化を作成できますが、実行はそのリポジトリに対して GitHub がホストする環境で行われ、ローカルの WSL ディストリビューションには依存しません。</span><span class="en" lang="en">You can create cloud automations for a project in a WSL remote environment, but execution happens in a GitHub-hosted environment for that repository and does not depend on your local WSL distribution.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/cloud-agent/create-automations" rel="noopener noreferrer">Creating automations with Copilot cloud agent</a></li>
+<li><a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-automations" rel="noopener noreferrer">About Copilot automations</a></li>
+<li><a href="https://github.com/github/app/releases/tag/v1.1.2" rel="noopener noreferrer">GitHub Copilot app v1.1.2 release</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></h2></div>
+        <ul class="plain-list related-list"><li><a class="badge" href="14-agent-merge-ci-queue.html"><span class="mono">14</span> <span class="ja" lang="ja">Agent Merge で CI とマージキューを管理する</span><span class="en" lang="en">Manage CI and the merge queue with Agent Merge</span></a></li>
+<li><a class="badge" href="16-local-automations.html"><span class="mono">16</span> <span class="ja" lang="ja">ローカル自動化を作成する</span><span class="en" lang="en">Create local automations</span></a></li>
+<li><a class="badge" href="18-custom-agents.html"><span class="mono">18</span> <span class="ja" lang="ja">カスタムエージェントを作成して使う</span><span class="en" lang="en">Create and use custom agents</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Lab navigation">
+        <a href="16-local-automations.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のラボ</span><span class="en" lang="en">Previous lab</span></span><br><strong><span class="ja" lang="ja">ローカル自動化を作成する</span><span class="en" lang="en">Create local automations</span></strong></a>
+        <a href="18-custom-agents.html"><span class="muted"><span class="ja" lang="ja">次のラボ</span><span class="en" lang="en">Next lab</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">カスタムエージェントを作成して使う</span><span class="en" lang="en">Create and use custom agents</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Lab progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 25</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="25"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このラボを完了にする</span><span class="en" lang="en">Mark this lab complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#persona"><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></a></li>
+          <li><a href="#objectives"><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Objectives</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#availability"><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></a></li>
+          <li><a href="#before-you-start"><span class="ja" lang="ja">開始前の確認</span><span class="en" lang="en">Before you start</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#decision-points"><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></a></li>
+          <li><a href="#checkpoints"><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#under-the-hood"><span class="ja" lang="ja">Under the hood</span><span class="en" lang="en">Under the hood</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#recovery"><span class="ja" lang="ja">復旧手順</span><span class="en" lang="en">Recovery</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#rubric"><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></a></li>
+          <li><a href="#stretch"><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></a></li>
+          <li><a href="#platforms"><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+          <li><a href="#related"><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="ja" lang="ja">v1.1.4 機能ガイド</span><span class="en" lang="en">v1.1.4 feature guide</span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">v1.1.2 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.1.2 hands-on (archive)</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.0.12 hands-on (archive)</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性、ポリシー、料金は公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability, policy, and pricing in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>

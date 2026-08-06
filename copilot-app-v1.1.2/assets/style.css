@@ -452,6 +452,11 @@ details {
   border-left: 0.3rem solid var(--cp-accent);
 }
 
+.callout--archive-notice {
+  width: min(74rem, calc(100vw - 2rem));
+  margin-inline: auto;
+}
+
 .callout--warning {
   border-left-color: var(--cp-warning);
 }

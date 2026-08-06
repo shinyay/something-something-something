@@ -1,0 +1,412 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Use Copilot Memory&#039;s durable facts and preferences, the CLI-native Chronicle session history, and the Insights tab plus official usage-optimization guidance without conflating the three.">
+<title>GitHub Copilot App v1.1.4 — Memory, Chronicle, and Insights</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="20" data-guide-count="25">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.4 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.4</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="lab-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">ラボ 20 / 25</span><span class="en" lang="en">Lab 20 of 25</span></p>
+    <h1 id="lab-title"><span class="ja" lang="ja">Memory・Chronicle・Insights</span><span class="en" lang="en">Memory, Chronicle, and Insights</span></h1>
+    <p class="lede"><span class="ja" lang="ja">Copilot Memory の永続的な事実と好み、CLI 由来の Chronicle セッション履歴、そして Insights タブと公式の使用状況最適化ガイダンスを、混同せずに使い分けます。</span><span class="en" lang="en">Use Copilot Memory&#039;s durable facts and preferences, the CLI-native Chronicle session history, and the Insights tab plus official usage-optimization guidance without conflating the three.</span></p>
+    <div class="meta-row" aria-label="Lab metadata">
+      <span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.4 向け再公開（中核フローは v1.1.2 で検証、現在差分を source-check）</span><span class="en" lang="en">Republished for v1.1.4 (core flow verified at v1.1.2; current deltas source-checked)</span></span>
+      <span class="badge"><span class="ja" lang="ja">約45分</span><span class="en" lang="en">About 45 min</span></span>
+      <span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span>
+    </div>
+    <div class="chips" aria-label="Journeys and tracks"><a class="badge badge--accent" href="index.html#journey-j4"><span class="ja" lang="ja">自動化されたリポジトリ運用</span><span class="en" lang="en">Automated repository operations</span></a> <a class="badge badge--accent" href="index.html#journey-j6"><span class="ja" lang="ja">プロダクション運用: モデル、コスト、アクセシビリティ、復旧</span><span class="en" lang="en">Production operations</span></a> <a class="badge" href="index.html#track-t2"><span class="ja" lang="ja">モデル、Auto、推論量、BYOK、キャッシュ、クレジット</span><span class="en" lang="en">Models, Auto, reasoning, BYOK, cache, and credits</span></a> <a class="badge" href="index.html#track-t9"><span class="ja" lang="ja">Memory、Chronicle、Insights、コンテキスト、コスト</span><span class="en" lang="en">Memory, Chronicle, Insights, context, and cost</span></a></div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#labs"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">25 ラボ一覧</span><span class="en" lang="en">All 25 labs</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="persona">
+        <div class="section-heading"><p class="eyebrow">Scenario &amp; persona</p><h2><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">複数のリポジトリを行き来するエンジニアが、朝会の前に直近のセッションから状況をまとめ、トークンの使い方に無駄がないかを点検し、Copilot Memory がどの情報をどの範囲まで再利用しているのかを正確に確認したいと考えています。</span><span class="en" lang="en">An engineer who moves between several repositories wants to summarize recent session activity before a standup, check for costly usage patterns, and confirm exactly what Copilot Memory does and does not reuse across sessions.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">担当者像</span><span class="en" lang="en">Persona</span></h3><p><span class="ja" lang="ja">コストと履歴を監視する担当者として、Chronicle、Insights、contextを扱います。</span><span class="en" lang="en">As someone monitoring cost and history, work with Chronicle, Insights, and context.</span></p></article>
+        </div>
+        <div class="callout"><strong><span class="ja" lang="ja">なぜ重要か</span><span class="en" lang="en">Why it matters</span>:</strong> <span class="ja" lang="ja">アプリの履歴表示とCopilot Memoryの公式境界を混同すると、ドキュメント化された挙動と異なる範囲を期待してしまいます。</span><span class="en" lang="en">Confusing the app&#039;s history surfaces with the documented Copilot Memory boundary leads to expecting behavior outside what is documented.</span></div>
+      </section>
+
+      <section class="section" id="objectives">
+        <div class="section-heading"><p class="eyebrow">Goals</p><h2><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Learning objectives</span></h2></div>
+        <ul><li><span class="ja" lang="ja"><code>/chronicle</code>で作業履歴を振り返る</span><span class="en" lang="en">Review work history with <code>/chronicle</code></span></li>
+<li><span class="ja" lang="ja">Insightsでコストと使用状況を確認する</span><span class="en" lang="en">Review cost and usage in Insights</span></li>
+<li><span class="ja" lang="ja"><code>/context</code>と<code>/compact</code>でコンテキスト消費を管理する</span><span class="en" lang="en">Manage context consumption with <code>/context</code> and <code>/compact</code></span></li></ul>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">GitHub Copilot App v1.1.4 にサインイン済みで、Copilot Memory を利用できる有償の個人プラン、または Memory の利用を許可した組織・Enterprise 管理下のプランであること。BYOK のみのアカウントでは Memory の項目が表示されない場合があります。</span><span class="en" lang="en">You are signed in to the GitHub Copilot app v1.1.4 with a paid individual Copilot plan, or an organization/enterprise-managed plan that allows Copilot Memory. BYOK-only accounts may not see the Memory section at all.</span></li>
+<li><span class="ja" lang="ja">接続済みのプロジェクトで、少なくとも 1 つの完了済みまたは進行中のセッションがあり、Chronicle と Insights タブに表示できるデータがあること。</span><span class="en" lang="en">At least one completed or in-progress session exists in a connected project, so Chronicle and the Insights tab have data to show.</span></li>
+<li><span class="ja" lang="ja">Copilot Business または Copilot Enterprise を利用している場合、管理者が「Store local sessions in the Cloud」ポリシーを少なくとも「View from cloud」に設定していること。無効なままだとセッションはローカルのみに保存され、他のクライアントからの Chronicle 検索が制限されます。</span><span class="en" lang="en">If you use Copilot Business or Copilot Enterprise, an administrator has set the “Store local sessions in the Cloud” policy to at least “View from cloud.” If it is left disabled, sessions stay local-only and Chronicle queries from other clients are limited.</span></li>
+<li><span class="ja" lang="ja">ブラウザーで github.com の Copilot 設定と請求ページ（Settings &gt; Copilot、Settings &gt; Billing）を開ける状態であること。</span><span class="en" lang="en">You can open github.com&#039;s Copilot settings and billing pages (Settings &gt; Copilot, Settings &gt; Billing) in a browser.</span></li></ul>
+      </section>
+
+      <section class="section" id="availability">
+        <div class="section-heading"><p class="eyebrow">Availability</p><h2><span class="ja" lang="ja">公式な提供状況とスコープ</span><span class="en" lang="en">Official availability and scope</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></h3><p><span class="ja" lang="ja">v1.1.4 版として再公開。中核フローは v1.1.2 で検証され、v1.1.3 / v1.1.4 差分と情報源を source-check しています。Chronicle と Insights タブは一般提供ですが、Copilot Memory はパブリックプレビューであり、対象範囲や挙動が変更される可能性があります。</span><span class="en" lang="en">Republished for v1.1.4. The core flow was verified for v1.1.2; v1.1.3/v1.1.4 deltas and source provenance were checked. Chronicle and the Insights tab are generally available, but Copilot Memory is in public preview and its scope or behavior may change.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">対象範囲</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドは Copilot Memory、（Copilot CLI の機能である）Chronicle、そして Insights タブと使用状況最適化という 3 つの別々の仕組みを扱います。Memory は特定のリポジトリまたは自分のアカウントに紐づいた事実や好みを保存するものであり、あなたのセッション履歴全体が他のユーザーとグローバルに共有されるわけではありません。Chronicle は GitHub Copilot CLI のセッション履歴機能で、App が CLI の上に構築されているために App のセッションからも隣接的に利用できますが、App 専用の機能ではありません。Files タブやワークツリーに保存されるローカルなプロジェクトファイルの永続化とは区別してください。</span><span class="en" lang="en">This guide covers three separate systems: Copilot Memory, Chronicle (a GitHub Copilot CLI capability), and the Insights tab together with official usage-optimization guidance. Memory stores facts and preferences tied to a specific repository or to your own account—it does not mean your entire session history is shared globally with other users. Chronicle is a Copilot CLI session-history feature that is usable from app sessions only because the app is built on the CLI; it is not an app-exclusive feature. Neither should be confused with local project-file persistence in Files or in a session&#039;s git worktree.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">時間の見積もり</span><span class="en" lang="en">Time estimate</span></h3><p><span class="ja" lang="ja">hands-on操作の目安は約45分です。download、network、service latencyは含みません。</span><span class="en" lang="en">Hands-on work is estimated at about 45 minutes, excluding downloads, network delay, and service latency.</span></p></article>
+          <article class="card"><h3><span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span> <span class="ja" lang="ja">情報源の裏付け</span><span class="en" lang="en">Source provenance</span></h3><p><span class="ja" lang="ja">Copilot MemoryのPublic previewとCLI／cloud agent／code reviewという対象範囲、App sessionから使う<code>/chronicle</code>、<code>/context</code>、<code>/compact</code>はいずれもGitHub Docsに基づくdocs-groundedな内容です。Insightsタブとcontext-window graphのApp固有UIはv1.0.17 / v1.0.18の変更履歴に基づくrelease-note-groundedな内容です。</span><span class="en" lang="en">Copilot Memory&#039;s public-preview status and CLI/cloud-agent/code-review scope, plus <code>/chronicle</code>, <code>/context</code>, and <code>/compact</code> as used from app sessions, are docs-grounded. The app-specific Insights tab and context-window graph are release-note-grounded through the v1.0.17/v1.0.18 changelog.</span></p></article>
+        </div>
+      </section>
+
+      <section class="section" id="before-you-start">
+        <div class="section-heading"><p class="eyebrow">Before you start</p><h2><span class="ja" lang="ja">開始前の安全確認</span><span class="en" lang="en">Before-you-start safety check</span></h2></div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全・データ・コスト・権限への影響</span><span class="en" lang="en">Safety, data, cost, and permission implications</span>:</strong> <span class="ja" lang="ja">Chronicle のスラッシュコマンドや自然言語の質問は、セッション履歴の内容をモデルに送って処理します。標準アウトプットや Chronicle の回答を外部に共有する前に、社外秘の情報が含まれていないか確認してください。また Memory のリポジトリレベルの事実は、そのリポジトリで Memory を利用できる全員に見える点にも注意してください。</span><span class="en" lang="en">Chronicle slash commands and free-form questions send the content of your session history to a model for processing, so check standup output or Chronicle answers for confidential details before sharing them outside your team. Also remember that Memory&#039;s repository-level facts are visible to everyone who has Memory access to that repository, not just to you.</span></div>
+      </section>
+
+      <section class="section" id="launchers">
+        <div class="section-heading"><p class="eyebrow">Open safely</p><h2><span class="ja" lang="ja">コピー可能なプロンプト／コマンドとランチャー</span><span class="en" lang="en">Copyable prompts/commands and launchers</span></h2></div>
+
+        <div class="card-grid"><article class="card">
+  <h3><span class="ja" lang="ja">Copilot 設定（Memory）を開く</span><span class="en" lang="en">Open Copilot settings (Memory)</span></h3>
+  <p><span class="ja" lang="ja">github.com の公式設定ページを開き、Copilot Memory の有効・無効と保存済みの好みを確認します。</span><span class="en" lang="en">Opens GitHub&#039;s official settings page to review Copilot Memory&#039;s enabled state and your stored preferences.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/settings/copilot/features" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card">
+  <h3><span class="ja" lang="ja">AI 利用状況の公式手順を開く</span><span class="en" lang="en">Open the official AI usage instructions</span></h3>
+  <p><span class="ja" lang="ja">GitHub Docs の公式手順を開き、AI クレジットの消費状況とモデルごとの内訳を確認する場所を案内します。</span><span class="en" lang="en">Opens the official GitHub Docs instructions for finding AI credit consumption and the per-model breakdown.</span></p>
+  <div class="card-actions"><a class="button" href="https://docs.github.com/en/copilot/how-tos/manage-and-track-spending/monitor-ai-usage" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card">
+  <h3><span class="ja" lang="ja">v1.1.2 の変更履歴を開く</span><span class="en" lang="en">Open the v1.1.2 changelog</span></h3>
+  <p><span class="ja" lang="ja">github/app の公式変更履歴を開き、Insights タブや Chronicle に関する変更を確認します。</span><span class="en" lang="en">Opens the official github/app changelog to review changes related to the Insights tab and Chronicle.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/github/app/blob/main/changelog.md#v112" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+      </section>
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="mono">1.</span> <span class="ja" lang="ja">Memory と利用状況確認の前提を整える</span><span class="en" lang="en">Check Memory and usage-review prerequisites</span></h3>
+  <p><span class="ja" lang="ja">Copilot 設定を開き、自分のプランで Copilot Memory が利用可能かどうかを確認します。組織管理下のアカウントでは、管理者が Memory とクラウド保存ポリシーを許可しているかも確認します。</span><span class="en" lang="en">Open Copilot settings and confirm whether Copilot Memory is available for your plan. For an organization-managed account, also confirm that an administrator allows Memory and cloud session storage.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">Memory のトグルが表示され、有効・無効のいずれかであることが分かります。組織ポリシーが不足している場合は、その旨が明確になります。</span><span class="en" lang="en">The Memory toggle is visible and clearly shows Enabled or Disabled. If an organization policy is missing, that gap is clearly identified.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">2.</span> <span class="ja" lang="ja">Copilot Memory の保存範囲を確認する</span><span class="en" lang="en">Review what Copilot Memory stores</span></h3>
+  <p><span class="ja" lang="ja">Memory にはリポジトリレベルの事実（コーディング規約やビルドコマンドなど、そのリポジトリで Memory を使える全員が参照可能）と、ユーザーレベルの好み（自分のアカウントに紐づき、他のリポジトリでも使われるが他人には見えない）の 2 種類があります。所有しているリポジトリで保存済みの事実を確認し、必要であれば削除します。</span><span class="en" lang="en">Memory stores two kinds of entries: repository-level facts (coding conventions, build commands, and similar details visible to anyone with Memory access to that repository) and user-level preferences (tied to your account, reused across repositories, but not visible to anyone else). In a repository you own, review the stored facts and delete any that look wrong.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">少なくとも 1 つのリポジトリについて、リポジトリレベルの事実が存在するかどうかを説明でき、自分のユーザーレベルの好みの一覧（空の場合も含む）を確認できています。</span><span class="en" lang="en">You can state, for at least one repository, whether repository-level facts exist, and you have viewed your own list of user-level preferences, even if it is empty.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">3.</span> <span class="ja" lang="ja">App のセッションでスタンドアップを生成する</span><span class="en" lang="en">Generate a standup from an app session</span></h3>
+  <p><span class="ja" lang="ja">接続済みプロジェクトのアクティブなセッションのプロンプト欄で <code>/chronicle standup</code> を実行します。これは GitHub Copilot CLI のセッション履歴機能であり、App が CLI 上に構築されているために App のセッションからも隣接的に利用できます。App 専用の機能として説明されているわけではない点に注意してください。既定では直近 24 時間が対象です。</span><span class="en" lang="en">In the prompt box of an active session in a connected project, run <code>/chronicle standup</code>. This is a GitHub Copilot CLI session-history capability, usable from app sessions only because the app is built on the CLI—it is not documented as an app-exclusive feature. By default it covers the last 24 hours.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">スタンドアップ要約を生成</span><span class="en" lang="en">Generate a standup summary</span></span>
+    <button class="copy-button" type="button" data-copy="lab-20-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-20-code-1" data-language="text">/chronicle standup</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">完了 (Done) と進行中 (In Progress) に分類されたレポートが表示され、作業したブランチや関連する Issue・プルリクエストが含まれます。</span><span class="en" lang="en">A report grouped into Done and In Progress sections appears, referencing the branches you worked on and any related issues or pull requests.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">4.</span> <span class="ja" lang="ja">期間を広げてもう一度確認する</span><span class="en" lang="en">Broaden the reporting window</span></h3>
+  <p><span class="ja" lang="ja">既定の 24 時間では情報が少ない場合は、コマンドの後ろに期間の指定を追加します。日本語の自然言語プロンプトでも未完了タスクを尋ねられることを確認します。</span><span class="en" lang="en">If the default 24-hour window feels too narrow, append a custom period after the command. Also confirm you can ask about unfinished tasks with a natural-language prompt in Japanese.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">期間を指定したスタンドアップ</span><span class="en" lang="en">Standup for a custom period</span></span>
+    <button class="copy-button" type="button" data-copy="lab-20-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-20-code-2" data-language="text">/chronicle standup for the last 3 days</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">未完了タスクを尋ねる（日本語プロンプト）</span><span class="en" lang="en">Ask about unfinished tasks (Japanese prompt)</span></span>
+    <button class="copy-button" type="button" data-copy="lab-20-code-3" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-20-code-3" data-language="text">過去1週間のセッションを振り返り、まだ完了していない作業と、関連する Issue や プルリクエストを日本語で要約してください。</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">指定した期間のレポートが表示され、日本語プロンプトへの回答でも同じセッション履歴を根拠にした要約が返ってきます。</span><span class="en" lang="en">A report for the requested period appears, and the Japanese-language prompt returns a summary grounded in the same session history.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">5.</span> <span class="ja" lang="ja">コストのヒントを確認する</span><span class="en" lang="en">Check cost tips</span></h3>
+  <p><span class="ja" lang="ja"><code>/chronicle cost tips</code> を実行します。これはプロンプトの長さ、ツール呼び出しの頻度、継続的なやり取りの回数といったパターンを分析し、トークン使用を効率化するための具体的な提案を返します。</span><span class="en" lang="en">Run <code>/chronicle cost tips</code>. It analyzes patterns like prompt length, tool-call frequency, and continuation steps, and returns concrete suggestions for making token usage more efficient.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">コスト削減のヒント</span><span class="en" lang="en">Cost-reduction tips</span></span>
+    <button class="copy-button" type="button" data-copy="lab-20-code-4" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-20-code-4" data-language="text">/chronicle cost tips</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">少なくとも 1 つの具体的なコスト削減の提案が表示されます。</span><span class="en" lang="en">At least one concrete cost-reduction suggestion is shown.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">6.</span> <span class="ja" lang="ja">セッションの Insights タブを開く</span><span class="en" lang="en">Open a session&#039;s Insights tab</span></h3>
+  <p><span class="ja" lang="ja">アクティブなセッションのパネルで「+」の追加メニューから Insights タブを開きます（既定では非表示です）。ツール呼び出しやサブエージェントの活動を含むタイムラインと、コンテキストウィンドウの使用量グラフを確認します。</span><span class="en" lang="en">In the active session&#039;s panel, open the Insights tab from the “+” add-to-panel menu (it is hidden by default). Review the timeline of tool calls and sub-agent activity, along with the context-window usage graph.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">ツールごとの所要時間の内訳と、時間経過に伴うコンテキストウィンドウ使用量のグラフが表示されます。</span><span class="en" lang="en">A breakdown of time spent per tool and a graph of context-window usage over time are both visible.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">7.</span> <span class="ja" lang="ja">公式の最適化ガイダンスと利用状況ページで裏付けを取る</span><span class="en" lang="en">Cross-check official optimization guidance and the usage page</span></h3>
+  <p><span class="ja" lang="ja">docs.github.com の「Optimizing your AI usage」チュートリアルにあるモデル選択、推論レベルの調整、Auto モデル選択の割引、明確なプロンプト設計といった推奨事項を確認します。次に AI 利用状況ページを開き、実際のクレジット消費とモデルごとの内訳を確認します。</span><span class="en" lang="en">Review the recommendations in the “Optimizing your AI usage” tutorial on docs.github.com—model selection, adjusting reasoning level, the Auto model-selection discount, and clear prompt design. Then open the AI usage page and review your actual credit consumption and its per-model breakdown.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">次のセッションで実践する具体的な最適化を 1 つ以上挙げられ、現在の AI クレジット消費量を確認できています。</span><span class="en" lang="en">You can name at least one concrete optimization to apply in your next session, and you have reviewed your current AI credit consumption.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="decision-points">
+        <div class="section-heading"><p class="eyebrow">Decide</p><h2><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></h2></div>
+        <ul class="decision-list"><li><span class="ja" lang="ja">このタイミングで<code>/compact</code>するか、履歴をそのまま残すか。</span><span class="en" lang="en">Run <code>/compact</code> now, or keep the history as-is?</span></li>
+<li><span class="ja" lang="ja">Insightsのコスト傾向から、モデルや頻度を見直すか。</span><span class="en" lang="en">Adjust model choice or frequency based on Insights cost trends?</span></li></ul>
+      </section>
+
+      <section class="section" id="checkpoints">
+        <div class="section-heading"><p class="eyebrow">Checkpoints</p><h2><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></h2></div>
+        <ul class="checkpoint-list"><li><span class="ja" lang="ja">チェックポイント1: <code>/chronicle</code>が過去のセッション横断の要約を表示する。</span><span class="en" lang="en">Checkpoint 1: <code>/chronicle</code> shows a summary spanning past sessions.</span></li>
+<li><span class="ja" lang="ja">チェックポイント2: Insightsにコストと使用量の推移が表示される。</span><span class="en" lang="en">Checkpoint 2: Insights shows cost and usage trends.</span></li></ul>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">Memory（永続的な事実・好み）、Chronicle（CLI 由来のセッション履歴検索）、Insights（セッション単位のタイムラインと公式の使用状況最適化）を混同せずに説明できる。</span><span class="en" lang="en">You can explain Memory (durable facts and preferences), Chronicle (CLI-native session-history search), and Insights (per-session timeline plus official usage optimization) without conflating them.</span></li>
+<li><span class="ja" lang="ja">App のセッションから <code>/chronicle standup</code> を実行し、完了・進行中に分類されたレポートを生成できた。</span><span class="en" lang="en">A <code>/chronicle standup</code> report, grouped by completion status, was generated from an app session.</span></li>
+<li><span class="ja" lang="ja">セッションの Insights タブでツール呼び出しのタイムラインとコンテキストウィンドウ使用量グラフを確認できた。</span><span class="en" lang="en">The session&#039;s Insights tab showed the tool-call timeline and the context-window usage graph.</span></li>
+<li><span class="ja" lang="ja"><code>/chronicle cost tips</code> または公式の最適化チュートリアルから、具体的なコストまたはモデル選択の改善策を 1 つ以上特定できた。</span><span class="en" lang="en">At least one concrete cost or model-selection improvement was identified from <code>/chronicle cost tips</code> or the official optimization tutorial.</span></li></ul>
+      </section>
+
+      <section class="section" id="under-the-hood">
+        <div class="section-heading"><p class="eyebrow">Mental model</p><h2><span class="ja" lang="ja">Under the hood: 内部で何が起きているか</span><span class="en" lang="en">Under the hood: what happens internally</span></h2></div>
+        <p><span class="ja" lang="ja">ChronicleはCopilot CLI由来のsession-history queryで、AppがCLI上に構築されているためApp sessionからも使えます。InsightsはAppのsession単位のtimeline/context表示です。<code>/context</code>と<code>/compact</code>もApp slash-command referenceで文書化されています。これらはCopilot Memory（CLI/cloud agent/code reviewが公式対象）とは異なる仕組みです。</span><span class="en" lang="en">Chronicle is a Copilot CLI session-history query available from app sessions because the app is built on CLI. Insights is the app&#039;s per-session timeline/context surface, while <code>/context</code> and <code>/compact</code> are documented in the App slash-command reference. These differ from Copilot Memory, whose documented product scope is CLI, cloud agent, and code review.</span></p>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング（症状から探す）</span><span class="en" lang="en">Troubleshooting (start from your symptom)</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja"><code>/chronicle standup</code> が「セッションが見つかりません」または極端に短いレポートを返す</span><span class="en" lang="en"><code>/chronicle standup</code> returns “no sessions found” or an unusually short report</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">Business/Enterprise では「Store local sessions in the Cloud」ポリシーを確認し、個人設定ではセッション同期（<code>remoteExport</code>）が無効になっていないか確認します。それでも情報が少ない場合は「for the last 3 days」のように期間を広げます。</span><span class="en" lang="en">For Business/Enterprise, check the “Store local sessions in the Cloud” policy; for personal settings, confirm session syncing (<code>remoteExport</code>) hasn&#039;t been disabled. If the report is still thin, broaden the window with something like “for the last 3 days.”</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">Copilot 設定に Memory の項目が表示されない</span><span class="en" lang="en">The Copilot Memory section doesn&#039;t appear in settings</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">有償の個人プランか、Memory を許可した組織・Enterprise 管理下のプランであることを確認します。BYOK のみのアカウントには Memory の項目自体が表示されないことがあります。</span><span class="en" lang="en">Confirm you&#039;re on a paid individual plan, or an organization/enterprise-managed plan that allows Memory. BYOK-only accounts may not see the Memory section at all.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">セッションパネルに Insights タブが見当たらない</span><span class="en" lang="en">The Insights tab isn&#039;t visible in the session panel</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">v1.0.17 以降、Insights タブは既定で閉じています。「+」の追加メニューから明示的に開いてください。</span><span class="en" lang="en">Since v1.0.17, the Insights tab is closed by default. Reopen it explicitly from the “+” add-to-panel menu.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">リポジトリレベルの Memory の事実が古い、または誤っているように見える</span><span class="en" lang="en">A repository-level Memory fact looks outdated or wrong</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">リポジトリの所有者であれば、Memory の管理画面から誤った事実を確認して削除できます。Copilot は事実を再利用する前に、引用元のコードを現在のブランチと突き合わせて検証しますが、明らかに誤っている場合は手動での削除が確実です。</span><span class="en" lang="en">As the repository owner, review and delete the incorrect fact from the Memory management screen. Copilot re-validates a fact&#039;s citation against the current branch before reusing it, but manual deletion is the reliable fix when a fact is clearly wrong.</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="recovery">
+        <div class="section-heading"><p class="eyebrow">Recovery path</p><h2><span class="ja" lang="ja">明示的な復旧手順</span><span class="en" lang="en">Explicit recovery path</span></h2></div>
+        <div class="callout callout--danger"><span class="ja" lang="ja">コンテキストが逼迫してエージェントの応答品質が落ちた場合は、<code>/compact</code>で要約してから続行し、それでも改善しなければ新しいセッションに要点を引き継いでください。</span><span class="en" lang="en">If context pressure degrades agent response quality, summarize with <code>/compact</code> and continue; if that does not help, carry the key points over to a new session.</span></div>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">この手順のためだけに Memory を有効にした場合は、Copilot 設定で再び無効に戻します。無効化は新しい事実の生成を止めるだけで、既存の事実は削除するまで残る点に注意してください。</span><span class="en" lang="en">If you enabled Memory only for this exercise, disable it again in Copilot settings. Disabling only stops new facts from being created; existing facts remain until you delete them.</span></li>
+<li><span class="ja" lang="ja">この手順のために作成したユーザーレベルの好みが残っていれば削除し、今後のセッションに影響しないようにします。</span><span class="en" lang="en">Delete any user-level preferences you created for this exercise so they don&#039;t influence future sessions.</span></li>
+<li><span class="ja" lang="ja">スタンドアップやコストのヒントを生成するために使った探索用セッションをアーカイブまたは削除します（ラボ 07 のアーカイブ・削除の手順を参照）。</span><span class="en" lang="en">Archive or delete the exploration sessions used to generate the standup and cost-tips output (see lab 07 for the archive-versus-delete process).</span></li>
+<li><span class="ja" lang="ja">スタンドアップのレポートを外部（チャットや Issue など）に共有した場合、リポジトリや作業内容の詳細が含まれていないか見直し、必要であれば取り下げます。</span><span class="en" lang="en">If you shared a standup report externally (chat, an issue, and so on), review it for repository or task details and retract it if necessary.</span></li></ol>
+      </section>
+
+      <section class="section" id="rubric">
+        <div class="section-heading"><p class="eyebrow">Success rubric</p><h2><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></h2></div>
+        <ul class="rubric-list"><li><span class="ja" lang="ja"><code>/chronicle</code>でセッション横断の履歴を確認した。</span><span class="en" lang="en">You reviewed cross-session history with <code>/chronicle</code>.</span></li>
+<li><span class="ja" lang="ja">Insightsでコスト傾向を確認した。</span><span class="en" lang="en">You reviewed cost trends in Insights.</span></li>
+<li><span class="ja" lang="ja">Copilot Memoryとアプリ履歴表示の境界を説明できる。</span><span class="en" lang="en">You can explain the boundary between Copilot Memory and the app&#039;s history surfaces.</span></li></ul>
+      </section>
+
+      <section class="section" id="stretch">
+        <div class="section-heading"><p class="eyebrow">Go further</p><h2><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></h2></div>
+        <div class="callout callout--success"><span class="ja" lang="ja"><code>/context</code>の出力を<code>/compact</code>の前後で比較し、解放されたトークン量を見積もってください。</span><span class="en" lang="en">Compare <code>/context</code> output before and after <code>/compact</code> and estimate the tokens freed.</span></div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">Memory、Chronicle、Insights はいずれもアカウントまたはセッションストアに紐づく機能であり、Windows 版 App でも同じ挙動です。<code>/chronicle</code> は App に組み込まれた CLI 相当の機能として動作します。</span><span class="en" lang="en">Memory, Chronicle, and Insights are all tied to your account or session store, and behave the same way in the Windows app. <code>/chronicle</code> runs as the CLI-equivalent capability embedded in the app.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">Copilot Memory 機能と、アプリ自体が使う RAM（メモリ）を混同しないでください。v1.1.0 では、チャット応答のストリーミング中に macOS 版アプリの RAM 使用量が過大になる不具合が修正されています。これは Copilot Memory とは無関係です。</span><span class="en" lang="en">Don&#039;t confuse the Copilot Memory feature with the app&#039;s own RAM usage. v1.1.0 fixed an issue where the macOS app&#039;s RAM usage could grow excessively while a chat response was streaming—that fix is unrelated to Copilot Memory.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">セッションデータは Linux でも <code>~/.copilot/session-state/</code> 配下に保存され、Chronicle と Insights は同じ仕組みで動作します。AppImage の実行権限設定はこれらの機能に影響しません。</span><span class="en" lang="en">Session data is stored under <code>~/.copilot/session-state/</code> on Linux as well, and Chronicle and Insights work the same way. AppImage execute-permission settings don&#039;t affect these features.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">WSL 内で <code>copilot</code> を直接実行している場合、そのセッションストアは Windows 側で動く App のセッションストアとは別のローカル領域です。両方でセッション同期を有効にしていれば、同じ GitHub アカウントの下で両方の履歴を Chronicle や質問応答から参照できますが、既定では別々のローカルストアである点に注意してください。</span><span class="en" lang="en">If you also run <code>copilot</code> directly inside WSL, that session store is a separate local store from the one used by the Windows-hosted app. With session syncing enabled on both, you can query history from either through Chronicle or free-form questions under the same GitHub account, but by default they remain separate local stores.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://docs.github.com/en/copilot/concepts/agents/github-copilot-app" rel="noopener noreferrer">About the GitHub Copilot app</a></li>
+<li><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-memory" rel="noopener noreferrer">About GitHub Copilot Memory</a></li>
+<li><a href="https://docs.github.com/en/copilot/how-tos/use-copilot-agents/copilot-memory/manage-for-yourself" rel="noopener noreferrer">Managing Copilot Memory for your personal account</a></li>
+<li><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/use-copilot-cli/chronicle" rel="noopener noreferrer">Using GitHub Copilot CLI session data</a></li>
+<li><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/chronicle" rel="noopener noreferrer">About GitHub Copilot CLI session data</a></li>
+<li><a href="https://docs.github.com/en/copilot/tutorials/optimize-ai-usage" rel="noopener noreferrer">Optimizing your AI usage to maximize efficiency and reduce cost</a></li>
+<li><a href="https://docs.github.com/en/copilot/how-tos/manage-and-track-spending/monitor-ai-usage" rel="noopener noreferrer">Monitoring your GitHub AI Credits usage</a></li>
+<li><a href="https://github.com/github/app/releases/tag/v1.1.2" rel="noopener noreferrer">GitHub Copilot app v1.1.2 release</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></h2></div>
+        <ul class="plain-list related-list"><li><a class="badge" href="07-chat-archive-rewind-compact.html"><span class="mono">07</span> <span class="ja" lang="ja">チャットのアーカイブ・巻き戻し・コンパクト化</span><span class="en" lang="en">Archive, rewind, and compact chats</span></a></li>
+<li><a class="badge" href="17-cloud-automations.html"><span class="mono">17</span> <span class="ja" lang="ja">クラウド自動化を作成する</span><span class="en" lang="en">Create cloud automations</span></a></li>
+<li><a class="badge" href="21-accessibility-storage-lifecycle-recovery.html"><span class="mono">21</span> <span class="ja" lang="ja">アクセシビリティ、ストレージ、セッションのライフサイクルと復旧</span><span class="en" lang="en">Accessibility, storage, session lifecycle, and recovery</span></a></li>
+<li><a class="badge" href="24-worktree-attribution-diagnostics.html"><span class="mono">24</span> <span class="ja" lang="ja">Worktreeの保存場所、コミット帰属、診断の安全な観察</span><span class="en" lang="en">Worktree location, commit attribution, and diagnostics: a safe guided observation</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Lab navigation">
+        <a href="19-mcp-skills-plugins-canvas-extensions.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のラボ</span><span class="en" lang="en">Previous lab</span></span><br><strong><span class="ja" lang="ja">MCP・スキル・プラグイン・Canvas 拡張を使い分ける</span><span class="en" lang="en">Use MCP, skills, plugins, and Canvas extensions together</span></strong></a>
+        <a href="21-accessibility-storage-lifecycle-recovery.html"><span class="muted"><span class="ja" lang="ja">次のラボ</span><span class="en" lang="en">Next lab</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">アクセシビリティ、ストレージ、セッションのライフサイクルと復旧</span><span class="en" lang="en">Accessibility, storage, session lifecycle, and recovery</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Lab progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 25</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="25"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このラボを完了にする</span><span class="en" lang="en">Mark this lab complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#persona"><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></a></li>
+          <li><a href="#objectives"><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Objectives</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#availability"><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></a></li>
+          <li><a href="#before-you-start"><span class="ja" lang="ja">開始前の確認</span><span class="en" lang="en">Before you start</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#decision-points"><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></a></li>
+          <li><a href="#checkpoints"><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#under-the-hood"><span class="ja" lang="ja">Under the hood</span><span class="en" lang="en">Under the hood</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#recovery"><span class="ja" lang="ja">復旧手順</span><span class="en" lang="en">Recovery</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#rubric"><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></a></li>
+          <li><a href="#stretch"><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></a></li>
+          <li><a href="#platforms"><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+          <li><a href="#related"><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="ja" lang="ja">v1.1.4 機能ガイド</span><span class="en" lang="en">v1.1.4 feature guide</span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">v1.1.2 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.1.2 hands-on (archive)</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.0.12 hands-on (archive)</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性、ポリシー、料金は公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability, policy, and pricing in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,404 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Define a custom agent at the repository or user level, then confirm it can be selected from the agent picker and /agent even when it is scoped to a single branch or worktree.">
+<title>GitHub Copilot App v1.1.4 — Create and use custom agents</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="18" data-guide-count="25">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.4 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.4</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="lab-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">ラボ 18 / 25</span><span class="en" lang="en">Lab 18 of 25</span></p>
+    <h1 id="lab-title"><span class="ja" lang="ja">カスタムエージェントを作成して使う</span><span class="en" lang="en">Create and use custom agents</span></h1>
+    <p class="lede"><span class="ja" lang="ja">リポジトリまたはユーザーレベルでカスタムエージェントを定義し、エージェントピッカーと /agent からブランチ・worktree 単位でも正しく呼び出せることを確認します。</span><span class="en" lang="en">Define a custom agent at the repository or user level, then confirm it can be selected from the agent picker and /agent even when it is scoped to a single branch or worktree.</span></p>
+    <div class="meta-row" aria-label="Lab metadata">
+      <span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.4 向け再公開（中核フローは v1.1.2 で検証、現在差分を source-check）</span><span class="en" lang="en">Republished for v1.1.4 (core flow verified at v1.1.2; current deltas source-checked)</span></span>
+      <span class="badge"><span class="ja" lang="ja">約45分</span><span class="en" lang="en">About 45 min</span></span>
+      <span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span>
+    </div>
+    <div class="chips" aria-label="Journeys and tracks"><a class="badge badge--accent" href="index.html#journey-j5"><span class="ja" lang="ja">custom agents、instructions、MCP、skills/plugins、Canvasで拡張する</span><span class="en" lang="en">Extending with custom agents, instructions, MCP, skills, and Canvas</span></a> <a class="badge" href="index.html#track-t8"><span class="ja" lang="ja">拡張性: instructions、custom agents、MCP、skills、plugins、.github/skills、Canvas</span><span class="en" lang="en">Extensibility: instructions, custom agents, MCP, skills, plugins, .github/skills, and Canvas</span></a></div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#labs"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">25 ラボ一覧</span><span class="en" lang="en">All 25 labs</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="persona">
+        <div class="section-heading"><p class="eyebrow">Scenario &amp; persona</p><h2><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">サンプルリポジトリの1つのブランチだけに、ドキュメントレビュー専門のカスタムエージェントを定義し、そのセッションのピッカーと /agent から選べることを確認します。</span><span class="en" lang="en">You define a documentation-review custom agent on a single branch of a sample repository, and confirm it can be selected from that session&#039;s picker and /agent.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">担当者像</span><span class="en" lang="en">Persona</span></h3><p><span class="ja" lang="ja">アプリの能力を広げたいメンテナーとして、custom agentsをブランチ/worktree単位で定義する回です。</span><span class="en" lang="en">As a maintainer extending the app&#039;s capabilities, this round covers defining custom agents scoped to a branch or worktree.</span></p></article>
+        </div>
+        <div class="callout"><strong><span class="ja" lang="ja">なぜ重要か</span><span class="en" lang="en">Why it matters</span>:</strong> <span class="ja" lang="ja">信頼境界を意識しないままリポジトリ定義の拡張を追加すると、信頼できないコードや指示を無警戒に実行するリスクがあります。</span><span class="en" lang="en">Adding a repository-defined extension without minding trust boundaries risks executing untrusted code or instructions unguarded.</span></div>
+      </section>
+
+      <section class="section" id="objectives">
+        <div class="section-heading"><p class="eyebrow">Goals</p><h2><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Learning objectives</span></h2></div>
+        <ul><li><span class="ja" lang="ja">repositoryまたはuser scopeのcustom agent profileを作成する</span><span class="en" lang="en">Create a repository- or user-scoped custom-agent profile</span></li>
+<li><span class="ja" lang="ja">agent pickerまたは<code>/agent</code>から専門agentを選択する</span><span class="en" lang="en">Select the specialist through the agent picker or <code>/agent</code></span></li>
+<li><span class="ja" lang="ja">branch / worktreeに応じたprofile visibilityとtrust boundaryを確認する</span><span class="en" lang="en">Verify profile visibility and trust boundaries across branches/worktrees</span></li></ul>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">GitHub Copilot App が v1.1.4（最新版） に更新されており、書き込み権限のあるプロジェクトが1つ接続されていること。</span><span class="en" lang="en">The GitHub Copilot app is updated to the latest version (v1.1.4) and one project you have write access to is connected.</span></li>
+<li><span class="ja" lang="ja">YAML フロントマター付き Markdown ファイルの基本的な書き方を理解していること。</span><span class="en" lang="en">You understand the basics of writing a Markdown file with YAML frontmatter.</span></li>
+<li><span class="ja" lang="ja">プロジェクト（<code>.github/agents/</code>）とユーザー（<code>~/.copilot/agents/</code>）のどちらにエージェントを置くか、チームで共有するか個人用に留めるかを決めていること。</span><span class="en" lang="en">You have decided whether the agent belongs in the project (<code>.github/agents/</code>) or user (<code>~/.copilot/agents/</code>) location, and whether it should be shared with the team or kept personal.</span></li>
+<li><span class="ja" lang="ja">テストに使う一時的なブランチまたは worktree を作成できること。</span><span class="en" lang="en">You can create a temporary branch or worktree to use for testing.</span></li></ul>
+      </section>
+
+      <section class="section" id="availability">
+        <div class="section-heading"><p class="eyebrow">Availability</p><h2><span class="ja" lang="ja">公式な提供状況とスコープ</span><span class="en" lang="en">Official availability and scope</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></h3><p><span class="ja" lang="ja">v1.1.4 版として再公開。中核フローは v1.1.2 で検証され、v1.1.3 / v1.1.4 差分と情報源を source-check しています。すべての Copilot プランで利用でき、ブランチまたは worktree だけで定義したカスタムエージェントがそのセッションのエージェントピッカーと /agent オートコンプリートに正しく表示される不具合が v1.1.2 で修正されています。</span><span class="en" lang="en">Republished for v1.1.4. The core flow was verified for v1.1.2; v1.1.3/v1.1.4 deltas and source provenance were checked. Available to all Copilot plans. A bug where custom agents defined only on a branch or worktree did not appear correctly in that session&#039;s agent picker and /agent autocomplete was fixed in v1.1.2.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">対象範囲</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドは GitHub Copilot App 内でのカスタムエージェントの定義（プロジェクトまたはユーザーレベル、ブランチ/worktree 限定を含む）と、エージェントピッカーおよび /agent からの選択を扱います。同じエージェントプロファイル形式は VS Code、JetBrains、Eclipse、Xcode、素の Copilot CLI でも動作しますが、それらのクライアントでの作成手順は隣接領域として深く扱いません。</span><span class="en" lang="en">This guide covers defining custom agents inside the GitHub Copilot app, at the project or user level, including branch- or worktree-only definitions, and selecting them from the agent picker and /agent. The same agent-profile format also works in VS Code, JetBrains IDEs, Eclipse, Xcode, and plain Copilot CLI, but this guide treats creation in those other clients as an adjacent surface it does not cover in depth.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">時間の見積もり</span><span class="en" lang="en">Time estimate</span></h3><p><span class="ja" lang="ja">hands-on操作の目安は約45分です。download、network、service latencyは含みません。</span><span class="en" lang="en">Hands-on work is estimated at about 45 minutes, excluding downloads, network delay, and service latency.</span></p></article>
+          <article class="card"><h3><span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span> <span class="ja" lang="ja">情報源の裏付け</span><span class="en" lang="en">Source provenance</span></h3><p><span class="ja" lang="ja">custom agent、MCP、skill、plugin という仕組みの概念自体は docs.github.com に docs-grounded な説明があります。file-backed instructions の発見と、リポジトリの <code>.github/skills/</code> によるスキル発見は別々の仕組みであり、混同しません。信頼境界の具体的な扱いは release-note-grounded です。 手順内の正確なメニュー名・ボタン名・クリック順は変更履歴（changelog）に基づく記述であり、スクリーンショット付きの公式ウォークスルーで検証されたものではありません。実際の画面がここと異なる場合は、画面に表示されている表記を優先してください。</span><span class="en" lang="en">The concepts of custom agents, MCP, skills, and plugins are docs-grounded on docs.github.com. Discovering file-backed instructions is a separate mechanism from discovering repository skills under <code>.github/skills/</code> — the two are not conflated. The specific handling of the trust boundary is release-note-grounded. Exact menu names, button labels, and click order in the steps are grounded in changelog entries, not an illustrated official walkthrough. If your running build&#039;s UI differs from this text, follow what the screen actually shows instead.</span></p></article>
+        </div>
+      </section>
+
+      <section class="section" id="before-you-start">
+        <div class="section-heading"><p class="eyebrow">Before you start</p><h2><span class="ja" lang="ja">開始前の安全確認</span><span class="en" lang="en">Before-you-start safety check</span></h2></div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全・データ・コスト・権限への影響</span><span class="en" lang="en">Safety, data, cost, and permission implications</span>:</strong> <span class="ja" lang="ja">エージェントプロファイルの指示欄にシークレットや資格情報を書かないでください。tools を制限しないカスタムエージェントは既定で全ツールにアクセスできるため、リポジトリを信頼する前に、共有プロジェクトへ追加するエージェントの権限は明示的に絞ってください。</span><span class="en" lang="en">Do not put secrets or credentials in an agent profile&#039;s instructions. A custom agent without a tools restriction has access to all tools by default, so explicitly scope the permissions of any agent you add to a shared project before you trust the repository.</span></div>
+      </section>
+
+      <section class="section" id="launchers">
+        <div class="section-heading"><p class="eyebrow">Open safely</p><h2><span class="ja" lang="ja">コピー可能なプロンプト／コマンドとランチャー</span><span class="en" lang="en">Copyable prompts/commands and launchers</span></h2></div>
+
+        <div class="card-grid"><article class="card">
+  <h3><span class="ja" lang="ja">github/app をアプリで開く</span><span class="en" lang="en">Open github/app in the app</span></h3>
+  <p><span class="ja" lang="ja">安全なホスト型ランチャーで公開リポジトリ github/app を開きます。カスタムエージェントの構造を確認するサンプルとして使えます。</span><span class="en" lang="en">Uses the safe hosted launcher to open the public github/app repository, useful as a sample for inspecting custom agent structure.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fgithub.com%2Fgithub%2Fapp" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card">
+  <h3><span class="ja" lang="ja">確認用の新規セッションを開く</span><span class="en" lang="en">Open a confirmation-gated new session</span></h3>
+  <p><span class="ja" lang="ja">github/app 向けに、利用可能なカスタムエージェントを列挙させるプロンプトを事前入力した新規セッションダイアログを開きます。作成前にアプリ内で確認が表示されます。</span><span class="en" lang="en">Opens the new session dialog for github/app, pre-filled with a prompt asking to list available custom agents. A confirmation appears inside the app before anything is created.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fsession%2Fnew%3Frepo%3Dgithub%252Fapp%26mode%3Dinteractive%26prompt%3DList%2520the%2520custom%2520agents%2520available%2520in%2520this%2520session%2520and%2520explain%2520when%2520each%2520one%2520should%2520be%2520used." rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+      </section>
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="mono">1.</span> <span class="ja" lang="ja">配置場所とスコープを決める</span><span class="en" lang="en">Decide the location and scope</span></h3>
+  <p><span class="ja" lang="ja">チームで共有するなら <code>.github/agents/</code>（プロジェクト）に、自分専用にするなら <code>~/.copilot/agents/</code>（ユーザー）に置きます。同名のエージェントがある場合はユーザー側が優先されます。今回はブランチ/worktree 限定の挙動を確認するため、テスト用ブランチの <code>.github/agents/</code> に作成します。</span><span class="en" lang="en">Place it under <code>.github/agents/</code> (project) to share it with the team, or under <code>~/.copilot/agents/</code> (user) to keep it personal. If both locations define an agent with the same name, the user-level one wins. To verify branch/worktree-only behavior here, create it under <code>.github/agents/</code> on a test branch.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">テスト用ブランチが作成され、そのブランチにだけエージェントファイルを追加する準備ができています。</span><span class="en" lang="en">A test branch exists and you are ready to add the agent file only on that branch.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">2.</span> <span class="ja" lang="ja">エージェントプロファイルを作成する</span><span class="en" lang="en">Create the agent profile</span></h3>
+  <p><span class="ja" lang="ja">下のひな形を参考に、name・description・任意の tools を含む YAML フロントマターと、指示本文を書いた <code>docs-reviewer.agent.md</code> を作成します。読み取り専用に近い動作にしたいので、tools を view/grep/glob に絞ります。</span><span class="en" lang="en">Using the template below, create <code>docs-reviewer.agent.md</code> with YAML frontmatter for name, description, and optional tools, followed by the instruction body. Restrict tools to view/grep/glob to keep this close to read-only behavior.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">エージェントプロファイルのひな形</span><span class="en" lang="en">Agent profile template</span></span>
+    <button class="copy-button" type="button" data-copy="lab-18-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-18-code-1" data-language="markdown">---
+name: docs-reviewer
+description: Reviews README and CONTRIBUTING files for outdated setup steps and unclear instructions. Use for documentation-only review requests.
+tools: [&quot;view&quot;, &quot;grep&quot;, &quot;glob&quot;]
+---
+You are a documentation reviewer. Your scope is limited to README, CONTRIBUTING, and other documentation files.
+Focus on the following:
+- Flag outdated install or setup steps
+- Flag unclear or ambiguous instructions
+- Suggest concrete rewrites, but do not modify code files</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">ブランチにファイルが追加され、tools が明示的に制限されています。</span><span class="en" lang="en">The file is added on the branch, with tools explicitly restricted.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">3.</span> <span class="ja" lang="ja">そのブランチ/worktree のセッションを開き直す</span><span class="en" lang="en">Reopen the session for that branch or worktree</span></h3>
+  <p><span class="ja" lang="ja">新しいセッションを開くか、既存セッションを開き直して、追加したエージェントファイルを認識させます。</span><span class="en" lang="en">Open a new session, or reopen an existing one, so the newly added agent file is picked up.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">セッションがそのブランチ/worktree のコンテキストで開いています。</span><span class="en" lang="en">The session is open in the context of that branch or worktree.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">4.</span> <span class="ja" lang="ja">エージェントピッカーと /agent オートコンプリートで確認する</span><span class="en" lang="en">Confirm it in the agent picker and /agent autocomplete</span></h3>
+  <p><span class="ja" lang="ja">エージェントピッカーを開くか、プロンプト欄で /agent と入力し、docs-reviewer がブランチ限定であっても正しく一覧に表示されることを確認します（v1.1.2 での修正点）。</span><span class="en" lang="en">Open the agent picker, or type /agent in the prompt box, and confirm docs-reviewer appears correctly in the list even though it is branch-scoped — this is the fix delivered in v1.1.2.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">docs-reviewer がピッカーと /agent の候補の両方に表示されます。</span><span class="en" lang="en">docs-reviewer appears in both the picker and the /agent suggestions.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">5.</span> <span class="ja" lang="ja">明示的な指示でエージェントを呼び出す</span><span class="en" lang="en">Invoke the agent with an explicit instruction</span></h3>
+  <p><span class="ja" lang="ja">下のプロンプトのように、エージェント名を明示してタスクを依頼します。</span><span class="en" lang="en">Ask for the task while explicitly naming the agent, as in the prompt below.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">エージェントを明示的に呼び出すプロンプト</span><span class="en" lang="en">Prompt that explicitly invokes the agent</span></span>
+    <button class="copy-button" type="button" data-copy="lab-18-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-18-code-2" data-language="text">Use the docs-reviewer agent to check README.md and CONTRIBUTING.md for outdated setup instructions.</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">エージェントを明示的に呼び出すプロンプト（日本語）</span><span class="en" lang="en">Prompt that explicitly invokes the agent (Japanese)</span></span>
+    <button class="copy-button" type="button" data-copy="lab-18-code-3" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-18-code-3" data-language="text">docs-reviewer エージェントを使って、README.md と CONTRIBUTING.md に古いセットアップ手順がないか確認してください。</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">サブエージェントとして docs-reviewer が起動し、指定したファイルだけを対象にレビュー結果を返します。</span><span class="en" lang="en">docs-reviewer runs as a subagent and returns review results scoped only to the files you specified.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">6.</span> <span class="ja" lang="ja">ツール制限が実際に効いているか確認する</span><span class="en" lang="en">Confirm the tool restriction actually applies</span></h3>
+  <p><span class="ja" lang="ja">エージェントにファイル変更やコマンド実行を依頼してみて、tools で許可していない操作は拒否されるか、実行されないことを確認します。</span><span class="en" lang="en">Ask the agent to modify a file or run a command, and confirm actions not permitted by its tools list are refused or simply do not happen.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">許可されていない操作は実行されず、制限が意図どおりに機能しています。</span><span class="en" lang="en">The disallowed action does not run, confirming the restriction works as intended.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">7.</span> <span class="ja" lang="ja">共有するかどうかを最終決定する</span><span class="en" lang="en">Decide whether to share it</span></h3>
+  <p><span class="ja" lang="ja">チームで使いたい場合は、<code>.github/agents/docs-reviewer.agent.md</code> をコミットして通常のプルリクエストとしてレビューに出します。個人用に留めたい場合は、代わりに <code>~/.copilot/agents/</code> にコピーし、ブランチ上のファイルは削除します。必要であれば Settings → Sessions の Default agent に設定します（v1.0.18 以降）。</span><span class="en" lang="en">If you want the team to use it, commit <code>.github/agents/docs-reviewer.agent.md</code> and send it through a normal pull request review. If you want to keep it personal, copy it to <code>~/.copilot/agents/</code> instead and remove the branch copy. Optionally set it as the Default agent in Settings → Sessions, available since v1.0.18.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">エージェントが意図した範囲（チーム共有かユーザー個人か）だけに存在しています。</span><span class="en" lang="en">The agent exists only in the scope you intended — shared with the team or kept personal.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="decision-points">
+        <div class="section-heading"><p class="eyebrow">Decide</p><h2><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></h2></div>
+        <ul class="decision-list"><li><span class="ja" lang="ja">agent profileをrepository共有にするかuser専用にするか。</span><span class="en" lang="en">Share the agent profile with the repository, or keep it user-only?</span></li>
+<li><span class="ja" lang="ja">専門agentに許可するtools / instructionsを最小化できているか。</span><span class="en" lang="en">Have you minimized the tools and instructions available to the specialist?</span></li></ul>
+      </section>
+
+      <section class="section" id="checkpoints">
+        <div class="section-heading"><p class="eyebrow">Checkpoints</p><h2><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></h2></div>
+        <ul class="checkpoint-list"><li><span class="ja" lang="ja">チェックポイント1: custom agentがpickerまたは<code>/agent</code>に表示される。</span><span class="en" lang="en">Checkpoint 1: the custom agent appears in the picker or <code>/agent</code>.</span></li>
+<li><span class="ja" lang="ja">チェックポイント2: 専門agentがprofileに定義した役割と境界に沿って応答する。</span><span class="en" lang="en">Checkpoint 2: the specialist responds within the role and boundaries defined by its profile.</span></li></ul>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">ブランチ/worktree 限定で追加した docs-reviewer が、そのセッションのエージェントピッカーと /agent の両方に表示される。</span><span class="en" lang="en">The branch/worktree-only docs-reviewer agent appears in both the agent picker and /agent for that session.</span></li>
+<li><span class="ja" lang="ja">明示的にエージェント名を指定した依頼が、指定したファイルだけを対象にサブエージェントとして完了する。</span><span class="en" lang="en">A request that explicitly names the agent completes as a subagent scoped only to the files you specified.</span></li>
+<li><span class="ja" lang="ja">tools で許可していない操作は拒否されるか実行されず、制限が有効に機能している。</span><span class="en" lang="en">Actions not permitted by the tools list are refused or do not run, confirming the restriction is effective.</span></li>
+<li><span class="ja" lang="ja">共有を選んだ場合は <code>.github/agents/</code> に、個人用を選んだ場合は <code>~/.copilot/agents/</code> にのみエージェントファイルが存在する。</span><span class="en" lang="en">The agent file exists only in <code>.github/agents/</code> if you chose to share it, or only in <code>~/.copilot/agents/</code> if you chose to keep it personal.</span></li></ul>
+      </section>
+
+      <section class="section" id="under-the-hood">
+        <div class="section-heading"><p class="eyebrow">Mental model</p><h2><span class="ja" lang="ja">Under the hood: 内部で何が起きているか</span><span class="en" lang="en">Under the hood: what happens internally</span></h2></div>
+        <p><span class="ja" lang="ja">custom agentはMarkdown profileとして役割、instructions、利用toolsを宣言します。repository profileはbranch / worktreeのfile stateに従い、user profileは個人scopeで読み込まれます。選択したagentもsessionのpermission boundaryを越えません。</span><span class="en" lang="en">A custom agent is a Markdown profile declaring role, instructions, and tools. Repository profiles follow the branch/worktree file state, while user profiles load from personal scope. Selecting a specialist does not bypass the session&#039;s permission boundary.</span></p>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング（症状から探す）</span><span class="en" lang="en">Troubleshooting (start from your symptom)</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja">ブランチ限定のエージェントがピッカーや /agent に出てこない</span><span class="en" lang="en">A branch-only agent does not appear in the picker or /agent</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">この不具合は v1.1.2 で修正されています。アプリを v1.1.4（最新版） に更新し、対象のブランチ/worktree のセッションであることを確認してください。</span><span class="en" lang="en">This bug was fixed in v1.1.2. Update the app to the latest version (v1.1.4) and confirm the session is actually scoped to that branch or worktree.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">プロジェクトとユーザーの両方に同名のエージェントがあり、意図と違う方が使われる</span><span class="en" lang="en">Both project and user locations define an agent with the same name, and the wrong one is used</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">同名の場合はユーザーレベル（<code>~/.copilot/agents/</code>）が優先されます。プロジェクト側を使わせたい場合は名前を変えるか、ユーザー側のファイルを削除・リネームしてください。</span><span class="en" lang="en">When names collide, the user-level file (<code>~/.copilot/agents/</code>) takes precedence. Rename one of them, or remove the user-level file, if you want the project-level agent to be used instead.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">カスタムエージェントが想定より多くのツールにアクセスできる</span><span class="en" lang="en">The custom agent has access to more tools than expected</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">tools フィールドを省略すると既定ですべてのツールにアクセスできます。プロファイルに明示的な tools 一覧を追加し、セッションを開き直してください。</span><span class="en" lang="en">Omitting the tools field grants access to all tools by default. Add an explicit tools list to the profile and reopen the session.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">エージェントを追加した直後、一覧に反映されない</span><span class="en" lang="en">The agent list does not reflect a file you just added</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">エージェントファイルの追加や変更は新しいセッションまたは開き直しで反映されます。既存セッションを開いたままにせず、一度セッションを開き直してください。</span><span class="en" lang="en">Adding or editing an agent file is picked up by a new session or a reopened one. Reopen the session instead of relying on one left open from before the change.</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="recovery">
+        <div class="section-heading"><p class="eyebrow">Recovery path</p><h2><span class="ja" lang="ja">明示的な復旧手順</span><span class="en" lang="en">Explicit recovery path</span></h2></div>
+        <div class="callout callout--danger"><span class="ja" lang="ja">追加した拡張が反映されない場合は、セッションを再開するかアプリを再起動し、それでも表示されない場合は定義ファイルの構文とスコープ（user/repository）を確認してください。</span><span class="en" lang="en">If a newly added extension does not take effect, resume the session or restart the app; if it still does not appear, check the definition file&#039;s syntax and scope (user/repository).</span></div>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">テストに使った <code>docs-reviewer.agent.md</code> はブランチにコミットする予定がなければ削除します。</span><span class="en" lang="en">Delete the test <code>docs-reviewer.agent.md</code> file if you do not plan to commit it on the branch.</span></li>
+<li><span class="ja" lang="ja">テストのために作成したブランチや worktree を削除します。</span><span class="en" lang="en">Delete the branch or worktree created only for this test.</span></li>
+<li><span class="ja" lang="ja">テストのために設定した Default agent を、通常使うエージェントに戻します。</span><span class="en" lang="en">Reset the Default agent setting back to whatever you normally use, if you changed it only for this test.</span></li>
+<li><span class="ja" lang="ja">チーム共有として追加した場合は、レビューされていない一時的な変更が残っていないか、そのプルリクエストを確認します。</span><span class="en" lang="en">If you added the agent for team sharing, review the pull request to confirm it does not include leftover temporary changes.</span></li></ol>
+      </section>
+
+      <section class="section" id="rubric">
+        <div class="section-heading"><p class="eyebrow">Success rubric</p><h2><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></h2></div>
+        <ul class="rubric-list"><li><span class="ja" lang="ja">custom agent profileを作成しpickerから選択した。</span><span class="en" lang="en">You created a custom-agent profile and selected it from the picker.</span></li>
+<li><span class="ja" lang="ja">profileの専門instructionsが応答に反映された。</span><span class="en" lang="en">The profile&#039;s specialist instructions affected the response.</span></li>
+<li><span class="ja" lang="ja">scopeとtool permissionsを意図どおりに限定した。</span><span class="en" lang="en">You limited scope and tool permissions intentionally.</span></li></ul>
+      </section>
+
+      <section class="section" id="stretch">
+        <div class="section-heading"><p class="eyebrow">Go further</p><h2><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></h2></div>
+        <div class="callout callout--success"><span class="ja" lang="ja">同じ機能を提供するuserスコープとrepositoryスコープの拡張を両方定義し、どちらが優先されるかを確認してください。</span><span class="en" lang="en">Define both a user-scoped and a repository-scoped extension offering the same capability, and confirm which one takes precedence.</span></div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">Windows でもエージェントファイルの配置場所は同じです。<code>~/.copilot/agents/</code> は <code>%USERPROFILE%\.copilot\agents\</code> に対応します。</span><span class="en" lang="en">Agent file locations are the same on Windows. <code>~/.copilot/agents/</code> corresponds to <code>%USERPROFILE%\.copilot\agents\</code>.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">macOS では <code>~/.copilot/agents/</code> がホームディレクトリ配下にそのまま作成されます。Finder で隠しフォルダーを表示すると内容を確認できます。</span><span class="en" lang="en">On macOS, <code>~/.copilot/agents/</code> is created directly under your home directory. Show hidden folders in Finder to inspect its contents.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">Linux でも <code>~/.copilot/agents/</code> が使われます。複数ユーザーで共有する端末では、パーミッションが自分のホームディレクトリに閉じていることを確認してください。</span><span class="en" lang="en">Linux also uses <code>~/.copilot/agents/</code>. On a machine shared by multiple users, confirm the permissions keep it scoped to your own home directory.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">WSL リモート環境のプロジェクトを開いている場合、<code>.github/agents/</code> はそのディストリビューション内のリポジトリに存在し、<code>~/.copilot/agents/</code> はホスト側かディストリビューション内かが設定によって変わります。作成後は該当セッションの一覧に出るか必ず確認してください。</span><span class="en" lang="en">When you open a project in a WSL remote environment, <code>.github/agents/</code> lives in the repository inside that distribution, while <code>~/.copilot/agents/</code> resolves to the host or the distribution depending on your setup. Always confirm the agent appears in that session&#039;s list after creating it.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://docs.github.com/en/copilot/how-tos/copilot-cli/customize-copilot/create-custom-agents-for-cli" rel="noopener noreferrer">Creating and using custom agents for GitHub Copilot CLI</a></li>
+<li><a href="https://docs.github.com/en/copilot/concepts/agents/cloud-agent/about-custom-agents" rel="noopener noreferrer">About custom agents</a></li>
+<li><a href="https://github.com/github/app/releases/tag/v1.1.2" rel="noopener noreferrer">GitHub Copilot app v1.1.2 release</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></h2></div>
+        <ul class="plain-list related-list"><li><a class="badge" href="01-install-projects.html"><span class="mono">01</span> <span class="ja" lang="ja">インストールとプロジェクト接続</span><span class="en" lang="en">Install and connect projects</span></a></li>
+<li><a class="badge" href="04-worktrees-parallel-sessions.html"><span class="mono">04</span> <span class="ja" lang="ja">Worktree とローカルリポジトリで並列セッションを実行</span><span class="en" lang="en">Run parallel sessions with worktrees and the local repository</span></a></li>
+<li><a class="badge" href="19-mcp-skills-plugins-canvas-extensions.html"><span class="mono">19</span> <span class="ja" lang="ja">MCP・スキル・プラグイン・Canvas 拡張を使い分ける</span><span class="en" lang="en">Use MCP, skills, plugins, and Canvas extensions together</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Lab navigation">
+        <a href="17-cloud-automations.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のラボ</span><span class="en" lang="en">Previous lab</span></span><br><strong><span class="ja" lang="ja">クラウド自動化を作成する</span><span class="en" lang="en">Create cloud automations</span></strong></a>
+        <a href="19-mcp-skills-plugins-canvas-extensions.html"><span class="muted"><span class="ja" lang="ja">次のラボ</span><span class="en" lang="en">Next lab</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">MCP・スキル・プラグイン・Canvas 拡張を使い分ける</span><span class="en" lang="en">Use MCP, skills, plugins, and Canvas extensions together</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Lab progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 25</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="25"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このラボを完了にする</span><span class="en" lang="en">Mark this lab complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#persona"><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></a></li>
+          <li><a href="#objectives"><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Objectives</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#availability"><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></a></li>
+          <li><a href="#before-you-start"><span class="ja" lang="ja">開始前の確認</span><span class="en" lang="en">Before you start</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#decision-points"><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></a></li>
+          <li><a href="#checkpoints"><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#under-the-hood"><span class="ja" lang="ja">Under the hood</span><span class="en" lang="en">Under the hood</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#recovery"><span class="ja" lang="ja">復旧手順</span><span class="en" lang="en">Recovery</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#rubric"><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></a></li>
+          <li><a href="#stretch"><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></a></li>
+          <li><a href="#platforms"><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+          <li><a href="#related"><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="ja" lang="ja">v1.1.4 機能ガイド</span><span class="en" lang="en">v1.1.4 feature guide</span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">v1.1.2 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.1.2 hands-on (archive)</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.0.12 hands-on (archive)</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性、ポリシー、料金は公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability, policy, and pricing in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>

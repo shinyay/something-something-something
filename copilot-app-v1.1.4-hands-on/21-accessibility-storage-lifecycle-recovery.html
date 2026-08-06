@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Work confidently with keyboard navigation, screen readers, and local voice input, manage disk space and archive-versus-delete decisions safely, and recover carefully from a stuck session.">
+<title>GitHub Copilot App v1.1.4 — Accessibility, storage, session lifecycle, and recovery</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="21" data-guide-count="25">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.4 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.4</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="lab-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">ラボ 21 / 25</span><span class="en" lang="en">Lab 21 of 25</span></p>
+    <h1 id="lab-title"><span class="ja" lang="ja">アクセシビリティ、ストレージ、セッションのライフサイクルと復旧</span><span class="en" lang="en">Accessibility, storage, session lifecycle, and recovery</span></h1>
+    <p class="lede"><span class="ja" lang="ja">キーボードとスクリーンリーダー、ローカル音声入力を使いこなし、ディスク容量とアーカイブ・削除を安全に管理し、固まったセッションから慎重に復旧します。</span><span class="en" lang="en">Work confidently with keyboard navigation, screen readers, and local voice input, manage disk space and archive-versus-delete decisions safely, and recover carefully from a stuck session.</span></p>
+    <div class="meta-row" aria-label="Lab metadata">
+      <span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.4 向け再公開（中核フローは v1.1.2 で検証、現在差分を source-check）</span><span class="en" lang="en">Republished for v1.1.4 (core flow verified at v1.1.2; current deltas source-checked)</span></span>
+      <span class="badge"><span class="ja" lang="ja">約50分</span><span class="en" lang="en">About 50 min</span></span>
+      <span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span>
+    </div>
+    <div class="chips" aria-label="Journeys and tracks"><a class="badge badge--accent" href="index.html#journey-j6"><span class="ja" lang="ja">プロダクション運用: モデル、コスト、アクセシビリティ、復旧</span><span class="en" lang="en">Production operations</span></a> <a class="badge" href="index.html#track-t9"><span class="ja" lang="ja">Memory、Chronicle、Insights、コンテキスト、コスト</span><span class="en" lang="en">Memory, Chronicle, Insights, context, and cost</span></a> <a class="badge" href="index.html#track-t10"><span class="ja" lang="ja">セキュリティガバナンスとplatform運用・復旧</span><span class="en" lang="en">Security governance and cross-platform operations/recovery</span></a></div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#labs"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">25 ラボ一覧</span><span class="en" lang="en">All 25 labs</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="persona">
+        <div class="section-heading"><p class="eyebrow">Scenario &amp; persona</p><h2><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">キーボードとスクリーンリーダーを中心に作業し、ときどきローカルの音声入力も使う利用者が、アクセシビリティの挙動を確かめつつ、ローカルディスクの使用量を安全に管理し、セッションが固まったりクラッシュしたりしても作業を失わず、機密情報を漏らさずに復旧できる状態を確認します。</span><span class="en" lang="en">A user who relies primarily on keyboard navigation and a screen reader, and occasionally uses local voice input, wants to verify accessible behaviors, manage local disk usage safely, and be able to recover from a stuck or crashed session without losing work or exposing sensitive details.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">担当者像</span><span class="en" lang="en">Persona</span></h3><p><span class="ja" lang="ja">アクセシビリティと復旧手順を検証する担当者として、focus/screen readerとstorageを扱います。</span><span class="en" lang="en">As someone verifying accessibility and recovery procedures, work with focus/screen-reader support and storage.</span></p></article>
+        </div>
+        <div class="callout"><strong><span class="ja" lang="ja">なぜ重要か</span><span class="en" lang="en">Why it matters</span>:</strong> <span class="ja" lang="ja">キーボード操作とscreen readerの検証を怠ると、一部の利用者がアプリの重要な操作にアクセスできなくなります。</span><span class="en" lang="en">Skipping keyboard and screen-reader verification leaves some users unable to reach important app operations.</span></div>
+      </section>
+
+      <section class="section" id="objectives">
+        <div class="section-heading"><p class="eyebrow">Goals</p><h2><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Learning objectives</span></h2></div>
+        <ul><li><span class="ja" lang="ja">Shift+Tabとfocus移動を検証する</span><span class="en" lang="en">Verify Shift+Tab and focus movement</span></li>
+<li><span class="ja" lang="ja">screen readerでの読み上げを確認する</span><span class="en" lang="en">Confirm screen-reader announcements</span></li>
+<li><span class="ja" lang="ja">storageとバージョンごとのアクセシビリティ改善範囲を理解する</span><span class="en" lang="en">Understand storage and the per-version scope of accessibility fixes</span></li></ul>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">テストに使える OS レベルのスクリーンリーダー（Windows の Narrator、macOS の VoiceOver、Linux の Orca など）が利用可能であること。スクリーンリーダー自体のインストール方法はこのガイドでは扱いません。</span><span class="en" lang="en">An OS-level screen reader available for testing (for example, Windows Narrator, macOS VoiceOver, or Orca on Linux). Installing the screen reader itself is not covered here.</span></li>
+<li><span class="ja" lang="ja">音声入力を試す場合は動作するマイクが接続され、OS でアプリへのマイクアクセスを許可できること。ローカル transcription model は App の Voice dictation 設定から取得します。</span><span class="en" lang="en">If you plan to test voice input, connect a working microphone and be able to grant the app microphone access in the OS. Obtain the local transcription model from the app&#039;s Voice dictation settings.</span></li>
+<li><span class="ja" lang="ja">アーカイブ・削除・再起動を安全に試せる、重要度の低いセッションまたはプロジェクトが少なくとも 1 つ接続されていること。</span><span class="en" lang="en">At least one low-stakes session or project connected, so you can safely test archive, delete, and restart without risking real work.</span></li>
+<li><span class="ja" lang="ja">Manage sessions の一覧でセッションごとのサイズ（v1.0.18 以降で表示）を確認できる状態であること。ディスク容量に関する手順の前後比較に使います。</span><span class="en" lang="en">The Manage sessions table showing per-session size (available since v1.0.18) is accessible, so you can compare disk usage before and after the storage steps.</span></li></ul>
+      </section>
+
+      <section class="section" id="availability">
+        <div class="section-heading"><p class="eyebrow">Availability</p><h2><span class="ja" lang="ja">公式な提供状況とスコープ</span><span class="en" lang="en">Official availability and scope</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></h3><p><span class="ja" lang="ja">v1.1.4 版として再公開。中核フローは v1.1.2 で検証され、v1.1.3 / v1.1.4 差分と情報源を source-check しています。アクセシビリティ改善は複数バージョンにわたって段階的に提供されており、特定の修正はその修正が入ったリリース以降にのみ有効です。ここに記載する挙動は、記載したバージョン以降を前提としています。</span><span class="en" lang="en">Republished for v1.1.4. The core flow was verified for v1.1.2; v1.1.3/v1.1.4 deltas and source provenance were checked. Accessibility improvements have shipped incrementally across many versions, and a given fix only applies from its documented release onward. The behaviors described here assume the noted version or later.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">対象範囲</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドはキーボード操作と Shift+Tab によるモード切り替え、アクセシブルなタイムスタンプの開示、フォーカスの挙動、スクリーンリーダー向けラベル、ローカルで動く音声入力モデルとマイクの権限、（対応している範囲での）縮小されたモーションとハイコントラスト、低ディスク容量の警告と再利用可能な見積もり、アーカイブと削除の違い、大規模セッションのバックグラウンド読み込み、隠しファイル表示のリスク、再起動・復旧・デバッグログの取り扱いを扱います。スクリーンリーダーや音声認識ソフトそのもののインストールは前提条件として扱い、このガイドの対象外です。まだ実装されていないアクセシビリティ改善を、公式リリースの裏付けなしに「対応済み」と断定することはしません。</span><span class="en" lang="en">This guide covers keyboard operation and Shift+Tab mode cycling, accessible timestamp disclosures, focus behavior, screen-reader labels, the locally run voice-dictation model and microphone permission, reduced motion and high contrast where they are actually supported, low-disk-space warnings and reclaim estimates, the difference between archive and delete, large-session background loading, the risk of showing hidden files, and restart, recovery, and debug-log handling. Installing a screen reader or speech-recognition software itself is treated as a prerequisite and is out of scope. This guide does not claim an accessibility improvement exists unless it is backed by a documented official release.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">時間の見積もり</span><span class="en" lang="en">Time estimate</span></h3><p><span class="ja" lang="ja">hands-on操作の目安は約50分です。download、network、service latencyは含みません。</span><span class="en" lang="en">Hands-on work is estimated at about 50 minutes, excluding downloads, network delay, and service latency.</span></p></article>
+          <article class="card"><h3><span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span> <span class="ja" lang="ja">情報源の裏付け</span><span class="en" lang="en">Source provenance</span></h3><p><span class="ja" lang="ja">キーボード操作や screen reader サポートという一般的なアクセシビリティ原則は docs-grounded です。ピン留めセッションの保護や個々の修正内容は release-note-grounded です。 手順内の正確なメニュー名・ボタン名・クリック順は変更履歴（changelog）に基づく記述であり、スクリーンショット付きの公式ウォークスルーで検証されたものではありません。実際の画面がここと異なる場合は、画面に表示されている表記を優先してください。</span><span class="en" lang="en">General accessibility principles such as keyboard operation and screen-reader support are docs-grounded. Pinned-session protection and individual fixes are release-note-grounded. Exact menu names, button labels, and click order in the steps are grounded in changelog entries, not an illustrated official walkthrough. If your running build&#039;s UI differs from this text, follow what the screen actually shows instead.</span></p></article>
+        </div>
+      </section>
+
+      <section class="section" id="before-you-start">
+        <div class="section-heading"><p class="eyebrow">Before you start</p><h2><span class="ja" lang="ja">開始前の安全確認</span><span class="en" lang="en">Before-you-start safety check</span></h2></div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全・データ・コスト・権限への影響</span><span class="en" lang="en">Safety, data, cost, and permission implications</span>:</strong> <span class="ja" lang="ja"><code>/collect-debug-logs</code> や「Share as gist」で収集したデバッグログには機密情報が含まれる可能性があります。共有する前に必ず内容を確認してください。Files タブで隠しファイルの表示を有効にすると <code>.env</code> のような通常は除外されるファイルが見えるようになるため、その内容をプロンプトに貼り付けないよう注意してください。</span><span class="en" lang="en">Debug logs collected with <code>/collect-debug-logs</code> or “Share as gist” may contain sensitive information—always review them before sharing. Enabling hidden-file visibility in the Files tab reveals files like <code>.env</code> that are normally excluded, so avoid pasting their contents into a prompt.</span></div>
+      </section>
+
+      <section class="section" id="launchers">
+        <div class="section-heading"><p class="eyebrow">Open safely</p><h2><span class="ja" lang="ja">コピー可能なプロンプト／コマンドとランチャー</span><span class="en" lang="en">Copyable prompts/commands and launchers</span></h2></div>
+
+        <div class="card-grid"><article class="card">
+  <h3><span class="ja" lang="ja">v1.1.2 の変更履歴を開く</span><span class="en" lang="en">Open the v1.1.2 changelog</span></h3>
+  <p><span class="ja" lang="ja">github/app の公式変更履歴を開き、アクセシビリティやストレージ関連の修正がどのバージョンで入ったかを確認します。</span><span class="en" lang="en">Opens the official github/app changelog to check which version introduced a given accessibility or storage fix.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/github/app/blob/main/changelog.md#v112" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card">
+  <h3><span class="ja" lang="ja">github/app の Issue を開く</span><span class="en" lang="en">Open github/app issues</span></h3>
+  <p><span class="ja" lang="ja">アクセシビリティやリカバリーに関する問題を報告するための公式 Issue トラッカーを開きます。</span><span class="en" lang="en">Opens the official issue tracker for reporting accessibility or recovery problems.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/github/app/issues" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+      </section>
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="mono">1.</span> <span class="ja" lang="ja">キーボード操作とモード切り替えを確認する</span><span class="en" lang="en">Check keyboard navigation and mode cycling</span></h3>
+  <p><span class="ja" lang="ja">Tab キーだけでプロンプト欄やタイムラインの主要な操作要素に到達できるか確認します。次に Shift+Tab で Interactive・Plan・Autopilot のモードを切り替えます。この挙動は Copilot CLI のプロンプト入力でも共通のものです。</span><span class="en" lang="en">Confirm that Tab alone reaches the main controls in the composer and timeline. Then press Shift+Tab to cycle through the Interactive, Plan, and Autopilot session modes—this behavior is shared with Copilot CLI&#039;s prompt input.</span></p>
+<p><span class="ja" lang="ja">フォーカスリングがはっきり見えるかも確認します。ドロップダウンメニューのフォーカスリング表示や、Files ツリー先頭行のフォーカスリングの欠け（クリップ）は過去に修正されています。</span><span class="en" lang="en">Also confirm that the focus ring is clearly visible. Focus-ring visibility on dropdown menus and clipping on the first row of the Files tree have both been fixed in past releases.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">モード切り替えのショートカット</span><span class="en" lang="en">Mode-cycling shortcut</span></span>
+    <button class="copy-button" type="button" data-copy="lab-21-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-21-code-1" data-language="text">Shift+Tab</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">フォーカスがプロンプト欄内の各コントロールを目に見える形で移動し、Shift+Tab を押すたびにフィールドから抜けることなくセッションモードが切り替わります。</span><span class="en" lang="en">Focus visibly moves across the controls in the prompt composer, and pressing Shift+Tab reliably cycles the session mode without leaving the field.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">2.</span> <span class="ja" lang="ja">アクセシブルなタイムスタンプとラベルを確認する</span><span class="en" lang="en">Check accessible timestamps and labels</span></h3>
+  <p><span class="ja" lang="ja">My Work やアクティビティフィードにある相対時間（例:「3時間前」）をキーボードまたはクリックで開き、正確な日時が開示されることを確認します。v1.1.2 では、この開示ボタンがスクリーンリーダーに対して汎用的な「詳細情報」ではなく「タイムスタンプを表示」と読み上げられるようになりました。</span><span class="en" lang="en">Activate a relative timestamp (for example, “3h ago”) in My Work or the activity feed with the keyboard or a click, and confirm it discloses the exact date and time. In v1.1.2, this disclosure control announces “show timestamp” to screen readers instead of the generic “more info.”</span></p>
+<p><span class="ja" lang="ja">サイドバーで現在選択されているビュー（Home、My work、Automations、Extensions）がスクリーンリーダーに読み上げられることも確認します。</span><span class="en" lang="en">Also confirm that the currently active sidebar view (Home, My work, Automations, Extensions) is announced by the screen reader.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">タイムスタンプを開くと正確な日時が表示され、スクリーンリーダーが説明的なラベルを読み上げます。サイドバーの現在のビューも読み上げられます。</span><span class="en" lang="en">Activating a timestamp reveals the exact date and time, and the screen reader announces a descriptive label. The current sidebar view is also announced.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">3.</span> <span class="ja" lang="ja">音声入力とマイクの権限を設定する</span><span class="en" lang="en">Set up voice dictation and microphone permission</span></h3>
+  <p><span class="ja" lang="ja">App settings の Voice dictation タブを開き、keyboard shortcut を選びます。OS settings でアプリへのマイクアクセスを許可し、App の設定面から local transcription model をダウンロードします。</span><span class="en" lang="en">Open the Voice dictation tab in the app settings and choose a keyboard shortcut. Allow microphone access for the app in your OS settings, then download the local transcription model from the app settings.</span></p>
+<p><span class="ja" lang="ja">設定したshortcutで短いテスト文を入力し、カーソル位置に文字起こしされることを確認します。Appの公式手順にないCLI commandや固定key bindingは使いません。</span><span class="en" lang="en">Use the shortcut you configured to dictate a short test sentence and confirm it is inserted at the cursor. Do not use CLI commands or fixed key bindings that are absent from the documented App flow.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">設定した shortcut で音声入力を開始・停止でき、local transcription model による文字起こしがプロンプト欄へ挿入される。</span><span class="en" lang="en">The configured shortcut starts and stops voice input, and the local transcription model inserts text into the prompt field.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">4.</span> <span class="ja" lang="ja">縮小されたモーションとハイコントラストを確認する</span><span class="en" lang="en">Check reduced motion and high-contrast behavior</span></h3>
+  <p><span class="ja" lang="ja">OS レベルでハイコントラストや「動きを減らす」設定を有効にしたうえで App を開き、拡張機能・スキルの行がホバー時の背景に隠れず正しく表示されることを確認します（v1.1.0 で修正済み）。</span><span class="en" lang="en">Enable high contrast or “reduce motion” at the OS level, then open the app and confirm extension and skill rows display correctly instead of being hidden behind the hover background in high-contrast mode (fixed in v1.1.0).</span></p>
+<p><span class="ja" lang="ja">すべての視覚要素に専用の縮小モーション対応があるとは限りません。見つけた挙動を思い込みで「対応済み」と判断せず、変更履歴で裏付けを確認してください。</span><span class="en" lang="en">Not every visual element necessarily has a dedicated reduced-motion treatment yet. Don&#039;t assume a behavior is “supported” just because you observe it—confirm it against the changelog.</span></p>
+<p><span class="ja" lang="ja">使い捨てprofileのonboarding accessibility preferences dialogを安全に開ける場合は、v1.1.4で追加された「Enable sound」toggleを観察します。既存profileをresetする必要がある場合は無理に再現せず、変更履歴をreference-onlyで確認してください。</span><span class="en" lang="en">If you can safely open the onboarding accessibility preferences dialog in a disposable profile, observe the Enable sound toggle added in v1.1.4. If doing so would require resetting your existing profile, do not force the flow; treat the changelog entry as reference-only.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">reduced motion / contrastを確認し、利用可能な場合はonboardingのEnable sound toggleも観察できる。既存profileを破壊していない。</span><span class="en" lang="en">You verify reduced-motion/contrast behavior and, when safely available, observe the onboarding Enable sound toggle without disrupting an existing profile.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">5.</span> <span class="ja" lang="ja">低ディスク容量の警告と再利用見積もりを確認する</span><span class="en" lang="en">Review low-disk warnings and reclaim estimates</span></h3>
+  <p><span class="ja" lang="ja">サイドバーの低ディスク容量の警告バナーと、Manage sessions にある Copilot セッションストレージの内訳を確認します。セッションを削除する前に表示される「解放される見積もり容量」も確認します。</span><span class="en" lang="en">Review the low-disk-space warning banner in the sidebar and the Copilot session storage breakdown in Manage sessions. Also check the estimated amount of space that will be reclaimed, shown before you delete a session.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">削除候補のセッションについて、解放される見積もり容量を削除前に確認できます。</span><span class="en" lang="en">You can see an estimate of the disk space a candidate session would free, before you delete it.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">6.</span> <span class="ja" lang="ja">アーカイブと削除を使い分ける</span><span class="en" lang="en">Choose between archive and delete</span></h3>
+  <p><span class="ja" lang="ja">テスト用のチャットまたはセッションをアーカイブし、サイドバーからは隠れるものの履歴は残ること、Manage sessions から後で復元できることを確認します。次に不要なローカルセッションを完全に削除し、直前に確認した見積もりに近い容量が解放されることを確認します。</span><span class="en" lang="en">Archive a test chat or session and confirm it disappears from the sidebar while its history is preserved and can be restored later from Manage sessions. Then fully delete a disposable local session and confirm the freed space is close to the estimate you checked a moment ago.</span></p>
+<p><span class="ja" lang="ja">共有されているセッションやクラウドの Copilot cloud agent セッションはアーカイブのみ可能で、削除できるのはローカルセッション（CLI、VS Code、JetBrains、App）だけである点も確認します。</span><span class="en" lang="en">Also confirm that shared sessions and Copilot cloud agent sessions can only be archived, while only local sessions (from CLI, VS Code, JetBrains, or the app) can be deleted.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">アーカイブしたテスト用チャットを Manage sessions から見つけて復元でき、削除したローカルセッションでは見積もりに近い容量が実際に解放されています。</span><span class="en" lang="en">The archived test chat can be found and restored from Manage sessions, and deleting the local session freed an amount of space close to the earlier estimate.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">7.</span> <span class="ja" lang="ja">隠しファイルのリスクと大規模セッションの読み込みを確認する</span><span class="en" lang="en">Check hidden-file risk and large-session loading</span></h3>
+  <p><span class="ja" lang="ja">Files タブで「隠しファイルを表示」を切り替え、<code>.gitignore</code> で通常は除外される <code>.env</code> のようなファイルが見えるようになることを確認します。表示された内容に機密情報が含まれる可能性があるため、その内容をプロンプトに貼り付けないでください。</span><span class="en" lang="en">Toggle “show hidden files” in the Files tab and confirm that files like <code>.env</code>, normally excluded by <code>.gitignore</code>, become visible. Their contents may be sensitive, so don&#039;t paste them into a prompt.</span></p>
+<p><span class="ja" lang="ja">次に、メッセージ数の多い古いセッションを開き、アプリがフリーズせず、古いメッセージがバックグラウンドで読み込まれることを確認します。</span><span class="en" lang="en">Then open a large, older session and confirm the app doesn&#039;t freeze—older messages should load in the background instead.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">隠しファイルは明示的に切り替えたときだけ表示され、大規模セッションはすぐに開いて古いメッセージがバックグラウンドで補完されます。</span><span class="en" lang="en">Hidden files are visible only when explicitly toggled on, and the large session opens promptly with older messages populating in the background.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">8.</span> <span class="ja" lang="ja">再起動・復旧・デバッグログを安全に扱う</span><span class="en" lang="en">Handle restart, recovery, and debug logs safely</span></h3>
+  <p><span class="ja" lang="ja">セッションが固まった場合は「Restart session」の復旧オプションを使います。再起動する前に、未コミットの変更やそのワークスペースにしか存在しないファイルを確認する低リスクなプロンプトを実行しておきます。</span><span class="en" lang="en">If a session gets stuck, use the “Restart session” recovery option. Before restarting, run a low-risk prompt that checks for uncommitted changes and files that exist only in that workspace.</span></p>
+<p><span class="ja" lang="ja">不具合を報告する場合は <code>/collect-debug-logs</code> または「Share as gist」でログを取得しますが、github/app の README が注意しているとおりログには機密情報が含まれる可能性があるため、公開 Issue に添付する前に必ず内容を確認してください。</span><span class="en" lang="en">When reporting a bug, gather logs with <code>/collect-debug-logs</code> or “Share as gist,” but—per the github/app README&#039;s caution—review the log for sensitive content before attaching it to a public issue.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">再起動前の確認プロンプト</span><span class="en" lang="en">Pre-restart confirmation prompt</span></span>
+    <button class="copy-button" type="button" data-copy="lab-21-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-21-code-2" data-language="text">Summarize this session&#039;s uncommitted changes and tell me which files exist only in this workspace, so I can decide whether it&#039;s safe to restart or delete it.</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">再起動前の確認プロンプト（日本語）</span><span class="en" lang="en">Pre-restart confirmation prompt (Japanese)</span></span>
+    <button class="copy-button" type="button" data-copy="lab-21-code-3" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-21-code-3" data-language="text">このセッションの未コミットの変更を要約し、このワークスペースにしか存在しないファイルを教えてください。再起動または削除しても安全かどうかを判断します。</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">デバッグログを収集する</span><span class="en" lang="en">Collect debug logs</span></span>
+    <button class="copy-button" type="button" data-copy="lab-21-code-4" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-21-code-4" data-language="text">/collect-debug-logs</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">固まったセッションが「Restart session」によって、すでにプッシュ済みのコミットを失うことなく復旧し、共有前にデバッグログの内容を確認済みです。</span><span class="en" lang="en">The stuck session recovers via “Restart session” without losing commits already pushed, and the debug log has been reviewed for sensitive content before sharing.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="decision-points">
+        <div class="section-heading"><p class="eyebrow">Decide</p><h2><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></h2></div>
+        <ul class="decision-list"><li><span class="ja" lang="ja">この操作はキーボードのみで完結できるか。</span><span class="en" lang="en">Can this action be completed with the keyboard alone?</span></li>
+<li><span class="ja" lang="ja">このアクセシビリティ挙動は記載バージョン以降にのみ有効か確認するか。</span><span class="en" lang="en">Confirm whether this accessibility behavior applies only from the documented version onward?</span></li></ul>
+      </section>
+
+      <section class="section" id="checkpoints">
+        <div class="section-heading"><p class="eyebrow">Checkpoints</p><h2><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></h2></div>
+        <ul class="checkpoint-list"><li><span class="ja" lang="ja">チェックポイント1: Tab/Shift+Tabだけで主要な操作に到達できる。</span><span class="en" lang="en">Checkpoint 1: Tab/Shift+Tab alone reaches the primary controls.</span></li>
+<li><span class="ja" lang="ja">チェックポイント2: screen readerが主要なコントロールのラベルを読み上げる。</span><span class="en" lang="en">Checkpoint 2: the screen reader announces labels for primary controls.</span></li></ul>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">キーボードだけでプロンプト欄の主要な操作要素にすべて到達でき、Shift+Tab で Interactive・Plan・Autopilot を確実に切り替えられる。</span><span class="en" lang="en">Keyboard-only navigation reaches every main control in the prompt composer, and Shift+Tab reliably cycles Interactive, Plan, and Autopilot.</span></li>
+<li><span class="ja" lang="ja">少なくとも 1 つのアクセシブルなタイムスタンプ開示と 1 つのスクリーンリーダーラベルを、v1.1.2 の変更履歴の記載と突き合わせて確認できた。</span><span class="en" lang="en">At least one accessible timestamp disclosure and one screen-reader label were verified against what the v1.1.2 changelog documents.</span></li>
+<li><span class="ja" lang="ja">音声データをネットワークに送信することなく、マイクの権限を明示的に許可したうえでローカルの音声入力を有効化できた。</span><span class="en" lang="en">Voice dictation was enabled locally with an explicit microphone-permission grant, and no audio left the machine.</span></li>
+<li><span class="ja" lang="ja">テスト用セッションをアーカイブして復元できたことと、不要なローカルセッションを削除して見積もり通りの容量が解放されたことを確認できた。</span><span class="en" lang="en">A test session was successfully archived and restored, and a disposable local session was deleted with disk space freed close to the earlier estimate.</span></li>
+<li><span class="ja" lang="ja">固まったセッションの復旧と、機密情報を確認済みのデバッグログ提供を、隠しファイルの内容を漏らすことなく完了できた。</span><span class="en" lang="en">Recovery from a stuck session and a reviewed debug-log submission were both completed without exposing hidden-file contents.</span></li></ul>
+      </section>
+
+      <section class="section" id="under-the-hood">
+        <div class="section-heading"><p class="eyebrow">Mental model</p><h2><span class="ja" lang="ja">Under the hood: 内部で何が起きているか</span><span class="en" lang="en">Under the hood: what happens internally</span></h2></div>
+        <p><span class="ja" lang="ja">アクセシビリティ改善は複数のリリースにまたがって段階的に提供されるため、特定の修正はそのリリース以降のビルドでのみ有効です。storageはOSの標準的な設定/キャッシュディレクトリを使い、破損時はリセットで再構築されます。</span><span class="en" lang="en">Accessibility improvements ship incrementally across releases, so a specific fix is active only from the build in which it shipped. Storage uses the OS&#039;s standard settings/cache directories and rebuilds itself on reset if corrupted.</span></p>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング（症状から探す）</span><span class="en" lang="en">Troubleshooting (start from your symptom)</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja">Shift+Tab を押してもモードが切り替わらない</span><span class="en" lang="en">Shift+Tab doesn&#039;t seem to change the session mode</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">他のパネルではなく、プロンプト入力欄にフォーカスがあることを確認してからショートカットを押してください。このモード切り替えの挙動は v1.1.1 で導入されました。</span><span class="en" lang="en">Confirm focus is inside the prompt composer, not another panel, before pressing the shortcut. This mode-cycling behavior was introduced in v1.1.1.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">音声入力が録音を開始しない</span><span class="en" lang="en">Voice input never starts recording</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">OS settingsでアプリへのマイクアクセスが許可されているか確認し、App settings &gt; Voice dictationでshortcutとlocal transcription modelの状態を確認します。CLI専用commandは使いません。</span><span class="en" lang="en">Confirm in OS settings that the app has microphone access, then inspect the shortcut and local transcription model in App settings &gt; Voice dictation. Do not use CLI-only commands.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">Files タブで隠しファイルを表示にしても一部のファイルが表示されない</span><span class="en" lang="en">Some files stay hidden even after enabling “show hidden files”</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">このトグルは <code>.gitignore</code> で除外されているファイルを表示するためのものです（v1.1.1 で追加）。別の仕組みで除外されているファイルは対象外の場合があるため、別途確認してください。</span><span class="en" lang="en">This toggle reveals files excluded by <code>.gitignore</code> rules (added in v1.1.1). Files excluded by a different mechanism may not be affected, so check separately.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">セッションを削除しても見積もりほどディスク容量が解放されない</span><span class="en" lang="en">Deleting a session doesn&#039;t free as much space as estimated</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">見積もりはローカルの成果物に対するおおよその値です。共有セッションやクラウド同期されたセッションデータはローカル削除の影響を受けません。共有セッションや Copilot cloud agent のセッションはアーカイブのみ可能で、削除はできない点も確認してください。</span><span class="en" lang="en">The estimate approximates local artifacts only. Shared or cloud-synced session data isn&#039;t affected by a local delete. Also remember that shared sessions and Copilot cloud agent sessions can only be archived, not deleted.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">セッションの再開が繰り返し固まる</span><span class="en" lang="en">Resuming a session gets permanently stuck</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">v1.0.26 で追加された「Restart session」オプションを使います。それでも解決しない場合は、デバッグログを収集して機密情報を確認したうえで、OS・バージョン・再現手順を添えて Issue を報告してください。</span><span class="en" lang="en">Use the “Restart session” option added in v1.0.26. If the problem persists, collect debug logs, review them for sensitive content, and file an issue with your OS, version, and reproduction steps.</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="recovery">
+        <div class="section-heading"><p class="eyebrow">Recovery path</p><h2><span class="ja" lang="ja">明示的な復旧手順</span><span class="en" lang="en">Explicit recovery path</span></h2></div>
+        <div class="callout callout--danger"><span class="ja" lang="ja">設定がリセットされる、または起動できない場合は、まずアプリを最新版に更新し、それでも解決しなければ設定ディレクトリをバックアップしてから初期化してください。</span><span class="en" lang="en">If settings keep resetting or the app fails to launch, first update to the latest build; if that does not resolve it, back up the settings directory and then reset it.</span></div>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">アクセシビリティやストレージの動作確認だけのために作成したセッションは、共有されていないローカルなものに限ってアーカイブまたは削除します。</span><span class="en" lang="en">Archive or delete any sessions created solely to verify accessibility or storage behavior, choosing delete only for unshared, local sessions.</span></li>
+<li><span class="ja" lang="ja">この手順のためだけに「隠しファイルを表示」を有効にした場合は、元に戻して <code>.env</code> のようなファイルを既定どおり非表示にします。</span><span class="en" lang="en">If you enabled “show hidden files” only for this exercise, turn it back off so files like <code>.env</code> stay hidden by default.</span></li>
+<li><span class="ja" lang="ja">テストのために作成したデバッグログの gist やファイルは、機密情報が含まれていないことを確認したうえで削除するか、含まれていた場合は速やかに削除します。</span><span class="en" lang="en">Delete the debug-log gist or file you created for testing once you&#039;ve confirmed it contains nothing sensitive, or remove it immediately if it does.</span></li>
+<li><span class="ja" lang="ja">この手順のためだけに変更した OS レベルのアクセシビリティ設定（縮小されたモーション、ハイコントラスト、スクリーンリーダーなど）が普段の作業環境と異なる場合は元に戻します。</span><span class="en" lang="en">Revert any OS-level accessibility settings (reduced motion, high contrast, screen reader, and so on) you changed only for this test if they don&#039;t match your normal working setup.</span></li></ol>
+      </section>
+
+      <section class="section" id="rubric">
+        <div class="section-heading"><p class="eyebrow">Success rubric</p><h2><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></h2></div>
+        <ul class="rubric-list"><li><span class="ja" lang="ja">キーボードのみで主要な操作を完了できることを確認した。</span><span class="en" lang="en">You confirmed the primary actions complete with keyboard alone.</span></li>
+<li><span class="ja" lang="ja">screen readerでの読み上げを実際に確認した。</span><span class="en" lang="en">You actually confirmed screen-reader announcements.</span></li>
+<li><span class="ja" lang="ja">挙動の前提バージョンを明記して検証した。</span><span class="en" lang="en">You verified behavior while noting its prerequisite version.</span></li></ul>
+      </section>
+
+      <section class="section" id="stretch">
+        <div class="section-heading"><p class="eyebrow">Go further</p><h2><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></h2></div>
+        <div class="callout callout--success"><span class="ja" lang="ja">画像プレビューを開いた状態でTab/Shift+Tabを操作し、フォーカスが正しく移動することを確認してください。</span><span class="en" lang="en">With an image preview open, operate Tab/Shift+Tab and confirm focus moves correctly.</span></div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">Narrator と Windows のハイコントラストテーマの組み合わせで確認するのが基本です。低ディスク容量バナーはアプリデータが置かれている Windows のボリュームを対象とし、Files タブの隠しファイル表示はエクスプローラー自体の設定とは独立しています。</span><span class="en" lang="en">Narrator paired with a Windows high-contrast theme is the natural combination to test with. The low-disk-space banner reads the Windows volume where app data lives, and the Files tab&#039;s hidden-file toggle is independent of Windows Explorer&#039;s own setting.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">VoiceOver 向けの読み上げ修正（オンボーディングの「setting up」画面など、v1.1.0 で修正）が該当します。Voice dictation は App settings で構成した shortcut を使います。</span><span class="en" lang="en">VoiceOver announcement fixes apply here, including the onboarding setting-up screen fixed in v1.1.0. Voice dictation uses the shortcut configured in the app settings.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">確認を始める前に、ディストリビューションのスクリーンリーダー（Orca など）とシステムのコントラストテーマが有効になっていることを確認してください。AppImage の実行権限設定はアプリ内のアクセシビリティ設定に影響しません。</span><span class="en" lang="en">Before testing, confirm your distribution&#039;s screen reader (such as Orca) and system contrast theme are active. AppImage execute-permission settings don&#039;t affect in-app accessibility settings.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">WSL 内のリポジトリを扱う場合でも、App 自体は常に Windows 側で動作します（ラボ 01 参照）。そのためアクセシビリティ設定、音声入力、ローカルディスク容量の見積もりはすべて Windows 側のインストールが基準になり、WSL 側のファイルシステムにはコードとその使用容量だけが存在します。</span><span class="en" lang="en">Even when working on a WSL-hosted repository, the app itself always runs on the Windows side (see lab 01). So accessibility settings, voice input, and local disk-space estimates are all governed by the Windows install; only the code and its own disk usage live inside the WSL filesystem.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions" rel="noopener noreferrer">Working with agent sessions in the GitHub Copilot app</a></li>
+<li><a href="https://docs.github.com/en/copilot/how-tos/copilot-on-github/use-copilot-agents/manage-and-track-agents" rel="noopener noreferrer">Managing agent sessions</a></li>
+<li><a href="https://docs.github.com/en/copilot/concepts/agents/copilot-cli/about-copilot-cli" rel="noopener noreferrer">About GitHub Copilot CLI</a></li>
+<li><a href="https://github.com/github/app#readme" rel="noopener noreferrer">GitHub Copilot app README</a></li>
+<li><a href="https://github.com/github/app/releases/tag/v1.1.2" rel="noopener noreferrer">GitHub Copilot app v1.1.2 release</a></li>
+<li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions#using-voice-dictation" rel="noopener noreferrer">Working with agent sessions: voice dictation</a></li>
+<li><a href="https://github.com/github/app/blob/main/changelog.md#v114" rel="noopener noreferrer">GitHub Copilot app v1.1.4 changelog</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></h2></div>
+        <ul class="plain-list related-list"><li><a class="badge" href="07-chat-archive-rewind-compact.html"><span class="mono">07</span> <span class="ja" lang="ja">チャットのアーカイブ・巻き戻し・コンパクト化</span><span class="en" lang="en">Archive, rewind, and compact chats</span></a></li>
+<li><a class="badge" href="08-cloud-wsl-vscode-cli-handoff.html"><span class="mono">08</span> <span class="ja" lang="ja">クラウド・WSL・VS Code・CLIへのハンドオフ</span><span class="en" lang="en">Hand off across cloud, WSL, VS Code, and CLI</span></a></li>
+<li><a class="badge" href="20-memory-chronicle-insights.html"><span class="mono">20</span> <span class="ja" lang="ja">Memory・Chronicle・Insights</span><span class="en" lang="en">Memory, Chronicle, and Insights</span></a></li>
+<li><a class="badge" href="24-worktree-attribution-diagnostics.html"><span class="mono">24</span> <span class="ja" lang="ja">Worktreeの保存場所、コミット帰属、診断の安全な観察</span><span class="en" lang="en">Worktree location, commit attribution, and diagnostics: a safe guided observation</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Lab navigation">
+        <a href="20-memory-chronicle-insights.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のラボ</span><span class="en" lang="en">Previous lab</span></span><br><strong><span class="ja" lang="ja">Memory・Chronicle・Insights</span><span class="en" lang="en">Memory, Chronicle, and Insights</span></strong></a>
+        <a href="22-stacked-pr-copilot-review.html"><span class="muted"><span class="ja" lang="ja">次のラボ</span><span class="en" lang="en">Next lab</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">スタックPR、Copilotレビュー、マージキュー、Agent Merge</span><span class="en" lang="en">Stacked PRs, Copilot review, merge queue, and Agent Merge</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Lab progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 25</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="25"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このラボを完了にする</span><span class="en" lang="en">Mark this lab complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#persona"><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></a></li>
+          <li><a href="#objectives"><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Objectives</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#availability"><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></a></li>
+          <li><a href="#before-you-start"><span class="ja" lang="ja">開始前の確認</span><span class="en" lang="en">Before you start</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#decision-points"><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></a></li>
+          <li><a href="#checkpoints"><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#under-the-hood"><span class="ja" lang="ja">Under the hood</span><span class="en" lang="en">Under the hood</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#recovery"><span class="ja" lang="ja">復旧手順</span><span class="en" lang="en">Recovery</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#rubric"><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></a></li>
+          <li><a href="#stretch"><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></a></li>
+          <li><a href="#platforms"><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+          <li><a href="#related"><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="ja" lang="ja">v1.1.4 機能ガイド</span><span class="en" lang="en">v1.1.4 feature guide</span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">v1.1.2 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.1.2 hands-on (archive)</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.0.12 hands-on (archive)</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性、ポリシー、料金は公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability, policy, and pricing in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>

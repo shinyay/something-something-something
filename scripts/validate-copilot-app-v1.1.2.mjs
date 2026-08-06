@@ -361,7 +361,8 @@ for (const file of newHtmlFiles) {
   const html = await readFile(file, "utf8");
   const firstScriptStart = html.indexOf("<script>");
   check(
-    firstScriptStart >= 0 && html.slice(firstScriptStart).startsWith(firstThemeScript),
+    firstScriptStart >= 0 &&
+      html.slice(firstScriptStart).replaceAll("\r\n", "\n").startsWith(firstThemeScript),
     `${file} does not use the required theme detection script first`,
   );
   check(
@@ -518,10 +519,10 @@ for (const term of [
 
 const archiveFeature = await readFile("copilot-app-v1.0.12/index.html", "utf8");
 const archiveHandsOn = await readFile("copilot-app-v1.0.12-hands-on/index.html", "utf8");
-check(archiveFeature.includes("../copilot-app-v1.1.2/"), "Feature archive lacks latest-version link");
+check(archiveFeature.includes("../copilot-app-v1.1.4/"), "Feature archive lacks latest-version link");
 check(archiveFeature.includes("../copilot-app/"), "Feature archive lacks stable-hub link");
 check(
-  archiveHandsOn.includes("../copilot-app-v1.1.2-hands-on/"),
+  archiveHandsOn.includes("../copilot-app-v1.1.4-hands-on/"),
   "Hands-on archive lacks latest-version link",
 );
 check(archiveHandsOn.includes("../copilot-app/"), "Hands-on archive lacks stable-hub link");

@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Learn to run two independent pieces of work in the same repository at once by splitting them across a new working tree session and a local repository session, without colliding on files.">
+<title>GitHub Copilot App v1.1.4 — Run parallel sessions with worktrees and the local repository</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="04" data-guide-count="25">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.4 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.4</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="lab-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">ラボ 04 / 25</span><span class="en" lang="en">Lab 04 of 25</span></p>
+    <h1 id="lab-title"><span class="ja" lang="ja">Worktree とローカルリポジトリで並列セッションを実行</span><span class="en" lang="en">Run parallel sessions with worktrees and the local repository</span></h1>
+    <p class="lede"><span class="ja" lang="ja">同じリポジトリで独立した2つの作業を、新しい working tree セッションとローカルリポジトリセッションに分けて同時に進め、ファイルの衝突を避ける方法を学びます。</span><span class="en" lang="en">Learn to run two independent pieces of work in the same repository at once by splitting them across a new working tree session and a local repository session, without colliding on files.</span></p>
+    <div class="meta-row" aria-label="Lab metadata">
+      <span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.4 向け再公開（中核フローは v1.1.2 で検証、現在差分を source-check）</span><span class="en" lang="en">Republished for v1.1.4 (core flow verified at v1.1.2; current deltas source-checked)</span></span>
+      <span class="badge"><span class="ja" lang="ja">約45分</span><span class="en" lang="en">About 45 min</span></span>
+      <span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span>
+    </div>
+    <div class="chips" aria-label="Journeys and tracks"><a class="badge badge--accent" href="index.html#journey-j2"><span class="ja" lang="ja">worktreeとSession Gridによる並列マルチセッション配信</span><span class="en" lang="en">Parallel multi-session delivery with worktrees</span></a> <a class="badge" href="index.html#track-t1"><span class="ja" lang="ja">セッション/worktreeアーキテクチャと保存場所の構成</span><span class="en" lang="en">Session/worktree architecture and configurable location</span></a></div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#labs"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">25 ラボ一覧</span><span class="en" lang="en">All 25 labs</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="persona">
+        <div class="section-heading"><p class="eyebrow">Scenario &amp; persona</p><h2><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">サンプルリポジトリで、README の誤字修正とサンプルスクリプトの小さな改善という2つの独立したタスクを、同時に別々のセッションとして進めます。1つは新しい working tree、もう1つはローカルリポジトリで実行し、両方が互いのファイルを壊さないことを確認します。</span><span class="en" lang="en">In a sample repository, run two independent low-risk tasks — fixing a README typo and making a small script improvement — as two separate sessions at the same time. Run one in a new working tree and the other against the local repository, and confirm neither session disturbs the other&#039;s files.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">担当者像</span><span class="en" lang="en">Persona</span></h3><p><span class="ja" lang="ja">複数の変更を同時並行で進めるエンジニアとして、セッションの実行場所を分離します。</span><span class="en" lang="en">As an engineer running several changes concurrently, isolate where each session executes.</span></p></article>
+        </div>
+        <div class="callout"><strong><span class="ja" lang="ja">なぜ重要か</span><span class="en" lang="en">Why it matters</span>:</strong> <span class="ja" lang="ja">working tree/ローカルリポジトリ/cloud sandboxの違いを理解しないと、並列セッションが互いのuncommitted changesを壊す可能性があります。</span><span class="en" lang="en">Without understanding the difference between a working tree, the local repository, and a cloud sandbox, parallel sessions can clobber each other&#039;s uncommitted changes.</span></div>
+      </section>
+
+      <section class="section" id="objectives">
+        <div class="section-heading"><p class="eyebrow">Goals</p><h2><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Learning objectives</span></h2></div>
+        <ul><li><span class="ja" lang="ja">新しいworking treeでセッションを実行する</span><span class="en" lang="en">Run a session in a new working tree</span></li>
+<li><span class="ja" lang="ja">ローカルリポジトリ実行との違いを説明する</span><span class="en" lang="en">Explain the difference from running against the local repository</span></li>
+<li><span class="ja" lang="ja">cloud sandboxがパブリックプレビューであることを認識する</span><span class="en" lang="en">Recognize that cloud sandbox sessions are public preview</span></li></ul>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">Git がインストールされ、<code>git worktree list</code> をターミナルで実行できること。</span><span class="en" lang="en">Git is installed and <code>git worktree list</code> works from a terminal.</span></li>
+<li><span class="ja" lang="ja">GitHub Copilot App v1.1.4 で、変更してよいサンプルリポジトリがプロジェクトとして接続済みであること（ラボ01を参照）。</span><span class="en" lang="en">GitHub Copilot app v1.1.4 with a sample repository you are allowed to change already connected as a project (see lab 01).</span></li>
+<li><span class="ja" lang="ja">クラウドサンドボックスを試す場合は、組織またはエンタープライズで Cloud Sandbox access ポリシーが有効になっていること。</span><span class="en" lang="en">If you want to try a cloud sandbox, the Cloud Sandbox access policy is enabled for your organization or enterprise.</span></li></ul>
+      </section>
+
+      <section class="section" id="availability">
+        <div class="section-heading"><p class="eyebrow">Availability</p><h2><span class="ja" lang="ja">公式な提供状況とスコープ</span><span class="en" lang="en">Official availability and scope</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></h3><p><span class="ja" lang="ja">v1.1.4 版として再公開。中核フローは v1.1.2 で検証され、v1.1.3 / v1.1.4 差分と情報源を source-check しています。新しい working tree での実行とローカルリポジトリでの実行はすべての Copilot プランで利用できます。クラウドサンドボックスセッションはパブリックプレビューです。</span><span class="en" lang="en">Republished for v1.1.4. The core flow was verified for v1.1.2; v1.1.3/v1.1.4 deltas and source provenance were checked. Running in a new working tree or the local repository is available on all Copilot plans. Cloud sandbox sessions are public preview.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">対象範囲</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドは GitHub Copilot App のセッション実行先（新しい working tree、ローカルリポジトリ、クラウドサンドボックス）を扱います。ローカルサンドボックス化（Copilot CLI の <code>/sandbox enable</code>）やクラウドサンドボックスの CLI 起動（<code>copilot --cloud</code>）は隣接する Copilot CLI/サンドボックス機能であり、App 自体の UI 操作ではないため、参考情報としてのみ扱います。</span><span class="en" lang="en">This guide covers where a GitHub Copilot app session runs — a new working tree, the local repository, or a cloud sandbox. Local sandboxing (Copilot CLI&#039;s <code>/sandbox enable</code>) and launching a cloud sandbox from the CLI (<code>copilot --cloud</code>) are adjacent Copilot CLI/sandbox capabilities, not App UI controls, and are mentioned here only as background.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">時間の見積もり</span><span class="en" lang="en">Time estimate</span></h3><p><span class="ja" lang="ja">hands-on操作の目安は約45分です。download、network、service latencyは含みません。</span><span class="en" lang="en">Hands-on work is estimated at about 45 minutes, excluding downloads, network delay, and service latency.</span></p></article>
+          <article class="card"><h3><span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span> <span class="ja" lang="ja">情報源の裏付け</span><span class="en" lang="en">Source provenance</span></h3><p><span class="ja" lang="ja">セッションの実行場所（working tree／ローカルリポジトリ／cloud sandbox）という選択肢の概念は docs-grounded です。具体的な信頼性改善やcloud sandboxの提供状況は release-note-grounded です。 手順内の正確なメニュー名・ボタン名・クリック順は変更履歴（changelog）に基づく記述であり、スクリーンショット付きの公式ウォークスルーで検証されたものではありません。実際の画面がここと異なる場合は、画面に表示されている表記を優先してください。</span><span class="en" lang="en">The concept of choosing where a session runs (working tree, local repository, or cloud sandbox) is docs-grounded. Specific reliability improvements and cloud-sandbox availability are release-note-grounded. Exact menu names, button labels, and click order in the steps are grounded in changelog entries, not an illustrated official walkthrough. If your running build&#039;s UI differs from this text, follow what the screen actually shows instead.</span></p></article>
+        </div>
+      </section>
+
+      <section class="section" id="before-you-start">
+        <div class="section-heading"><p class="eyebrow">Before you start</p><h2><span class="ja" lang="ja">開始前の安全確認</span><span class="en" lang="en">Before-you-start safety check</span></h2></div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全・データ・コスト・権限への影響</span><span class="en" lang="en">Safety, data, cost, and permission implications</span>:</strong> <span class="ja" lang="ja">ローカルリポジトリモードは既存のチェックアウトを直接変更します。エディターや別のターミナルで同じフォルダーを同時に編集しないでください。まずは変更してよいサンプルリポジトリで試し、資格情報やシークレットをプロンプトに含めないでください。</span><span class="en" lang="en">Local repository mode edits your existing checkout directly. Do not edit the same folder in an editor or another terminal at the same time. Start with a sample repository you are allowed to change, and never put credentials or secrets in a prompt.</span></div>
+      </section>
+
+      <section class="section" id="launchers">
+        <div class="section-heading"><p class="eyebrow">Open safely</p><h2><span class="ja" lang="ja">コピー可能なプロンプト／コマンドとランチャー</span><span class="en" lang="en">Copyable prompts/commands and launchers</span></h2></div>
+
+        <div class="card-grid"><article class="card">
+  <h3><span class="ja" lang="ja">github/app をアプリで開く</span><span class="en" lang="en">Open github/app in the app</span></h3>
+  <p><span class="ja" lang="ja">安全なホスト型ランチャーを使って公開のサンプルリポジトリを開きます。アプリ側で確認してから接続されます。</span><span class="en" lang="en">Uses the safe hosted launcher to open the public sample repository. The app asks for confirmation before connecting it.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fgithub.com%2Fgithub%2Fapp" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card">
+  <h3><span class="ja" lang="ja">working tree 比較セッションを開く</span><span class="en" lang="en">Open a working-tree comparison session</span></h3>
+  <p><span class="ja" lang="ja">実行先の違いを説明させる読み取り専用プロンプトを添えて、新しいセッションを開きます。</span><span class="en" lang="en">Opens a new session preloaded with a read-only prompt that asks the agent to explain the run-location difference.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fsession%2Fnew%3Frepo%3Dgithub%252Fapp%26mode%3Dinteractive%26prompt%3DInspect%2520this%2520repository%2520only.%2520Explain%2520how%2520a%2520new%2520working%2520tree%2520session%2520differs%2520from%2520a%2520local%2520repository%2520session%2520for%2520this%2520repo%252C%2520and%2520do%2520not%2520change%2520any%2520files." rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+      </section>
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="mono">1.</span> <span class="ja" lang="ja">worktree の基準状態を確認する</span><span class="en" lang="en">Confirm the worktree baseline</span></h3>
+  <p><span class="ja" lang="ja">セッションを開始する前に、ターミナルで既存の worktree を確認しておきます。</span><span class="en" lang="en">Before starting any session, check existing worktrees from a terminal.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">Git worktree の確認</span><span class="en" lang="en">Check Git worktrees</span></span>
+    <button class="copy-button" type="button" data-copy="lab-04-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-04-code-1" data-language="shell">git worktree list</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">メインの worktree だけが表示され、セッション用の worktree はまだ存在しません。</span><span class="en" lang="en">Only the main worktree entry appears; no session worktree exists yet.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">2.</span> <span class="ja" lang="ja">セッションAを新しい working tree で開始する</span><span class="en" lang="en">Start Session A in a new working tree</span></h3>
+  <p><span class="ja" lang="ja">新しいセッションを作成し、プロンプト欄下の実行先ドロップダウンで「新しい working tree」を選び、セッションA用のプロンプトを送ります。</span><span class="en" lang="en">Create a new session, choose &quot;New working tree&quot; from the run-location dropdown below the prompt field, and send the Session A prompt.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">セッションA: working tree 用プロンプト</span><span class="en" lang="en">Session A: working tree prompt</span></span>
+    <button class="copy-button" type="button" data-copy="lab-04-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-04-code-2" data-language="text">Fix an obvious typo in this repository&#039;s README and explain the diff. Do not touch any other file.</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">セッションAが専用のブランチで開始され、エージェントが変更するまで Changes タブは空のままです。</span><span class="en" lang="en">Session A starts on its own dedicated branch, and the Changes tab stays empty until the agent edits the README.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">3.</span> <span class="ja" lang="ja">セッションBをローカルリポジトリで開始する</span><span class="en" lang="en">Start Session B in the local repository</span></h3>
+  <p><span class="ja" lang="ja">同じプロジェクトで2つ目のセッションを作成し、今度は「ローカルリポジトリ」を選んでセッションB用のプロンプトを送ります。ローカルリポジトリモードは既存のチェックアウトを直接変更するため、同じフォルダーを他で同時編集しないでください。</span><span class="en" lang="en">Create a second session in the same project, this time choosing &quot;Local repository&quot;, and send the Session B prompt. Because local repository mode edits your existing checkout directly, avoid editing the same folder elsewhere at the same time.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">セッションB: ローカルリポジトリ用プロンプト</span><span class="en" lang="en">Session B: local repository prompt</span></span>
+    <button class="copy-button" type="button" data-copy="lab-04-code-3" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-04-code-3" data-language="text">Suggest and apply one small readability improvement to the smallest script in this repository, and explain the diff. Do not touch the README.</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">セッションBは既存のチェックアウトに対して直接作業し、ファイルエクスプローラーで見ても変更がその場に反映されます。</span><span class="en" lang="en">Session B works directly against your existing checkout, and the change is visible immediately if you look at the folder in a file explorer.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">4.</span> <span class="ja" lang="ja">読み取り専用プロンプトで違いを比較する</span><span class="en" lang="en">Compare the difference with a read-only prompt</span></h3>
+  <p><span class="ja" lang="ja">どちらかのセッション（または新しい Quick chat）で比較プロンプトを送り、実行先ごとの影響範囲をエージェントに説明させます。</span><span class="en" lang="en">In either session (or a new Quick chat), send the comparison prompt and have the agent explain the impact of each run location.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">実行先を比較するプロンプト</span><span class="en" lang="en">Prompt to compare run locations</span></span>
+    <button class="copy-button" type="button" data-copy="lab-04-code-4" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-04-code-4" data-language="text">Explain the practical difference between running this session in a new working tree versus the local repository, and tell me which files or branch would be affected either way.</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">実行先を比較するプロンプト（日本語）</span><span class="en" lang="en">Prompt to compare run locations (Japanese)</span></span>
+    <button class="copy-button" type="button" data-copy="lab-04-code-5" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-04-code-5" data-language="text">新しい working tree で実行する場合と、ローカルリポジトリで実行する場合の実務上の違いを説明してください。どちらの場合もどのファイルやブランチが影響を受けるか教えてください。</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">working tree セッションは専用のブランチ/フォルダーに隔離され、ローカルリポジトリセッションは既存のチェックアウトを共有するという説明が返ります。</span><span class="en" lang="en">The agent&#039;s answer confirms the working tree session is isolated on its own branch/folder, while the local repository session shares your existing checkout.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">5.</span> <span class="ja" lang="ja"><code>git worktree list</code> で衝突がないことを確認する</span><span class="en" lang="en">Verify no collisions with git worktree list</span></h3>
+  <p><span class="ja" lang="ja">再び <code>git worktree list</code> を実行し、セッションA用のworktreeだけが追加されていることを確認します。</span><span class="en" lang="en">Run <code>git worktree list</code> again and confirm only Session A added a new worktree entry.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">Git worktree の確認</span><span class="en" lang="en">Check Git worktrees</span></span>
+    <button class="copy-button" type="button" data-copy="lab-04-code-6" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-04-code-6" data-language="shell">git worktree list</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">セッションA用の新しいディレクトリとブランチが表示され、セッションBには対応するworktreeエントリがありません。</span><span class="en" lang="en">A new directory and branch appear for Session A, while Session B has no corresponding worktree entry.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">6.</span> <span class="ja" lang="ja">任意: クラウドサンドボックスと比較する</span><span class="en" lang="en">Optional: compare with a cloud sandbox</span></h3>
+  <p><span class="ja" lang="ja">Cloud Sandbox access ポリシーが有効な場合は、3つ目のセッションを「クラウドサンドボックス」で開始し、GitHubがホストする隔離環境で動くことを確認します。これはパブリックプレビュー機能です。</span><span class="en" lang="en">If the Cloud Sandbox access policy is enabled, start a third session choosing &quot;Cloud sandbox&quot; and confirm it runs in a GitHub-hosted isolated environment. This is a public preview feature.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">セッションのラベルがクラウドサンドボックスであることを示し、ローカルの worktree やチェックアウトには一切変更がありません。</span><span class="en" lang="en">The session&#039;s label indicates a cloud sandbox, and no local worktree or checkout files change for that session.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">7.</span> <span class="ja" lang="ja">サイドバーのグループ表示を確認する</span><span class="en" lang="en">Review the sidebar grouping</span></h3>
+  <p><span class="ja" lang="ja">サイドバーで、セッションAとBが同じリポジトリの下にグループ化され、それぞれ別のブランチ名で表示されていることを確認します。</span><span class="en" lang="en">In the sidebar, confirm Session A and Session B are grouped under the same repository, each showing a distinct branch name.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">サイドバーに両方のセッションが同じプロジェクトグループ内で、別々のブランチとして表示されます。</span><span class="en" lang="en">The sidebar lists both sessions under the same project group, each with its own branch.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="decision-points">
+        <div class="section-heading"><p class="eyebrow">Decide</p><h2><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></h2></div>
+        <ul class="decision-list"><li><span class="ja" lang="ja">新しいworktreeで分離するか、ローカルリポジトリで直接進めるか。</span><span class="en" lang="en">Isolate in a new worktree, or proceed directly against the local repository?</span></li>
+<li><span class="ja" lang="ja">クラウドサンドボックスを使うか、ローカル実行に留めるか。</span><span class="en" lang="en">Use a cloud sandbox, or stay with local execution?</span></li></ul>
+      </section>
+
+      <section class="section" id="checkpoints">
+        <div class="section-heading"><p class="eyebrow">Checkpoints</p><h2><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></h2></div>
+        <ul class="checkpoint-list"><li><span class="ja" lang="ja">チェックポイント1: 新しいブランチとworktreeが作成されている。</span><span class="en" lang="en">Checkpoint 1: a new branch and worktree were created.</span></li>
+<li><span class="ja" lang="ja">チェックポイント2: 他のセッションのuncommitted changesに影響がない。</span><span class="en" lang="en">Checkpoint 2: other sessions&#039; uncommitted changes are unaffected.</span></li></ul>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">少なくとも2つのセッションが同じリポジトリで同時に実行され、互いのブランチやファイルを上書きしていない。</span><span class="en" lang="en">At least two sessions ran at the same time in the same repository without overwriting each other&#039;s branch or files.</span></li>
+<li><span class="ja" lang="ja"><code>git worktree list</code> の出力から、working tree セッションが専用のディレクトリとブランチを持つことを確認した。</span><span class="en" lang="en">The <code>git worktree list</code> output confirmed the working tree session has its own directory and branch.</span></li>
+<li><span class="ja" lang="ja">ローカルリポジトリセッションが既存のチェックアウトを直接変更したことを確認した。</span><span class="en" lang="en">You confirmed the local repository session changed your existing checkout directly.</span></li></ul>
+      </section>
+
+      <section class="section" id="under-the-hood">
+        <div class="section-heading"><p class="eyebrow">Mental model</p><h2><span class="ja" lang="ja">Under the hood: 内部で何が起きているか</span><span class="en" lang="en">Under the hood: what happens internally</span></h2></div>
+        <p><span class="ja" lang="ja">worktreeは同じGitリポジトリを共有しつつ独立した作業ディレクトリとブランチを持つ仕組みで、アプリはセッションごとに専用のworktreeとブランチを自動管理します。</span><span class="en" lang="en">A worktree is an independent working directory and branch that shares the same Git repository, and the app automatically manages a dedicated worktree and branch per session.</span></p>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング（症状から探す）</span><span class="en" lang="en">Troubleshooting (start from your symptom)</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja">ローカルリポジトリセッションの変更がエディターに反映されない</span><span class="en" lang="en">Changes from the local repository session don&#039;t show up in your editor</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">エディターでフォルダーを再読み込みするか、ファイルウォッチャーの設定を確認してください。ローカルリポジトリモードは実際のチェックアウトを変更するため、外部エディターがファイル変更通知を見逃していないか確認します。</span><span class="en" lang="en">Reload the folder in your editor or check its file watcher settings. Local repository mode edits the real checkout, so confirm your external editor isn&#039;t missing file-change notifications.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">新しい working tree セッションを開始すると低ディスク容量の警告バナーが出る</span><span class="en" lang="en">Starting a new working tree session shows a low disk space warning banner</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">サイドバーの低ディスク容量バナーを確認し、不要な古いセッションやworktreeを削除してから再試行してください。</span><span class="en" lang="en">Check the low disk space warning banner in the sidebar and remove old, unneeded sessions or worktrees before retrying.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">クラウドサンドボックスの選択肢が実行先ドロップダウンに出ない</span><span class="en" lang="en">Cloud sandbox doesn&#039;t appear as a run-location option</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">組織またはエンタープライズの管理者に Cloud Sandbox access ポリシーの有効化を依頼してください。このポリシーが無効だとクラウドサンドボックスはApp上で選択できません。</span><span class="en" lang="en">Ask an organization or enterprise admin to enable the Cloud Sandbox access policy; without it, the cloud sandbox option isn&#039;t selectable in the app.</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="recovery">
+        <div class="section-heading"><p class="eyebrow">Recovery path</p><h2><span class="ja" lang="ja">明示的な復旧手順</span><span class="en" lang="en">Explicit recovery path</span></h2></div>
+        <div class="callout callout--danger"><span class="ja" lang="ja">worktreeが壊れた、または削除に失敗した場合は、セッションを閉じてからGitのworktreeコマンドで手動整理し、必要ならブランチだけを復元してください。</span><span class="en" lang="en">If a worktree becomes corrupted or fails to delete, close the session and manually clean it up with Git worktree commands, restoring only the branch if needed.</span></div>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">両方のテストセッションをアーカイブまたは削除します。削除は元に戻せないため、必要な変更がPRになっているか確認します。</span><span class="en" lang="en">Archive or delete both test sessions. Deletion cannot be undone, so confirm any change you want to keep is already in a pull request.</span></li>
+<li><span class="ja" lang="ja"><code>git worktree list</code> で残っている不要なworktreeを確認し、<code>git worktree remove</code> で片付けます。</span><span class="en" lang="en">Check <code>git worktree list</code> for leftover worktrees you no longer need and clean them up with <code>git worktree remove</code>.</span></li>
+<li><span class="ja" lang="ja">クラウドサンドボックスセッションを試した場合は、使わなくなったら削除して従量課金の使用を止めます。削除するとスナップショットも復元できなくなります。</span><span class="en" lang="en">If you tried a cloud sandbox session, delete it when you&#039;re done to stop metered usage. Deleting it also removes its snapshot, which cannot be recovered.</span></li></ol>
+      </section>
+
+      <section class="section" id="rubric">
+        <div class="section-heading"><p class="eyebrow">Success rubric</p><h2><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></h2></div>
+        <ul class="rubric-list"><li><span class="ja" lang="ja">working tree、ローカルリポジトリ、cloud sandboxの違いを説明できる。</span><span class="en" lang="en">You can explain the difference between a working tree, local repository, and cloud sandbox.</span></li>
+<li><span class="ja" lang="ja">並列セッションが互いのuncommitted changesに影響していない。</span><span class="en" lang="en">Parallel sessions do not affect each other&#039;s uncommitted changes.</span></li>
+<li><span class="ja" lang="ja">使用後にworktreeとブランチを片付けた。</span><span class="en" lang="en">You cleaned up the worktree and branch after use.</span></li></ul>
+      </section>
+
+      <section class="section" id="stretch">
+        <div class="section-heading"><p class="eyebrow">Go further</p><h2><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></h2></div>
+        <div class="callout callout--success"><span class="ja" lang="ja">同じリポジトリに対して2つのworktreeセッションを同時に開き、片方をコミットしてからもう片方のdiffが独立していることを確認してください。</span><span class="en" lang="en">Open two worktree sessions on the same repository simultaneously, commit in one, and confirm the other session&#039;s diff stays independent.</span></div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">Windows では worktree とローカルリポジトリの両方がネイティブファイルシステム上で動作します。WSL内のリポジトリを扱う場合はラボ08のWSLハンドオフを参照してください。</span><span class="en" lang="en">On Windows, both worktree and local repository sessions run on the native filesystem. For repositories inside WSL, see the WSL handoff in lab 08.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">macOSではDMGビルドのAppがローカルgit worktreeを作成します。初回起動時にGatekeeperの確認が表示される場合があります。</span><span class="en" lang="en">On macOS, the DMG build of the app creates local git worktrees. You may see a first-launch Gatekeeper confirmation.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">LinuxのAppImageビルドでは、worktreeはユーザーのホームディレクトリ配下に作成されます。実行権限とディスク容量を確認してください。</span><span class="en" lang="en">On the Linux AppImage build, worktrees are created under your home directory. Check execute permission and available disk space.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">WSL内のリポジトリを使う場合、デスクトップアプリ自体はWindows側にインストールしたまま、リモート接続経由でセッションを実行します。v1.1.2ではWSLリモート環境の接続信頼性が改善されています。</span><span class="en" lang="en">For repositories inside WSL, keep the desktop app installed on Windows and run sessions through the remote connection. v1.1.2 improves connection reliability for WSL remote environments.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions" rel="noopener noreferrer">Working with agent sessions in the GitHub Copilot app</a></li>
+<li><a href="https://docs.github.com/en/copilot/concepts/about-cloud-and-local-sandboxes" rel="noopener noreferrer">About cloud and local sandboxes for GitHub Copilot</a></li>
+<li><a href="https://github.com/github/app#readme" rel="noopener noreferrer">GitHub Copilot app README</a></li>
+<li><a href="https://github.com/github/app/releases/tag/v1.1.0" rel="noopener noreferrer">GitHub Copilot app v1.1.0 release</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></h2></div>
+        <ul class="plain-list related-list"><li><a class="badge" href="05-orchestration-nested-sessions.html"><span class="mono">05</span> <span class="ja" lang="ja">オーケストレーションとネストされたセッション</span><span class="en" lang="en">Orchestration and nested sessions</span></a></li>
+<li><a class="badge" href="06-session-grid-side-chats.html"><span class="mono">06</span> <span class="ja" lang="ja">Session Grid とサイドチャットで複数セッションを俯瞰する</span><span class="en" lang="en">Oversee multiple sessions with Session Grid and side chats</span></a></li>
+<li><a class="badge" href="09-files-diffs-browser-present-mode.html"><span class="mono">09</span> <span class="ja" lang="ja">ファイル・差分・ブラウザプレビュー・プレゼンテーションモード</span><span class="en" lang="en">Files, diffs, browser preview, and Present mode</span></a></li>
+<li><a class="badge" href="24-worktree-attribution-diagnostics.html"><span class="mono">24</span> <span class="ja" lang="ja">Worktreeの保存場所、コミット帰属、診断の安全な観察</span><span class="en" lang="en">Worktree location, commit attribution, and diagnostics: a safe guided observation</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Lab navigation">
+        <a href="03-first-session-modes.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のラボ</span><span class="en" lang="en">Previous lab</span></span><br><strong><span class="ja" lang="ja">セッションを開始してモードを選ぶ</span><span class="en" lang="en">Start a session and choose a mode</span></strong></a>
+        <a href="05-orchestration-nested-sessions.html"><span class="muted"><span class="ja" lang="ja">次のラボ</span><span class="en" lang="en">Next lab</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">オーケストレーションとネストされたセッション</span><span class="en" lang="en">Orchestration and nested sessions</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Lab progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 25</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="25"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このラボを完了にする</span><span class="en" lang="en">Mark this lab complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#persona"><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></a></li>
+          <li><a href="#objectives"><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Objectives</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#availability"><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></a></li>
+          <li><a href="#before-you-start"><span class="ja" lang="ja">開始前の確認</span><span class="en" lang="en">Before you start</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#decision-points"><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></a></li>
+          <li><a href="#checkpoints"><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#under-the-hood"><span class="ja" lang="ja">Under the hood</span><span class="en" lang="en">Under the hood</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#recovery"><span class="ja" lang="ja">復旧手順</span><span class="en" lang="en">Recovery</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#rubric"><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></a></li>
+          <li><a href="#stretch"><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></a></li>
+          <li><a href="#platforms"><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+          <li><a href="#related"><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="ja" lang="ja">v1.1.4 機能ガイド</span><span class="en" lang="en">v1.1.4 feature guide</span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">v1.1.2 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.1.2 hands-on (archive)</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.0.12 hands-on (archive)</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性、ポリシー、料金は公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability, policy, and pricing in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,746 @@
+{
+  "browser": "Microsoft Edge headless",
+  "viewport": "390x844",
+  "themes": [
+    {
+      "page": "copilot-app/index.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.2/index.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "className": "icon-button",
+          "right": 410,
+          "width": 64,
+          "text": "EN"
+        },
+        {
+          "tag": "SPAN",
+          "className": "",
+          "right": 398,
+          "width": 18,
+          "text": "EN"
+        },
+        {
+          "tag": "BUTTON",
+          "className": "icon-button",
+          "right": 489,
+          "width": 76,
+          "text": "Dark"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 442,
+          "width": 16,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 438,
+          "width": 8,
+          "text": ""
+        },
+        {
+          "tag": "SPAN",
+          "className": "header-nav__label",
+          "right": 477,
+          "width": 29,
+          "text": "Dark"
+        }
+      ],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.2-hands-on/index.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "className": "icon-button",
+          "right": 410,
+          "width": 64,
+          "text": "EN"
+        },
+        {
+          "tag": "SPAN",
+          "className": "",
+          "right": 398,
+          "width": 18,
+          "text": "EN"
+        },
+        {
+          "tag": "BUTTON",
+          "className": "icon-button",
+          "right": 490,
+          "width": 76,
+          "text": "Dark"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 442,
+          "width": 16,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 438,
+          "width": 8,
+          "text": ""
+        },
+        {
+          "tag": "SPAN",
+          "className": "header-nav__label",
+          "right": 478,
+          "width": 29,
+          "text": "Dark"
+        }
+      ],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.0.12/index.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": false,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.0.12-hands-on/index.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": false,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4/index.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4/releases.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/index.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [
+        {
+          "tag": "TABLE",
+          "className": "",
+          "right": 745,
+          "width": 736,
+          "text": "10トラック x 6ジャーニーのラボ対応表10 tracks by 6 journeys lab coverage table\n    トラック ＼ ジャーニー"
+        },
+        {
+          "tag": "THEAD",
+          "className": "",
+          "right": 745,
+          "width": 735,
+          "text": "トラック ＼ ジャーニーTrack \\ Journey1. 導入から最初の検証済みPRまでInstall to first verified PR\n2. wor"
+        },
+        {
+          "tag": "TR",
+          "className": "",
+          "right": 745,
+          "width": 735,
+          "text": "トラック ＼ ジャーニーTrack \\ Journey1. 導入から最初の検証済みPRまでInstall to first verified PR\n2. wor"
+        },
+        {
+          "tag": "TH",
+          "className": "",
+          "right": 474,
+          "width": 87,
+          "text": "3. Issueからstacked PR配信までIssue-to-stacked-PR delivery"
+        },
+        {
+          "tag": "SPAN",
+          "className": "ja",
+          "right": 457,
+          "width": 57,
+          "text": "Issueからstacked PR配信まで"
+        },
+        {
+          "tag": "TH",
+          "className": "",
+          "right": 523,
+          "width": 48,
+          "text": "4. 自動化されたリポジトリ運用Automated repository operations"
+        },
+        {
+          "tag": "SPAN",
+          "className": "ja",
+          "right": 503,
+          "width": 16,
+          "text": "自動化されたリポジトリ運用"
+        },
+        {
+          "tag": "TH",
+          "className": "",
+          "right": 675,
+          "width": 152,
+          "text": "5. custom agents、instructions、MCP、skills/plugins、Canvasで拡張するExtending with custo"
+        },
+        {
+          "tag": "SPAN",
+          "className": "ja",
+          "right": 652,
+          "width": 116,
+          "text": "custom agents、instructions、MCP、skills/plugins、Canvasで拡張する"
+        },
+        {
+          "tag": "TH",
+          "className": "",
+          "right": 745,
+          "width": 70,
+          "text": "6. プロダクション運用: モデル、コスト、アクセシビリティ、復旧Production operations"
+        },
+        {
+          "tag": "SPAN",
+          "className": "ja",
+          "right": 724,
+          "width": 36,
+          "text": "プロダクション運用: モデル、コスト、アクセシビリティ、復旧"
+        },
+        {
+          "tag": "TBODY",
+          "className": "",
+          "right": 745,
+          "width": 735,
+          "text": "1. セッション/worktreeアーキテクチャと保存場所の構成Session/worktree architecture and configurable l"
+        }
+      ],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/01-install-projects.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/19-mcp-skills-plugins-canvas-extensions.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/20-memory-chronicle-insights.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/21-accessibility-storage-lifecycle-recovery.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/22-stacked-pr-copilot-review.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/24-worktree-attribution-diagnostics.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/25-capstone-issue-to-landed-pr.html",
+      "theme": "light",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app/index.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.2/index.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "className": "icon-button",
+          "right": 410,
+          "width": 64,
+          "text": "EN"
+        },
+        {
+          "tag": "SPAN",
+          "className": "",
+          "right": 398,
+          "width": 18,
+          "text": "EN"
+        },
+        {
+          "tag": "BUTTON",
+          "className": "icon-button",
+          "right": 492,
+          "width": 78,
+          "text": "Light"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 442,
+          "width": 16,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 438,
+          "width": 8,
+          "text": ""
+        },
+        {
+          "tag": "SPAN",
+          "className": "header-nav__label",
+          "right": 479,
+          "width": 31,
+          "text": "Light"
+        }
+      ],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.2-hands-on/index.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [
+        {
+          "tag": "BUTTON",
+          "className": "icon-button",
+          "right": 410,
+          "width": 64,
+          "text": "EN"
+        },
+        {
+          "tag": "SPAN",
+          "className": "",
+          "right": 398,
+          "width": 18,
+          "text": "EN"
+        },
+        {
+          "tag": "BUTTON",
+          "className": "icon-button",
+          "right": 492,
+          "width": 78,
+          "text": "Light"
+        },
+        {
+          "tag": "svg",
+          "className": "",
+          "right": 442,
+          "width": 16,
+          "text": ""
+        },
+        {
+          "tag": "path",
+          "className": "",
+          "right": 438,
+          "width": 8,
+          "text": ""
+        },
+        {
+          "tag": "SPAN",
+          "className": "header-nav__label",
+          "right": 480,
+          "width": 31,
+          "text": "Light"
+        }
+      ],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.0.12/index.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": false,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.0.12-hands-on/index.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": false,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4/index.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4/releases.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/index.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [
+        {
+          "tag": "TABLE",
+          "className": "",
+          "right": 745,
+          "width": 736,
+          "text": "10トラック x 6ジャーニーのラボ対応表10 tracks by 6 journeys lab coverage table\n    トラック ＼ ジャーニー"
+        },
+        {
+          "tag": "THEAD",
+          "className": "",
+          "right": 745,
+          "width": 735,
+          "text": "トラック ＼ ジャーニーTrack \\ Journey1. 導入から最初の検証済みPRまでInstall to first verified PR\n2. wor"
+        },
+        {
+          "tag": "TR",
+          "className": "",
+          "right": 745,
+          "width": 735,
+          "text": "トラック ＼ ジャーニーTrack \\ Journey1. 導入から最初の検証済みPRまでInstall to first verified PR\n2. wor"
+        },
+        {
+          "tag": "TH",
+          "className": "",
+          "right": 474,
+          "width": 87,
+          "text": "3. Issueからstacked PR配信までIssue-to-stacked-PR delivery"
+        },
+        {
+          "tag": "SPAN",
+          "className": "ja",
+          "right": 457,
+          "width": 57,
+          "text": "Issueからstacked PR配信まで"
+        },
+        {
+          "tag": "TH",
+          "className": "",
+          "right": 523,
+          "width": 48,
+          "text": "4. 自動化されたリポジトリ運用Automated repository operations"
+        },
+        {
+          "tag": "SPAN",
+          "className": "ja",
+          "right": 503,
+          "width": 16,
+          "text": "自動化されたリポジトリ運用"
+        },
+        {
+          "tag": "TH",
+          "className": "",
+          "right": 675,
+          "width": 152,
+          "text": "5. custom agents、instructions、MCP、skills/plugins、Canvasで拡張するExtending with custo"
+        },
+        {
+          "tag": "SPAN",
+          "className": "ja",
+          "right": 652,
+          "width": 116,
+          "text": "custom agents、instructions、MCP、skills/plugins、Canvasで拡張する"
+        },
+        {
+          "tag": "TH",
+          "className": "",
+          "right": 745,
+          "width": 70,
+          "text": "6. プロダクション運用: モデル、コスト、アクセシビリティ、復旧Production operations"
+        },
+        {
+          "tag": "SPAN",
+          "className": "ja",
+          "right": 724,
+          "width": 36,
+          "text": "プロダクション運用: モデル、コスト、アクセシビリティ、復旧"
+        },
+        {
+          "tag": "TBODY",
+          "className": "",
+          "right": 745,
+          "width": 735,
+          "text": "1. セッション/worktreeアーキテクチャと保存場所の構成Session/worktree architecture and configurable l"
+        }
+      ],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/01-install-projects.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/19-mcp-skills-plugins-canvas-extensions.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/20-memory-chronicle-insights.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/21-accessibility-storage-lifecycle-recovery.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/22-stacked-pr-copilot-review.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/24-worktree-attribution-diagnostics.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    },
+    {
+      "page": "copilot-app-v1.1.4-hands-on/25-capstone-issue-to-landed-pr.html",
+      "theme": "dark",
+      "overflow": 0,
+      "h1": 1,
+      "main": true,
+      "skipVisible": true,
+      "unnamedButtons": 0,
+      "overflowing": [],
+      "unrecoverableOverflow": [],
+      "runtimeProblems": []
+    }
+  ],
+  "interactions": {
+    "releaseFilter": {
+      "visibleVersions": 1,
+      "visibleItems": 86,
+      "status": "687 件中 86 件を表示"
+    },
+    "learningFilter": {
+      "available": true,
+      "value": "j1",
+      "resumeTitle": "インストールとプロジェクト接続Install and connect projects",
+      "visibleLabs": 7
+    },
+    "progressAndLanguage": {
+      "pressed": "true",
+      "language": "en",
+      "storedLanguage": "en",
+      "theme": "dark",
+      "storedTheme": "dark",
+      "progress": "[\"01\"]",
+      "copyState": "success"
+    }
+  },
+  "noJs": {
+    "releases": {
+      "items": 687,
+      "visibleItems": 687,
+      "jaVisible": true,
+      "enVisible": true
+    }
+  },
+  "media": {
+    "reducedMotion": true,
+    "print": {
+      "print": true,
+      "overflow": 0
+    }
+  },
+  "failures": []
+}

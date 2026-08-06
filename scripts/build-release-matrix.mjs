@@ -15,6 +15,8 @@ const targetVersions = [
   "v1.1.0",
   "v1.1.1",
   "v1.1.2",
+  "v1.1.3",
+  "v1.1.4",
 ];
 const categories = new Set(["Added", "Changed", "Fixed", "Removed"]);
 
@@ -147,9 +149,18 @@ const matrix = [...targetVersions]
   });
 
 const itemCount = matrix.reduce((sum, release) => sum + release.items.length, 0);
-if (matrix.length !== 17 || itemCount !== 462) {
-  throw new Error(`Expected 17 versions and 462 items; found ${matrix.length} and ${itemCount}`);
+if (matrix.length !== 19 || itemCount !== 687) {
+  throw new Error(`Expected 19 versions and 687 items; found ${matrix.length} and ${itemCount}`);
 }
+const categoryCounts = matrix
+  .flatMap((release) => release.items)
+  .reduce(
+    (counts, item) => {
+      counts[item.category] += 1;
+      return counts;
+    },
+    { Added: 0, Changed: 0, Fixed: 0, Removed: 0 },
+  );
 
 const output = {
   generatedFrom: {
@@ -160,6 +171,7 @@ const output = {
   latest: matrix[0].version,
   versionCount: matrix.length,
   itemCount,
+  categoryCounts,
   releases: matrix,
 };
 

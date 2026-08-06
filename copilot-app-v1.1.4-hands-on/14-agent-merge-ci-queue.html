@@ -1,0 +1,379 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Enable Agent Merge to resolve CI blockers and carry a PR to merge conditions in the background, without ever bypassing branch protection or required reviews.">
+<title>GitHub Copilot App v1.1.4 — Manage CI and the merge queue with Agent Merge</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="14" data-guide-count="25">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.4 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.4</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="lab-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">ラボ 14 / 25</span><span class="en" lang="en">Lab 14 of 25</span></p>
+    <h1 id="lab-title"><span class="ja" lang="ja">Agent Merge で CI とマージキューを管理する</span><span class="en" lang="en">Manage CI and the merge queue with Agent Merge</span></h1>
+    <p class="lede"><span class="ja" lang="ja">Agent Merge を有効にして、CI のブロック要因の解消からマージ条件を満たすまでをバックグラウンドで進めます。ブランチ保護や必須レビューを回避するものではありません。</span><span class="en" lang="en">Enable Agent Merge to resolve CI blockers and carry a PR to merge conditions in the background, without ever bypassing branch protection or required reviews.</span></p>
+    <div class="meta-row" aria-label="Lab metadata">
+      <span class="badge"><span class="ja" lang="ja">上級</span><span class="en" lang="en">Advanced</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.4 向け再公開（中核フローは v1.1.2 で検証、現在差分を source-check）</span><span class="en" lang="en">Republished for v1.1.4 (core flow verified at v1.1.2; current deltas source-checked)</span></span>
+      <span class="badge"><span class="ja" lang="ja">約60分</span><span class="en" lang="en">About 60 min</span></span>
+      <span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span>
+    </div>
+    <div class="chips" aria-label="Journeys and tracks"><a class="badge badge--accent" href="index.html#journey-j3"><span class="ja" lang="ja">Issueからstacked PR配信まで</span><span class="en" lang="en">Issue-to-stacked-PR delivery</span></a> <a class="badge" href="index.html#track-t6"><span class="ja" lang="ja">PR、Copilotレビュー、stacked PR、merge queue、Agent Merge、CI</span><span class="en" lang="en">PR review, stacked PRs, merge queue, Agent Merge, and CI</span></a></div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#labs"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">25 ラボ一覧</span><span class="en" lang="en">All 25 labs</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="persona">
+        <div class="section-heading"><p class="eyebrow">Scenario &amp; persona</p><h2><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">レビューが完了した PR を Agent Merge に任せ、必須チェックの失敗を修正させながら他の作業を進めます。ブランチ保護と必須承認は Agent Merge が有効な間も常に適用されることを確認します。</span><span class="en" lang="en">You hand a reviewed PR to Agent Merge so it can fix failing required checks while you move on to other work, while confirming that branch protection and required approvals still apply even with Agent Merge enabled.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">担当者像</span><span class="en" lang="en">Persona</span></h3><p><span class="ja" lang="ja">関連するプルリクエストを束ねて着地させる担当者として、Agent MergeとCIブロッカーへの対応を中心に扱う回です。</span><span class="en" lang="en">As the person landing a set of related pull requests together, this round focusing on Agent Merge and responding to CI blockers.</span></p></article>
+        </div>
+        <div class="callout"><strong><span class="ja" lang="ja">なぜ重要か</span><span class="en" lang="en">Why it matters</span>:</strong> <span class="ja" lang="ja">stack、merge queue、Agent Mergeの状態を見誤ると、意図せず途中のPRだけをマージしたり、待機理由が分からないまま長時間ブロックされたりします。</span><span class="en" lang="en">Misreading stack, merge-queue, or Agent Merge state risks merging only a partial PR unintentionally, or being blocked for a long time with no visible reason.</span></div>
+      </section>
+
+      <section class="section" id="objectives">
+        <div class="section-heading"><p class="eyebrow">Goals</p><h2><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Learning objectives</span></h2></div>
+        <ul><li><span class="ja" lang="ja">stack内のPRをstack menuで移動する</span><span class="en" lang="en">Navigate PRs in a stack using the stack menu</span></li>
+<li><span class="ja" lang="ja">マージドロワーのstack summaryとqueue positionを確認する</span><span class="en" lang="en">Inspect the merge drawer&#039;s stack summary and queue position</span></li>
+<li><span class="ja" lang="ja">Agent Mergeの一時停止理由を読み取る</span><span class="en" lang="en">Read Agent Merge&#039;s pause status message</span></li></ul>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">ラボ 13 のレビュー手順を完了し、対象 PR が必要なレビューを受けている、または受けられる状態であること。</span><span class="en" lang="en">Lab 13&#039;s review steps are complete and the target PR either has or can receive the required reviews.</span></li>
+<li><span class="ja" lang="ja">対象リポジトリに CI チェックが設定されており、あなたに PR をマージする権限があること。</span><span class="en" lang="en">The target repository has CI checks configured and you have permission to merge the PR.</span></li>
+<li><span class="ja" lang="ja">リポジトリのブランチ保護ルール (必須チェック、必須承認、マージキューの有無) を把握していること。</span><span class="en" lang="en">You understand the repository&#039;s branch protection rules, including required checks, required approvals, and whether a merge queue is used.</span></li></ul>
+      </section>
+
+      <section class="section" id="availability">
+        <div class="section-heading"><p class="eyebrow">Availability</p><h2><span class="ja" lang="ja">公式な提供状況とスコープ</span><span class="en" lang="en">Official availability and scope</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></h3><p><span class="ja" lang="ja">v1.1.4 版として再公開。中核フローは v1.1.2 で検証され、v1.1.3 / v1.1.4 差分と情報源を source-check しています。で提供中。v1.1.1 で、有効にしても実際にはマージされていなかった不具合を修正し、実際のマージ動作が復元されました。</span><span class="en" lang="en">Republished for v1.1.4. The core flow was verified for v1.1.2; v1.1.3/v1.1.4 deltas and source provenance were checked. v1.1.1 fixed a bug where enabling Agent Merge did not actually merge the pull request, restoring real merge behavior.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">対象範囲</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドは Agent Merge の有効化、CI ブロック要因への対応、マージキューのステータス確認を扱います。レビューコメントの作成自体はラボ 13 で扱うため対象外です。</span><span class="en" lang="en">This guide covers enabling Agent Merge, responding to CI blockers, and checking merge queue status. Creating review comments themselves is covered in lab 13 and out of scope here.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">時間の見積もり</span><span class="en" lang="en">Time estimate</span></h3><p><span class="ja" lang="ja">hands-on操作の目安は約60分です。CI、Copilot review、merge queue、Agent Mergeの待ち時間は含まず、実経過時間はrepository状態により大きく延びます。</span><span class="en" lang="en">Hands-on work is estimated at about 60 minutes. This excludes waits for CI, Copilot review, merge queue, and Agent Merge, so elapsed time can be substantially longer.</span></p></article>
+          <article class="card"><h3><span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span> <span class="ja" lang="ja">情報源の裏付け</span><span class="en" lang="en">Source provenance</span></h3><p><span class="ja" lang="ja">merge queue と branch protection の一般的な仕組みは docs-grounded です。Agent Merge の具体的な挙動（一時停止時のステータスメッセージなど）は release-note-grounded です。 手順内の正確なメニュー名・ボタン名・クリック順は変更履歴（changelog）に基づく記述であり、スクリーンショット付きの公式ウォークスルーで検証されたものではありません。実際の画面がここと異なる場合は、画面に表示されている表記を優先してください。</span><span class="en" lang="en">The general mechanics of the merge queue and branch protection are docs-grounded. Agent Merge&#039;s specific behavior, such as its pause status message, is release-note-grounded. Exact menu names, button labels, and click order in the steps are grounded in changelog entries, not an illustrated official walkthrough. If your running build&#039;s UI differs from this text, follow what the screen actually shows instead.</span></p></article>
+        </div>
+      </section>
+
+      <section class="section" id="before-you-start">
+        <div class="section-heading"><p class="eyebrow">Before you start</p><h2><span class="ja" lang="ja">開始前の安全確認</span><span class="en" lang="en">Before-you-start safety check</span></h2></div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全・データ・コスト・権限への影響</span><span class="en" lang="en">Safety, data, cost, and permission implications</span>:</strong> <span class="ja" lang="ja">Agent Merge は GitHub が許可した時点でのみマージを実行し、ブランチ保護ルールや必須レビュー、必須チェックを回避することはありません。機密性の高いリリースブランチでは、無人でマージが進まないよう Agent Merge を無効にしておいてください。</span><span class="en" lang="en">Agent Merge only merges once GitHub allows it, and it never bypasses branch protection rules, required reviews, or required checks. On sensitive release branches, keep Agent Merge disabled so merges don&#039;t proceed unattended.</span></div>
+      </section>
+
+      <section class="section" id="launchers">
+        <div class="section-heading"><p class="eyebrow">Open safely</p><h2><span class="ja" lang="ja">コピー可能なプロンプト／コマンドとランチャー</span><span class="en" lang="en">Copyable prompts/commands and launchers</span></h2></div>
+
+        <div class="card-grid"><article class="card">
+  <h3><span class="ja" lang="ja">マージ対象の PR を安全に開く例</span><span class="en" lang="en">Example: open the PR you intend to merge safely</span></h3>
+  <p><span class="ja" lang="ja">Agent Merge を有効にする対象の PR を安全なランチャー経由で開きます。</span><span class="en" lang="en">Opens the PR you intend to enable Agent Merge on through the safe launcher.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fgithub.com%2Fgithub%2Fapp%2Fpull%2F1" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+      </section>
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="mono">1.</span> <span class="ja" lang="ja">レビュー済みの PR を開く</span><span class="en" lang="en">Open a reviewed pull request</span></h3>
+  <p><span class="ja" lang="ja">ラボ 13 でレビューを終えた PR を開き、Overview で現在の CI とレビュー状況を確認します。</span><span class="en" lang="en">Open the PR you finished reviewing in lab 13 and check its current CI and review status in Overview.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">必要なレビューと CI の現状が Overview から確認できます。</span><span class="en" lang="en">You can see the required reviews and current CI state from Overview.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">2.</span> <span class="ja" lang="ja">アプリ上部で Agent Merge を有効にする</span><span class="en" lang="en">Enable Agent Merge at the top of the app</span></h3>
+  <p><span class="ja" lang="ja">アプリ上部の Agent Merge トグルを有効にします。</span><span class="en" lang="en">Turn on the Agent Merge toggle at the top of the app.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">トグルがオンになり、ワークスペースの Copilot セッションがバックグラウンドで PR を読み込み始めます。</span><span class="en" lang="en">The toggle turns on and the workspace&#039;s Copilot session starts reading the PR in the background.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">3.</span> <span class="ja" lang="ja">現在のブロック要因を確認する</span><span class="en" lang="en">Check current merge blockers</span></h3>
+  <p><span class="ja" lang="ja">変更を加える前に、何がマージをブロックしているかをエージェントに説明してもらいます。</span><span class="en" lang="en">Before any change is made, ask the agent to explain what is blocking the merge.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">現在のブロック要因の説明を依頼するプロンプト</span><span class="en" lang="en">Prompt to explain current merge blockers</span></span>
+    <button class="copy-button" type="button" data-copy="lab-14-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-14-code-1" data-language="text">Explain what is currently blocking this pull request from merging, including failing checks and outstanding review requirements, without making any changes yet.</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">失敗しているチェックや未承認のレビューなど、ブロック要因が一覧で説明されます。</span><span class="en" lang="en">The agent lists blockers such as failing checks and outstanding reviews.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">4.</span> <span class="ja" lang="ja">失敗しているチェックを修正させる</span><span class="en" lang="en">Have the agent fix a failing check</span></h3>
+  <p><span class="ja" lang="ja">無関係なファイルには触れず、失敗している必須チェックの最小限の修正を依頼します。</span><span class="en" lang="en">Ask the agent for the smallest possible fix to the failing required check, without touching unrelated files.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">失敗しているチェックの修正を依頼するプロンプト</span><span class="en" lang="en">Prompt to fix failing checks</span></span>
+    <button class="copy-button" type="button" data-copy="lab-14-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-14-code-2" data-language="text">Investigate why the failing required check is failing and propose the smallest fix, without touching unrelated files or configuration.</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">エージェントが最小限の修正を提案し、チェックが再実行されます。</span><span class="en" lang="en">The agent proposes a minimal fix and the check reruns.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">5.</span> <span class="ja" lang="ja">マージキューのステータスを確認する</span><span class="en" lang="en">Check merge queue status</span></h3>
+  <p><span class="ja" lang="ja">リポジトリがマージキューを使っている場合、バッジ、サイドバー、My Work の一覧など各所で PR のステータスを確認します。</span><span class="en" lang="en">If the repository uses a merge queue, check the PR&#039;s status across surfaces such as badges, the sidebar, and the My Work list.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">マージキュー使用時は、オープンやマージ準備完了ではなく Queued ステータスが一貫して表示されます。</span><span class="en" lang="en">When a merge queue is used, the PR consistently shows a Queued status instead of open or merge-ready.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">6.</span> <span class="ja" lang="ja">必須承認が引き続き適用されることを確認する</span><span class="en" lang="en">Confirm required approvals still apply</span></h3>
+  <p><span class="ja" lang="ja">Agent Merge は自己承認したりレビュー担当者の要件を回避したりしないことを、承認が不足した状態のまま確認します。</span><span class="en" lang="en">While approvals are still missing, confirm that Agent Merge does not self-approve or bypass reviewer requirements.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">必須承認が満たされるまで、Agent Merge は実際のマージを実行しません。</span><span class="en" lang="en">Agent Merge does not perform the actual merge until required approvals are satisfied.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">7.</span> <span class="ja" lang="ja">マージ完了とトグルの自動オフを確認する</span><span class="en" lang="en">Confirm the merge completes and the toggle turns off</span></h3>
+  <p><span class="ja" lang="ja">必須チェックと必須承認がすべて満たされた後、GitHub がマージを許可した時点で完了するのを見届けます。</span><span class="en" lang="en">Watch the merge complete once GitHub allows it, after all required checks and approvals are satisfied.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">PR がマージされ、Agent Merge のトグルが自動的にオフになります。</span><span class="en" lang="en">The PR merges and the Agent Merge toggle turns off automatically.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="decision-points">
+        <div class="section-heading"><p class="eyebrow">Decide</p><h2><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></h2></div>
+        <ul class="decision-list"><li><span class="ja" lang="ja">stackごとまとめてマージするか、1つのPRだけをマージするか。</span><span class="en" lang="en">Merge the whole stack together, or only a single PR?</span></li>
+<li><span class="ja" lang="ja">Agent Mergeを有効にするか、必須チェック完了後に人手でマージするか。</span><span class="en" lang="en">Enable Agent Merge, or merge by hand once required checks pass?</span></li></ul>
+      </section>
+
+      <section class="section" id="checkpoints">
+        <div class="section-heading"><p class="eyebrow">Checkpoints</p><h2><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></h2></div>
+        <ul class="checkpoint-list"><li><span class="ja" lang="ja">チェックポイント1: stack menuで別のPRへ移動できる。</span><span class="en" lang="en">Checkpoint 1: the stack menu navigates to another PR.</span></li>
+<li><span class="ja" lang="ja">チェックポイント2: マージドロワーに含まれるPR一覧とqueue positionが表示される。</span><span class="en" lang="en">Checkpoint 2: the merge drawer shows the included PR list and queue position.</span></li></ul>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">Agent Merge のトグルが有効になり、バックグラウンドで動作し続ける。</span><span class="en" lang="en">The Agent Merge toggle is enabled and continues running in the background.</span></li>
+<li><span class="ja" lang="ja">失敗していた必須チェックが修正され、再実行後に成功する。</span><span class="en" lang="en">The previously failing required check is fixed and passes on rerun.</span></li>
+<li><span class="ja" lang="ja">必須承認とブランチ保護ルールが満たされるまで、実際のマージは行われない。</span><span class="en" lang="en">The actual merge does not happen until required approvals and branch protection rules are satisfied.</span></li>
+<li><span class="ja" lang="ja">マージ完了後、Agent Merge のトグルが自動的にオフになる。</span><span class="en" lang="en">After the merge completes, the Agent Merge toggle turns off automatically.</span></li></ul>
+      </section>
+
+      <section class="section" id="under-the-hood">
+        <div class="section-heading"><p class="eyebrow">Mental model</p><h2><span class="ja" lang="ja">Under the hood: 内部で何が起きているか</span><span class="en" lang="en">Under the hood: what happens internally</span></h2></div>
+        <p><span class="ja" lang="ja">direct mergeは現在のbaseへ1件のPRを直ちに着地させます。GitHub merge queueはPRと最新baseを一時的なmerge groupで組み合わせてrequired checksを再実行し、順番に安全に着地させます。check failureやconflictではqueueから外れる場合があります。merge-as-stackはbase branchが連鎖する関連PR群をまとめて扱う別操作です。Agent Mergeはさらに別で、workspaceのCopilot sessionにPRを読ませ、blocking conditionを修正し、GitHubが許可した時点でマージします。v1.1.4ではcommit status check待ちで一時停止している理由を表示します。</span><span class="en" lang="en">A direct merge lands one PR against the current base immediately. GitHub merge queue combines a PR with the latest base in a temporary merge group, reruns required checks, and lands queued changes safely in order; a check failure or conflict can remove an entry. Merge-as-stack is a separate operation for related PRs whose base branches form a chain. Agent Merge is separate again: it asks the workspace&#039;s Copilot session to read the PR, fix blocking conditions, and merge when GitHub allows. In v1.1.4 it explains a pause while waiting on a commit status check.</span></p>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング（症状から探す）</span><span class="en" lang="en">Troubleshooting (start from your symptom)</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja">1 つのチェックが成功しても、別のチェックが失敗したままだと Agent Merge が停止して見える</span><span class="en" lang="en">Agent Merge appears stuck when one check passes but another is still failing</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">この再プロンプトの不具合は v1.0.20 で修正済みです。v1.1.4（最新版） に更新し、Agent Merge の状態パネルで進行状況を確認してください。</span><span class="en" lang="en">This re-prompting issue was fixed in v1.0.20. Update to the latest version (v1.1.4) and check the Agent Merge status panel for progress.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">Agent Merge を有効にしても実際にはマージされない</span><span class="en" lang="en">Enabling Agent Merge doesn&#039;t actually merge the pull request</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">この不具合は v1.1.1 で修正されています。v1.1.1 より前のビルドでは有効化してもマージが実行されないため、v1.1.4（最新版） に更新してください。</span><span class="en" lang="en">This bug was fixed in v1.1.1. Builds before v1.1.1 could enable Agent Merge without it actually merging, so update to the latest version (v1.1.4).</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">Agent Merge をオフにしたのにステータスが active のまま表示される</span><span class="en" lang="en">The status still shows active after turning Agent Merge off</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">この表示上の不具合は v1.0.16 で修正済みです。表示が古いままの場合はセッションを再読み込みしてください。</span><span class="en" lang="en">This display bug was fixed in v1.0.16. If the status still looks stale, reload the session.</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="recovery">
+        <div class="section-heading"><p class="eyebrow">Recovery path</p><h2><span class="ja" lang="ja">明示的な復旧手順</span><span class="en" lang="en">Explicit recovery path</span></h2></div>
+        <div class="callout callout--danger"><span class="ja" lang="ja">マージドロワーが確認中のまま止まって見える場合は、ドロワーを閉じて再度開き、それでも変わらなければPRを再読み込みし、Agent Mergeが一時停止中なら表示された理由に沿って対応してください。</span><span class="en" lang="en">If the merge drawer appears stuck in a checking state, close and reopen it; if that does not change, reload the PR, and if Agent Merge is paused, act on the reason shown rather than re-toggling blindly.</span></div>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">演習で有効化した Agent Merge を、実際にマージする意図がなければオフにします。</span><span class="en" lang="en">Turn off Agent Merge if you enabled it only for this exercise and don&#039;t intend to actually merge.</span></li>
+<li><span class="ja" lang="ja">マージ後、不要になったローカルブランチや worktree を削除します。</span><span class="en" lang="en">Delete the local branch or worktree once it&#039;s no longer needed after the merge.</span></li>
+<li><span class="ja" lang="ja">バックグラウンドで動作したセッションをアーカイブし、消費したクレジットを Session spend の Agent merge 行で確認します。</span><span class="en" lang="en">Archive the session that ran in the background, and check the Agent merge line in Session spend to see the credits it used.</span></li></ol>
+      </section>
+
+      <section class="section" id="rubric">
+        <div class="section-heading"><p class="eyebrow">Success rubric</p><h2><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></h2></div>
+        <ul class="rubric-list"><li><span class="ja" lang="ja">stack内のPRをstack menuで少なくとも1回移動した。</span><span class="en" lang="en">You navigated between stacked PRs at least once via the stack menu.</span></li>
+<li><span class="ja" lang="ja">マージドロワーのstack summaryとqueue positionを確認した。</span><span class="en" lang="en">You inspected the merge drawer&#039;s stack summary and queue position.</span></li>
+<li><span class="ja" lang="ja">Agent Mergeの一時停止理由を実際に読んだ。</span><span class="en" lang="en">You actually read an Agent Merge pause reason.</span></li></ul>
+      </section>
+
+      <section class="section" id="stretch">
+        <div class="section-heading"><p class="eyebrow">Go further</p><h2><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></h2></div>
+        <div class="callout callout--success"><span class="ja" lang="ja">3つ以上のPRからなるより深いstackを作り、merge queueの位置がstack内でどう表示されるかを観察してください。</span><span class="en" lang="en">Build a deeper stack of three or more PRs and observe how merge-queue position is shown within the stack.</span></div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">Windows でもバックグラウンド動作はアプリの再起動をまたいで継続します。タスクバーの通知でステータス変化を確認できます。</span><span class="en" lang="en">Background operation continues across app restarts on Windows too. Watch the taskbar notification for status changes.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">macOS ではメニューバーのアイコンから Agent Merge の進行状況を確認できます。</span><span class="en" lang="en">On macOS, you can check Agent Merge progress from the menu bar icon.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">Linux でもバックグラウンド動作の挙動は同一です。トレイアイコンがない環境では、アプリを開いた状態でステータスを確認してください。</span><span class="en" lang="en">Background behavior is identical on Linux. In environments without a tray icon, keep the app open to check status.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">WSL 内のリポジトリでも、Agent Merge を実行するのはワークスペースの Copilot セッションであり、状態は Windows 側アプリから確認します。</span><span class="en" lang="en">Even for repositories inside WSL, Agent Merge is driven by the workspace&#039;s Copilot session, and you check its status from the Windows-side app.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/managing-issues-and-pull-requests" rel="noopener noreferrer">Managing issues and pull requests with the GitHub Copilot app</a></li>
+<li><a href="https://github.com/github/app/releases/tag/v1.1.1" rel="noopener noreferrer">GitHub Copilot app v1.1.1 release</a></li>
+<li><a href="https://docs.github.com/en/pull-requests/how-tos/merge-and-close-pull-requests/merging-a-pull-request-with-a-merge-queue" rel="noopener noreferrer">Merging a pull request with a merge queue</a></li>
+<li><a href="https://docs.github.com/en/repositories/configuring-branches-and-merges-in-your-repository/configuring-pull-request-merges/managing-a-merge-queue" rel="noopener noreferrer">Managing a merge queue</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></h2></div>
+        <ul class="plain-list related-list"><li><a class="badge" href="13-pull-request-review.html"><span class="mono">13</span> <span class="ja" lang="ja">プルリクエストレビューを完了する</span><span class="en" lang="en">Complete a pull request review</span></a></li>
+<li><a class="badge" href="15-security-review-rubber-duck.html"><span class="mono">15</span> <span class="ja" lang="ja">セキュリティレビューとラバーダックで批評を受ける</span><span class="en" lang="en">Get a critique with security review and rubber duck</span></a></li>
+<li><a class="badge" href="16-local-automations.html"><span class="mono">16</span> <span class="ja" lang="ja">ローカル自動化を作成する</span><span class="en" lang="en">Create local automations</span></a></li>
+<li><a class="badge" href="22-stacked-pr-copilot-review.html"><span class="mono">22</span> <span class="ja" lang="ja">スタックPR、Copilotレビュー、マージキュー、Agent Merge</span><span class="en" lang="en">Stacked PRs, Copilot review, merge queue, and Agent Merge</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Lab navigation">
+        <a href="13-pull-request-review.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のラボ</span><span class="en" lang="en">Previous lab</span></span><br><strong><span class="ja" lang="ja">プルリクエストレビューを完了する</span><span class="en" lang="en">Complete a pull request review</span></strong></a>
+        <a href="15-security-review-rubber-duck.html"><span class="muted"><span class="ja" lang="ja">次のラボ</span><span class="en" lang="en">Next lab</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">セキュリティレビューとラバーダックで批評を受ける</span><span class="en" lang="en">Get a critique with security review and rubber duck</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Lab progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 25</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="25"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このラボを完了にする</span><span class="en" lang="en">Mark this lab complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#persona"><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></a></li>
+          <li><a href="#objectives"><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Objectives</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#availability"><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></a></li>
+          <li><a href="#before-you-start"><span class="ja" lang="ja">開始前の確認</span><span class="en" lang="en">Before you start</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#decision-points"><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></a></li>
+          <li><a href="#checkpoints"><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#under-the-hood"><span class="ja" lang="ja">Under the hood</span><span class="en" lang="en">Under the hood</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#recovery"><span class="ja" lang="ja">復旧手順</span><span class="en" lang="en">Recovery</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#rubric"><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></a></li>
+          <li><a href="#stretch"><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></a></li>
+          <li><a href="#platforms"><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+          <li><a href="#related"><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="ja" lang="ja">v1.1.4 機能ガイド</span><span class="en" lang="en">v1.1.4 feature guide</span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">v1.1.2 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.1.2 hands-on (archive)</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.0.12 hands-on (archive)</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性、ポリシー、料金は公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability, policy, and pricing in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>
