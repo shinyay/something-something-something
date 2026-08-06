@@ -5895,7 +5895,7 @@
         {
           "id": "v1-0-17-changed-003",
           "category": "Changed",
-          "featureArea": "Accessibility & input",
+          "featureArea": "Experience & reliability",
           "en": "Simplified the feedback dialog to focus on reporting bugs or suggesting features, removing the topic and mood selectors.",
           "ja": "フィードバックダイアログを簡素化し、トピックと気分のセレクターを削除して、バグの報告や機能の提案に焦点を絞りました。",
           "version": "v1.0.17",
@@ -6757,7 +6757,7 @@
         {
           "id": "v1-0-13-added-004",
           "category": "Added",
-          "featureArea": "Accessibility & input",
+          "featureArea": "Sessions & orchestration",
           "en": "New /compact slash command lets you manually compact a workspace or chat conversation to reduce token usage, with optional focus instructions. Compaction already happens automatically when a conversation grows large; this lets you trigger it on demand.",
           "ja": "新しい/compactスラッシュコマンドにより、任意のフォーカス指示を添えて、ワークスペースまたはチャットの会話を手動でコンパクト化し、トークンの使用量を削減できるようになりました。会話が大きくなると自動的にコンパクト化が行われますが、これを使うと必要なときにオンデマンドで実行できます。",
           "version": "v1.0.13",

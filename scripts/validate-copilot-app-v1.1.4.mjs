@@ -112,15 +112,36 @@ check(matrixItems.length === 687, `Release matrix has ${matrixItems.length} item
 check(new Set(matrixItems.map((item) => item.id)).size === 687, "Release matrix item ids are not unique");
 check(matrixItems.every((item) => item.en.trim() && item.ja.trim()), "Release matrix has blank EN/JA text");
 const accessibilityPattern =
-  /screen reader|voiceover|keyboard|focus|accessible|accessibility|high.contrast|\bime\b|composition|page up|page down|home\/end|shift\+tab|option\+enter/i;
+  /screen reader|voiceover|keyboard|\b(?:auto)?focus(?:ed|es|ing)?\b(?!\s+(?:on reporting|instructions)\b)|accessible|accessibility|high.contrast|\bime\b|composition|page up|page down|home\/end|shift\+tab|option\+enter/i;
 const featureAreaCounts = matrixItems.reduce((result, item) => {
   result[item.featureArea] = (result[item.featureArea] || 0) + 1;
   return result;
 }, {});
+const expectedFeatureAreaCounts = {
+  "Accessibility & input": 95,
+  Automations: 22,
+  "Canvases, files & browser": 57,
+  "Experience & reliability": 51,
+  Extensibility: 30,
+  "GitHub lifecycle": 239,
+  "Models & account": 40,
+  "Platforms & environments": 32,
+  "Sessions & orchestration": 121,
+};
+const actualFeatureAreas = Object.keys(featureAreaCounts).sort();
+const expectedFeatureAreas = Object.keys(expectedFeatureAreaCounts).sort();
 check(
-  featureAreaCounts["Accessibility & input"] === 97,
-  `Accessibility facet count is ${featureAreaCounts["Accessibility & input"]}, expected 97`,
+  JSON.stringify(actualFeatureAreas) === JSON.stringify(expectedFeatureAreas),
+  `Feature area keys are ${actualFeatureAreas.join(", ")}, expected ${expectedFeatureAreas.join(", ")}`,
 );
+for (const [area, expected] of Object.entries(expectedFeatureAreaCounts)) {
+  check(
+    featureAreaCounts[area] === expected,
+    `${area} count is ${featureAreaCounts[area]}, expected ${expected}`,
+  );
+}
+const featureAreaTotal = Object.values(featureAreaCounts).reduce((sum, value) => sum + value, 0);
+check(featureAreaTotal === 687, `Feature area counts sum to ${featureAreaTotal}, expected 687`);
 check(
   matrixItems
     .filter((item) => item.featureArea === "Accessibility & input")

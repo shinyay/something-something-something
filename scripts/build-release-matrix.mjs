@@ -25,8 +25,9 @@ function featureArea(text) {
   const rules = [
     [
       "Accessibility & input",
-      /screen reader|voiceover|keyboard|focus|accessible|accessibility|high.contrast|\bime\b|composition|page up|page down|home\/end|shift\+tab|option\+enter/,
+      /screen reader|voiceover|keyboard|\b(?:auto)?focus(?:ed|es|ing)?\b(?!\s+(?:on reporting|instructions)\b)|accessible|accessibility|high.contrast|\bime\b|composition|page up|page down|home\/end|shift\+tab|option\+enter/i,
     ],
+    ["Sessions & orchestration", /\/compact\b.*\b(?:workspace|chat conversation)\b/],
     [
       "Automations",
       /automation|trigger|scheduled|schedule|cron|workflow run/,

@@ -15,10 +15,10 @@
     },
     "featureAreaCounts": {
       "GitHub lifecycle": 239,
-      "Sessions & orchestration": 120,
-      "Accessibility & input": 97,
+      "Sessions & orchestration": 121,
+      "Accessibility & input": 95,
       "Canvases, files & browser": 57,
-      "Experience & reliability": 50,
+      "Experience & reliability": 51,
       "Models & account": 40,
       "Platforms & environments": 32,
       "Extensibility": 30,
@@ -91,7 +91,7 @@
       },
       {
         "name": "final-quality-fix",
-        "result": "approved for push; Accessibility facet corrected from 170 to 97 with 73 false positives reclassified, and theme-script validation verified under LF and CRLF"
+        "result": "approved for push; Accessibility facet corrected from 170 to 95 with 75 false positives reclassified, including two lexical focus matches, and theme-script validation verified under LF and CRLF"
       }
     ],
     "blockingFindingsRemaining": 0
