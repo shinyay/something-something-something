@@ -15,6 +15,10 @@ function count(text, pattern) {
   return [...text.matchAll(pattern)].length;
 }
 
+function normalizeNewlines(text) {
+  return text.replaceAll("\r\n", "\n");
+}
+
 function versionTokens(text) {
   return [...new Set([...text.matchAll(/\bv\d+\.\d+\.\d+\b/g)].map((match) => match[0]))].sort();
 }
@@ -656,6 +660,7 @@ const firstThemeScript = `<script>
     document.documentElement.setAttribute("data-theme", theme);
   })();
 </script>`;
+const normalizedFirstThemeScript = normalizeNewlines(firstThemeScript);
 const requiredVariables = [
   "--cp-bg: #f7f4ef;",
   "--cp-bg-elevated: #fcfbf8;",
@@ -688,7 +693,7 @@ for (const file of newHtmlFiles) {
   const firstScriptStart = html.indexOf("<script>");
   check(
     firstScriptStart >= 0 &&
-      html.slice(firstScriptStart).replaceAll("\r\n", "\n").startsWith(firstThemeScript),
+      normalizeNewlines(html.slice(firstScriptStart)).startsWith(normalizedFirstThemeScript),
     `${file} does not use the required theme detection script first`,
   );
   check(

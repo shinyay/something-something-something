@@ -422,7 +422,8 @@ try {
   }
   await new Promise((resolveClose) => server.close(resolveClose));
   let cleanupError = null;
-  for (let attempt = 0; attempt < 30; attempt += 1) {
+  const cleanupAttempts = process.platform === "win32" ? 80 : 30;
+  for (let attempt = 0; attempt < cleanupAttempts; attempt += 1) {
     try {
       await rm(profile, { recursive: true, force: true });
       cleanupError = null;
