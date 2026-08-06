@@ -107,6 +107,22 @@ const matrixItems = matrix.releases.flatMap((release) => release.items);
 check(matrixItems.length === 687, `Release matrix has ${matrixItems.length} items instead of 687`);
 check(new Set(matrixItems.map((item) => item.id)).size === 687, "Release matrix item ids are not unique");
 check(matrixItems.every((item) => item.en.trim() && item.ja.trim()), "Release matrix has blank EN/JA text");
+const accessibilityPattern =
+  /screen reader|voiceover|keyboard|focus|accessible|accessibility|high.contrast|\bime\b|composition|page up|page down|home\/end|shift\+tab|option\+enter/i;
+const featureAreaCounts = matrixItems.reduce((result, item) => {
+  result[item.featureArea] = (result[item.featureArea] || 0) + 1;
+  return result;
+}, {});
+check(
+  featureAreaCounts["Accessibility & input"] === 97,
+  `Accessibility facet count is ${featureAreaCounts["Accessibility & input"]}, expected 97`,
+);
+check(
+  matrixItems
+    .filter((item) => item.featureArea === "Accessibility & input")
+    .every((item) => accessibilityPattern.test(item.en)),
+  "Accessibility facet contains an item without a bounded accessibility/input match",
+);
 
 const categoryCounts = matrixItems.reduce((result, item) => {
   result[item.category] = (result[item.category] || 0) + 1;
@@ -671,7 +687,8 @@ for (const file of newHtmlFiles) {
   const html = await readFile(file, "utf8");
   const firstScriptStart = html.indexOf("<script>");
   check(
-    firstScriptStart >= 0 && html.slice(firstScriptStart).startsWith(firstThemeScript),
+    firstScriptStart >= 0 &&
+      html.slice(firstScriptStart).replaceAll("\r\n", "\n").startsWith(firstThemeScript),
     `${file} does not use the required theme detection script first`,
   );
   check(

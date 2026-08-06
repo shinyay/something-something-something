@@ -25,7 +25,7 @@ function featureArea(text) {
   const rules = [
     [
       "Accessibility & input",
-      /screen reader|voiceover|keyboard|focus|accessible|accessibility|high.contrast|ime|composition|page up|page down|home\/end|shift\+tab|option\+enter/,
+      /screen reader|voiceover|keyboard|focus|accessible|accessibility|high.contrast|\bime\b|composition|page up|page down|home\/end|shift\+tab|option\+enter/,
     ],
     [
       "Automations",

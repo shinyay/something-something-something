@@ -1,6 +1,6 @@
 {
   "edition": "GitHub Copilot App v1.1.4",
-  "reviewedAt": "2026-08-07T03:52:38+09:00",
+  "reviewedAt": "2026-08-07T05:04:55+09:00",
   "canonicalBoundary": {
     "baseline": "v1.0.12",
     "latest": "v1.1.4",
@@ -12,6 +12,17 @@
       "Changed": 97,
       "Fixed": 500,
       "Removed": 2
+    },
+    "featureAreaCounts": {
+      "GitHub lifecycle": 239,
+      "Sessions & orchestration": 120,
+      "Accessibility & input": 97,
+      "Canvases, files & browser": 57,
+      "Experience & reliability": 50,
+      "Models & account": 40,
+      "Platforms & environments": 32,
+      "Extensibility": 30,
+      "Automations": 22
     }
   },
   "learningSystem": {
@@ -49,7 +60,8 @@
         "print"
       ]
     },
-    "archivedV112": "passed: 17 releases, 462 items, 5 paths, 21 guides"
+    "archivedV112": "passed: 17 releases, 462 items, 5 paths, 21 guides",
+    "crlfThemeValidation": "passed with CRLF HTML while still rejecting altered, missing, or non-first theme scripts"
   },
   "rubberDuck": {
     "passes": [
@@ -76,6 +88,10 @@
       {
         "name": "publication-approval",
         "result": "approved for publication; remaining mobile clipping and hygiene findings remediated before commit"
+      },
+      {
+        "name": "final-quality-fix",
+        "result": "approved for push; Accessibility facet corrected from 170 to 97 with 73 false positives reclassified, and theme-script validation verified under LF and CRLF"
       }
     ],
     "blockingFindingsRemaining": 0

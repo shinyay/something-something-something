@@ -325,13 +325,13 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed a crash that could replace the entire app with an error screen when typing certain search terms (like &quot;constructor:&quot;) into a filter query, such as in My work or the cloud automation trigger filter.</div>
   <div class="ja" lang="ja">My workやクラウド自動化トリガーフィルターなどのフィルタークエリに特定の検索語（「constructor:」など）を入力した場合に、アプリ全体がエラー画面に置き換わるクラッシュを修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-4-fixed-017" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-4-fixed-017" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed an issue where pressing Stop while a follow-up message was queued sometimes required pressing Stop a second time before the session became idle.</div>
   <div class="ja" lang="ja">フォローアップメッセージがキューに入っている状態でStopを押したとき、セッションがアイドル状態になるまでにもう一度Stopを押す必要があることがある問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-4-fixed-018" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-4-fixed-018" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed archived workspaces sometimes showing a file count with a diff that never loads by falling back to the last saved diff when it can no longer be reconstructed.</div>
   <div class="ja" lang="ja">アーカイブ済みワークスペースで、diffが読み込まれないまま残るファイル数が表示されることがある問題を修正しました。再構築できなくなった場合は、最後に保存されたdiffにフォールバックするようになりました。</div>
 </li>
@@ -340,8 +340,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed branch renaming so the configured branch prefix is no longer applied twice when Copilot renames a session&#039;s branch.</div>
   <div class="ja" lang="ja">Copilotがセッションのブランチ名を変更する際に、設定されたブランチプレフィックスが2回適用されることがある問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-4-fixed-020" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-4-fixed-020" data-release-item data-category="Fixed" data-feature="Models &amp; account">
+  <div class="chips"><span class="badge">Models &amp; account</span></div>
   <div class="en" lang="en">Fixed child sessions sometimes showing an incorrect model, reasoning effort, or context size in the composer instead of the configuration inherited from the parent session.</div>
   <div class="ja" lang="ja">子セッションが親セッションから継承した設定ではなく、コンポーザーに誤ったモデル、reasoning effort、またはコンテキストサイズを表示することがある問題を修正しました。</div>
 </li>
@@ -355,8 +355,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed collapsed resolved and staged review comment threads showing an unnecessary &quot;Outdated location&quot; banner, keeping the collapsed row compact.</div>
   <div class="ja" lang="ja">折りたたまれた解決済みおよびステージ済みのレビューコメントスレッドに不要な「Outdated location」バナーが表示され、折りたたまれた行がコンパクトでなくなる問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-4-fixed-023" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-4-fixed-023" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed conversation compaction sometimes getting stuck in a repeating loop that could run indefinitely; affected turns now stop automatically with guidance to resend the message.</div>
   <div class="ja" lang="ja">会話の圧縮が無限に繰り返すループでスタックすることがある問題を修正しました。影響を受けたターンはメッセージを再送信するガイダンスとともに自動的に停止するようになりました。</div>
 </li>
@@ -430,8 +430,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed screen readers not reading the helper text next to the auto-update toggle and the Suggestion cards Restore button in Settings, and fixed focus loss and missing confirmation when restoring suggestion cards.</div>
   <div class="ja" lang="ja">スクリーンリーダーがSettingsの自動更新トグルとSuggestion cards Restoreボタンの横のヘルパーテキストを読み上げない問題と、サジェストカードを復元したときにフォーカスが失われて確認が表示されない問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-4-fixed-038" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-4-fixed-038" data-release-item data-category="Fixed" data-feature="Experience &amp; reliability">
+  <div class="chips"><span class="badge">Experience &amp; reliability</span></div>
   <div class="en" lang="en">Fixed shell commands sometimes never running in terminals using a customized shell prompt.</div>
   <div class="ja" lang="ja">カスタマイズされたシェルプロンプトを使用するターミナルでシェルコマンドが実行されないことがある問題を修正しました。</div>
 </li>
@@ -455,8 +455,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the &quot;Add Enterprise account&quot; form in Settings so an invalid server address is announced to screen readers, and an empty submission now explains what to fix instead of doing nothing.</div>
   <div class="ja" lang="ja">Settingsの「Add Enterprise account」フォームで、無効なサーバーアドレスがスクリーンリーダーにアナウンスされるようになりました。また、空の送信が何もしない代わりに修正すべき内容を説明するようになりました。</div>
 </li>
-<li class="release-item" id="v1-1-4-fixed-043" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-4-fixed-043" data-release-item data-category="Fixed" data-feature="Experience &amp; reliability">
+  <div class="chips"><span class="badge">Experience &amp; reliability</span></div>
   <div class="en" lang="en">Fixed the /compact command sometimes showing no progress or result, or requiring a second run to display feedback.</div>
   <div class="ja" lang="ja">/compactコマンドが進捗や結果を表示しないことがある、またはフィードバックを表示するために2回実行が必要なことがある問題を修正しました。</div>
 </li>
@@ -485,18 +485,18 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the Fix action getting stuck on &quot;Working on a fix...&quot; for pull request review comments authored under your own account, including feedback from your review agent.</div>
   <div class="ja" lang="ja">レビューエージェントからのフィードバックを含む自分のアカウントで作成されたプルリクエストレビューコメントに対して、Fixアクションが「Working on a fix...」の状態でスタックする問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-4-fixed-049" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-4-fixed-049" data-release-item data-category="Fixed" data-feature="Canvases, files &amp; browser">
+  <div class="chips"><span class="badge">Canvases, files &amp; browser</span></div>
   <div class="en" lang="en">Fixed the Markdown file editor sometimes overwriting newer changes made to a file on disk while the editor still held older content; it now shows the reload-or-keep-local-changes prompt instead.</div>
   <div class="ja" lang="ja">Markdownファイルエディターがエディターに古いコンテンツが残っている間にディスク上のファイルに加えられた新しい変更を上書きすることがある問題を修正しました。代わりに再読み込みまたはローカルの変更を保持するプロンプトが表示されるようになりました。</div>
 </li>
-<li class="release-item" id="v1-1-4-fixed-050" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-4-fixed-050" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the merge drawer sometimes hiding auto-merge and showing a direct merge action instead while merge requirements were still loading.</div>
   <div class="ja" lang="ja">マージ要件がまだ読み込み中のときに、マージドロワーがauto-mergeを非表示にして代わりに直接マージアクションを表示することがある問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-4-fixed-051" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-4-fixed-051" data-release-item data-category="Fixed" data-feature="Models &amp; account">
+  <div class="chips"><span class="badge">Models &amp; account</span></div>
   <div class="en" lang="en">Fixed the model picker sometimes showing the wrong model after a switch failed while a session was reconnecting.</div>
   <div class="ja" lang="ja">セッションの再接続中に切り替えが失敗した後、モデルピッカーに間違ったモデルが表示されることがある問題を修正しました。</div>
 </li>
@@ -520,8 +520,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the scroll wheel not scrolling the command menu (/, @, #, or session) when the pointer stayed over the prompt composer&#039;s text box.</div>
   <div class="ja" lang="ja">ポインターがプロンプトコンポーザーのテキストボックス上にある場合に、スクロールホイールでコマンドメニュー（/、@、#、またはセッション）がスクロールされない問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-4-fixed-056" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-4-fixed-056" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the Up Next list on Home sometimes showing the same pull request twice.</div>
   <div class="ja" lang="ja">ホームの「Up Next」リストに同じプルリクエストが2回表示されることがある問題を修正しました。</div>
 </li>
@@ -667,8 +667,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Files now open immediately when clicked, without a delay. Use Cmd/Ctrl-click to open a file in a new tab.</div>
   <div class="ja" lang="ja">ファイルをクリックすると遅延なくすぐに開くようになりました。新しいタブでファイルを開くには、Cmd/Ctrl+クリックを使用してください。</div>
 </li>
-<li class="release-item" id="v1-1-3-changed-005" data-release-item data-category="Changed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-changed-005" data-release-item data-category="Changed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Issue conversations now load progressively, with comments and timeline events streaming in as they arrive instead of waiting for everything at once. Issues with very large comment threads no longer get cut off.</div>
   <div class="ja" lang="ja">issueの会話がプログレッシブに読み込まれるようになり、コメントとタイムラインイベントが一度にすべて読み込まれるのを待つのではなく、到着するたびにストリーミングされます。コメントスレッドが非常に多いissueで途中で切れることもなくなりました。</div>
 </li>
@@ -687,8 +687,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Removed the dropdown caret from the project, workspace type, and branch selectors in the new session composer for a cleaner look.</div>
   <div class="ja" lang="ja">新規セッションコンポーザーのプロジェクト、ワークスペースタイプ、ブランチのセレクターからドロップダウンのキャレットを削除し、すっきりした見た目になりました。</div>
 </li>
-<li class="release-item" id="v1-1-3-changed-009" data-release-item data-category="Changed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-changed-009" data-release-item data-category="Changed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Removed the metadata status bars (start time, duration, output summary) shown below tool calls and reasoning steps in the conversation timeline.</div>
   <div class="ja" lang="ja">会話タイムラインのツール呼び出しと推論ステップの下に表示されていたメタデータステータスバー（開始時間、所要時間、出力サマリー）を削除しました。</div>
 </li>
@@ -697,8 +697,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Right panel tabs are easier to scan, close, and restore, with clearer close controls, adaptive label widths, and support for a narrower panel.</div>
   <div class="ja" lang="ja">右パネルのタブが、明確な閉じるコントロール、適応型のラベル幅、より狭いパネルのサポートにより、スキャン、閉じる、復元がしやすくなりました。</div>
 </li>
-<li class="release-item" id="v1-1-3-changed-011" data-release-item data-category="Changed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-changed-011" data-release-item data-category="Changed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">SQL tool calls now show a human-readable summary in the conversation timeline instead of the raw query, which remains available in the expanded details.</div>
   <div class="ja" lang="ja">会話タイムラインのSQLツール呼び出しに、生のクエリの代わりに人が読めるサマリーが表示されるようになりました。生のクエリは展開した詳細で引き続き確認できます。</div>
 </li>
@@ -747,8 +747,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed &quot;Copy path&quot; on files in the artifact tree copying only the file name instead of the full file path.</div>
   <div class="ja" lang="ja">アーティファクトツリーのファイルの「Copy path」がフルファイルパスではなくファイル名だけをコピーしていた問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-005" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-005" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed &quot;Create PR + agent merge&quot; sometimes creating the pull request without actually turning on agent merge, especially when navigating away while the PR was being created.</div>
   <div class="ja" lang="ja">「Create PR + agent merge」がPR作成中に別の画面に移動すると、agent mergeを実際にはオンにせずにプルリクエストを作成してしまうことがある問題を修正しました。</div>
 </li>
@@ -757,8 +757,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed @ file mentions showing &quot;No matching files&quot; on Home and other pre-session composers when a project&#039;s files had loaded.</div>
   <div class="ja" lang="ja">プロジェクトのファイルが読み込まれていてもHomeなどのセッション前コンポーザーで@ファイルメンションが「No matching files」と表示される問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-007" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-007" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed a brief &quot;Thinking&quot; row flashing and disappearing in the conversation timeline before an agent&#039;s response started streaming.</div>
   <div class="ja" lang="ja">エージェントの応答がストリーミングを開始する前に、会話タイムラインで「Thinking」の行が一瞬点灯して消える問題を修正しました。</div>
 </li>
@@ -882,8 +882,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed automation card titles always showing a pointer cursor on hover, even when the &quot;Show pointer on hover&quot; accessibility setting was disabled.</div>
   <div class="ja" lang="ja">「Show pointer on hover」アクセシビリティ設定が無効になっていても、自動化カードのタイトルのホバー時に常にポインターカーソルが表示されていた問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-032" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-032" data-release-item data-category="Fixed" data-feature="Automations">
+  <div class="chips"><span class="badge">Automations</span></div>
   <div class="en" lang="en">Fixed automation runs sometimes staying stuck showing as running after they had already finished.</div>
   <div class="ja" lang="ja">自動化の実行が完了した後も実行中として表示されたままになることがある問題を修正しました。</div>
 </li>
@@ -897,8 +897,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed conversation rows briefly overlapping earlier messages when opening a session&#039;s history.</div>
   <div class="ja" lang="ja">セッションの履歴を開いたときに会話の行が以前のメッセージに一時的に重なって表示される問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-035" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-035" data-release-item data-category="Fixed" data-feature="Platforms &amp; environments">
+  <div class="chips"><span class="badge">Platforms &amp; environments</span></div>
   <div class="en" lang="en">Fixed conversation rows sometimes overlapping after resizing the workspace split pane.</div>
   <div class="ja" lang="ja">ワークスペースのスプリットペインをリサイズした後に会話の行が重なって表示されることがある問題を修正しました。</div>
 </li>
@@ -932,8 +932,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed inline review comments and replies so text with angle brackets (like <code>Array&lt;string&gt;</code> or <code>&lt;summary&gt;</code>) displays exactly as typed instead of being misread as HTML.</div>
   <div class="ja" lang="ja">インラインレビューのコメントと返信で、山括弧を含むテキスト（<code>Array&lt;string&gt;</code>や<code>&lt;summary&gt;</code>など）がHTMLとして誤読されるのではなく、入力したとおりに表示されるように修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-042" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-042" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed inline review comments sometimes moving to the wrong line or disappearing when the diff changed while a draft review was open.</div>
   <div class="ja" lang="ja">レビュー下書きを開いている間にdiffが変更された場合に、インラインレビューコメントが間違った行に移動したり消えたりすることがある問題を修正しました。</div>
 </li>
@@ -952,8 +952,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed model-change notices showing a stale reasoning effort after switching to a model that doesn&#039;t support configurable reasoning.</div>
   <div class="ja" lang="ja">設定可能なreasoningをサポートしないモデルに切り替えた後、モデル変更通知に古いreasoning effortが表示される問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-046" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-046" data-release-item data-category="Fixed" data-feature="Experience &amp; reliability">
+  <div class="chips"><span class="badge">Experience &amp; reliability</span></div>
   <div class="en" lang="en">Fixed new right panel tabs (like Insights) sometimes appearing in the middle of the tab bar instead of after existing tabs</div>
   <div class="ja" lang="ja">右パネルの新しいタブ（Insightsなど）が既存のタブの後ではなく、タブバーの途中に表示されることがある問題を修正しました。</div>
 </li>
@@ -987,13 +987,13 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed session and workspace names showing raw reference markup instead of the slash command text when starting a session with a repository skill.</div>
   <div class="ja" lang="ja">リポジトリスキルを使ってセッションを開始したときに、セッションとワークスペースの名前にスラッシュコマンドのテキストではなく生のリファレンスマークアップが表示される問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-053" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-053" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed session deletion sometimes failing with a git timeout error on large or slow worktrees, and made the error clearer when it still occurs.</div>
   <div class="ja" lang="ja">大規模または低速なworktreeでセッション削除がgitタイムアウトエラーで失敗することがある問題を修正し、エラーが発生した場合のメッセージをより明確にしました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-054" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-054" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed sessions failing to start when an organization&#039;s policy disallows Approve all mode; the app now falls back to Ask every time and shows a warning explaining why.</div>
   <div class="ja" lang="ja">組織のポリシーでApprove allモードが禁止されている場合にセッションが起動しない問題を修正しました。アプリはAsk every timeにフォールバックし、その理由を説明する警告を表示するようになりました。</div>
 </li>
@@ -1022,13 +1022,13 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the app freezing for minutes when a slow or throttled git host caused the new-session branch picker to block other git operations in the same project.</div>
   <div class="ja" lang="ja">低速またはスロットルされたgitホストが新規セッションのブランチピッカーをブロックし、同じプロジェクト内の他のgit操作をブロックしてアプリが数分間フリーズする問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-060" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-060" data-release-item data-category="Fixed" data-feature="Canvases, files &amp; browser">
+  <div class="chips"><span class="badge">Canvases, files &amp; browser</span></div>
   <div class="en" lang="en">Fixed the Changes file tree sometimes missing files that were added while the Changes tab wasn&#039;t active.</div>
   <div class="ja" lang="ja">Changesタブがアクティブでない間に追加されたファイルが、Changesファイルツリーに表示されないことがある問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-061" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-061" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed the Changes panel sometimes going blank and staying blank for the rest of the session after a brief git error, even though your edits were still there.</div>
   <div class="ja" lang="ja">一時的なgitエラーの後、編集内容は残っているにもかかわらずChangesパネルが空白になり、セッション中ずっと空白のままになることがある問題を修正しました。</div>
 </li>
@@ -1052,8 +1052,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the context-window usage bar in the session title popover appearing as a tiny stub instead of a full-width bar</div>
   <div class="ja" lang="ja">セッションタイトルポップオーバーのコンテキストウィンドウ使用バーが、全幅バーではなく小さなスタブとして表示される問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-066" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-066" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the conversation shifting left when the timeline first appeared in the full-height right panel layout with the review panel closed.</div>
   <div class="ja" lang="ja">レビューパネルが閉じた全高右パネルレイアウトでタイムラインが最初に表示された際に、会話が左にずれる問題を修正しました。</div>
 </li>
@@ -1072,8 +1072,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the diff view showing no changes for tracked files when your git configuration changes how diff headers are formatted</div>
   <div class="ja" lang="ja">gitの設定でdiffヘッダーのフォーマットが変更されている場合に、追跡中のファイルの変更がdiffビューに表示されない問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-070" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-070" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the diff view&#039;s &quot;expand context&quot; and &quot;expand full file&quot; controls sometimes showing the wrong or truncated lines when a committed diff&#039;s file had uncommitted changes on disk.</div>
   <div class="ja" lang="ja">コミット済みdiffのファイルにコミットされていない変更がディスク上にある場合に、diffビューの「expand context」および「expand full file」コントロールが誤った行または切り詰められた行を表示することがある問題を修正しました。</div>
 </li>
@@ -1092,13 +1092,13 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the markdown editor rewriting untouched table rows (adding extra escaping to backslashes and special characters) whenever any part of the document was edited.</div>
   <div class="ja" lang="ja">ドキュメントのいずれかの部分を編集するたびに、markdownエディターが未変更のテーブル行を書き換え（バックスラッシュや特殊文字に余分なエスケープを追加）していた問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-074" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-074" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the merge drawer sometimes staying stuck in a checking state for a stacked pull request even after it was ready to merge.</div>
   <div class="ja" lang="ja">スタックされたプルリクエストがマージ可能な状態になった後も、マージドロワーが確認中の状態のままスタックすることがある問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-075" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-075" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the merge when ready toggle sometimes reverting to an older state when rapidly enabled and disabled.</div>
   <div class="ja" lang="ja">merge when readyトグルを素早く有効/無効にすると、古い状態に戻ることがある問題を修正しました。</div>
 </li>
@@ -1112,8 +1112,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the plan reply box submitting the reply prematurely when pressing Enter to confirm an IME (Japanese, Chinese, Korean) input candidate.</div>
   <div class="ja" lang="ja">IME（日本語、中国語、韓国語）の入力候補を確定するためにEnterを押した際に、プランの返信ボックスが返信を早期に送信する問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-078" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-078" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed the Plan tab sometimes showing an empty state or staying open when a session had no plan or to-dos.</div>
   <div class="ja" lang="ja">セッションにプランやto-doがない場合に、Planタブが空の状態を表示したり開いたままになったりすることがある問題を修正しました。</div>
 </li>
@@ -1137,18 +1137,18 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the repository picker showing identical names for multiple checkouts of the same repository.</div>
   <div class="ja" lang="ja">同じリポジトリの複数のチェックアウトに対して、リポジトリピッカーに同一の名前が表示される問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-083" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-083" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the review panel feeling unresponsive or slow to open, especially the first time it&#039;s opened in a workspace.</div>
   <div class="ja" lang="ja">レビューパネルが応答しなかったり、特にワークスペースで初めて開く際に開くのが遅く感じる問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-084" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-084" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the spacing and styling of commentless review approvals in the pull request activity feed so they align with the surrounding timeline events.</div>
   <div class="ja" lang="ja">プルリクエストのアクティビティフィードでコメントなしのレビュー承認の余白とスタイルを修正し、周囲のタイムラインイベントと揃うようになりました。</div>
 </li>
-<li class="release-item" id="v1-1-3-fixed-085" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-3-fixed-085" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the timeline label for SQL queries so it shows the query&#039;s description instead of a generic, duplicated label.</div>
   <div class="ja" lang="ja">SQLクエリのタイムラインラベルを修正し、汎用的で重複したラベルの代わりにクエリの説明が表示されるようになりました。</div>
 </li>
@@ -1373,8 +1373,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed an issue where the app could fail to open (icon appeared but no window) or repeatedly show onboarding to already set up users.</div>
   <div class="ja" lang="ja">アプリが起動に失敗する(アイコンは表示されるがウィンドウが開かない)、またはセットアップ済みのユーザーにオンボーディングが繰り返し表示される問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-2-fixed-007" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-2-fixed-007" data-release-item data-category="Fixed" data-feature="Canvases, files &amp; browser">
+  <div class="chips"><span class="badge">Canvases, files &amp; browser</span></div>
   <div class="en" lang="en">Fixed Copy (⌘C/Ctrl+C) sometimes clearing the clipboard instead of copying the selected text.</div>
   <div class="ja" lang="ja">コピー(⌘C/Ctrl+C)を実行した際に、選択したテキストをコピーする代わりにクリップボードが空になってしまうことがある問題を修正しました。</div>
 </li>
@@ -1383,8 +1383,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed janky window resizing when a chat session is open and scrolled into its history.</div>
   <div class="ja" lang="ja">チャットセッションを開いて履歴をスクロールした状態でウィンドウをリサイズすると、動きがぎこちなくなる問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-2-fixed-009" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-2-fixed-009" data-release-item data-category="Fixed" data-feature="Experience &amp; reliability">
+  <div class="chips"><span class="badge">Experience &amp; reliability</span></div>
   <div class="en" lang="en">Fixed the sidebar sometimes opening collapsed on startup and saved inbox sections not persisting between restarts.</div>
   <div class="ja" lang="ja">起動時にサイドバーが折りたたまれた状態で開いてしまうことがある問題、および保存済みのinboxセクションが再起動をまたいで保持されない問題を修正しました。</div>
 </li>
@@ -1525,8 +1525,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the keyboard focus indicator being invisible when tabbing to a collapsed comment in the Files changed view.</div>
   <div class="ja" lang="ja">Files changedビューで折りたたまれたコメントにTabキーで移動した際に、キーボードフォーカスインジケーターが表示されない問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-1-fixed-014" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-1-fixed-014" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the updated-at timestamp on My Work board cards so it correctly announces the relative time and reveals the exact date when activated, instead of only announcing the exact date.</div>
   <div class="ja" lang="ja">My Workのボードカードにあるupdated-atタイムスタンプを修正し、正確な日付のみをアナウンスするのではなく、相対時間を正しくアナウンスし、操作すると正確な日付が表示されるようにしました。</div>
 </li>
@@ -1587,8 +1587,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Expanded tool call inputs like search patterns, shell commands, and arguments are now syntax highlighted for easier scanning.</div>
   <div class="ja" lang="ja">展開されたツール呼び出しの入力(検索パターン、シェルコマンド、引数など)がシンタックスハイライト表示され、確認しやすくなりました。</div>
 </li>
-<li class="release-item" id="v1-1-0-added-008" data-release-item data-category="Added" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-0-added-008" data-release-item data-category="Added" data-feature="Experience &amp; reliability">
+  <div class="chips"><span class="badge">Experience &amp; reliability</span></div>
   <div class="en" lang="en">Expanded tool call rows in the timeline now show a metadata footer with when they started, how long they took, and the output size. Expanded reasoning rows show when they started.</div>
   <div class="ja" lang="ja">タイムライン内の展開されたツール呼び出し行に、開始時刻、所要時間、出力サイズを示すメタデータフッターが表示されるようになりました。展開された推論行には開始時刻が表示されます。</div>
 </li>
@@ -1607,8 +1607,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Session grid (view multiple sessions at once), side chats in the review panel, and automatic session renaming to the pull request title are now available to all users and can be turned off in Settings.</div>
   <div class="ja" lang="ja">セッショングリッド(複数のセッションを同時に表示)、レビューパネルのサイドチャット、プルリクエストのタイトルへのセッションの自動リネームが、すべてのユーザーに提供されるようになり、設定でオフにできます。</div>
 </li>
-<li class="release-item" id="v1-1-0-added-012" data-release-item data-category="Added" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-0-added-012" data-release-item data-category="Added" data-feature="Platforms &amp; environments">
+  <div class="chips"><span class="badge">Platforms &amp; environments</span></div>
   <div class="en" lang="en">Show an estimate of local disk space that will be reclaimed when deleting sessions</div>
   <div class="ja" lang="ja">セッションを削除する際に解放されるローカルディスク容量の見積もりを表示するようになりました</div>
 </li>
@@ -1762,8 +1762,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed an issue where the app could fail to open, showing a dock icon but never displaying a window.</div>
   <div class="ja" lang="ja">アプリの起動に失敗し、Dockアイコンは表示されるもののウィンドウが一切表示されないことがあった問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-0-fixed-022" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-0-fixed-022" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed autopilot sessions sometimes showing permission prompts instead of running without interruption.</div>
   <div class="ja" lang="ja">Autopilotセッションが中断なく実行されるべきところ、権限プロンプトが表示されてしまうことがあった不具合を修正しました。</div>
 </li>
@@ -1802,8 +1802,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed quick chats moving to the top of the sidebar&#039;s Last updated order just from opening them, without any real activity.</div>
   <div class="ja" lang="ja">実際の活動がないにもかかわらず、Quick Chatを開いただけでサイドバーの「Last updated」順で先頭に移動してしまう不具合を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-0-fixed-030" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-0-fixed-030" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed resuming a session sometimes showing a duplicate permission prompt and taking longer when auto-approve was toggled.</div>
   <div class="ja" lang="ja">自動承認を切り替えた際に、セッションの再開時に権限プロンプトが重複して表示されたり、時間がかかったりすることがあった不具合を修正しました。</div>
 </li>
@@ -1852,8 +1852,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the conversation view occasionally stopping auto-scroll to the bottom while the agent was still responding.</div>
   <div class="ja" lang="ja">エージェントが応答中であるにもかかわらず、会話ビューが一番下への自動スクロールを時折停止してしまう不具合を修正しました。</div>
 </li>
-<li class="release-item" id="v1-1-0-fixed-040" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-0-fixed-040" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed the conversation view sometimes getting stuck partway up the transcript instead of staying pinned to the bottom while an agent&#039;s response was streaming.</div>
   <div class="ja" lang="ja">エージェントの応答をストリーミング中に、会話ビューが一番下に固定され続けるべきところ、トランスクリプトの途中で止まってしまうことがあった不具合を修正しました。</div>
 </li>
@@ -1927,8 +1927,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed triple-click line selection in the canvas markdown source view so each source line is selected as its own block.</div>
   <div class="ja" lang="ja">canvasのMarkdownソースビューでのトリプルクリックによる行選択を修正し、各ソース行がそれぞれ独立したブロックとして選択されるようにしました。</div>
 </li>
-<li class="release-item" id="v1-1-0-fixed-055" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-1-0-fixed-055" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed wrapped diff lines sometimes getting clipped after the diff refreshed from an edit.</div>
   <div class="ja" lang="ja">編集により差分が更新された後、折り返された差分行が途中で切れてしまうことがあった不具合を修正しました。</div>
 </li>
@@ -2034,8 +2034,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Added commit navigation to the pull request Changes tab, letting you step through individual commits and view their diffs, plus a review progress indicator showing how many files you&#039;ve reviewed.</div>
   <div class="ja" lang="ja">プルリクエストのChangesタブにコミットナビゲーションを追加し、個々のコミットを順に確認して差分を表示できるようにしました。あわせて、レビュー済みのファイル数を示すレビュー進捗インジケーターも追加しました。</div>
 </li>
-<li class="release-item" id="v1-0-26-added-004" data-release-item data-category="Added" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-26-added-004" data-release-item data-category="Added" data-feature="Automations">
+  <div class="chips"><span class="badge">Automations</span></div>
   <div class="en" lang="en">Cloud automations now support scheduling daily and weekly runs at quarter-hour times (e.g. :15, :30, :45), matching local automation scheduling.</div>
   <div class="ja" lang="ja">クラウドオートメーションでも、ローカルのオートメーションスケジュールと同様に、15分刻みの時刻(:15、:30、:45など)で毎日・毎週の実行をスケジュールできるようになりました。</div>
 </li>
@@ -2174,8 +2174,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed external links (like &quot;Explore plans&quot; and documentation links) not opening on some Linux distributions.</div>
   <div class="ja" lang="ja">一部のLinuxディストリビューションで外部リンク(「Explore plans」やドキュメントへのリンクなど)が開かない問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-26-fixed-019" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-26-fixed-019" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed messages sent from another session sometimes appearing as plain user messages instead of showing which session they came from.</div>
   <div class="ja" lang="ja">別のセッションから送信されたメッセージが、どのセッションから届いたかを示さずに、単なるユーザーメッセージとして表示されることがある問題を修正しました。</div>
 </li>
@@ -2184,8 +2184,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed My Work repo selections and saved section filters getting dropped after a GitHub repo is renamed or transferred.</div>
   <div class="ja" lang="ja">GitHubリポジトリの名前変更または移管後に、My Workのリポジトリ選択や保存済みのセクションフィルターが失われる問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-26-fixed-021" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-26-fixed-021" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed pull request and issue views occasionally getting stuck showing stale data when real-time updates silently stopped arriving.</div>
   <div class="ja" lang="ja">リアルタイム更新が気付かないうちに届かなくなった際に、プルリクエストやIssueのビューが古いデータのまま固まって表示されることがある問題を修正しました。</div>
 </li>
@@ -2194,8 +2194,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed sessions occasionally hanging forever during startup, mid-turn, or resume, and improved shutdown and git checkout speed on machines with many sessions or large repositories.</div>
   <div class="ja" lang="ja">セッションが起動中、ターン処理中、または再開時にまれに無限にハングすることがある問題を修正し、セッション数が多い、またはリポジトリが大きいマシンでのシャットダウンとgit checkoutの速度を改善しました。</div>
 </li>
-<li class="release-item" id="v1-0-26-fixed-023" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-26-fixed-023" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed sessions sometimes getting permanently stuck when resuming, and added a &quot;Restart session&quot; option to recover if resuming fails.</div>
   <div class="ja" lang="ja">セッションの再開時に永続的にスタックしてしまうことがある問題を修正し、再開に失敗した場合に復旧できる「Restart session」オプションを追加しました。</div>
 </li>
@@ -2396,8 +2396,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed folder rows in the Files tab shifting horizontally right after the file tree finished loading.</div>
   <div class="ja" lang="ja">ファイルツリーの読み込みが完了した直後に、Filesタブのフォルダー行が水平方向にずれてしまう問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-25-fixed-006" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-25-fixed-006" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed issue and pull request detail views sometimes showing raw error page content instead of a clear message with a retry option when a request failed.</div>
   <div class="ja" lang="ja">リクエストが失敗した際に、Issueおよびプルリクエストの詳細ビューで、再試行オプション付きのわかりやすいメッセージの代わりに、生のエラーページの内容が表示されてしまうことがある問題を修正しました。</div>
 </li>
@@ -2421,8 +2421,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the sidebar and right panel animation so text no longer reflows mid-slide when expanding or collapsing them.</div>
   <div class="ja" lang="ja">サイドバーと右パネルを展開・折りたたむ際に、スライドの途中でテキストが再レイアウトされてしまわないよう、アニメーションを修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-25-fixed-011" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-25-fixed-011" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed workflow timeline hover previews rendering behind the prompt composer during an active run.</div>
   <div class="ja" lang="ja">実行中に、ワークフロータイムラインのホバープレビューがプロンプト作成欄の背後に表示されてしまう問題を修正しました。</div>
 </li>
@@ -2650,8 +2650,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed an issue where a pull request review thread resolved outside the app could keep showing as unresolved in the conversation view.</div>
   <div class="ja" lang="ja">アプリの外でプルリクエストのレビュースレッドを解決した場合に、会話ビューでは未解決のまま表示され続けてしまう問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-23-fixed-006" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-23-fixed-006" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed an issue where a pull request&#039;s conversation could appear stuck loading additional timeline events indefinitely.</div>
   <div class="ja" lang="ja">プルリクエストの会話が、追加のタイムラインイベントの読み込みで無限に止まってしまったように見える問題を修正しました。</div>
 </li>
@@ -2675,18 +2675,18 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed pasting a GitHub pull request or issue URL with extra suffixes (like /changes or a #discussion anchor) not matching the correct item when creating a session</div>
   <div class="ja" lang="ja">セッション作成時に、追加のサフィックス(/changesや#discussionアンカーなど)が付いたGitHubのプルリクエストまたはIssueのURLを貼り付けても、正しい項目と一致しない問題を修正しました</div>
 </li>
-<li class="release-item" id="v1-0-23-fixed-011" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-23-fixed-011" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed pull request review comment threads sometimes showing stale resolved/unresolved status in the conversation, files, and merge blocker views after resolving or unresolving a thread.</div>
   <div class="ja" lang="ja">スレッドを解決・未解決に切り替えた後、会話・ファイル・マージブロッカーの各ビューで、プルリクエストのレビューコメントスレッドの解決/未解決ステータスが古いまま表示されることがある問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-23-fixed-012" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-23-fixed-012" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the Agent Merge options popover sometimes appearing behind an open canvas instead of on top of it.</div>
   <div class="ja" lang="ja">Agent Mergeのオプションポップオーバーが、開いているcanvasの上ではなく背後に表示されてしまうことがある問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-23-fixed-013" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-23-fixed-013" data-release-item data-category="Fixed" data-feature="Extensibility">
+  <div class="chips"><span class="badge">Extensibility</span></div>
   <div class="en" lang="en">Fixed the Extensions view&#039;s MCP tab sometimes spinning forever when the server list failed to load, and added a retry button if loading takes too long.</div>
   <div class="ja" lang="ja">Extensionsビューのタブで、サーバー一覧の読み込みに失敗した際にMCPタブが読み込み中の表示のまま止まってしまうことがある問題を修正し、読み込みに時間がかかりすぎる場合に再試行ボタンを追加しました。</div>
 </li>
@@ -2766,8 +2766,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">In the full-screen pull request Changes view, each file now appears in its own spaced, rounded card, and the files sidebar shows addition/deletion counts for each file.</div>
   <div class="ja" lang="ja">全画面表示のプルリクエストChangesビューで、各ファイルが間隔の空いた角丸のカードとして個別に表示されるようになり、ファイルサイドバーには各ファイルの追加/削除行数が表示されるようになりました。</div>
 </li>
-<li class="release-item" id="v1-0-22-changed-002" data-release-item data-category="Changed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-22-changed-002" data-release-item data-category="Changed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Saved memories now appear in the conversation timeline, showing the fact that was remembered.</div>
   <div class="ja" lang="ja">保存されたメモリーが会話のタイムラインに表示されるようになり、記憶された内容が確認できるようになりました。</div>
 </li>
@@ -2781,8 +2781,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Show a feedback icon (instead of a bug icon) on the Share feedback button in the sidebar.</div>
   <div class="ja" lang="ja">サイドバーのShare feedbackボタンに、バグアイコンの代わりにフィードバックアイコンを表示するようにしました。</div>
 </li>
-<li class="release-item" id="v1-0-22-changed-005" data-release-item data-category="Changed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-22-changed-005" data-release-item data-category="Changed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">The issue timeline now shows a reference card (status icon, title, and issue number) when an issue is marked as blocked by, or blocking, another issue, instead of a bare action line.</div>
   <div class="ja" lang="ja">Issueが別のIssueによってブロックされている、または別のIssueをブロックしていると設定された場合、Issueのタイムラインに、単なるアクション行の代わりに参照カード(ステータスアイコン、タイトル、Issue番号)が表示されるようになりました。</div>
 </li>
@@ -2791,8 +2791,8 @@ html[data-theme="dark"] {
 <section class="release-category" data-release-category-section data-category="Fixed">
   <h3><span class="badge badge--fixed">Fixed</span> <span class="filter-count">11</span></h3>
   <ul class="release-items">
-    <li class="release-item" id="v1-0-22-fixed-001" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+    <li class="release-item" id="v1-0-22-fixed-001" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed an issue where creating a session with an initial prompt could sometimes create an empty session with the prompt never delivered.</div>
   <div class="ja" lang="ja">初期プロンプト付きでセッションを作成した際に、プロンプトが送信されない空のセッションが作成されてしまうことがある問題を修正しました。</div>
 </li>
@@ -2806,8 +2806,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed crashes that could occur from unusual keyboard events and when resizing the right panel.</div>
   <div class="ja" lang="ja">特殊なキーボードイベント発生時や、右パネルのサイズ変更時にクラッシュが発生することがある問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-22-fixed-004" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-22-fixed-004" data-release-item data-category="Fixed" data-feature="Platforms &amp; environments">
+  <div class="chips"><span class="badge">Platforms &amp; environments</span></div>
   <div class="en" lang="en">Fixed expanding a message panel in a conversation sometimes scrolling the whole window instead of just the conversation.</div>
   <div class="ja" lang="ja">会話内でメッセージパネルを展開した際に、会話部分だけでなくウィンドウ全体がスクロールしてしまうことがある問題を修正しました。</div>
 </li>
@@ -2946,8 +2946,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed agent merge getting stuck and not re-prompting after a required check finished running while another check was still failing.</div>
   <div class="ja" lang="ja">必須チェックの1つが完了したものの、別のチェックがまだ失敗している場合に、Agent Mergeが行き詰まり、再プロンプトされない問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-20-fixed-006" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-20-fixed-006" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed empty draft sessions sometimes remaining after leaving the multi-session grid view</div>
   <div class="ja" lang="ja">マルチセッショングリッドビューを離れた後、空のドラフトセッションが残ってしまうことがある問題を修正しました</div>
 </li>
@@ -2976,8 +2976,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the project removal confirmation dialog remaining visible after deleting a project in Settings.</div>
   <div class="ja" lang="ja">設定でプロジェクトを削除した後も、プロジェクト削除の確認ダイアログが表示されたままになる問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-20-fixed-012" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-20-fixed-012" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the pull request author sometimes appearing as their own reviewer in the Reviewers panel.</div>
   <div class="ja" lang="ja">プルリクエストの作成者が、Reviewersパネルで自分自身のレビュアーとして表示されてしまうことがある問題を修正しました。</div>
 </li>
@@ -3038,8 +3038,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Issue numbers now appear inline next to the title in the sub-issue picker, and stay visible even when a row isn&#039;t highlighted.</div>
   <div class="ja" lang="ja">サブIssueピッカーで、Issue番号がタイトルの横にインラインで表示されるようになり、行がハイライトされていない場合でも表示され続けるようになりました。</div>
 </li>
-<li class="release-item" id="v1-0-19-changed-004" data-release-item data-category="Changed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-19-changed-004" data-release-item data-category="Changed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Refreshed the styling of nested-session message rows in the chat timeline for a calmer, more consistent look.</div>
   <div class="ja" lang="ja">チャットのタイムラインにおけるネストされたセッションのメッセージ行のスタイルを刷新し、より落ち着いた一貫性のある見た目にしました。</div>
 </li>
@@ -3048,8 +3048,8 @@ html[data-theme="dark"] {
 <section class="release-category" data-release-category-section data-category="Fixed">
   <h3><span class="badge badge--fixed">Fixed</span> <span class="filter-count">13</span></h3>
   <ul class="release-items">
-    <li class="release-item" id="v1-0-19-fixed-001" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+    <li class="release-item" id="v1-0-19-fixed-001" data-release-item data-category="Fixed" data-feature="Automations">
+  <div class="chips"><span class="badge">Automations</span></div>
   <div class="en" lang="en">Automation-related actions in the conversation timeline now show clear labels like &quot;Listed automations&quot; and &quot;Saved automation&quot; instead of generic &quot;workflow&quot; wording.</div>
   <div class="ja" lang="ja">会話タイムライン内のオートメーション関連のアクションが、一般的な「workflow」という表現の代わりに、「Listed automations」や「Saved automation」といった明確なラベルで表示されるようになりました。</div>
 </li>
@@ -3068,8 +3068,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed &quot;New session&quot; on project-scoped canvases in the Extensions Canvas tab so it starts the session directly instead of opening the generic canvas picker.</div>
   <div class="ja" lang="ja">Extensions Canvasタブのプロジェクトスコープのcanvasにおける「New session」を修正し、汎用のcanvasピッカーを開く代わりに、セッションを直接開始するようにしました。</div>
 </li>
-<li class="release-item" id="v1-0-19-fixed-005" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-19-fixed-005" data-release-item data-category="Fixed" data-feature="Automations">
+  <div class="chips"><span class="badge">Automations</span></div>
   <div class="en" lang="en">Fixed &quot;View logs&quot; in the PR checks menu sometimes doing nothing for failing checks; it now opens the check&#039;s logs on GitHub, or is hidden if no link is available. Re-running a workflow run that is older than a month now shows a clear, calmer message instead of a raw GitHub API error.</div>
   <div class="ja" lang="ja">PRチェックメニューの「View logs」が、失敗したチェックに対して何も反応しないことがある問題を修正しました。GitHub上のチェックのログを開くようになり、リンクが利用できない場合は非表示になります。また、1か月以上前のワークフロー実行を再実行しようとした場合、GitHub APIの生のエラーの代わりに、明確で落ち着いたメッセージが表示されるようになりました。</div>
 </li>
@@ -3078,8 +3078,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed text selection in the file view so the line-range highlight no longer lingers across hovered rows and copy behaves correctly.</div>
   <div class="ja" lang="ja">ファイルビューでのテキスト選択を修正し、行範囲のハイライトがホバーした行に残り続けなくなり、コピーが正しく動作するようになりました。</div>
 </li>
-<li class="release-item" id="v1-0-19-fixed-007" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-19-fixed-007" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the browser preview&#039;s Reload button sometimes clearing the address bar and failing to reload the page.</div>
   <div class="ja" lang="ja">ブラウザプレビューのReloadボタンが、アドレスバーをクリアしてしまいページの再読み込みに失敗することがある問題を修正しました。</div>
 </li>
@@ -3088,8 +3088,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the keyboard focus outline being clipped on the first and last rows of the workflow runs and skills lists.</div>
   <div class="ja" lang="ja">ワークフロー実行およびスキルのリストの最初と最後の行で、キーボードフォーカスの輪郭が切れてしまう問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-19-fixed-009" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-19-fixed-009" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the pull request Reviewers list sometimes appearing empty when reviewers had already submitted a review or when a team was requested for review.</div>
   <div class="ja" lang="ja">レビュアーがすでにレビューを提出済みの場合や、チームがレビュー依頼されている場合に、プルリクエストのReviewersリストが空に表示されることがある問題を修正しました。</div>
 </li>
@@ -3140,8 +3140,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Added a &quot;Show in Finder/Explorer/Files&quot; action to the repository context menu in the sidebar.</div>
   <div class="ja" lang="ja">サイドバーのリポジトリのコンテキストメニューに「Show in Finder/Explorer/Files」アクションを追加しました。</div>
 </li>
-<li class="release-item" id="v1-0-18-added-004" data-release-item data-category="Added" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-18-added-004" data-release-item data-category="Added" data-feature="Platforms &amp; environments">
+  <div class="chips"><span class="badge">Platforms &amp; environments</span></div>
   <div class="en" lang="en">Added a context-window usage graph to the Session Insights tab, showing how much of the context window has been used over time, with zoom and pan synced to the tool timeline.</div>
   <div class="ja" lang="ja">Session Insightsタブにコンテキストウィンドウ使用量のグラフを追加しました。時間経過に伴うコンテキストウィンドウの使用量を表示し、ズームとパンはツールのタイムラインと同期します。</div>
 </li>
@@ -3180,8 +3180,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Polished the sign-in screen layout, shortening button labels and moving the GitHub Enterprise sign-in option to a subtler link.</div>
   <div class="ja" lang="ja">サインイン画面のレイアウトを改良し、ボタンのラベルを短縮するとともに、GitHub Enterpriseのサインインオプションを目立たないリンクに移動しました。</div>
 </li>
-<li class="release-item" id="v1-0-18-changed-005" data-release-item data-category="Changed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-18-changed-005" data-release-item data-category="Changed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Pull requests and issues you&#039;re viewing now update in real time as changes happen, instead of waiting for the next periodic refresh.</div>
   <div class="ja" lang="ja">閲覧中のプルリクエストやIssueが、次回の定期更新を待つことなく、変更が発生した時点でリアルタイムに更新されるようになりました。</div>
 </li>
@@ -3210,8 +3210,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed an issue where renaming a session could be interrupted or reset if an automatic title update arrived while you were still typing.</div>
   <div class="ja" lang="ja">セッションの名前を変更している最中に自動タイトル更新が届くと、名前変更が中断またはリセットされてしまうことがある問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-18-fixed-004" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-18-fixed-004" data-release-item data-category="Fixed" data-feature="Experience &amp; reliability">
+  <div class="chips"><span class="badge">Experience &amp; reliability</span></div>
   <div class="en" lang="en">Fixed context menus (e.g. in the sidebar) sometimes closing immediately after right-clicking instead of staying open.</div>
   <div class="ja" lang="ja">コンテキストメニュー(サイドバーなど)が、右クリック直後に開いたままにならず、すぐに閉じてしまうことがある問題を修正しました。</div>
 </li>
@@ -3230,8 +3230,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed misaligned Path, Project, and Session ID values in the workspace info popover</div>
   <div class="ja" lang="ja">ワークスペース情報のポップオーバーで、Path、Project、Session IDの値の位置がずれていた問題を修正しました</div>
 </li>
-<li class="release-item" id="v1-0-18-fixed-008" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-18-fixed-008" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed new chats sometimes being silently discarded when navigating away right after sending the first message or after only using the terminal, so the session and its messages are no longer lost.</div>
   <div class="ja" lang="ja">最初のメッセージを送信した直後、またはターミナルのみを使用した直後に画面を離れると、新しいチャットが黙って破棄されてしまうことがある問題を修正しました。これにより、セッションとそのメッセージが失われなくなりました。</div>
 </li>
@@ -3250,13 +3250,13 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed the conversation scrolling or jumping around while Mermaid diagrams are loading or rendering.</div>
   <div class="ja" lang="ja">Mermaid図が読み込み中または描画中に、会話がスクロールしたり飛んだりしてしまう問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-18-fixed-012" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-18-fixed-012" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed the conversation view sometimes jumping or showing blank content when scrolling to the bottom of a long chat</div>
   <div class="ja" lang="ja">長いチャットの一番下までスクロールした際に、会話ビューが飛んだり空白の内容が表示されたりすることがある問題を修正しました</div>
 </li>
-<li class="release-item" id="v1-0-18-fixed-013" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-18-fixed-013" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed the conversation view sometimes landing above the latest messages instead of at the bottom when returning to a session that received new output while you were away.</div>
   <div class="ja" lang="ja">離れている間に新しい出力を受け取ったセッションに戻った際、会話ビューが一番下ではなく最新メッセージより上の位置で表示されてしまうことがある問題を修正しました。</div>
 </li>
@@ -3302,8 +3302,8 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Add an optional sparse-checkout setting in project settings so new worktrees for very large repositories can exclude or include only selected top-level directories.</div>
   <div class="ja" lang="ja">非常に大きなリポジトリの新しいworktreeで、選択したトップレベルディレクトリのみを除外または含めることができるように、プロジェクト設定にオプションのsparse-checkout設定を追加しました。</div>
 </li>
-<li class="release-item" id="v1-0-17-added-002" data-release-item data-category="Added" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-17-added-002" data-release-item data-category="Added" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Added an Insights tab to the session panel showing a timeline of where a session spent its time, including tool calls, sub-agent activity, and a summary of time spent per tool.</div>
   <div class="ja" lang="ja">セッションパネルにInsightsタブを追加しました。ツール呼び出しやサブエージェントのアクティビティを含む、セッションが時間を費やした内容のタイムラインと、ツールごとの所要時間の概要を表示します。</div>
 </li>
@@ -3357,8 +3357,8 @@ html[data-theme="dark"] {
 <section class="release-category" data-release-category-section data-category="Fixed">
   <h3><span class="badge badge--fixed">Fixed</span> <span class="filter-count">20</span></h3>
   <ul class="release-items">
-    <li class="release-item" id="v1-0-17-fixed-001" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+    <li class="release-item" id="v1-0-17-fixed-001" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Clicking a GitHub reference like #123 now correctly opens an issue or pull request tab based on what it actually is, instead of sometimes guessing wrong.</div>
   <div class="ja" lang="ja">#123のようなGitHubの参照をクリックすると、誤って推測されることがあった問題を修正し、実際の種類に応じてIssueまたはプルリクエストのタブが正しく開かれるようになりました。</div>
 </li>
@@ -3638,8 +3638,8 @@ html[data-theme="dark"] {
 <section class="release-category" data-release-category-section data-category="Fixed">
   <h3><span class="badge badge--fixed">Fixed</span> <span class="filter-count">1</span></h3>
   <ul class="release-items">
-    <li class="release-item" id="v1-0-15-fixed-001" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+    <li class="release-item" id="v1-0-15-fixed-001" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Fixed the default branch reverting to the repository&#039;s default branch every time a project was reopened after being manually changed in Settings.</div>
   <div class="ja" lang="ja">設定画面で手動で変更したにもかかわらず、プロジェクトを再度開くたびにデフォルトブランチがリポジトリのデフォルトブランチに戻ってしまっていた問題を修正しました。</div>
 </li>
@@ -3887,8 +3887,8 @@ html[data-theme="dark"] {
 <section class="release-category" data-release-category-section data-category="Fixed">
   <h3><span class="badge badge--fixed">Fixed</span> <span class="filter-count">17</span></h3>
   <ul class="release-items">
-    <li class="release-item" id="v1-0-13-fixed-001" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+    <li class="release-item" id="v1-0-13-fixed-001" data-release-item data-category="Fixed" data-feature="GitHub lifecycle">
+  <div class="chips"><span class="badge">GitHub lifecycle</span></div>
   <div class="en" lang="en">Automated agent check-in prompts no longer show up as ticks on the conversation timeline scrubber, and clicking the last tick now scrolls to its actual message instead of overshooting to a trailing automated exchange.</div>
   <div class="ja" lang="ja">自動化されたエージェントのチェックインプロンプトが会話タイムラインのスクラバー上にティックとして表示されなくなり、最後のティックをクリックすると、末尾の自動化されたやり取りへ行き過ぎることなく、実際のメッセージへスクロールするようになりました。</div>
 </li>
@@ -3922,13 +3922,13 @@ html[data-theme="dark"] {
   <div class="en" lang="en">Fixed screen readers announcing the Mode and Terminal theme options in Settings &gt; Themes as tabs instead of radio buttons, and added missing group labels and descriptions.</div>
   <div class="ja" lang="ja">Settings &gt; Themesにおいて、スクリーンリーダーがModeおよびTerminal themeのオプションをラジオボタンではなくタブとして読み上げていた問題を修正し、欠けていたグループラベルと説明を追加しました。</div>
 </li>
-<li class="release-item" id="v1-0-13-fixed-008" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-13-fixed-008" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Fixed the sidebar session status spinner sometimes staying stuck on &quot;working&quot; after a session went idle.</div>
   <div class="ja" lang="ja">セッションがアイドル状態になった後も、サイドバーのセッションステータスのスピナーが「working」のまま止まってしまうことがあった問題を修正しました。</div>
 </li>
-<li class="release-item" id="v1-0-13-fixed-009" data-release-item data-category="Fixed" data-feature="Accessibility &amp; input">
-  <div class="chips"><span class="badge">Accessibility &amp; input</span></div>
+<li class="release-item" id="v1-0-13-fixed-009" data-release-item data-category="Fixed" data-feature="Sessions &amp; orchestration">
+  <div class="chips"><span class="badge">Sessions &amp; orchestration</span></div>
   <div class="en" lang="en">Hid the redundant scrollbar in the conversation view when the timeline is visible.</div>
   <div class="ja" lang="ja">タイムラインが表示されている際に、会話ビューに冗長なスクロールバーが表示されていた問題を修正し、非表示にしました。</div>
 </li>
