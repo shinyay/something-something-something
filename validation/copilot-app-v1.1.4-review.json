@@ -1,0 +1,105 @@
+{
+  "edition": "GitHub Copilot App v1.1.4",
+  "reviewedAt": "2026-08-07T05:04:55+09:00",
+  "canonicalBoundary": {
+    "baseline": "v1.0.12",
+    "latest": "v1.1.4",
+    "latestPublishedAt": "2026-08-06T01:32:18Z",
+    "versionCount": 19,
+    "itemCount": 687,
+    "categoryCounts": {
+      "Added": 88,
+      "Changed": 97,
+      "Fixed": 500,
+      "Removed": 2
+    },
+    "featureAreaCounts": {
+      "GitHub lifecycle": 239,
+      "Sessions & orchestration": 121,
+      "Accessibility & input": 95,
+      "Canvases, files & browser": 57,
+      "Experience & reliability": 51,
+      "Models & account": 40,
+      "Platforms & environments": 32,
+      "Extensibility": 30,
+      "Automations": 22
+    }
+  },
+  "learningSystem": {
+    "journeys": 6,
+    "tracks": 10,
+    "labs": 25,
+    "newLabs": 4,
+    "htmlPages": 29,
+    "provenanceModes": [
+      "docs",
+      "release-notes",
+      "mixed"
+    ]
+  },
+  "validation": {
+    "static": "passed with canonical changelog and Releases API snapshots",
+    "externalLinks": {
+      "status": "passed",
+      "uniqueHttpsUrls": 94
+    },
+    "runtime": {
+      "status": "passed",
+      "engine": "Microsoft Edge headless",
+      "viewport": "390x844",
+      "themePageCombinations": 30,
+      "behaviors": [
+        "light and dark themes",
+        "responsive layout and recoverable horizontal scrolling",
+        "no-JS canonical reading",
+        "release and learning filters",
+        "copy feedback",
+        "theme, language, and progress persistence",
+        "visible focus and accessible names",
+        "reduced motion",
+        "print"
+      ]
+    },
+    "archivedV112": "passed: 17 releases, 462 items, 5 paths, 21 guides",
+    "crlfThemeValidation": "passed with CRLF HTML while still rejecting altered, missing, or non-first theme scripts"
+  },
+  "rubberDuck": {
+    "passes": [
+      {
+        "name": "factual-technical",
+        "result": "all high-confidence findings remediated"
+      },
+      {
+        "name": "factual-remediation",
+        "result": "App/CLI voice and sandbox boundaries, provenance, retry visibility, and source surfaces corrected"
+      },
+      {
+        "name": "instructional-ux",
+        "result": "journey order, track progression, per-lab assessments, time expectations, and matrix accessibility corrected"
+      },
+      {
+        "name": "instructional-remediation",
+        "result": "resume state, mobile/print overflow, bilingual terminology, and large-page coverage corrected"
+      },
+      {
+        "name": "final-signoff",
+        "result": "JA/EN version parity, archive routing, and capstone availability hedge corrected"
+      },
+      {
+        "name": "publication-approval",
+        "result": "approved for publication; remaining mobile clipping and hygiene findings remediated before commit"
+      },
+      {
+        "name": "final-quality-fix",
+        "result": "approved for push; Accessibility facet corrected from 170 to 95 with 75 false positives reclassified, including two lexical focus matches, and theme-script validation verified under LF and CRLF"
+      }
+    ],
+    "blockingFindingsRemaining": 0
+  },
+  "limitations": [
+    "Labs 01-21 preserve v1.1.2-verified core flows and explicitly mark v1.1.3/v1.1.4 deltas as source-checked.",
+    "Labs 22-25 are source-verified against official release notes and docs, not executed end-to-end in a live v1.1.4 account.",
+    "Release-note-only UI uses guided observation because no illustrated official walkthrough documents exact click paths.",
+    "Runtime validation uses Edge headless at 390px and representative current/archive pages, not every browser and viewport."
+  ]
+}

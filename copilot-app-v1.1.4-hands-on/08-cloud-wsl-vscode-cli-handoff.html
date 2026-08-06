@@ -1,0 +1,406 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Learn how to hand the same piece of work off between a cloud sandbox, a WSL remote environment, VS Code, and Copilot CLI, and understand the boundary between each surface.">
+<title>GitHub Copilot App v1.1.4 — Hand off across cloud, WSL, VS Code, and CLI</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="08" data-guide-count="25">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.4 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.4</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="lab-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">ラボ 08 / 25</span><span class="en" lang="en">Lab 08 of 25</span></p>
+    <h1 id="lab-title"><span class="ja" lang="ja">クラウド・WSL・VS Code・CLIへのハンドオフ</span><span class="en" lang="en">Hand off across cloud, WSL, VS Code, and CLI</span></h1>
+    <p class="lede"><span class="ja" lang="ja">同じ作業をクラウドサンドボックス、WSLリモート環境、VS Code、Copilot CLIの間で引き継ぐ方法と、それぞれの境界を学びます。</span><span class="en" lang="en">Learn how to hand the same piece of work off between a cloud sandbox, a WSL remote environment, VS Code, and Copilot CLI, and understand the boundary between each surface.</span></p>
+    <div class="meta-row" aria-label="Lab metadata">
+      <span class="badge"><span class="ja" lang="ja">上級</span><span class="en" lang="en">Advanced</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.4 向け再公開（中核フローは v1.1.2 で検証、現在差分を source-check）</span><span class="en" lang="en">Republished for v1.1.4 (core flow verified at v1.1.2; current deltas source-checked)</span></span>
+      <span class="badge"><span class="ja" lang="ja">約65分</span><span class="en" lang="en">About 65 min</span></span>
+      <span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span>
+    </div>
+    <div class="chips" aria-label="Journeys and tracks"><a class="badge badge--accent" href="index.html#journey-j2"><span class="ja" lang="ja">worktreeとSession Gridによる並列マルチセッション配信</span><span class="en" lang="en">Parallel multi-session delivery with worktrees</span></a> <a class="badge badge--accent" href="index.html#journey-j6"><span class="ja" lang="ja">プロダクション運用: モデル、コスト、アクセシビリティ、復旧</span><span class="en" lang="en">Production operations</span></a> <a class="badge" href="index.html#track-t10"><span class="ja" lang="ja">セキュリティガバナンスとplatform運用・復旧</span><span class="en" lang="en">Security governance and cross-platform operations/recovery</span></a></div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#labs"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">25 ラボ一覧</span><span class="en" lang="en">All 25 labs</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="persona">
+        <div class="section-heading"><p class="eyebrow">Scenario &amp; persona</p><h2><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">WSL内のサンプルリポジトリでAppから調査セッションを開始し、途中でVS Codeに切り替えてコードを詳しく読み、最後はCopilot CLIのターミナルから同じリポジトリで作業を続けます。合わせてクラウドサンドボックスでの実行も比較します。</span><span class="en" lang="en">Start an investigation session from the app against a sample repository inside WSL, switch to VS Code partway through to read the code more closely, then continue the same repository&#039;s work from a Copilot CLI terminal. Along the way, compare this with running a session in a cloud sandbox.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">担当者像</span><span class="en" lang="en">Persona</span></h3><p><span class="ja" lang="ja">複数OSとWSLをまたいで作業するエンジニアとして、プラットフォーム差を確認します。</span><span class="en" lang="en">As an engineer working across multiple OSes and WSL, confirm platform-specific differences.</span></p></article>
+        </div>
+        <div class="callout"><strong><span class="ja" lang="ja">なぜ重要か</span><span class="en" lang="en">Why it matters</span>:</strong> <span class="ja" lang="ja">プラットフォームごとの差異を知らないと、WSLやVS Code handoffで想定と異なる挙動に遭遇し、原因調査に時間がかかります。</span><span class="en" lang="en">Not knowing platform-specific differences leads to unexpected behavior in WSL or VS Code handoff, wasting time on root-cause investigation.</span></div>
+      </section>
+
+      <section class="section" id="objectives">
+        <div class="section-heading"><p class="eyebrow">Goals</p><h2><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Learning objectives</span></h2></div>
+        <ul><li><span class="ja" lang="ja">WSLリモート環境でセッションを実行する</span><span class="en" lang="en">Run a session in a WSL remote environment</span></li>
+<li><span class="ja" lang="ja">VS Codeへのhandoffを行う</span><span class="en" lang="en">Perform a handoff to VS Code</span></li>
+<li><span class="ja" lang="ja">Copilot CLIとの境界（隣接製品）を区別する</span><span class="en" lang="en">Distinguish the boundary from Copilot CLI as an adjacent product</span></li></ul>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">Windows上でWSLが有効になっており、対象のサンプルリポジトリがWSL側のファイルシステムにクローンされていること。</span><span class="en" lang="en">WSL is enabled on Windows and the sample repository is cloned inside the WSL filesystem.</span></li>
+<li><span class="ja" lang="ja">VS Codeがインストールされ、ターミナルから起動できること。</span><span class="en" lang="en">VS Code is installed and can be launched from a terminal.</span></li>
+<li><span class="ja" lang="ja">Copilot CLIがインストール・サインイン済みで、隣接する製品サーフェスとして利用できること。</span><span class="en" lang="en">Copilot CLI is installed and signed in, available as an adjacent product surface.</span></li>
+<li><span class="ja" lang="ja">クラウドサンドボックスを試す場合、組織またはエンタープライズでCloud Sandbox accessポリシーが有効であること。</span><span class="en" lang="en">If you want to try a cloud sandbox, the Cloud Sandbox access policy is enabled for your organization or enterprise.</span></li></ul>
+      </section>
+
+      <section class="section" id="availability">
+        <div class="section-heading"><p class="eyebrow">Availability</p><h2><span class="ja" lang="ja">公式な提供状況とスコープ</span><span class="en" lang="en">Official availability and scope</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></h3><p><span class="ja" lang="ja">v1.1.4 版として再公開。中核フローは v1.1.2 で検証され、v1.1.3 / v1.1.4 差分と情報源を source-check しています。新しい working tree とローカルリポジトリでのセッション実行、VS Codeで開く操作、WSLリモート環境は一般提供です。クラウドサンドボックスセッションはパブリックプレビューです。Copilot CLI自体はAppとは別の製品サーフェスです。</span><span class="en" lang="en">Republished for v1.1.4. The core flow was verified for v1.1.2; v1.1.3/v1.1.4 deltas and source provenance were checked. Running sessions in a new working tree or local repository, opening in VS Code, and WSL remote environments are generally available. Cloud sandbox sessions are public preview. Copilot CLI itself is a separate product surface from the app.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">対象範囲</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドは GitHub Copilot App のセッション実行先の切り替えと、VS Codeで開く・別ターミナルで続けるという受け渡し操作を扱います。Copilot CLI自体のインストールやログイン、CLI固有のスラッシュコマンドの詳細は隣接する製品サーフェスの機能であり、App自体はこのCopilot CLI上に構築されていますが、CLIの導入手順はここでは扱いません。SDKでの自動化も対象外です。</span><span class="en" lang="en">This guide covers switching where a GitHub Copilot app session runs, and handing off to VS Code or a separate terminal. Installing and signing in to Copilot CLI itself, and CLI-specific slash command details, are an adjacent product surface — the app is built on top of Copilot CLI, but its installation steps are out of scope here. SDK-based automation is also out of scope.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">時間の見積もり</span><span class="en" lang="en">Time estimate</span></h3><p><span class="ja" lang="ja">hands-on操作の目安は約65分です。download、network、service latencyは含みません。</span><span class="en" lang="en">Hands-on work is estimated at about 65 minutes, excluding downloads, network delay, and service latency.</span></p></article>
+          <article class="card"><h3><span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span> <span class="ja" lang="ja">情報源の裏付け</span><span class="en" lang="en">Source provenance</span></h3><p><span class="ja" lang="ja">WSL リモート環境、VS Code handoff、cloud sandbox という機能の一般的な存在は docs-grounded です。具体的な接続信頼性の改善や「VS Code は常に新しいウィンドウを開く」といった挙動の詳細は release-note-grounded です。 手順内の正確なメニュー名・ボタン名・クリック順は変更履歴（changelog）に基づく記述であり、スクリーンショット付きの公式ウォークスルーで検証されたものではありません。実際の画面がここと異なる場合は、画面に表示されている表記を優先してください。</span><span class="en" lang="en">The general existence of WSL remote environments, VS Code handoff, and cloud sandbox is docs-grounded. Specific connection-reliability improvements and behavioral details such as &quot;VS Code always opens a new window&quot; are release-note-grounded. Exact menu names, button labels, and click order in the steps are grounded in changelog entries, not an illustrated official walkthrough. If your running build&#039;s UI differs from this text, follow what the screen actually shows instead.</span></p></article>
+        </div>
+      </section>
+
+      <section class="section" id="before-you-start">
+        <div class="section-heading"><p class="eyebrow">Before you start</p><h2><span class="ja" lang="ja">開始前の安全確認</span><span class="en" lang="en">Before-you-start safety check</span></h2></div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全・データ・コスト・権限への影響</span><span class="en" lang="en">Safety, data, cost, and permission implications</span>:</strong> <span class="ja" lang="ja">WSLやクラウドサンドボックスでの作業を切り替える際、資格情報やAPIキーをターミナル履歴やプロンプトにそのまま貼り付けないでください。クラウドサンドボックスは従量課金のため、使い終わったセッションは削除して不要な費用を避けます。</span><span class="en" lang="en">When switching between WSL and cloud sandbox work, never paste credentials or API keys directly into terminal history or prompts. Cloud sandboxes are billed by usage, so delete sessions you&#039;re done with to avoid unnecessary charges.</span></div>
+      </section>
+
+      <section class="section" id="launchers">
+        <div class="section-heading"><p class="eyebrow">Open safely</p><h2><span class="ja" lang="ja">コピー可能なプロンプト／コマンドとランチャー</span><span class="en" lang="en">Copyable prompts/commands and launchers</span></h2></div>
+
+        <div class="card-grid"><article class="card">
+  <h3><span class="ja" lang="ja">github/app をアプリで開く</span><span class="en" lang="en">Open github/app in the app</span></h3>
+  <p><span class="ja" lang="ja">安全なホスト型ランチャーを使って公開のサンプルリポジトリを開きます。アプリ側で確認してから接続されます。</span><span class="en" lang="en">Uses the safe hosted launcher to open the public sample repository. The app asks for confirmation before connecting it.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fgithub.com%2Fgithub%2Fapp" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card">
+  <h3><span class="ja" lang="ja">ハンドオフ用セッションを開く</span><span class="en" lang="en">Open a handoff-ready session</span></h3>
+  <p><span class="ja" lang="ja">Copilot CLIやVS Codeから続けられるよう要約させるプロンプトを添えて、新しいセッションを開きます。</span><span class="en" lang="en">Opens a new session preloaded with a prompt that asks the agent to summarize so you can continue from Copilot CLI or VS Code.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fsession%2Fnew%3Frepo%3Dgithub%252Fapp%26mode%3Dinteractive%26prompt%3DSummarize%2520this%2520repository&#039;s%2520build%2520and%2520test%2520commands%2520so%2520I%2520can%2520continue%2520the%2520same%2520investigation%2520later%2520from%2520Copilot%2520CLI%2520or%2520VS%2520Code%252C%2520without%2520changing%2520any%2520files." rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+      </section>
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="mono">1.</span> <span class="ja" lang="ja">WSLプロジェクトの接続を確認する</span><span class="en" lang="en">Confirm the WSL project connection</span></h3>
+  <p><span class="ja" lang="ja">Settingsのプロジェクト一覧を開き、WSL上のリポジトリが接続されていることを確認します。</span><span class="en" lang="en">Open the project list in Settings and confirm the WSL-hosted repository is connected.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">プロジェクトがWSLリモート環境として表示され、Appそのものは引き続きWindows側にインストールされています。</span><span class="en" lang="en">The project shows as a WSL remote environment, and the app itself remains installed on the Windows side.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">2.</span> <span class="ja" lang="ja">WSLのリポジトリでセッションを開始する</span><span class="en" lang="en">Start a session against the WSL repository</span></h3>
+  <p><span class="ja" lang="ja">要約プロンプトを使ってセッションを開始します。</span><span class="en" lang="en">Start a session using the summary prompt.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">WSLセッション用の要約プロンプト</span><span class="en" lang="en">WSL session summary prompt</span></span>
+    <button class="copy-button" type="button" data-copy="lab-08-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-08-code-1" data-language="text">Summarize this repository&#039;s build and test commands so I can continue the same investigation later from Copilot CLI or VS Code, without changing any files.</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">WSLセッション用の要約プロンプト（日本語）</span><span class="en" lang="en">WSL session summary prompt (Japanese)</span></span>
+    <button class="copy-button" type="button" data-copy="lab-08-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-08-code-2" data-language="text">後でCopilot CLIやVS Codeから同じ調査を続けられるように、このリポジトリのビルドコマンドとテストコマンドを要約してください。ファイルは変更しないでください。</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">セッションがWSLリモート接続経由でリポジトリを調査し、v1.1.2のGitHub PR/Issueワークフロースキルが利用可能です。</span><span class="en" lang="en">The session investigates the repo through the WSL remote connection, and v1.1.2&#039;s GitHub PR/issue workflow skills are available.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">3.</span> <span class="ja" lang="ja">同じセッションをVS Codeで開く</span><span class="en" lang="en">Open the same session in VS Code</span></h3>
+  <p><span class="ja" lang="ja">「Open in VS Code」の操作を使います。</span><span class="en" lang="en">Use the &quot;Open in VS Code&quot; action.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">VS Codeが常に新しいウィンドウで開き、そのセッションのブランチが表示されます（既存ウィンドウは再利用されません）。</span><span class="en" lang="en">VS Code opens in a new window at the session&#039;s branch, instead of reusing an existing window.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">4.</span> <span class="ja" lang="ja">VS Codeでコードを確認する</span><span class="en" lang="en">Read and cross-check code in VS Code</span></h3>
+  <p><span class="ja" lang="ja">エージェントが変更したファイルをVS Codeで開いて確認します。</span><span class="en" lang="en">Open a file the agent changed and inspect it in VS Code.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">ファイルの内容が、Appの Changes タブに表示されていた内容と一致します。</span><span class="en" lang="en">The file matches what the app&#039;s Changes tab showed for that session.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">5.</span> <span class="ja" lang="ja">Copilot CLIへのハンドオフを理解する</span><span class="en" lang="en">Understand the handoff to Copilot CLI</span></h3>
+  <p><span class="ja" lang="ja">App自体がCopilot CLI上に構築されていることを踏まえ、同じブランチに対して<code>copilot</code>ターミナルからも同等の作業を続けられることを確認します。</span><span class="en" lang="en">Given that the app is built on Copilot CLI, confirm you could continue equivalent work against the same branch from a <code>copilot</code> terminal.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">CLIは別の製品サーフェスであり、同じエージェント基盤を共有するため、切り替えは自動同期ではなく意図的なハンドオフであると理解できます。</span><span class="en" lang="en">You understand that the CLI is a separate surface sharing the same underlying agent runtime, so switching between them is a deliberate handoff, not automatic sync.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">6.</span> <span class="ja" lang="ja">クラウドサンドボックスと比較する</span><span class="en" lang="en">Compare with a cloud sandbox session</span></h3>
+  <p><span class="ja" lang="ja">同じリポジトリでAppのCloud sandbox（Public preview）を選んだ新しいsessionを開始して、WSL/local machineとは別のGitHub-hosted environmentであることを確認します。組織管理アカウントではCloud Sandbox access policyが必要です。</span><span class="en" lang="en">Start a new app session for the same repository using Cloud sandbox (public preview) and confirm it is a GitHub-hosted environment distinct from WSL or the local machine. Organization-managed accounts require the Cloud Sandbox access policy.</span></p>
+<p><span class="ja" lang="ja">隣接するCopilot CLIで同等のcloud-backed sessionを開始する場合はexperimental featuresを有効にした <code>copilot --cloud --experimental</code> が必要です。これはAppの実行先selectorとは別のCLI操作です。</span><span class="en" lang="en">For the adjacent Copilot CLI, starting an equivalent cloud-backed session requires experimental features via <code>copilot --cloud --experimental</code>. This is a CLI operation, separate from the app&#039;s run-location selector.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">クラウドサンドボックスをCLIから起動</span><span class="en" lang="en">Start a cloud sandbox from the CLI</span></span>
+    <button class="copy-button" type="button" data-copy="lab-08-code-3" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-08-code-3" data-language="shell">copilot --cloud --experimental</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">クラウドサンドボックスセッションはWSLやローカルマシンとは別の、GitHubがホストする隔離されたLinux環境で動作し、別のデバイスから再開できます。</span><span class="en" lang="en">The cloud sandbox session runs in an isolated GitHub-hosted Linux environment rather than WSL or your local machine, and remains resumable from another device.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">7.</span> <span class="ja" lang="ja">CLI専用のローカルサンドボックス化を確認する</span><span class="en" lang="en">Note the CLI-only local sandboxing option</span></h3>
+  <p><span class="ja" lang="ja">Copilot CLIのlocal sandboxingはexperimental featureです。CLI sessionで<code>/experimental on</code>を実行してから<code>/sandbox enable</code>を使います。macOS、Linux、Windows Insiders buildsで利用でき、Appの実行先selectorとは別物です。</span><span class="en" lang="en">Copilot CLI local sandboxing is experimental. Run <code>/experimental on</code> in the CLI session before <code>/sandbox enable</code>. It is available on macOS, Linux, and Windows Insiders builds and is distinct from the app&#039;s run-location selector.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">CLIのローカルサンドボックス化を有効にする</span><span class="en" lang="en">Enable CLI local sandboxing</span></span>
+    <button class="copy-button" type="button" data-copy="lab-08-code-4" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-08-code-4" data-language="text">/experimental on
+/sandbox enable</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">これがCopilot CLIの機能であり、Appのメニュー操作ではないことを説明できます。</span><span class="en" lang="en">You can explain that this is a Copilot CLI capability, not an app UI toggle.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">8.</span> <span class="ja" lang="ja">WSL接続とWindows terminal環境を別々に確認する</span><span class="en" lang="en">Verify WSL connectivity and Windows terminal environment separately</span></h3>
+  <p><span class="ja" lang="ja">ネットワークを一時的に切ってから再接続し、WSLセッションが復旧することを確認します。</span><span class="en" lang="en">Briefly disconnect and reconnect your network, then confirm the WSL session recovers.</span></p>
+<p><span class="ja" lang="ja">Windowsを使っている場合は、WSL sessionとは別に新しいWindows integrated terminalを開き、既存のPowerShell profileで設定済みのPATHや環境変更（例えばfnm管理のNode）が反映されるか確認します。profile自体をこの演習のために変更する必要はありません。これはv1.1.4のWindows terminal改善で、WSL接続とは別の実行境界です。</span><span class="en" lang="en">On Windows, separately from the WSL session, open a new Windows integrated terminal and check whether PATH or environment changes already configured by your PowerShell profile (for example an fnm-managed Node version) are present. Do not edit the profile just for this exercise. This v1.1.4 Windows-terminal improvement is a separate execution boundary from WSL connectivity.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">WSL remote sessionの再接続を確認し、Windowsでは別途、integrated terminalが既存のPowerShell profile環境を読み込むことを観察できる。</span><span class="en" lang="en">You confirm the WSL remote session reconnects and, separately on Windows, observe the integrated terminal loading the existing PowerShell-profile environment.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="decision-points">
+        <div class="section-heading"><p class="eyebrow">Decide</p><h2><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></h2></div>
+        <ul class="decision-list"><li><span class="ja" lang="ja">WSLリモートで進めるか、Windowsネイティブで進めるか。</span><span class="en" lang="en">Proceed in WSL remote, or Windows-native?</span></li>
+<li><span class="ja" lang="ja">アプリ内で完結させるか、VS Codeへhandoffするか。</span><span class="en" lang="en">Stay inside the app, or hand off to VS Code?</span></li></ul>
+      </section>
+
+      <section class="section" id="checkpoints">
+        <div class="section-heading"><p class="eyebrow">Checkpoints</p><h2><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></h2></div>
+        <ul class="checkpoint-list"><li><span class="ja" lang="ja">チェックポイント1: WSLリモートセッションがPR/Issueワークフロースキルを認識している。</span><span class="en" lang="en">Checkpoint 1: the WSL remote session recognizes PR/issue workflow skills.</span></li>
+<li><span class="ja" lang="ja">チェックポイント2: VS Codeへのhandoff後も同じブランチ/worktreeが開かれる。</span><span class="en" lang="en">Checkpoint 2: the same branch/worktree opens after handoff to VS Code.</span></li></ul>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">WSL側のリポジトリでセッションを開始し、v1.1.2のGitHub PR/Issueワークフロースキルが使えることを確認した。</span><span class="en" lang="en">Started a session against the WSL-hosted repository and confirmed v1.1.2&#039;s GitHub PR/issue workflow skills were available.</span></li>
+<li><span class="ja" lang="ja">「Open in VS Code」がVS Codeを新しいウィンドウで開くことを確認した。</span><span class="en" lang="en">Confirmed &quot;Open in VS Code&quot; opens VS Code in a new window.</span></li>
+<li><span class="ja" lang="ja">クラウドサンドボックスセッションが、WSLやローカルマシンとは別の隔離されたGitHubホスト環境で動くことを確認した。</span><span class="en" lang="en">Confirmed a cloud sandbox session runs in an isolated GitHub-hosted environment, separate from WSL or your local machine.</span></li></ul>
+      </section>
+
+      <section class="section" id="under-the-hood">
+        <div class="section-heading"><p class="eyebrow">Mental model</p><h2><span class="ja" lang="ja">Under the hood: 内部で何が起きているか</span><span class="en" lang="en">Under the hood: what happens internally</span></h2></div>
+        <p><span class="ja" lang="ja">WSLリモートセッションはWindows側のアプリ本体からLinuxサブシステム内のリポジトリへ接続を張り、VS Code handoffはセッションのworktreeパスをそのままエディターに渡します。</span><span class="en" lang="en">A WSL remote session connects from the Windows-hosted app into a repository inside the Linux subsystem, and VS Code handoff passes the session&#039;s worktree path directly to the editor.</span></p>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング（症状から探す）</span><span class="en" lang="en">Troubleshooting (start from your symptom)</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja">VS Codeを開くと既存のウィンドウが再利用されて混乱する</span><span class="en" lang="en">Opening VS Code seems to reuse an existing window and gets confusing</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">v1.1.4 現在、セッションを VS Code で開くと常に新しいウィンドウが開きます。古いVS Code版やキャッシュされた設定が残っている場合はVS Codeとアプリを両方更新してください。</span><span class="en" lang="en">As of v1.1.4, opening a session in VS Code always opens a new window. If it still reuses one, update both VS Code and the app in case an older cached setting is involved.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">WSLリモートセッションの接続が不安定</span><span class="en" lang="en">The WSL remote session connection feels unstable</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">v1.1.2の接続信頼性の改善を反映するため、Appを最新版に更新してください。改善後も続く場合は、WSLディストリビューションを再起動してから再接続します。</span><span class="en" lang="en">Update the app to the latest version to pick up v1.1.2&#039;s connection reliability improvements. If it persists, restart the WSL distribution and reconnect.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">クラウドサンドボックスの選択肢が出ない、またはCopilot CLIから<code>--cloud</code>が使えない</span><span class="en" lang="en">The cloud sandbox option doesn&#039;t appear, or <code>--cloud</code> isn&#039;t available from Copilot CLI</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">組織またはエンタープライズ管理者にCloud Sandbox accessポリシーの有効化を依頼してください。Copilot CLI自体のサインイン状態も確認します。</span><span class="en" lang="en">Ask an organization or enterprise admin to enable the Cloud Sandbox access policy, and confirm Copilot CLI itself is signed in.</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="recovery">
+        <div class="section-heading"><p class="eyebrow">Recovery path</p><h2><span class="ja" lang="ja">明示的な復旧手順</span><span class="en" lang="en">Explicit recovery path</span></h2></div>
+        <div class="callout callout--danger"><span class="ja" lang="ja">WSL接続が不安定な場合は、v1.1.2 以降へ更新してアプリを再起動し、WSL distribution の状態を確認してから再接続します。Windows integrated terminal の PowerShell profile 反映は別の実行境界であり、WSL接続の診断には使いません。</span><span class="en" lang="en">If the WSL connection is unstable, update to v1.1.2 or later, restart the app, verify the WSL distribution is running, and reconnect. PowerShell-profile pickup in the Windows integrated terminal is a separate execution boundary and is not a WSL connectivity diagnostic.</span></div>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">WSLとクラウドサンドボックスの両方で作成したテストセッションをアーカイブまたは削除します。</span><span class="en" lang="en">Archive or delete the test sessions you created in both WSL and the cloud sandbox.</span></li>
+<li><span class="ja" lang="ja">クラウドサンドボックスセッションは削除するとスナップショットも失われ復元できないため、必要な変更がないか確認してから削除します。</span><span class="en" lang="en">Deleting a cloud sandbox session also removes its snapshot and cannot be recovered, so confirm you don&#039;t need any of its changes before deleting.</span></li>
+<li><span class="ja" lang="ja">VS Codeで開いた追加のウィンドウを閉じ、Copilot CLIのターミナルセッションも終了します。</span><span class="en" lang="en">Close the extra VS Code window you opened and end the Copilot CLI terminal session.</span></li></ol>
+      </section>
+
+      <section class="section" id="rubric">
+        <div class="section-heading"><p class="eyebrow">Success rubric</p><h2><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></h2></div>
+        <ul class="rubric-list"><li><span class="ja" lang="ja">WSLリモートセッションを少なくとも1回実行した。</span><span class="en" lang="en">You ran at least one WSL remote session.</span></li>
+<li><span class="ja" lang="ja">VS Codeへのhandoffを確認した。</span><span class="en" lang="en">You confirmed a handoff to VS Code.</span></li>
+<li><span class="ja" lang="ja">Copilot CLIとの境界を正しく説明できる。</span><span class="en" lang="en">You can correctly explain the boundary from Copilot CLI.</span></li></ul>
+      </section>
+
+      <section class="section" id="stretch">
+        <div class="section-heading"><p class="eyebrow">Go further</p><h2><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></h2></div>
+        <div class="callout callout--success"><span class="ja" lang="ja">同じタスクをWindowsネイティブとWSLリモートの両方で実行し、ターミナル体験の違いを比較してください。</span><span class="en" lang="en">Run the same task under both Windows-native and WSL remote, and compare the terminal experience.</span></div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">Windows本体にAppをインストールし、WSL内のリポジトリはリモート接続経由で扱います。VS Codeも通常はWindows側から起動します。</span><span class="en" lang="en">Install the app on Windows itself and work with WSL-hosted repositories through the remote connection. VS Code is also normally launched from the Windows side.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">macOSにはWSLはありませんが、クラウドサンドボックスとVS Code、Copilot CLIへのハンドオフは同様に機能します。</span><span class="en" lang="en">macOS has no WSL, but handoff to a cloud sandbox, VS Code, and Copilot CLI works the same way.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">Linuxでも同様にクラウドサンドボックスとVS Code、Copilot CLIへのハンドオフができます。WSLの手順はWindows固有です。</span><span class="en" lang="en">Linux supports the same handoff to a cloud sandbox, VS Code, and Copilot CLI. The WSL steps are Windows-specific.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">v1.1.2のWSLリモート環境にはGitHub プルリクエスト/Issueワークフロースキルと接続信頼性の改善が含まれます。App自体はWindows側にインストールしたままにしてください。</span><span class="en" lang="en">v1.1.2&#039;s WSL remote environments include GitHub pull request/issue workflow skills and connection reliability improvements. Keep the app itself installed on the Windows side.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://docs.github.com/en/copilot/concepts/agents/github-copilot-app" rel="noopener noreferrer">About the GitHub Copilot app</a></li>
+<li><a href="https://docs.github.com/en/copilot/concepts/about-cloud-and-local-sandboxes" rel="noopener noreferrer">About cloud and local sandboxes for GitHub Copilot</a></li>
+<li><a href="https://github.com/github/app/releases/tag/v1.1.2" rel="noopener noreferrer">GitHub Copilot app v1.1.2 release</a></li>
+<li><a href="https://github.com/github/app/blob/main/changelog.md#v114" rel="noopener noreferrer">GitHub Copilot app v1.1.4 changelog</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></h2></div>
+        <ul class="plain-list related-list"><li><a class="badge" href="04-worktrees-parallel-sessions.html"><span class="mono">04</span> <span class="ja" lang="ja">Worktree とローカルリポジトリで並列セッションを実行</span><span class="en" lang="en">Run parallel sessions with worktrees and the local repository</span></a></li>
+<li><a class="badge" href="17-cloud-automations.html"><span class="mono">17</span> <span class="ja" lang="ja">クラウド自動化を作成する</span><span class="en" lang="en">Create cloud automations</span></a></li>
+<li><a class="badge" href="21-accessibility-storage-lifecycle-recovery.html"><span class="mono">21</span> <span class="ja" lang="ja">アクセシビリティ、ストレージ、セッションのライフサイクルと復旧</span><span class="en" lang="en">Accessibility, storage, session lifecycle, and recovery</span></a></li>
+<li><a class="badge" href="24-worktree-attribution-diagnostics.html"><span class="mono">24</span> <span class="ja" lang="ja">Worktreeの保存場所、コミット帰属、診断の安全な観察</span><span class="en" lang="en">Worktree location, commit attribution, and diagnostics: a safe guided observation</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Lab navigation">
+        <a href="07-chat-archive-rewind-compact.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のラボ</span><span class="en" lang="en">Previous lab</span></span><br><strong><span class="ja" lang="ja">チャットのアーカイブ・巻き戻し・コンパクト化</span><span class="en" lang="en">Archive, rewind, and compact chats</span></strong></a>
+        <a href="09-files-diffs-browser-present-mode.html"><span class="muted"><span class="ja" lang="ja">次のラボ</span><span class="en" lang="en">Next lab</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">ファイル・差分・ブラウザプレビュー・プレゼンテーションモード</span><span class="en" lang="en">Files, diffs, browser preview, and Present mode</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Lab progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 25</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="25"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このラボを完了にする</span><span class="en" lang="en">Mark this lab complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#persona"><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></a></li>
+          <li><a href="#objectives"><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Objectives</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#availability"><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></a></li>
+          <li><a href="#before-you-start"><span class="ja" lang="ja">開始前の確認</span><span class="en" lang="en">Before you start</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#decision-points"><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></a></li>
+          <li><a href="#checkpoints"><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#under-the-hood"><span class="ja" lang="ja">Under the hood</span><span class="en" lang="en">Under the hood</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#recovery"><span class="ja" lang="ja">復旧手順</span><span class="en" lang="en">Recovery</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#rubric"><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></a></li>
+          <li><a href="#stretch"><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></a></li>
+          <li><a href="#platforms"><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+          <li><a href="#related"><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="ja" lang="ja">v1.1.4 機能ガイド</span><span class="en" lang="en">v1.1.4 feature guide</span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">v1.1.2 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.1.2 hands-on (archive)</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.0.12 hands-on (archive)</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性、ポリシー、料金は公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability, policy, and pricing in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>

@@ -1,0 +1,394 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Learn to spawn nested sessions for subtasks from a parent session, and coordinate multiple pieces of work while reviewing and approving each child&#039;s plan.">
+<title>GitHub Copilot App v1.1.4 — Orchestration and nested sessions</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="05" data-guide-count="25">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.4 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.4</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="lab-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">ラボ 05 / 25</span><span class="en" lang="en">Lab 05 of 25</span></p>
+    <h1 id="lab-title"><span class="ja" lang="ja">オーケストレーションとネストされたセッション</span><span class="en" lang="en">Orchestration and nested sessions</span></h1>
+    <p class="lede"><span class="ja" lang="ja">親セッションからサブタスクごとにネストされたセッションを作成し、計画を確認・承認しながら複数の作業を調整する方法を学びます。</span><span class="en" lang="en">Learn to spawn nested sessions for subtasks from a parent session, and coordinate multiple pieces of work while reviewing and approving each child&#039;s plan.</span></p>
+    <div class="meta-row" aria-label="Lab metadata">
+      <span class="badge"><span class="ja" lang="ja">上級</span><span class="en" lang="en">Advanced</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.4 向け再公開（中核フローは v1.1.2 で検証、現在差分を source-check）</span><span class="en" lang="en">Republished for v1.1.4 (core flow verified at v1.1.2; current deltas source-checked)</span></span>
+      <span class="badge"><span class="ja" lang="ja">約60分</span><span class="en" lang="en">About 60 min</span></span>
+      <span class="badge badge--accent" data-provenance="release-notes"><span class="ja" lang="ja">Release-note-grounded</span><span class="en" lang="en">Release-note-grounded</span></span>
+    </div>
+    <div class="chips" aria-label="Journeys and tracks"><a class="badge badge--accent" href="index.html#journey-j2"><span class="ja" lang="ja">worktreeとSession Gridによる並列マルチセッション配信</span><span class="en" lang="en">Parallel multi-session delivery with worktrees</span></a> <a class="badge" href="index.html#track-t3"><span class="ja" lang="ja">計画/オーケストレーション、Grid、nested、side、fork</span><span class="en" lang="en">Planning, orchestration, Grid, nested sessions, side chats, and forks</span></a></div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#labs"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">25 ラボ一覧</span><span class="en" lang="en">All 25 labs</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="persona">
+        <div class="section-heading"><p class="eyebrow">Scenario &amp; persona</p><h2><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">サンプルリポジトリの調査を、「依存関係の棚卸し」と「テストカバレッジの棚卸し」という2つの独立したサブタスクに分割し、それぞれを親セッションからネストされたセッションとして起動します。各子セッションはPlanモードで計画を提案し、親セッションから承認してから作業を進めます。</span><span class="en" lang="en">Split the investigation of a sample repository into two independent subtasks — a dependency inventory and a test-coverage inventory — and start each as a nested session from a parent session. Each child session proposes a plan in Plan mode, which you approve from the parent session before it proceeds.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">担当者像</span><span class="en" lang="en">Persona</span></h3><p><span class="ja" lang="ja">複数セッションを監督するオーケストレーターとして、nested sessionsの計画承認を扱う回を担当します。</span><span class="en" lang="en">As an orchestrator supervising multiple sessions, this round focuses on working with nested-session plan approval.</span></p></article>
+        </div>
+        <div class="callout"><strong><span class="ja" lang="ja">なぜ重要か</span><span class="en" lang="en">Why it matters</span>:</strong> <span class="ja" lang="ja">セッションが増えるほど、どれが承認待ちでどれが完了したかを一目で把握できないと、並列作業の利点が失われます。</span><span class="en" lang="en">As the number of sessions grows, losing at-a-glance visibility into what is waiting for approval versus complete erases the benefit of parallel work.</span></div>
+      </section>
+
+      <section class="section" id="objectives">
+        <div class="section-heading"><p class="eyebrow">Goals</p><h2><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Learning objectives</span></h2></div>
+        <ul><li><span class="ja" lang="ja">オーケストレーションとネストされたセッションの主要な操作を実行する</span><span class="en" lang="en">Perform the primary actions covered by Orchestration and nested sessions</span></li>
+<li><span class="ja" lang="ja">親子関係にあるセッションの状態遷移を追跡する</span><span class="en" lang="en">Track state transitions across parent/child sessions</span></li>
+<li><span class="ja" lang="ja">forkがトップレベル項目として扱われることを確認する</span><span class="en" lang="en">Confirm forks are treated as top-level entries</span></li></ul>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">ラボ04を完了しており、新しいworking treeセッションの開始方法を理解していること。</span><span class="en" lang="en">You&#039;ve completed lab 04 and understand how to start a new working tree session.</span></li>
+<li><span class="ja" lang="ja">変更してよいサンプルリポジトリがプロジェクトとして接続済みであること。</span><span class="en" lang="en">A sample repository you are allowed to change is already connected as a project.</span></li>
+<li><span class="ja" lang="ja">Plan、Interactive、Autopilotの各セッションモードの違いを理解していること。</span><span class="en" lang="en">You understand the difference between Plan, Interactive, and Autopilot session modes.</span></li></ul>
+      </section>
+
+      <section class="section" id="availability">
+        <div class="section-heading"><p class="eyebrow">Availability</p><h2><span class="ja" lang="ja">公式な提供状況とスコープ</span><span class="en" lang="en">Official availability and scope</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></h3><p><span class="ja" lang="ja">v1.1.4 版として再公開。中核フローは v1.1.2 で検証され、v1.1.3 / v1.1.4 差分と情報源を source-check しています。ネストされたセッションの作成、サイドバーでの階層表示、親セッションによる子セッションの計画承認は一般提供されています。</span><span class="en" lang="en">Republished for v1.1.4. The core flow was verified for v1.1.2; v1.1.3/v1.1.4 deltas and source provenance were checked. Creating nested sessions, viewing their hierarchy in the sidebar, and having a parent session approve a child session&#039;s plan are generally available.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">対象範囲</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドは GitHub Copilot App のサイドバーにおけるネストされたセッションの作成、階層表示、フォーク、計画承認を扱います。Copilot CLI や SDK におけるサブエージェント/タスクツールの仕組みは別の製品サーフェスであり、App のネストされたセッションと1対1で対応するとは限らないため、ここでは扱いません。存在しない「自動オーケストレーションダッシュボード」のような機能は想定しないでください。</span><span class="en" lang="en">This guide covers creating nested sessions, viewing their hierarchy, forking, and plan approval in the GitHub Copilot app sidebar. Sub-agent or task-tool constructs in Copilot CLI or an SDK are a separate product surface and do not map one-to-one onto the app&#039;s nested sessions, so they are out of scope here. Do not assume unsupported controls such as an automatic orchestration dashboard.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">時間の見積もり</span><span class="en" lang="en">Time estimate</span></h3><p><span class="ja" lang="ja">hands-on操作の目安は約60分です。download、network、service latencyは含みません。</span><span class="en" lang="en">Hands-on work is estimated at about 60 minutes, excluding downloads, network delay, and service latency.</span></p></article>
+          <article class="card"><h3><span class="badge badge--accent" data-provenance="release-notes"><span class="ja" lang="ja">Release-note-grounded</span><span class="en" lang="en">Release-note-grounded</span></span> <span class="ja" lang="ja">情報源の裏付け</span><span class="en" lang="en">Source provenance</span></h3><p><span class="ja" lang="ja">ネストされたセッション、Session Grid、side chat はいずれも変更履歴（changelog）に基づく release-note-grounded な機能で、公式の長文ドキュメントによる網羅的な説明はありません。 手順内の正確なメニュー名・ボタン名・クリック順は変更履歴（changelog）に基づく記述であり、スクリーンショット付きの公式ウォークスルーで検証されたものではありません。実際の画面がここと異なる場合は、画面に表示されている表記を優先してください。</span><span class="en" lang="en">Nested sessions, the Session Grid, and side chats are all release-note-grounded features sourced from the changelog, with no comprehensive long-form documentation. Exact menu names, button labels, and click order in the steps are grounded in changelog entries, not an illustrated official walkthrough. If your running build&#039;s UI differs from this text, follow what the screen actually shows instead.</span></p></article>
+        </div>
+      </section>
+
+      <section class="section" id="before-you-start">
+        <div class="section-heading"><p class="eyebrow">Before you start</p><h2><span class="ja" lang="ja">開始前の安全確認</span><span class="en" lang="en">Before-you-start safety check</span></h2></div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全・データ・コスト・権限への影響</span><span class="en" lang="en">Safety, data, cost, and permission implications</span>:</strong> <span class="ja" lang="ja">子セッションが実際にファイルを変更する前に、必ずPlanモードで提案内容を読んでから承認してください。承認は簡単に取り消せる操作ではないため、破壊的な変更（強制プッシュや履歴の書き換えなど）を提案された場合は却下してください。</span><span class="en" lang="en">Always read a child session&#039;s proposal in Plan mode before approving it — approval is not something you can easily undo. Reject any plan that proposes a destructive action, such as a force push or history rewrite.</span></div>
+      </section>
+
+      <section class="section" id="launchers">
+        <div class="section-heading"><p class="eyebrow">Open safely</p><h2><span class="ja" lang="ja">コピー可能なプロンプト／コマンドとランチャー</span><span class="en" lang="en">Copyable prompts/commands and launchers</span></h2></div>
+
+        <div class="card-grid"><article class="card">
+  <h3><span class="ja" lang="ja">github/app をアプリで開く</span><span class="en" lang="en">Open github/app in the app</span></h3>
+  <p><span class="ja" lang="ja">安全なホスト型ランチャーを使って公開のサンプルリポジトリを開きます。アプリ側で確認してから接続されます。</span><span class="en" lang="en">Uses the safe hosted launcher to open the public sample repository. The app asks for confirmation before connecting it.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fgithub.com%2Fgithub%2Fapp" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card">
+  <h3><span class="ja" lang="ja">計画セッションをプリロードして開く</span><span class="en" lang="en">Open a preloaded plan-mode session</span></h3>
+  <p><span class="ja" lang="ja">2つのサブタスクへの分割案を提案させるPlanモードのプロンプトを添えて、新しいセッションを開きます。</span><span class="en" lang="en">Opens a new session preloaded with a Plan-mode prompt asking the agent to propose a split into two subtasks.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fsession%2Fnew%3Frepo%3Dgithub%252Fapp%26mode%3Dplan%26prompt%3DPropose%2520a%2520plan%2520that%2520splits%2520investigating%2520this%2520repository%2520into%2520two%2520independent%2520nested-session%2520subtasks%2520%25E2%2580%2594%2520a%2520dependency%2520inventory%2520and%2520a%2520test-coverage%2520inventory%2520%25E2%2580%2594%2520without%2520creating%2520the%2520nested%2520sessions%2520yet." rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+      </section>
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="mono">1.</span> <span class="ja" lang="ja">親セッションをPlanモードで開始する</span><span class="en" lang="en">Start a parent session in Plan mode</span></h3>
+  <p><span class="ja" lang="ja">新しいセッションをPlanモードで作成し、分割計画のプロンプトを送ります。</span><span class="en" lang="en">Create a new session in Plan mode and send the split-plan prompt.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">親セッション: 分割計画のプロンプト</span><span class="en" lang="en">Parent session: split-plan prompt</span></span>
+    <button class="copy-button" type="button" data-copy="lab-05-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-05-code-1" data-language="text">Propose a plan that splits investigating this repository into two independent nested-session subtasks — a dependency inventory and a test-coverage inventory — without creating the nested sessions yet.</code></pre>
+</div>
+<div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">親セッション: 分割計画のプロンプト（日本語）</span><span class="en" lang="en">Parent session: split-plan prompt (Japanese)</span></span>
+    <button class="copy-button" type="button" data-copy="lab-05-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-05-code-2" data-language="text">このリポジトリの調査を、依存関係の棚卸しとテストカバレッジの棚卸しという2つの独立したネストされたセッション用サブタスクに分割する計画を提案してください。まだネストされたセッションは作成しないでください。</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">親セッションが2つのサブタスクを含む計画案を提示し、承認を待っている状態になります。</span><span class="en" lang="en">The parent session proposes a plan referencing both subtasks and waits for your approval.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">2.</span> <span class="ja" lang="ja">親の計画を承認する</span><span class="en" lang="en">Approve the parent&#039;s plan</span></h3>
+  <p><span class="ja" lang="ja">提案内容を確認し、問題なければ承認します。</span><span class="en" lang="en">Review the proposal and approve it if it looks correct.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">親セッションがネストされたセッションを作成する準備を進めます。</span><span class="en" lang="en">The parent session proceeds to prepare the nested sessions it proposed.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">3.</span> <span class="ja" lang="ja">1つ目のネストされたセッションを作成する</span><span class="en" lang="en">Create the first nested session</span></h3>
+  <p><span class="ja" lang="ja">サイドバーで親セッションを右クリックして「Create nested session」を選び、依存関係の棚卸しタスクを子セッションA用プロンプトで記述します。</span><span class="en" lang="en">Right-click the parent session in the sidebar, choose &quot;Create nested session&quot;, and describe the dependency-inventory subtask using the Child A prompt.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">子セッションA: 依存関係の棚卸し</span><span class="en" lang="en">Child session A: dependency inventory</span></span>
+    <button class="copy-button" type="button" data-copy="lab-05-code-3" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-05-code-3" data-language="text">As a nested session, list every direct dependency declared in this repository&#039;s package manifests and flag any that look unusually old. Do not change any files.</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">タスクを記述するダイアログが開き、送信すると親セッションの下にインデントされたネストされたセッションが表示され、階層線でつながります。</span><span class="en" lang="en">A dialog opens to describe the task; after you submit it, a new nested session appears indented under the parent, connected by a hierarchy line.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">4.</span> <span class="ja" lang="ja">2つ目のネストされたセッションを作成する</span><span class="en" lang="en">Create the second nested session</span></h3>
+  <p><span class="ja" lang="ja">同じ手順でテストカバレッジの棚卸しタスクを子セッションB用プロンプトで記述します。</span><span class="en" lang="en">Repeat the same steps to describe the test-coverage subtask using the Child B prompt.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">子セッションB: テストカバレッジの棚卸し</span><span class="en" lang="en">Child session B: test-coverage inventory</span></span>
+    <button class="copy-button" type="button" data-copy="lab-05-code-4" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-05-code-4" data-language="text">As a nested session, summarize which parts of this repository currently have automated test coverage and which do not. Do not change any files.</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">同じ親セッションの下に2つ目のネストされたセッションが表示され、サイドバーで両方の兄弟セッションが階層線とともに見えます。</span><span class="en" lang="en">A second nested session appears under the same parent, with both sibling sessions visible together via hierarchy lines in the sidebar.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">5.</span> <span class="ja" lang="ja">各子セッションの計画をレビューして承認する</span><span class="en" lang="en">Review and approve each child&#039;s plan</span></h3>
+  <p><span class="ja" lang="ja">それぞれのネストされたセッションを開き、Planモードの提案を確認してから承認または却下します。「レビュー待ち」のまま止まっている場合は、親セッションを開いて承認・却下を行います。</span><span class="en" lang="en">Open each nested session, review its Plan-mode proposal, then approve or reject it. If a plan is stuck &quot;waiting for review&quot;, open the parent session and approve or reject it there.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">承認した子セッションが作業を開始し、レビュー待ちの状態が正しく解消されます。</span><span class="en" lang="en">Once approved, the child session starts working, and the &quot;waiting for review&quot; state clears correctly.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">6.</span> <span class="ja" lang="ja">有望な応答からフォークする</span><span class="en" lang="en">Fork a promising response</span></h3>
+  <p><span class="ja" lang="ja">いずれかの子セッションの応答ツールバーで「fork」を使い、その時点から分岐した新しいセッションを作成します。</span><span class="en" lang="en">In one child session&#039;s response toolbar, use &quot;fork&quot; to create a new session branching from that point in the conversation.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">分岐元の応答から始まる新しいセッションが作成され、元のセッションと並んでサイドバーに表示されます。</span><span class="en" lang="en">A new session is created starting from that response, listed alongside the original in the sidebar.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">7.</span> <span class="ja" lang="ja">ネストされた階層を片付ける</span><span class="en" lang="en">Clean up the nested hierarchy</span></h3>
+  <p><span class="ja" lang="ja">親セッションをアーカイブまたは削除し、ネストされたセッションも一緒に処理するか確認するダイアログが出ることを確認します。</span><span class="en" lang="en">Archive or delete the parent session and confirm the app asks whether to also archive or delete its nested sessions.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">ネストされたセッションを持つ親を削除・アーカイブすると、それらも一緒に処理するかどうかを尋ねられ、孤立したセッションが残りません。</span><span class="en" lang="en">Archiving or deleting a parent with nested sessions prompts you to also archive or delete them, so none are left orphaned.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="decision-points">
+        <div class="section-heading"><p class="eyebrow">Decide</p><h2><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></h2></div>
+        <ul class="decision-list"><li><span class="ja" lang="ja">nested sessionを起動するか、<code>/side</code>で軽量に確認するか。</span><span class="en" lang="en">Launch a nested session, or check lightly with <code>/side</code>?</span></li>
+<li><span class="ja" lang="ja">親セッションの計画を承認するか、差し戻すか。</span><span class="en" lang="en">Approve the parent session&#039;s plan, or send it back?</span></li></ul>
+      </section>
+
+      <section class="section" id="checkpoints">
+        <div class="section-heading"><p class="eyebrow">Checkpoints</p><h2><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></h2></div>
+        <ul class="checkpoint-list"><li><span class="ja" lang="ja">チェックポイント1: Session Gridに複数セッションの状態が表示される。</span><span class="en" lang="en">Checkpoint 1: the Session Grid shows the state of multiple sessions.</span></li>
+<li><span class="ja" lang="ja">チェックポイント2: 子セッションの計画承認が親セッションから行える。</span><span class="en" lang="en">Checkpoint 2: a child session&#039;s plan can be approved from the parent.</span></li></ul>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">親セッションから2つのネストされたセッションが作成され、サイドバーの階層表示で親子関係が確認できる。</span><span class="en" lang="en">Two nested sessions were created from the parent, and the sidebar hierarchy shows the parent/child relationship.</span></li>
+<li><span class="ja" lang="ja">各子セッションのPlanモードの提案を確認してから承認し、無関係な変更を防いだ。</span><span class="en" lang="en">You reviewed each child session&#039;s Plan-mode proposal before approving it, preventing unrelated changes.</span></li>
+<li><span class="ja" lang="ja">応答ツールバーのフォーク機能で少なくとも1つの分岐セッションを作成した。</span><span class="en" lang="en">You created at least one branched session using fork in the response toolbar.</span></li></ul>
+      </section>
+
+      <section class="section" id="under-the-hood">
+        <div class="section-heading"><p class="eyebrow">Mental model</p><h2><span class="ja" lang="ja">Under the hood: 内部で何が起きているか</span><span class="en" lang="en">Under the hood: what happens internally</span></h2></div>
+        <p><span class="ja" lang="ja">各セッションは独立した会話状態と進捗を持ちながら、Session Gridは共通のイベントストリームを購読して状態変化を集約表示します。nested sessionは親のコンテキストを継承しつつ別スレッドとして実行されます。</span><span class="en" lang="en">Each session keeps independent conversation state and progress, while the Session Grid subscribes to a shared event stream to aggregate state changes. A nested session inherits the parent&#039;s context but runs as a separate thread.</span></p>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング（症状から探す）</span><span class="en" lang="en">Troubleshooting (start from your symptom)</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja">子セッションの計画が「レビュー待ち」のまま止まる</span><span class="en" lang="en">A child session&#039;s plan stays stuck on &quot;waiting for review&quot;</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">親セッションを開いて承認または却下を行ってください。v1.1.2ではこの状態が親セッションの操作後に正しく解消されるよう修正されています。</span><span class="en" lang="en">Open the parent session and approve or reject it there. v1.1.2 fixes this state so it clears correctly after the parent session acts.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">ネストされたセッションがサイドバーで見つからない</span><span class="en" lang="en">A nested session is hard to find in the sidebar</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">親セッションの行にある階層線をたどるか、「Last updated」順で並び替えます。子セッションが更新されると親のグループも一番上に移動します。</span><span class="en" lang="en">Follow the hierarchy lines under the parent session&#039;s row, or sort by &quot;Last updated&quot; — a session group moves to the top when one of its nested sessions updates.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">親セッションを削除したら子セッションが孤立するのではと心配</span><span class="en" lang="en">Worried that deleting the parent will orphan its child sessions</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">削除・アーカイブ時にネストされたセッションがある場合は、それらも一緒にアーカイブ・削除するか確認するダイアログが表示されます。孤立させたくない場合はここで一緒に処理してください。</span><span class="en" lang="en">When you archive or delete a session that has nested sessions, the app asks whether to also archive or delete them — confirm this so none are left orphaned.</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="recovery">
+        <div class="section-heading"><p class="eyebrow">Recovery path</p><h2><span class="ja" lang="ja">明示的な復旧手順</span><span class="en" lang="en">Explicit recovery path</span></h2></div>
+        <div class="callout callout--danger"><span class="ja" lang="ja">セッションがGridから消えた、または応答しない場合は、そのセッションを個別に開いて再開し、それでも復旧しなければアーカイブして子セッションだけ引き継いでください。</span><span class="en" lang="en">If a session disappears from the Grid or stops responding, open it individually and resume; if that fails, archive it and carry over only its child sessions.</span></div>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">使い終わった子セッションと親セッションをまとめてアーカイブまたは削除します。削除は取り消せません。</span><span class="en" lang="en">Archive or delete the finished child sessions together with the parent. Deletion cannot be undone.</span></li>
+<li><span class="ja" lang="ja">フォークで作成した分岐セッションのうち、採用しなかったものを削除して混乱を防ぎます。</span><span class="en" lang="en">Delete any forked sessions you didn&#039;t end up using, to avoid confusion later.</span></li>
+<li><span class="ja" lang="ja">承認済みの変更で残しておきたいものは、削除前にプルリクエストとして作成しておきます。</span><span class="en" lang="en">For any approved change you want to keep, create a pull request before deleting the session.</span></li></ol>
+      </section>
+
+      <section class="section" id="rubric">
+        <div class="section-heading"><p class="eyebrow">Success rubric</p><h2><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></h2></div>
+        <ul class="rubric-list"><li><span class="ja" lang="ja">Session Gridで複数セッションの状態を把握できる。</span><span class="en" lang="en">You can track multiple sessions&#039; state from the Session Grid.</span></li>
+<li><span class="ja" lang="ja">nested sessionの計画を少なくとも1回承認した。</span><span class="en" lang="en">You approved at least one nested-session plan.</span></li>
+<li><span class="ja" lang="ja">forkがトップレベルで独立して表示されることを確認した。</span><span class="en" lang="en">You confirmed forks display independently as top-level entries.</span></li></ul>
+      </section>
+
+      <section class="section" id="stretch">
+        <div class="section-heading"><p class="eyebrow">Go further</p><h2><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></h2></div>
+        <div class="callout callout--success"><span class="ja" lang="ja">3つ以上のセッションを同時に起動し、Gridの一括操作（bulk actions）で一部だけをアーカイブしてください。</span><span class="en" lang="en">Launch three or more sessions at once and use the Grid&#039;s bulk actions to archive only a subset.</span></div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">Windowsでは親セッションと子セッションが別々のworking treeを使う場合、それぞれ独自のフォルダーとブランチを持ちます。</span><span class="en" lang="en">On Windows, when parent and child sessions each use their own working tree, they get separate folders and branches.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">macOSでも階層表示とフォークの挙動はWindows/Linuxと同じです。複数セッションを並べる場合はラボ06のSession Gridの併用が便利です。</span><span class="en" lang="en">Hierarchy display and fork behavior on macOS match Windows and Linux. Pair this with Session Grid from lab 06 to view several sessions side by side.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">LinuxのAppImageビルドでも同様に動作します。多数のネストされたセッションを開くとディスク容量を消費するため、低ディスク容量バナーに注意してください。</span><span class="en" lang="en">Behavior is the same on the Linux AppImage build. Opening many nested sessions consumes disk space, so watch for the low disk space banner.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">WSLリモート環境でも親子関係は維持されますが、接続が切れると子セッションの状態確認が遅れることがあります。v1.1.2の接続信頼性改善が適用された最新版を使ってください。</span><span class="en" lang="en">Parent/child relationships are preserved in WSL remote environments, but a dropped connection can delay status updates for child sessions. Make sure you&#039;re on the latest version with v1.1.2&#039;s improved connection reliability.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/agent-sessions" rel="noopener noreferrer">Working with agent sessions in the GitHub Copilot app</a></li>
+<li><a href="https://github.com/github/app/releases/tag/v1.1.2" rel="noopener noreferrer">GitHub Copilot app v1.1.2 release</a></li>
+<li><a href="https://docs.github.com/en/copilot/concepts/agents/github-copilot-app" rel="noopener noreferrer">About the GitHub Copilot app</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></h2></div>
+        <ul class="plain-list related-list"><li><a class="badge" href="04-worktrees-parallel-sessions.html"><span class="mono">04</span> <span class="ja" lang="ja">Worktree とローカルリポジトリで並列セッションを実行</span><span class="en" lang="en">Run parallel sessions with worktrees and the local repository</span></a></li>
+<li><a class="badge" href="06-session-grid-side-chats.html"><span class="mono">06</span> <span class="ja" lang="ja">Session Grid とサイドチャットで複数セッションを俯瞰する</span><span class="en" lang="en">Oversee multiple sessions with Session Grid and side chats</span></a></li>
+<li><a class="badge" href="18-custom-agents.html"><span class="mono">18</span> <span class="ja" lang="ja">カスタムエージェントを作成して使う</span><span class="en" lang="en">Create and use custom agents</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Lab navigation">
+        <a href="04-worktrees-parallel-sessions.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のラボ</span><span class="en" lang="en">Previous lab</span></span><br><strong><span class="ja" lang="ja">Worktree とローカルリポジトリで並列セッションを実行</span><span class="en" lang="en">Run parallel sessions with worktrees and the local repository</span></strong></a>
+        <a href="06-session-grid-side-chats.html"><span class="muted"><span class="ja" lang="ja">次のラボ</span><span class="en" lang="en">Next lab</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">Session Grid とサイドチャットで複数セッションを俯瞰する</span><span class="en" lang="en">Oversee multiple sessions with Session Grid and side chats</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Lab progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 25</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="25"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このラボを完了にする</span><span class="en" lang="en">Mark this lab complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#persona"><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></a></li>
+          <li><a href="#objectives"><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Objectives</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#availability"><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></a></li>
+          <li><a href="#before-you-start"><span class="ja" lang="ja">開始前の確認</span><span class="en" lang="en">Before you start</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#decision-points"><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></a></li>
+          <li><a href="#checkpoints"><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#under-the-hood"><span class="ja" lang="ja">Under the hood</span><span class="en" lang="en">Under the hood</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#recovery"><span class="ja" lang="ja">復旧手順</span><span class="en" lang="en">Recovery</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#rubric"><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></a></li>
+          <li><a href="#stretch"><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></a></li>
+          <li><a href="#platforms"><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+          <li><a href="#related"><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="ja" lang="ja">v1.1.4 機能ガイド</span><span class="en" lang="en">v1.1.4 feature guide</span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">v1.1.2 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.1.2 hands-on (archive)</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.0.12 hands-on (archive)</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性、ポリシー、料金は公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability, policy, and pricing in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>

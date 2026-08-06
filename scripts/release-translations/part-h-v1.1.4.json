@@ -1,0 +1,609 @@
+{
+  "versions": [
+    "v1.1.4"
+  ],
+  "items": [
+    {
+      "id": "v1-1-4-added-001",
+      "version": "v1.1.4",
+      "category": "Added",
+      "en": "Added a Commit attribution setting under Sessions settings to control whether agent-authored commits include a Co-authored-by trailer.",
+      "ja": "エージェントが作成したコミットにCo-authored-byトレーラーを含めるかどうかを制御するCommit attribution設定をSessions設定に追加しました。"
+    },
+    {
+      "id": "v1-1-4-added-002",
+      "version": "v1.1.4",
+      "category": "Added",
+      "en": "Added a one-click copy button for the session name in workspace and chat session information popovers.",
+      "ja": "ワークスペースとチャットセッションの情報ポップオーバーに、セッション名をワンクリックでコピーするボタンを追加しました。"
+    },
+    {
+      "id": "v1-1-4-added-003",
+      "version": "v1.1.4",
+      "category": "Added",
+      "en": "Added a stack menu next to a pull request's status to navigate between related pull requests in a stack, plus a stack summary in the merge drawer showing which pull requests will be included.",
+      "ja": "プルリクエストのステータスの横にスタックメニューを追加し、スタック内の関連するプルリクエスト間を移動できるようにしました。マージドロワーにはどのプルリクエストが含まれるかを示すスタックサマリーも追加しました。"
+    },
+    {
+      "id": "v1-1-4-added-004",
+      "version": "v1.1.4",
+      "category": "Added",
+      "en": "Added a Worktree location setting in Settings > Sessions to customize where new session worktrees are created, using a path template with repository, branch, and name placeholders.",
+      "ja": "Settings > Sessionsに、リポジトリ、ブランチ、名前のプレースホルダーを含むパステンプレートを使用して新規セッションのworktreeを作成する場所をカスタマイズするWorktree location設定を追加しました。"
+    },
+    {
+      "id": "v1-1-4-added-005",
+      "version": "v1.1.4",
+      "category": "Added",
+      "en": "Added an \"Enable sound\" toggle to the onboarding accessibility preferences dialog, so you can turn on notification sounds during setup.",
+      "ja": "オンボーディングのアクセシビリティ設定ダイアログに「Enable sound」トグルを追加し、セットアップ中に通知音を有効にできるようになりました。"
+    },
+    {
+      "id": "v1-1-4-added-006",
+      "version": "v1.1.4",
+      "category": "Added",
+      "en": "Cmd/Ctrl+click a quick chat in the sidebar to add it alongside sessions in the session grid.",
+      "ja": "サイドバーのクイックチャットをCmd/Ctrl+クリックすると、セッショングリッドのセッションの横に追加できます。"
+    },
+    {
+      "id": "v1-1-4-added-007",
+      "version": "v1.1.4",
+      "category": "Added",
+      "en": "Copilot can now create GitHub issues in a different repository than the current session, not just the session's own repository.",
+      "ja": "CopilotがセッションのリポジトリだけでなくCurrentセッションとは異なるリポジトリにGitHub issueを作成できるようになりました。"
+    },
+    {
+      "id": "v1-1-4-added-008",
+      "version": "v1.1.4",
+      "category": "Added",
+      "en": "Right-clicking a session you've selected in the grid view now shows bulk actions (send, mark read/unread, archive, delete) for the whole selection.",
+      "ja": "グリッドビューで選択したセッションを右クリックすると、選択全体に対する一括アクション（送信、既読/未読にする、アーカイブ、削除）が表示されるようになりました。"
+    },
+    {
+      "id": "v1-1-4-added-009",
+      "version": "v1.1.4",
+      "category": "Added",
+      "en": "Settings > Sessions now shows file-backed instructions discovered from your system alongside the app-managed instructions, including their source path with copy and reveal-in-file-manager actions.",
+      "ja": "Settings > Sessionsに、アプリが管理する指示と並んで、システムから検出されたファイルバックアップ型の指示が表示されるようになりました。コピーやファイルマネージャーで表示するアクション付きのソースパスも含まれます。"
+    },
+    {
+      "id": "v1-1-4-added-010",
+      "version": "v1.1.4",
+      "category": "Added",
+      "en": "The model-change notice can now be expanded to show which model you switched from and how much context was reused from cache.",
+      "ja": "モデル変更通知を展開すると、どのモデルから切り替えたか、またキャッシュからどれだけのコンテキストが再利用されたかが表示されるようになりました。"
+    },
+    {
+      "id": "v1-1-4-added-011",
+      "version": "v1.1.4",
+      "category": "Added",
+      "en": "You can now view and edit the milestone on issues and pull requests in the app.",
+      "ja": "アプリでissueやプルリクエストのマイルストーンを表示・編集できるようになりました。"
+    },
+    {
+      "id": "v1-1-4-changed-001",
+      "version": "v1.1.4",
+      "category": "Changed",
+      "en": "Forked sessions now appear as independent top-level entries in the sidebar instead of being nested under their source session.",
+      "ja": "フォークされたセッションが、ソースセッションの下にネストされるのではなく、サイドバーで独立したトップレベルのエントリーとして表示されるようになりました。"
+    },
+    {
+      "id": "v1-1-4-changed-002",
+      "version": "v1.1.4",
+      "category": "Changed",
+      "en": "Improved the plan review experience: newly created plans now open automatically with the approval prompt focused, the plan panel shows a rendered checklist with search and an easy switch to edit the raw Markdown, and completed plans are clickable in chat history to reopen them.",
+      "ja": "プランレビューのエクスペリエンスを改善しました。新しく作成されたプランが承認プロンプトにフォーカスされた状態で自動的に開くようになりました。プランパネルには検索機能付きのレンダリングされたチェックリストと生のMarkdownに切り替えるスイッチが表示されます。完了したプランはチャット履歴でクリックして再度開くことができます。"
+    },
+    {
+      "id": "v1-1-4-changed-003",
+      "version": "v1.1.4",
+      "category": "Changed",
+      "en": "In the sidebar's group-by-project view, top-level sessions no longer show a redundant repository label on hover since they already inherit it from their project header. Nested sessions still show their repository label.",
+      "ja": "サイドバーのプロジェクト別グループビューで、トップレベルセッションがプロジェクトヘッダーから既に継承しているため、ホバー時に冗長なリポジトリラベルが表示されなくなりました。ネストされたセッションには引き続きリポジトリラベルが表示されます。"
+    },
+    {
+      "id": "v1-1-4-changed-004",
+      "version": "v1.1.4",
+      "category": "Changed",
+      "en": "Increased the contrast of selected-state backgrounds for a clearer visual highlight.",
+      "ja": "より明確な視覚的ハイライトのために、選択状態の背景コントラストを高めました。"
+    },
+    {
+      "id": "v1-1-4-changed-005",
+      "version": "v1.1.4",
+      "category": "Changed",
+      "en": "Session history now loads faster by reading the transcript from disk immediately instead of waiting for the agent to resume.",
+      "ja": "エージェントの再開を待つのではなく、トランスクリプトをディスクからすぐに読み取ることで、セッション履歴の読み込みが速くなりました。"
+    },
+    {
+      "id": "v1-1-4-changed-006",
+      "version": "v1.1.4",
+      "category": "Changed",
+      "en": "Smoothed out scrolling while tool calls stream in with Balanced verbosity, so the view stays anchored to the bottom, scrolling up to review earlier tools isn't interrupted, and edge fades transition more gradually.",
+      "ja": "Balanced verbosityでツール呼び出しがストリーミングされる間のスクロールをスムーズにしました。ビューが下部に固定されたままになり、以前のツールを確認するためにスクロールアップしても中断されず、エッジのフェードがより徐々に遷移するようになりました。"
+    },
+    {
+      "id": "v1-1-4-changed-007",
+      "version": "v1.1.4",
+      "category": "Changed",
+      "en": "The composer's empty placeholder text now mentions typing \"&\" to reference other sessions.",
+      "ja": "コンポーザーの空のプレースホルダーテキストに、「&」と入力することで他のセッションを参照できる旨が表示されるようになりました。"
+    },
+    {
+      "id": "v1-1-4-changed-008",
+      "version": "v1.1.4",
+      "category": "Changed",
+      "en": "The credits usage notification is no longer shown when you have a bring-your-own-key or local model configured.",
+      "ja": "bring-your-own-keyまたはローカルモデルが設定されている場合、クレジット使用量通知が表示されなくなりました。"
+    },
+    {
+      "id": "v1-1-4-changed-009",
+      "version": "v1.1.4",
+      "category": "Changed",
+      "en": "The Plan tab now uses the standard plan review experience by default; you can still opt into the canvas rich text editor for plan.md in settings.",
+      "ja": "PlanタブがデフォルトでSTANDARDのプランレビューエクスペリエンスを使用するようになりました。設定でplan.mdのキャンバスリッチテキストエディターにオプトインすることも引き続きできます。"
+    },
+    {
+      "id": "v1-1-4-fixed-001",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Agent merge now shows a status message when it's paused waiting on a commit status check, instead of silently parking with no explanation.",
+      "ja": "Agent mergeがコミットステータスチェックを待機して一時停止した際に、説明なく静止する代わりにステータスメッセージを表示するようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-002",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Archived pull request diffs that were previously blank or missing now show correctly when possible, or a clear explanation when the underlying changes can no longer be recovered.",
+      "ja": "以前は空白または欠落していたアーカイブ済みのプルリクエストdiffが、可能な場合は正しく表示され、基本的な変更が復元できない場合は明確な説明が表示されるようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-003",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Checking for updates in Settings > General now announces status to screen readers, and the check button stays keyboard-reachable while a check is running.",
+      "ja": "Settings > Generalでのアップデートの確認がスクリーンリーダーにステータスをアナウンスするようになり、確認の実行中もチェックボタンにキーボードでアクセスできるようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-004",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Comment boxes (like inline review replies and draft review threads) now correctly receive keyboard focus when they open, so typing immediately after opening no longer gets lost.",
+      "ja": "コメントボックス（インラインレビューの返信やドラフトレビュースレッドなど）が開いたときに正しくキーボードフォーカスを受け取るようになり、開いた直後に入力してもテキストが失われることがなくなりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-005",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Completed pull requests and issues no longer linger in the home page's Up next section.",
+      "ja": "完了したプルリクエストとissueがホームページの「Up next」セクションに残り続けることがなくなりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-006",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Expanding a composer pill panel (like queued messages or background activity) no longer shifts the chat history.",
+      "ja": "コンポーザーのピルパネル（キューに入ったメッセージやバックグラウンドアクティビティなど）を展開してもチャット履歴がずれなくなりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-007",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed a bug in the canvas editor where saving a file containing an image with backslashes in its alt text (such as a Windows-style path) would corrupt the alt text a little more with every save.",
+      "ja": "キャンバスエディターで、Windowsスタイルのパスなどバックスラッシュを含む代替テキストを持つ画像を含むファイルを保存するたびに代替テキストが少しずつ破損する問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-008",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed a bug where a custom storage location directory named \"worktrees\" or \"copilot-worktrees\" could be incorrectly altered when saved.",
+      "ja": "「worktrees」または「copilot-worktrees」という名前のカスタムストレージの場所ディレクトリが保存時に誤って変更されることがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-009",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed a bug where clicking the model picker could submit your draft message instead of opening the picker.",
+      "ja": "モデルピッカーをクリックすると、ピッカーが開く代わりにドラフトメッセージが送信されることがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-010",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed a bug where commands run through `env` could bypass the shell command permission prompt.",
+      "ja": "`env`経由で実行されたコマンドがシェルコマンドの権限プロンプトを回避できることがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-011",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed a bug where newly added skills didn't show up in the `/` autocomplete menu until a session started or the app was restarted.",
+      "ja": "新しく追加されたスキルが、セッションを開始したりアプリを再起動するまで`/`オートコンプリートメニューに表示されない問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-012",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed a bug where sending a message while the assistant was responding could leave your message displayed below the assistant's reply instead of in chronological order.",
+      "ja": "アシスタントが応答中にメッセージを送信すると、メッセージが時系列順ではなくアシスタントの返信の下に表示されることがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-013",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed a confusing browser permission prompt that could appear when reading the clipboard on Windows.",
+      "ja": "Windowsでクリップボードを読み取る際に表示されることがある紛らわしいブラウザの権限プロンプトを修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-014",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed a crash in the terminal that could occur after the graphics context was lost.",
+      "ja": "グラフィクスコンテキストが失われた後にターミナルでクラッシュが発生することがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-015",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed a crash that could occur when resuming a session with very large files in its artifacts; oversized files now show a clear \"file too large\" message instead.",
+      "ja": "アーティファクトに非常に大きなファイルが含まれるセッションを再開した際にクラッシュが発生することがある問題を修正しました。サイズが大きすぎるファイルには代わりに明確な「file too large」メッセージが表示されます。"
+    },
+    {
+      "id": "v1-1-4-fixed-016",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed a crash that could replace the entire app with an error screen when typing certain search terms (like \"constructor:\") into a filter query, such as in My work or the cloud automation trigger filter.",
+      "ja": "My workやクラウド自動化トリガーフィルターなどのフィルタークエリに特定の検索語（「constructor:」など）を入力した場合に、アプリ全体がエラー画面に置き換わるクラッシュを修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-017",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed an issue where pressing Stop while a follow-up message was queued sometimes required pressing Stop a second time before the session became idle.",
+      "ja": "フォローアップメッセージがキューに入っている状態でStopを押したとき、セッションがアイドル状態になるまでにもう一度Stopを押す必要があることがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-018",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed archived workspaces sometimes showing a file count with a diff that never loads by falling back to the last saved diff when it can no longer be reconstructed.",
+      "ja": "アーカイブ済みワークスペースで、diffが読み込まれないまま残るファイル数が表示されることがある問題を修正しました。再構築できなくなった場合は、最後に保存されたdiffにフォールバックするようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-019",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed branch renaming so the configured branch prefix is no longer applied twice when Copilot renames a session's branch.",
+      "ja": "Copilotがセッションのブランチ名を変更する際に、設定されたブランチプレフィックスが2回適用されることがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-020",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed child sessions sometimes showing an incorrect model, reasoning effort, or context size in the composer instead of the configuration inherited from the parent session.",
+      "ja": "子セッションが親セッションから継承した設定ではなく、コンポーザーに誤ったモデル、reasoning effort、またはコンテキストサイズを表示することがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-021",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed clones of the same repository sharing sidebar labels and settings, which could merge their sessions or route actions to the wrong clone. Clones with the same name now show distinct, path-qualified labels.",
+      "ja": "同じリポジトリのクローンがサイドバーのラベルと設定を共有し、セッションがマージされたり、アクションが誤ったクローンにルーティングされることがある問題を修正しました。同じ名前のクローンは、異なるパス修飾付きのラベルが表示されるようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-022",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed collapsed resolved and staged review comment threads showing an unnecessary \"Outdated location\" banner, keeping the collapsed row compact.",
+      "ja": "折りたたまれた解決済みおよびステージ済みのレビューコメントスレッドに不要な「Outdated location」バナーが表示され、折りたたまれた行がコンパクトでなくなる問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-023",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed conversation compaction sometimes getting stuck in a repeating loop that could run indefinitely; affected turns now stop automatically with guidance to resend the message.",
+      "ja": "会話の圧縮が無限に繰り返すループでスタックすることがある問題を修正しました。影響を受けたターンはメッセージを再送信するガイダンスとともに自動的に停止するようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-024",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed copying selected text in the read-only file viewer, which previously copied nothing to the clipboard.",
+      "ja": "読み取り専用ファイルビューアで選択したテキストをコピーすると、以前はクリップボードに何もコピーされていなかった問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-025",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed emoji in the integrated terminal being measured too narrow, which shifted the rest of the line and broke alignment in tables, box-drawing layouts, and similar output.",
+      "ja": "統合ターミナルで絵文字が狭すぎる幅で計測され、残りの行がずれてテーブル、ボックス描画レイアウト、および類似の出力の整列が崩れる問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-026",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed extra vertical spacing on session communication entries like \"Received message\" and \"Read session\" in the conversation view.",
+      "ja": "会話ビューの「Received message」や「Read session」などのセッション通信エントリーに余分な縦方向の余白が表示される問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-027",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed keyboard and screen reader navigation for clickable list rows so their action buttons can be reached and activated independently.",
+      "ja": "クリッカブルなリスト行のキーボードとスクリーンリーダーのナビゲーションを修正し、アクションボタンに個別にアクセスして実行できるようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-028",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed keyboard shortcuts silently stopping when focus was on a tab's close button, such as switching tabs or submitting a pull request review.",
+      "ja": "タブの閉じるボタンにフォーカスがある場合、タブの切り替えやプルリクエストレビューの送信などのキーボードショートカットが静かに機能しなくなる問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-029",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed noticeable lag when viewing diffs containing very long lines (like long strings or near-minified code), which could take over a second to syntax highlight.",
+      "ja": "非常に長い行（長い文字列やほぼミニファイされたコードなど）を含むdiffを表示したときに、シンタックスハイライトに1秒以上かかることがある顕著な遅延を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-030",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed pasted URLs with underscores being incorrectly converted to Markdown emphasis in the composer",
+      "ja": "コンポーザーに貼り付けたアンダースコアを含むURLが誤ってMarkdownの強調表示に変換される問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-031",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed plugin-provided skill slash commands failing with an \"Unknown slash command\" error",
+      "ja": "プラグインが提供するスキルのスラッシュコマンドが「Unknown slash command」エラーで失敗する問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-032",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed pressing Escape to close the provider dropdown during onboarding's model provider setup from discarding the whole form, including a typed API key.",
+      "ja": "オンボーディングのモデルプロバイダーセットアップ中にEscapeを押してプロバイダーのドロップダウンを閉じると、入力したAPIキーを含むフォーム全体が破棄される問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-033",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed pull requests incorrectly showing as mergeable when they actually had merge conflicts.",
+      "ja": "実際にはマージコンフリクトがあるにもかかわらず、プルリクエストが誤ってマージ可能として表示される問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-034",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed reasoning effort incorrectly defaulting to \"None\" for some models when starting a new session.",
+      "ja": "新規セッション開始時に、一部のモデルでreasoning effortが誤って「None」をデフォルトとする問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-035",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed right-click context menus not appearing for files and folders in the Files tab",
+      "ja": "FilesタブのファイルとフォルダーにRight-clickコンテキストメニューが表示されない問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-036",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed screen readers announcing extra button text when navigating the notification sound picker and the \"Open in\" app menus, so each option is now announced clearly.",
+      "ja": "通知音ピッカーと「Open in」アプリメニューをナビゲートする際にスクリーンリーダーが余分なボタンテキストをアナウンスする問題を修正し、各オプションが明確にアナウンスされるようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-037",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed screen readers not reading the helper text next to the auto-update toggle and the Suggestion cards Restore button in Settings, and fixed focus loss and missing confirmation when restoring suggestion cards.",
+      "ja": "スクリーンリーダーがSettingsの自動更新トグルとSuggestion cards Restoreボタンの横のヘルパーテキストを読み上げない問題と、サジェストカードを復元したときにフォーカスが失われて確認が表示されない問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-038",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed shell commands sometimes never running in terminals using a customized shell prompt.",
+      "ja": "カスタマイズされたシェルプロンプトを使用するターミナルでシェルコマンドが実行されないことがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-039",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed skill directories configured in config.json or settings.json being ignored when the file contained comments or trailing commas",
+      "ja": "config.jsonまたはsettings.jsonに設定されたスキルディレクトリが、ファイルにコメントや末尾のコンマが含まれている場合に無視される問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-040",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed skill directories from config.json or settings.json not being recognized when the file started with a UTF-8 byte order mark.",
+      "ja": "config.jsonまたはsettings.jsonのスキルディレクトリが、ファイルがUTF-8バイトオーダーマークで始まっている場合に認識されない問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-041",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed stuttering when scrolling wide file diffs sideways in the conversation view.",
+      "ja": "会話ビューで広いファイルのdiffを横方向にスクロールしたときにスタッタリングが発生する問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-042",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the \"Add Enterprise account\" form in Settings so an invalid server address is announced to screen readers, and an empty submission now explains what to fix instead of doing nothing.",
+      "ja": "Settingsの「Add Enterprise account」フォームで、無効なサーバーアドレスがスクリーンリーダーにアナウンスされるようになりました。また、空の送信が何もしない代わりに修正すべき内容を説明するようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-043",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the /compact command sometimes showing no progress or result, or requiring a second run to display feedback.",
+      "ja": "/compactコマンドが進捗や結果を表示しないことがある、またはフィードバックを表示するために2回実行が必要なことがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-044",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the app launching to a blank window on some Linux systems due to a font-rendering crash triggered by certain color emoji or monospace fonts.",
+      "ja": "特定のカラー絵文字またはモノスペースフォントによって引き起こされるフォントレンダリングのクラッシュにより、一部のLinuxシステムでアプリが空白のウィンドウで起動する問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-045",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the completion summary at the end of a task being incorrectly grouped with the preceding tool call.",
+      "ja": "タスク終了時の完了サマリーが前のツール呼び出しと誤ってグループ化される問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-046",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the conversation view growing and jumping when a long sequence of tool calls runs in Balanced verbosity mode by keeping the live tool list scrollable until it settles.",
+      "ja": "Balanced verbosityモードで長い一連のツール呼び出しが実行されるときに、ライブツールリストが落ち着くまでスクロール可能に保つことで、会話ビューが拡大・ジャンプする問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-047",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the find-in-chat popup overlapping and covering the chat header buttons.",
+      "ja": "チャット内検索ポップアップがチャットヘッダーボタンに重なって覆ってしまう問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-048",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the Fix action getting stuck on \"Working on a fix...\" for pull request review comments authored under your own account, including feedback from your review agent.",
+      "ja": "レビューエージェントからのフィードバックを含む自分のアカウントで作成されたプルリクエストレビューコメントに対して、Fixアクションが「Working on a fix...」の状態でスタックする問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-049",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the Markdown file editor sometimes overwriting newer changes made to a file on disk while the editor still held older content; it now shows the reload-or-keep-local-changes prompt instead.",
+      "ja": "Markdownファイルエディターがエディターに古いコンテンツが残っている間にディスク上のファイルに加えられた新しい変更を上書きすることがある問題を修正しました。代わりに再読み込みまたはローカルの変更を保持するプロンプトが表示されるようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-050",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the merge drawer sometimes hiding auto-merge and showing a direct merge action instead while merge requirements were still loading.",
+      "ja": "マージ要件がまだ読み込み中のときに、マージドロワーがauto-mergeを非表示にして代わりに直接マージアクションを表示することがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-051",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the model picker sometimes showing the wrong model after a switch failed while a session was reconnecting.",
+      "ja": "セッションの再接続中に切り替えが失敗した後、モデルピッカーに間違ったモデルが表示されることがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-052",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the onboarding Repositories step's Retry keyboard shortcut so it no longer intercepts letters typed into search or dialog fields, disappears once the Retry button is gone, and respects the \"Use keyboard shortcuts\" accessibility setting.",
+      "ja": "オンボーディングのRepositoriesステップのRetryキーボードショートカットが検索やダイアログフィールドに入力した文字を傍受しなくなり、Retryボタンがなくなると消え、「Use keyboard shortcuts」アクセシビリティ設定を尊重するように修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-053",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the pull request tab not resolving correctly for sessions linked to a private security advisory fork.",
+      "ja": "プライベートセキュリティアドバイザリのフォークにリンクされたセッションで、プルリクエストタブが正しく解決されない問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-054",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the resize divider between split panes so dragging anywhere along it resizes the split, instead of only the top half responding.",
+      "ja": "スプリットペイン間のリサイズ区切り線を修正し、上半分だけでなく区切り線の任意の位置をドラッグしてスプリットをリサイズできるようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-055",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the scroll wheel not scrolling the command menu (/, @, #, or session) when the pointer stayed over the prompt composer's text box.",
+      "ja": "ポインターがプロンプトコンポーザーのテキストボックス上にある場合に、スクロールホイールでコマンドメニュー（/、@、#、またはセッション）がスクロールされない問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-056",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed the Up Next list on Home sometimes showing the same pull request twice.",
+      "ja": "ホームの「Up Next」リストに同じプルリクエストが2回表示されることがある問題を修正しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-057",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Fixed workspace/worktree setup failures (such as a failing Git command) being mislabeled as an \"invalid argument\" error, so the message now correctly describes it as a workspace initialization failure.",
+      "ja": "ワークスペース/worktreeのセットアップ失敗（gitコマンドの失敗など）が「invalid argument」エラーと誤ってラベルされる問題を修正しました。メッセージがワークスペースの初期化失敗として正しく説明されるようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-058",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Long branch names in the pull request header no longer wrap to a second line; they now truncate with the full name available on hover.",
+      "ja": "プルリクエストヘッダーの長いブランチ名が2行目に折り返されなくなりました。ホバー時に完全な名前が表示される形で切り詰められます。"
+    },
+    {
+      "id": "v1-1-4-fixed-059",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Pinned sessions are now protected in Manage sessions: their checkbox is disabled and \"select all\" no longer includes them, preventing accidental bulk archive or delete. Also added a \"Manage sessions\" launcher in Settings > Sessions.",
+      "ja": "Manage sessionsでピン留めされたセッションが保護されるようになりました。チェックボックスが無効化され、「select all」に含まれなくなり、誤って一括アーカイブまたは削除されることを防ぎます。Settings > Sessionsに「Manage sessions」ランチャーも追加しました。"
+    },
+    {
+      "id": "v1-1-4-fixed-060",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Scheduled workflows no longer fail permanently when a transient network error occurs while starting the session; they now retry briefly before giving up.",
+      "ja": "セッションの開始中に一時的なネットワークエラーが発生したときに、スケジュール済みワークフローが永続的に失敗することがなくなりました。諦める前に短時間再試行するようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-061",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Sessions stopped by a network or service error now show a Failed status in the sidebar instead of appearing idle.",
+      "ja": "ネットワークまたはサービスエラーで停止したセッションが、アイドル状態に見える代わりに、サイドバーにFailedステータスが表示されるようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-062",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Settings > Skills now lists skills defined in your repository's .github/skills/ directory instead of showing them as not found.",
+      "ja": "Settings > Skillsに、リポジトリの.github/skills/ディレクトリに定義されたスキルが「not found」として表示されるのではなく、リストされるようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-063",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Show a clear error message when creating a session from a pull request fails because GitHub couldn't be reached or the pull request couldn't be loaded.",
+      "ja": "GitHubに接続できないかプルリクエストを読み込めないためにプルリクエストからのセッション作成が失敗した場合に、明確なエラーメッセージを表示するようになりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-064",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Typed answers to agent questions are no longer lost when navigating away from and back to a session.",
+      "ja": "エージェントの質問に入力した回答が、セッションから離れて戻ってきたときに失われることがなくなりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-065",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Use a stop icon for the button that stops a running background shell, so it no longer looks identical to the panel collapse action.",
+      "ja": "実行中のバックグラウンドシェルを停止するボタンにストップアイコンを使用し、パネルを折りたたむアクションと同一に見えなくなりました。"
+    },
+    {
+      "id": "v1-1-4-fixed-066",
+      "version": "v1.1.4",
+      "category": "Fixed",
+      "en": "Windows integrated terminals now pick up PATH and environment changes from your PowerShell profile, so tools like fnm-managed Node versions work without restarting the app.",
+      "ja": "Windows統合ターミナルがPowerShellプロファイルからPATHと環境変数の変更を取得するようになり、fnm管理のNodeバージョンなどのツールがアプリを再起動せずに動作するようになりました。"
+    }
+  ]
+}

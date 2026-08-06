@@ -16,8 +16,10 @@ This repository is an evolving knowledge base where I accumulate files, slides, 
 | Topic | Description | Formats |
 |-------|-------------|---------|
 | [**GitHub Copilot App — Stable Version Hub**](./copilot-app/) | Durable entry point for the current GitHub Copilot App guide, complete release delta, hands-on learning paths, official resources, and archived versions | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app/)) |
-| [**GitHub Copilot App v1.1.2 — Complete Feature Guide**](./copilot-app-v1.1.2/) | Current capability map, setup, availability and policy boundaries, models / Auto / reasoning / BYOK, workflows, WSL and cloud behavior, plus all 462 official changes across 17 releases since v1.0.12 | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.2/)) |
-| [**GitHub Copilot App v1.1.2 — Hands-on Learning**](./copilot-app-v1.1.2-hands-on/) | Five learning paths and exactly 21 practical guides with copyable prompts, safety notes, expected results, troubleshooting, cleanup, platform callouts, local progress, search, and filtering | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.2-hands-on/)) |
+| [**GitHub Copilot App v1.1.4 — Complete Feature Guide**](./copilot-app-v1.1.4/) | Current capability taxonomy, v1.1.2→v1.1.4 migration impact, policies and platforms, setup and workflows, plus all 687 official changes across 19 releases since v1.0.12 | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.4/)) |
+| [**GitHub Copilot App v1.1.4 — Two-dimensional Learning System**](./copilot-app-v1.1.4-hands-on/) | Six horizontal journeys, ten vertical deep-dive tracks, and exactly 25 reusable bilingual labs with safety, expected states, mental models, recovery, citations, filters, and local-only progress | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.4-hands-on/)) |
+| [**GitHub Copilot App v1.1.2 — Complete Feature Guide (Archive)**](./copilot-app-v1.1.2/) | Preserved historical v1.1.2 capability and 462-item release snapshot; use the stable hub for the current edition | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.2/)) |
+| [**GitHub Copilot App v1.1.2 — Hands-on Learning (Archive)**](./copilot-app-v1.1.2-hands-on/) | Preserved five-path / 21-guide v1.1.2 learning edition | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.1.2-hands-on/)) |
 | [**GitHub Copilot App v1.0.12 — Feature Guide (Archive)**](./copilot-app-v1.0.12/) | Preserved historical snapshot of the v1.0.12 feature guide; use the stable hub for the current edition | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.0.12/)) |
 | [**GitHub Copilot App v1.0.12 — Hands-on Guides (Archive)**](./copilot-app-v1.0.12-hands-on/) | Preserved historical collection of the original 15 v1.0.12 guides | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-app-v1.0.12-hands-on/)) |
 | [**Agentic SDLC Practical Guide with GitHub Copilot**](./agentic-sdlc/) | Self-standing technical guide that designs, delegates, and governs bounded, verifiable work with GitHub Copilot — the five interaction modes, Context Engineering, Delegation Contract, autonomy budget, Modernization Loop, deterministic verification, the PR as governance boundary, security, drift and recovery, adoption ladder, cost model, delegation anti-patterns, and a glossary — across 19 sections in 6 parts, illustrated with six hand-authored inline-SVG concept diagrams, readable without the slides; the original talk deck is included as an appendix PDF. A fully translated [English edition](./agentic-sdlc/en/) covers the same 19 sections and all six diagrams | HTML · JP / EN + PDF ([live page](https://shinyay.github.io/something-something-something/agentic-sdlc/)) |
@@ -41,14 +43,16 @@ something-something-something/
 │   └── index.html              # Summary page (HTML · JP, served via GitHub Pages)
 ├── copilot-app/                # Stable GitHub Copilot App version hub
 │   └── index.html              # Current / archive routing and official links
-├── copilot-app-v1.1.2/         # Current complete feature and release guide
-│   ├── index.html              # Capability map, setup, policies, platforms, workflows
-│   ├── releases.html           # Searchable 17-release / 462-item explorer
+├── copilot-app-v1.1.4/         # Current complete feature and release guide
+│   ├── index.html              # Capability taxonomy, migration, policies, platforms, workflows
+│   ├── releases.html           # Searchable 19-release / 687-item explorer
 │   └── assets/                 # Shared CSS, JS, and canonical release matrix JSON
-├── copilot-app-v1.1.2-hands-on/  # Five learning paths / 21 guides
-│   ├── index.html              # Search, filters, local progress, and resume
-│   ├── 01-install-projects.html … 21-accessibility-storage-lifecycle-recovery.html
+├── copilot-app-v1.1.4-hands-on/  # Six journeys / ten tracks / 25 reusable labs
+│   ├── index.html              # Learning matrix, search, filters, local progress, and resume
+│   ├── 01-install-projects.html … 25-capstone-issue-to-landed-pr.html
 │   └── assets/                 # Shared theme, language, copy, filter, and progress logic
+├── copilot-app-v1.1.2/         # Historical v1.1.2 feature/release archive
+├── copilot-app-v1.1.2-hands-on/  # Historical v1.1.2 five-path / 21-guide archive
 ├── copilot-app-v1.0.12/        # Historical v1.0.12 feature guide archive
 ├── copilot-app-v1.0.12-hands-on/  # Historical 15-guide archive
 ├── scripts/                    # Reproducible matrix, rendering, and validation scripts
@@ -72,6 +76,7 @@ Each content directory follows a consistent naming convention:
 
 ## 🗓️ Latest Additions
 
+- **2026-08-07** — [GitHub Copilot App v1.1.4 complete guide](./copilot-app-v1.1.4/) and [two-dimensional learning system](./copilot-app-v1.1.4-hands-on/) — 19 releases / 687 exact-once official items, six horizontal journeys, ten vertical tracks, and 25 bilingual labs ([stable hub](https://shinyay.github.io/something-something-something/copilot-app/))
 - **2026-08-04** — [Agentic SDLC Practical Guide with GitHub Copilot](./agentic-sdlc/) completes its English edition — all 19 sections and all six inline-SVG diagrams are translated, with no Japanese fallback remaining ([English edition](https://shinyay.github.io/something-something-something/agentic-sdlc/en/))
 - **2026-08-03** — [Agentic SDLC Practical Guide with GitHub Copilot](./agentic-sdlc/) gains a Japanese ⇄ English language switch; §00 is translated and the remaining 18 sections fall back to the Japanese text ([English edition](https://shinyay.github.io/something-something-something/agentic-sdlc/en/))
 - **2026-08-03** — [Agentic SDLC Practical Guide with GitHub Copilot](./agentic-sdlc/) gains six hand-authored inline-SVG concept diagrams (Modernization Loop, PR governance boundary, interaction-mode continuum, Delegation Contract, autonomy budget, adoption ladder) — no external assets, theme-aware ([live page](https://shinyay.github.io/something-something-something/agentic-sdlc/))

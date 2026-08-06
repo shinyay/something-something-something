@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Create an issue in a repository other than the current session&#039;s, view or edit milestones on issues and PRs, and open exact app screens through safe hosted-launcher deep links.">
+<title>GitHub Copilot App v1.1.4 — Cross-repository issues, milestones, and deep links</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="23" data-guide-count="25">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.4 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.4</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="lab-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">ラボ 23 / 25</span><span class="en" lang="en">Lab 23 of 25</span></p>
+    <h1 id="lab-title"><span class="ja" lang="ja">別リポジトリへのIssue作成とマイルストーン、ディープリンク</span><span class="en" lang="en">Cross-repository issues, milestones, and deep links</span></h1>
+    <p class="lede"><span class="ja" lang="ja">現在のセッションとは異なるリポジトリにIssueを作成し、Issue/PRのマイルストーンを表示・編集し、安全なホスト型ランチャー経由のディープリンクで目的の画面を開きます。</span><span class="en" lang="en">Create an issue in a repository other than the current session&#039;s, view or edit milestones on issues and PRs, and open exact app screens through safe hosted-launcher deep links.</span></p>
+    <div class="meta-row" aria-label="Lab metadata">
+      <span class="badge"><span class="ja" lang="ja">中級</span><span class="en" lang="en">Intermediate</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.4 で確認</span><span class="en" lang="en">Verified for v1.1.4</span></span>
+      <span class="badge"><span class="ja" lang="ja">約50分</span><span class="en" lang="en">About 50 min</span></span>
+      <span class="badge badge--accent" data-provenance="release-notes"><span class="ja" lang="ja">Release-note-grounded</span><span class="en" lang="en">Release-note-grounded</span></span>
+    </div>
+    <div class="chips" aria-label="Journeys and tracks"><a class="badge badge--accent" href="index.html#journey-j3"><span class="ja" lang="ja">Issueからstacked PR配信まで</span><span class="en" lang="en">Issue-to-stacked-PR delivery</span></a> <a class="badge" href="index.html#track-t5"><span class="ja" lang="ja">My Work、別リポジトリのIssue、マイルストーン、ディープリンク</span><span class="en" lang="en">My Work, cross-repository issues, milestones, and deep links</span></a></div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#labs"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">25 ラボ一覧</span><span class="en" lang="en">All 25 labs</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="persona">
+        <div class="section-heading"><p class="eyebrow">Scenario &amp; persona</p><h2><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">作業中のセッションのリポジトリとは別の、共有ドキュメントリポジトリで見つけた問題をIssueとして報告し、マイルストーンで追跡し、同僚にディープリンクで共有します。</span><span class="en" lang="en">While working in one session&#039;s repository, you notice an issue that belongs in a separate shared documentation repository — file it there, track it with a milestone, and share it with a teammate through a deep link.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">担当者像</span><span class="en" lang="en">Persona</span></h3><p><span class="ja" lang="ja">複数リポジトリを横断して働くメンテナーとして、現在のセッションとは異なるリポジトリへのIssue作成とマイルストーンを扱います。</span><span class="en" lang="en">As a maintainer working across multiple repositories, this lab focuses on creating an issue in a different repository from the current session, plus milestones.</span></p></article>
+        </div>
+        <div class="callout"><strong><span class="ja" lang="ja">なぜ重要か</span><span class="en" lang="en">Why it matters</span>:</strong> <span class="ja" lang="ja">Issueの作成先リポジトリを誤ると、無関係な購読者に通知が飛び、後から修正するのが難しくなります。</span><span class="en" lang="en">Creating an issue in the wrong repository notifies unrelated watchers and is hard to correct after the fact.</span></div>
+      </section>
+
+      <section class="section" id="objectives">
+        <div class="section-heading"><p class="eyebrow">Goals</p><h2><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Learning objectives</span></h2></div>
+        <ul><li><span class="ja" lang="ja">Issue作成前に対象リポジトリを確認する</span><span class="en" lang="en">Confirm the target repository before creating an issue</span></li>
+<li><span class="ja" lang="ja">ホスト型ランチャー経由でdeep linkを安全に開く</span><span class="en" lang="en">Open a deep link safely through the hosted launcher</span></li>
+<li><span class="ja" lang="ja">マイルストーンをIssue/PRに表示・編集する</span><span class="en" lang="en">View and edit milestones on issues/PRs</span></li></ul>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">書き込みまたはtriage権限のある2つのリポジトリ（自分のサンドボックスで可）。少なくとも1つにマイルストーンが作成済みであること。</span><span class="en" lang="en">Write or triage access to two repositories (sandboxes you control are fine), with at least one having a milestone already created.</span></li>
+<li><span class="ja" lang="ja">lab 12（Issue、ディープリンク）を完了していること。</span><span class="en" lang="en">Lab 12 (issues, deep links) completed.</span></li>
+<li><span class="ja" lang="ja">現在のセッションが1つ目のリポジトリに接続済みであること。</span><span class="en" lang="en">A session already connected to the first repository.</span></li></ul>
+      </section>
+
+      <section class="section" id="availability">
+        <div class="section-heading"><p class="eyebrow">Availability</p><h2><span class="ja" lang="ja">公式な提供状況とスコープ</span><span class="en" lang="en">Official availability and scope</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></h3><p><span class="ja" lang="ja">v1.1.4 時点。別リポジトリへのIssue作成と、Issue/PRのマイルストーン表示・編集はv1.1.4で追加されました。これらはいずれも変更履歴（changelog）でのみ確認できる release-note-grounded な機能で、正確な画面遷移や確認手段は公式ソースで網羅的に説明されていません。</span><span class="en" lang="en">Current in v1.1.4. Creating an issue in a different repository and viewing/editing issue and PR milestones were added in v1.1.4. Both are release-note-grounded, confirmed only by the changelog, and no official source comprehensively documents the exact screen flow or confirmation mechanism.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">対象範囲</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドはアプリ内での別リポジトリへのIssue作成、Issue/PRのマイルストーン表示・編集、ホスト型ランチャー経由のディープリンクを扱います。マイルストーン自体の新規作成はGitHub.com上の操作として前提とし、ここでは行いません。アプリ固有の確認UI（例えば専用の確認ダイアログ）が存在するかどうかは公式ソースで確認できていないため断定せず、プロンプトの指示とGitHub上での外部検証を安全策として使います。</span><span class="en" lang="en">This guide covers creating an issue in a different repository from within the app, viewing/editing issue and PR milestones, and opening deep links through the hosted launcher. Creating a milestone itself on GitHub.com is treated as a prerequisite and is not performed here. Whether the app has a dedicated confirmation UI (such as a specific confirmation dialog) is not confirmed by an official source, so this guide does not assert one exists — it instead relies on prompt instructions plus external verification on GitHub as the safeguard.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">時間の見積もり</span><span class="en" lang="en">Time estimate</span></h3><p><span class="ja" lang="ja">hands-on操作の目安は約50分です。download、network、service latencyは含みません。</span><span class="en" lang="en">Hands-on work is estimated at about 50 minutes, excluding downloads, network delay, and service latency.</span></p></article>
+          <article class="card"><h3><span class="badge badge--accent" data-provenance="release-notes"><span class="ja" lang="ja">Release-note-grounded</span><span class="en" lang="en">Release-note-grounded</span></span> <span class="ja" lang="ja">情報源の裏付け</span><span class="en" lang="en">Source provenance</span></h3><p><span class="ja" lang="ja">別リポジトリへの Issue 作成、および Issue/PR のマイルストーン表示・編集 UI は v1.1.4 の変更履歴（changelog）でのみ確認できる release-note-grounded な機能です。マイルストーンという概念自体は docs.github.com で docs-grounded に説明されています。アプリ固有の編集手順は公式ウォークスルーがないため、本ラボでは誘導観察（guided observation）として扱い、画面の表示に従ってください。 手順内の正確なメニュー名・ボタン名・クリック順は変更履歴（changelog）に基づく記述であり、スクリーンショット付きの公式ウォークスルーで検証されたものではありません。実際の画面がここと異なる場合は、画面に表示されている表記を優先してください。</span><span class="en" lang="en">Creating an issue in a different repository, and the app&#039;s issue/PR milestone view/edit UI, are release-note-grounded, confirmed only by the v1.1.4 changelog. The concept of a milestone itself is docs-grounded on docs.github.com. Because there is no official walkthrough of the app-specific editing flow, this lab treats it as guided observation — follow what your screen actually shows. Exact menu names, button labels, and click order in the steps are grounded in changelog entries, not an illustrated official walkthrough. If your running build&#039;s UI differs from this text, follow what the screen actually shows instead.</span></p></article>
+        </div>
+      </section>
+
+      <section class="section" id="before-you-start">
+        <div class="section-heading"><p class="eyebrow">Before you start</p><h2><span class="ja" lang="ja">開始前の安全確認</span><span class="en" lang="en">Before-you-start safety check</span></h2></div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全・データ・コスト・権限への影響</span><span class="en" lang="en">Safety, data, cost, and permission implications</span>:</strong> <span class="ja" lang="ja">見慣れない本番リポジトリにいきなりIssueを作成すると無関係な購読者に通知が届きます。まずは自分が管理する2つのサンドボックスリポジトリで練習してください。対象リポジトリを明示し、作成前に一度立ち止まって対象を復唱するようエージェントへの指示（プロンプト）で求め、公式URLまたは<code>gh</code>コマンドで作成結果を外部から検証してください。ディープリンクはホスト型ランチャー経由でのみ開き、出所不明の生の<code>ghapp://</code> URLは開かないでください。</span><span class="en" lang="en">Filing an issue in an unfamiliar production repository notifies unrelated watchers. Practice first with two sandbox repositories you control. Name the target repository explicitly, instruct the agent (via the prompt) to pause and echo the target back before creating anything, and independently verify the result through the official URL or the <code>gh</code> command. Open deep links only through the hosted launcher, never a raw <code>ghapp://</code> URL from an unknown source.</span></div>
+      </section>
+
+      <section class="section" id="launchers">
+        <div class="section-heading"><p class="eyebrow">Open safely</p><h2><span class="ja" lang="ja">コピー可能なプロンプト／コマンドとランチャー</span><span class="en" lang="en">Copyable prompts/commands and launchers</span></h2></div>
+
+        <div class="card-grid"><article class="card">
+  <h3><span class="ja" lang="ja">マイルストーンの公式ドキュメントを開く</span><span class="en" lang="en">Open the official milestones documentation</span></h3>
+  <p><span class="ja" lang="ja">GitHubの公式ドキュメントでマイルストーンの概念を確認します。</span><span class="en" lang="en">Review the concept of milestones in GitHub&#039;s official documentation.</span></p>
+  <div class="card-actions"><a class="button" href="https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/about-milestones" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+      </section>
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="mono">1.</span> <span class="ja" lang="ja">別リポジトリを明示し、対象の復唱と一時停止を求める</span><span class="en" lang="en">Name a different repository explicitly and ask the agent to echo it back and pause</span></h3>
+  <p><span class="ja" lang="ja">現在のセッションのリポジトリではなく、<code>owner/repo</code>を明示した別リポジトリへのIssue作成をエージェントに依頼し、作成前に対象を復唱して一時停止するよう指示します。</span><span class="en" lang="en">Ask the agent to create an issue in an explicitly named <code>owner/repo</code> other than the current session&#039;s repository, instructing it to echo the target back and pause before creating anything.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">別リポジトリへのIssue作成を依頼し、対象を復唱・一時停止させるプロンプト</span><span class="en" lang="en">Prompt that requests an issue in a different repository and asks the agent to echo the target and pause</span></span>
+    <button class="copy-button" type="button" data-copy="lab-23-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-23-code-1" data-language="text">Create a GitHub issue in &lt;owner&gt;/&lt;other-repo&gt; (explicitly NOT this session&#039;s repository) titled &quot;Docs: clarify the v1.1.4 milestone workflow&quot; with a short description of what is unclear. Before creating anything, state back to me the exact target owner/repo you are about to use, and wait for my explicit go-ahead.</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">エージェントが作成前に対象owner/repoを復唱し、明示的な許可を待つ状態で止まる。</span><span class="en" lang="en">The agent echoes back the target owner/repo before creating anything and pauses for explicit permission.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">2.</span> <span class="ja" lang="ja">復唱された対象を検証してから許可する</span><span class="en" lang="en">Verify the echoed target before giving permission</span></h3>
+  <p><span class="ja" lang="ja">エージェントが復唱した owner/repo が意図した別リポジトリと完全に一致することを確認してから、続行の許可を出します。一致しない場合は許可せず、プロンプトをやり直します。</span><span class="en" lang="en">Confirm the owner/repo the agent echoed back exactly matches the intended other repository before granting permission to continue. If it does not match, do not grant permission — revise the prompt instead.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">許可後にIssueが意図したリポジトリに作成される。</span><span class="en" lang="en">After permission is granted, the issue is created in the intended repository.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">3.</span> <span class="ja" lang="ja">gh CLIで作成先を確認する（任意）</span><span class="en" lang="en">Optionally verify the destination with the gh CLI</span></h3>
+  <p><span class="ja" lang="ja">任意の検証として、gh CLIでIssue番号を指定し、意図したリポジトリに存在することを確認します。</span><span class="en" lang="en">As an optional check, use the gh CLI with the issue number to confirm it exists in the intended repository.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">gh CLIで作成先を確認する（任意）</span><span class="en" lang="en">Verify the destination with the gh CLI (optional)</span></span>
+    <button class="copy-button" type="button" data-copy="lab-23-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-23-code-2" data-language="shell">gh issue view &lt;issue-number&gt; --repo &lt;owner&gt;/&lt;other-repo&gt; --json title,milestone,url</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">コマンドの出力が意図したリポジトリのURLとタイトルを返す。</span><span class="en" lang="en">The command output returns the intended repository&#039;s URL and title.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">4.</span> <span class="ja" lang="ja">Issueにマイルストーンを設定する（誘導観察）</span><span class="en" lang="en">Set a milestone on the issue (guided observation)</span></h3>
+  <p><span class="ja" lang="ja">作成したIssueを開き、既存のマイルストーンを選んで設定します。マイルストーンが選択肢にない場合は、そのリポジトリにまだマイルストーンが作成されていません。正確な画面上の操作手順は公式ソースで網羅的に確認できていないため、実際の画面表示に従ってください。</span><span class="en" lang="en">Open the created issue and assign an existing milestone. If none appears in the picker, that repository has no milestone created yet. The exact on-screen steps are not comprehensively documented in an official source, so follow whatever your screen actually shows.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">Issueに選択したマイルストーンの値が表示される。追加の表示項目は前提にしない。</span><span class="en" lang="en">The issue shows the selected milestone value. You do not assume any additional fields.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">5.</span> <span class="ja" lang="ja">関連PRのマイルストーンも確認する（誘導観察）</span><span class="en" lang="en">Also check the milestone on a related pull request (guided observation)</span></h3>
+  <p><span class="ja" lang="ja">同じマイルストーンに関連するプルリクエストを開き、そのマイルストーン表示・編集UIを観察します。Issueと同一のUIかどうかは断定せず、実際の画面を確認してください。</span><span class="en" lang="en">Open a pull request related to the same milestone and observe its milestone view/edit UI. Do not assume it is identical to the issue&#039;s UI — check what your own screen actually shows.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">PRのマイルストーン表示または編集操作を実際に観察できる。</span><span class="en" lang="en">You actually observe the PR&#039;s milestone display or edit interaction.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">6.</span> <span class="ja" lang="ja">ホスト型ランチャーでディープリンクを開く</span><span class="en" lang="en">Open a deep link through the hosted launcher</span></h3>
+  <p><span class="ja" lang="ja">作成したIssueのディープリンクをホスト型ランチャー経由でコピーし、別のウィンドウまたはブラウザーで開いて意図した画面にそのまま到達することを確認します。</span><span class="en" lang="en">Copy the created issue&#039;s deep link through the hosted launcher, open it in a fresh window or browser, and confirm it lands exactly on the intended screen.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">ディープリンクがホスト型ランチャーを経由し、意図したIssue画面を直接開く。</span><span class="en" lang="en">The deep link is routed through the hosted launcher and opens the intended issue screen directly.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">7.</span> <span class="ja" lang="ja">マイルストーンの状態変化を確認する</span><span class="en" lang="en">Confirm the milestone state transition</span></h3>
+  <p><span class="ja" lang="ja">Issueのマイルストーンを別の値に変更し、GitHub.com側でも同じ変更が反映されていることを確認します。</span><span class="en" lang="en">Change the issue&#039;s milestone to a different value and confirm the same change is reflected on GitHub.com.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">アプリとGitHub.comの両方で新しいマイルストーンが一致して表示される。</span><span class="en" lang="en">Both the app and GitHub.com show the new milestone consistently.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">8.</span> <span class="ja" lang="ja">テスト用のIssueを片付ける</span><span class="en" lang="en">Clean up the test issue</span></h3>
+  <p><span class="ja" lang="ja">検証が終わったら、テスト用のマイルストーン割り当てを外すか、Issue自体をクローズします。</span><span class="en" lang="en">Once verification is done, remove the test milestone assignment or close the issue itself.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">テスト用のIssueがクローズされているか、明確に「テスト」と分かる状態になっている。</span><span class="en" lang="en">The test issue is closed or clearly marked as a test.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="decision-points">
+        <div class="section-heading"><p class="eyebrow">Decide</p><h2><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></h2></div>
+        <ul class="decision-list"><li><span class="ja" lang="ja">プロンプトでエージェントに対象リポジトリ名を復唱・一時停止させてから続行を許可するか。</span><span class="en" lang="en">Have the prompt make the agent echo the target repository name and pause before granting permission to continue?</span></li>
+<li><span class="ja" lang="ja">生の<code>ghapp://</code>を直接開くか、ホスト型ランチャーだけを使うか。</span><span class="en" lang="en">Open a raw <code>ghapp://</code> directly, or use only the hosted launcher?</span></li></ul>
+      </section>
+
+      <section class="section" id="checkpoints">
+        <div class="section-heading"><p class="eyebrow">Checkpoints</p><h2><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></h2></div>
+        <ul class="checkpoint-list"><li><span class="ja" lang="ja">チェックポイント1: エージェントが復唱したowner/repoが意図した値と一致している。</span><span class="en" lang="en">Checkpoint 1: the owner/repo the agent echoed back matches the intended value.</span></li>
+<li><span class="ja" lang="ja">チェックポイント2: deep linkが意図した画面をそのまま開く。</span><span class="en" lang="en">Checkpoint 2: the deep link opens exactly the intended screen.</span></li></ul>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">意図した別リポジトリにIssueが作成された。</span><span class="en" lang="en">The issue was created in the intended, different repository.</span></li>
+<li><span class="ja" lang="ja">Issue/PRのマイルストーンを表示・編集できた。</span><span class="en" lang="en">You viewed and edited the milestone on both an issue and a PR.</span></li>
+<li><span class="ja" lang="ja">ディープリンクをホスト型ランチャー経由で安全に開けた。</span><span class="en" lang="en">You safely opened a deep link through the hosted launcher.</span></li></ul>
+      </section>
+
+      <section class="section" id="under-the-hood">
+        <div class="section-heading"><p class="eyebrow">Mental model</p><h2><span class="ja" lang="ja">Under the hood: 内部で何が起きているか</span><span class="en" lang="en">Under the hood: what happens internally</span></h2></div>
+        <p><span class="ja" lang="ja">アプリはIssue作成リクエストをセッションのリポジトリとは独立したAPI呼び出しとして送信できます。アプリ自体に専用の確認UIがあるかどうかはこのガイドでは断定しないため、対象の復唱と一時停止をプロンプトの指示として人間が求め、最終承認します。deep linkはホスト型ランチャーURLを経由することで、任意の<code>ghapp://</code>をそのまま実行しないようにしています。</span><span class="en" lang="en">The app can send an issue-creation request as an API call independent of the session&#039;s own repository. This guide does not assert whether the app itself has a dedicated confirmation UI, so a human instead requests — via the prompt — that the target be echoed back and paused on, then gives final approval. Deep links route through a hosted launcher URL so an arbitrary <code>ghapp://</code> is never executed directly.</span></p>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング（症状から探す）</span><span class="en" lang="en">Troubleshooting (start from your symptom)</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja">誤ったリポジトリにIssueを作成してしまった</span><span class="en" lang="en">The issue was created in the wrong repository</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">GitHub.comでIssueのTransfer issue操作が利用でき、必要な権限と移動先条件を満たす場合は公式の転送手順に従います。利用できない場合は正しいリポジトリに作成し直し、誤ったIssueをクローズして置き換え先へリンクします。</span><span class="en" lang="en">If GitHub.com&#039;s Transfer issue action is available and you meet its permission and destination requirements, follow the official transfer flow. Otherwise create the issue in the correct repository, close the mistaken one, and link to its replacement.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">マイルストーンの選択肢が表示されない</span><span class="en" lang="en">No milestone option appears</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">対象リポジトリにまだマイルストーンが作成されていません。GitHub.com上でマイルストーンを先に作成してからアプリに戻ってください。</span><span class="en" lang="en">The target repository has no milestone created yet. Create one on GitHub.com first, then return to the app.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">ディープリンクが別のプロジェクトやセッションを開いてしまう</span><span class="en" lang="en">The deep link opens a different project or session</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">生成されたホスト型ランチャーのURLを使っているか確認し、手入力した<code>ghapp://</code>は使わないでください。正しいプロジェクトが有効になっているかも確認します。</span><span class="en" lang="en">Confirm you are using the generated hosted-launcher URL, not a hand-typed <code>ghapp://</code>. Also confirm the correct project is active.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">作成したIssueがMy Workにすぐ表示されない</span><span class="en" lang="en">The created issue does not immediately appear in My Work</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">フィルタを確認し、<code>has:milestone</code>などの修飾子（lab 11）が意図せず絞り込んでいないか確認したうえで再読み込みしてください。</span><span class="en" lang="en">Check your filters — confirm a qualifier such as <code>has:milestone</code> (lab 11) is not unintentionally narrowing the list — then reload.</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="recovery">
+        <div class="section-heading"><p class="eyebrow">Recovery path</p><h2><span class="ja" lang="ja">明示的な復旧手順</span><span class="en" lang="en">Explicit recovery path</span></h2></div>
+        <div class="callout callout--danger"><span class="ja" lang="ja">誤ったリポジトリにIssueを作成してしまった場合、リポジトリ間移動はできないため、正しいリポジトリに新規作成し直し、誤って作成したIssueをクローズしてください。</span><span class="en" lang="en">If an issue lands in the wrong repository, it cannot be moved between repositories — create a new one in the correct repository and close the mistaken one.</span></div>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">テスト用に作成したIssueをクローズするか、明確にテストと分かるようにする。</span><span class="en" lang="en">Close the test issue or clearly mark it as a test.</span></li>
+<li><span class="ja" lang="ja">テストのためだけに追加したマイルストーン割り当てを外す。</span><span class="en" lang="en">Remove any milestone assignment added only for this test.</span></li>
+<li><span class="ja" lang="ja">共有用にコピーしたテストIssueのURLやランチャーを作業メモから削除する。</span><span class="en" lang="en">Remove copied test-issue URLs or launchers from your working notes.</span></li></ol>
+      </section>
+
+      <section class="section" id="rubric">
+        <div class="section-heading"><p class="eyebrow">Success rubric</p><h2><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></h2></div>
+        <ul class="rubric-list"><li><span class="ja" lang="ja">Issue作成先が意図したリポジトリと一致することを確認した。</span><span class="en" lang="en">You confirmed the issue landed in the intended repository.</span></li>
+<li><span class="ja" lang="ja">マイルストーンの表示・編集を少なくとも1回行った。</span><span class="en" lang="en">You viewed or edited a milestone at least once.</span></li>
+<li><span class="ja" lang="ja">deep linkをホスト型ランチャー経由でのみ開いた。</span><span class="en" lang="en">You opened deep links only through the hosted launcher.</span></li></ul>
+      </section>
+
+      <section class="section" id="stretch">
+        <div class="section-heading"><p class="eyebrow">Go further</p><h2><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></h2></div>
+        <div class="callout callout--success"><span class="ja" lang="ja">同じ変更に対して、Issueのリポジトリとは異なるリポジトリのマイルストーンにPRを紐づけてみてください。</span><span class="en" lang="en">For the same change, try associating the pull request&#039;s milestone with a repository different from the issue&#039;s.</span></div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">gh CLIによる任意の検証はWindows Terminal/PowerShellから実行できます。</span><span class="en" lang="en">The optional gh CLI verification can be run from Windows Terminal/PowerShell.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">同上。標準のターミナルから同じコマンドが使えます。</span><span class="en" lang="en">Same as above; the standard terminal supports the same command.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">同上。distroのパッケージマネージャーでgh CLIを導入してください。</span><span class="en" lang="en">Same as above; install the gh CLI via your distribution&#039;s package manager.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">別リポジトリへのIssue作成とマイルストーン編集がWSLリモートセッションでも同一に動作するかは、このガイドでは確認できていません。lab 08のWSL一般情報を参照しつつ、実際の環境で確認してください。</span><span class="en" lang="en">Whether cross-repository issue creation and milestone editing behave identically in a WSL remote session is not confirmed by this guide. Refer to lab 08&#039;s general WSL notes and verify directly in your own environment.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://github.com/github/app/blob/main/changelog.md#v114" rel="noopener noreferrer">GitHub Copilot app v1.1.4 changelog</a></li>
+<li><a href="https://docs.github.com/en/issues/using-labels-and-milestones-to-track-work/about-milestones" rel="noopener noreferrer">About milestones</a></li>
+<li><a href="https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue" rel="noopener noreferrer">Creating an issue</a></li>
+<li><a href="https://docs.github.com/en/issues/tracking-your-work-with-issues/administering-issues/transferring-an-issue-to-another-repository" rel="noopener noreferrer">Transferring an issue to another repository</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></h2></div>
+        <ul class="plain-list related-list"><li><a class="badge" href="11-my-work-filters.html"><span class="mono">11</span> <span class="ja" lang="ja">My Work のセクションとフィルターを使いこなす</span><span class="en" lang="en">Master My Work sections and filters</span></a></li>
+<li><a class="badge" href="12-issues-deep-links.html"><span class="mono">12</span> <span class="ja" lang="ja">Issue のセッションコンテキストと安全なディープリンク</span><span class="en" lang="en">Issue session context and safe deep links</span></a></li>
+<li><a class="badge" href="08-cloud-wsl-vscode-cli-handoff.html"><span class="mono">08</span> <span class="ja" lang="ja">クラウド・WSL・VS Code・CLIへのハンドオフ</span><span class="en" lang="en">Hand off across cloud, WSL, VS Code, and CLI</span></a></li>
+<li><a class="badge" href="25-capstone-issue-to-landed-pr.html"><span class="mono">25</span> <span class="ja" lang="ja">キャップストーン: Issueから検証済みPRの着地と運用クリーンアップまで</span><span class="en" lang="en">Capstone: from issue to a verified, landed PR with operational cleanup</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Lab navigation">
+        <a href="22-stacked-pr-copilot-review.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のラボ</span><span class="en" lang="en">Previous lab</span></span><br><strong><span class="ja" lang="ja">スタックPR、Copilotレビュー、マージキュー、Agent Merge</span><span class="en" lang="en">Stacked PRs, Copilot review, merge queue, and Agent Merge</span></strong></a>
+        <a href="24-worktree-attribution-diagnostics.html"><span class="muted"><span class="ja" lang="ja">次のラボ</span><span class="en" lang="en">Next lab</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">Worktreeの保存場所、コミット帰属、診断の安全な観察</span><span class="en" lang="en">Worktree location, commit attribution, and diagnostics: a safe guided observation</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Lab progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 25</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="25"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このラボを完了にする</span><span class="en" lang="en">Mark this lab complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#persona"><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></a></li>
+          <li><a href="#objectives"><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Objectives</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#availability"><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></a></li>
+          <li><a href="#before-you-start"><span class="ja" lang="ja">開始前の確認</span><span class="en" lang="en">Before you start</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#decision-points"><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></a></li>
+          <li><a href="#checkpoints"><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#under-the-hood"><span class="ja" lang="ja">Under the hood</span><span class="en" lang="en">Under the hood</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#recovery"><span class="ja" lang="ja">復旧手順</span><span class="en" lang="en">Recovery</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#rubric"><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></a></li>
+          <li><a href="#stretch"><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></a></li>
+          <li><a href="#platforms"><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+          <li><a href="#related"><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="ja" lang="ja">v1.1.4 機能ガイド</span><span class="en" lang="en">v1.1.4 feature guide</span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">v1.1.2 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.1.2 hands-on (archive)</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.0.12 hands-on (archive)</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性、ポリシー、料金は公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability, policy, and pricing in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>

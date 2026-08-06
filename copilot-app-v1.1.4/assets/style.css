@@ -171,6 +171,19 @@ html:not(.js) .en {
   padding: 0.38rem 0.65rem;
 }
 
+.chips .badge,
+.meta-row .badge,
+.journey-route .badge,
+.track-progression .badge,
+.related-list .badge {
+  max-width: 100%;
+  justify-content: flex-start;
+  line-height: 1.25;
+  overflow-wrap: anywhere;
+  text-align: left;
+  white-space: normal;
+}
+
 .version-pill--current,
 .badge--accent {
   border-color: var(--cp-accent);
@@ -452,11 +465,6 @@ details {
   border-left: 0.3rem solid var(--cp-accent);
 }
 
-.callout--archive-notice {
-  width: min(74rem, calc(100vw - 2rem));
-  margin-inline: auto;
-}
-
 .callout--warning {
   border-left-color: var(--cp-warning);
 }
@@ -492,6 +500,19 @@ details {
   margin: 0;
   padding: 0;
   list-style: none;
+}
+
+.journey-route,
+.track-progression {
+  display: grid;
+  gap: 0.55rem;
+  margin: 1rem 0 0;
+  padding-inline-start: 1.5rem;
+}
+
+.journey-route li,
+.track-progression li {
+  padding-inline-start: 0.2rem;
 }
 
 .on-this-page li + li,
@@ -638,6 +659,32 @@ details[open] summary {
 
 .filter-panel {
   margin-bottom: 1.5rem;
+}
+
+.filter-groups {
+  display: grid;
+  gap: 1rem;
+  margin-top: 1rem;
+}
+
+.filter-group {
+  margin: 0;
+  padding: 0;
+  border: 0;
+}
+
+.filter-group legend {
+  padding: 0 0 0.5rem;
+  font-size: 0.82rem;
+  font-weight: 700;
+}
+
+.filter-group .chips {
+  gap: 0.5rem;
+}
+
+.filter-chip {
+  font-size: 0.82rem;
 }
 
 .filters {
@@ -810,6 +857,78 @@ th {
   background: var(--cp-surface-soft);
 }
 
+.table-scroll {
+  overflow-x: auto;
+  border: 1px solid var(--cp-border);
+  border-radius: 16px;
+}
+
+.table-scroll table {
+  min-width: 46rem;
+  border: 0;
+}
+
+.table-scroll th:first-child,
+.table-scroll td:first-child {
+  position: sticky;
+  left: 0;
+  background: var(--cp-surface-soft);
+}
+
+.matrix-cell-labs {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+}
+
+.table-scroll table,
+.matrix-cell-labs a {
+  position: relative;
+}
+
+.decision-list,
+.checkpoint-list,
+.rubric-list {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+  display: grid;
+  gap: 0.6rem;
+}
+
+.decision-list li,
+.checkpoint-list li,
+.rubric-list li {
+  position: relative;
+  padding-left: 1.6rem;
+}
+
+.decision-list li::before {
+  position: absolute;
+  left: 0;
+  color: var(--cp-accent);
+  content: "?";
+  font-weight: 800;
+}
+
+.checkpoint-list li::before {
+  position: absolute;
+  left: 0;
+  color: var(--cp-link);
+  content: "◆";
+  font-size: 0.75em;
+  line-height: 1.8;
+}
+
+.rubric-list li::before {
+  position: absolute;
+  left: 0;
+  color: var(--cp-success);
+  content: "✓";
+  font-weight: 800;
+}
+
+
 @media (max-width: 58rem) {
   .page-grid,
   .page-grid--wide {
@@ -851,6 +970,16 @@ th {
 
   .brand__version {
     display: none;
+  }
+
+  .header-nav {
+    flex-wrap: wrap;
+    overflow-x: visible;
+  }
+
+  .header-nav a,
+  .header-nav .icon-button {
+    flex: 0 1 auto;
   }
 
   .hero__inner {

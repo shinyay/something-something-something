@@ -1,0 +1,409 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Understand the differences between MCP servers that connect external tools, task-specific skills, bundled plugins, and collaborative Canvas extensions, and enable each of them safely.">
+<title>GitHub Copilot App v1.1.4 — Use MCP, skills, plugins, and Canvas extensions together</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="19" data-guide-count="25">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.4 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.4</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="lab-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">ラボ 19 / 25</span><span class="en" lang="en">Lab 19 of 25</span></p>
+    <h1 id="lab-title"><span class="ja" lang="ja">MCP・スキル・プラグイン・Canvas 拡張を使い分ける</span><span class="en" lang="en">Use MCP, skills, plugins, and Canvas extensions together</span></h1>
+    <p class="lede"><span class="ja" lang="ja">外部ツールを繋ぐ MCP サーバー、タスク別の指示であるスキル、まとめて配布するプラグイン、共同編集できる Canvas 拡張の違いを理解し、それぞれを安全に有効化します。</span><span class="en" lang="en">Understand the differences between MCP servers that connect external tools, task-specific skills, bundled plugins, and collaborative Canvas extensions, and enable each of them safely.</span></p>
+    <div class="meta-row" aria-label="Lab metadata">
+      <span class="badge"><span class="ja" lang="ja">上級</span><span class="en" lang="en">Advanced</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.4 向け再公開（中核フローは v1.1.2 で検証、現在差分を source-check）</span><span class="en" lang="en">Republished for v1.1.4 (core flow verified at v1.1.2; current deltas source-checked)</span></span>
+      <span class="badge"><span class="ja" lang="ja">約65分</span><span class="en" lang="en">About 65 min</span></span>
+      <span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span>
+    </div>
+    <div class="chips" aria-label="Journeys and tracks"><a class="badge badge--accent" href="index.html#journey-j5"><span class="ja" lang="ja">custom agents、instructions、MCP、skills/plugins、Canvasで拡張する</span><span class="en" lang="en">Extending with custom agents, instructions, MCP, skills, and Canvas</span></a> <a class="badge" href="index.html#track-t8"><span class="ja" lang="ja">拡張性: instructions、custom agents、MCP、skills、plugins、.github/skills、Canvas</span><span class="en" lang="en">Extensibility: instructions, custom agents, MCP, skills, plugins, .github/skills, and Canvas</span></a></div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#labs"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">25 ラボ一覧</span><span class="en" lang="en">All 25 labs</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="persona">
+        <div class="section-heading"><p class="eyebrow">Scenario &amp; persona</p><h2><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">サンプルリポジトリで、OAuth 認証が必要な MCP サーバーを1つ接続し、デフォルトのマーケットプレイスからプラグインを1つ入れ、プロジェクト共有の小さな Canvas 拡張を1つ作る、という一連の作業を扱います。</span><span class="en" lang="en">You connect one OAuth-based MCP server, install one plugin from a default marketplace, and build one small project-shared Canvas extension in a sample repository.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">担当者像</span><span class="en" lang="en">Persona</span></h3><p><span class="ja" lang="ja">アプリの能力を広げたいメンテナーとして、MCP、skills、plugins、Canvas拡張を信頼境界内で追加する回です。</span><span class="en" lang="en">As a maintainer extending the app&#039;s capabilities, this round covers adding MCP, skills, plugins, and Canvas extensions within a trust boundary.</span></p></article>
+        </div>
+        <div class="callout"><strong><span class="ja" lang="ja">なぜ重要か</span><span class="en" lang="en">Why it matters</span>:</strong> <span class="ja" lang="ja">信頼境界を意識しないままリポジトリ定義の拡張を追加すると、信頼できないコードや指示を無警戒に実行するリスクがあります。</span><span class="en" lang="en">Adding a repository-defined extension without minding trust boundaries risks executing untrusted code or instructions unguarded.</span></div>
+      </section>
+
+      <section class="section" id="objectives">
+        <div class="section-heading"><p class="eyebrow">Goals</p><h2><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Learning objectives</span></h2></div>
+        <ul><li><span class="ja" lang="ja">MCP serverを追加し、credentialをchatへ貼らずに接続する</span><span class="en" lang="en">Connect an MCP server without placing credentials in chat</span></li>
+<li><span class="ja" lang="ja">file-backed instructionsと<code>.github/skills/</code> discoveryを別々のSettings面で確認する</span><span class="en" lang="en">Verify file-backed instructions and <code>.github/skills/</code> discovery on separate settings surfaces</span></li>
+<li><span class="ja" lang="ja">trusted pluginまたはCanvas extensionを追加しscopeを確認する</span><span class="en" lang="en">Add a trusted plugin or Canvas extension and verify its scope</span></li></ul>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">GitHub Copilot App v1.1.4 でサインイン済みで、書き込み権限のあるプロジェクトが1つ接続されていること。</span><span class="en" lang="en">You are signed in to GitHub Copilot app v1.1.4 with one project connected that you have write access to.</span></li>
+<li><span class="ja" lang="ja">リポジトリの「信頼」がどのような意味を持つか理解しており、信頼していないリポジトリのエージェント定義や MCP 設定を有効化しないこと。</span><span class="en" lang="en">You understand what trusting a repository means, and that you should not enable agent definitions or MCP configuration from a repository you do not trust.</span></li>
+<li><span class="ja" lang="ja">少なくとも1つの OAuth 対応 MCP サーバーのアカウントを持っているか、パブリックなテスト用サーバーで代用できること。</span><span class="en" lang="en">You have an account with at least one OAuth-capable MCP server, or can substitute a public test server.</span></li>
+<li><span class="ja" lang="ja">プロジェクト共有の Canvas 拡張やプラグイン設定をコミットする場合に備え、<code>.github/</code> 配下への書き込み権限があること。</span><span class="en" lang="en">You have write access under <code>.github/</code> in case you commit a project-shared Canvas extension or plugin configuration.</span></li></ul>
+      </section>
+
+      <section class="section" id="availability">
+        <div class="section-heading"><p class="eyebrow">Availability</p><h2><span class="ja" lang="ja">公式な提供状況とスコープ</span><span class="en" lang="en">Official availability and scope</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></h3><p><span class="ja" lang="ja">v1.1.4 版として再公開。中核フローは v1.1.2 で検証され、v1.1.3 / v1.1.4 差分と情報源を source-check しています。MCP サーバー、スキル、プラグイン、Canvas 拡張はすべての Copilot プランでアプリから設定できますが、リポジトリ定義のものは信頼済みリポジトリであることが前提です。</span><span class="en" lang="en">Republished for v1.1.4. The core flow was verified for v1.1.2; v1.1.3/v1.1.4 deltas and source provenance were checked. MCP servers, skills, plugins, and Canvas extensions can all be configured from the app on any Copilot plan, but repository-defined ones require the repository to be trusted.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">対象範囲</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドは GitHub Copilot App の Settings 画面（MCP Servers、Skills、Plugins）とセッション内 <code>/create-canvas</code> から行う、MCP サーバー・スキル・プラグイン・Canvas 拡張の4つの拡張機構を扱います。これらの設定の元になる Copilot CLI 側のファイルやコマンド（<code>~/.copilot/mcp-config.json</code>、<code>copilot plugin install</code>、<code>.github/copilot/settings.json</code> など）は、同じ設定を別のクライアントから操作する隣接領域として触れるに留め、CLI での操作手順そのものは対象外です。</span><span class="en" lang="en">This guide covers the four extension mechanisms available from the GitHub Copilot app&#039;s Settings screens (MCP Servers, Skills, Plugins) and in-session <code>/create-canvas</code>: MCP servers, skills, plugins, and Canvas extensions. The underlying Copilot CLI files and commands that back the same configuration (<code>~/.copilot/mcp-config.json</code>, <code>copilot plugin install</code>, <code>.github/copilot/settings.json</code>, and similar) are mentioned only as an adjacent surface that edits the same configuration from a different client; CLI operating steps themselves are out of scope.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">時間の見積もり</span><span class="en" lang="en">Time estimate</span></h3><p><span class="ja" lang="ja">hands-on操作の目安は約65分です。download、network、service latencyは含みません。</span><span class="en" lang="en">Hands-on work is estimated at about 65 minutes, excluding downloads, network delay, and service latency.</span></p></article>
+          <article class="card"><h3><span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span> <span class="ja" lang="ja">情報源の裏付け</span><span class="en" lang="en">Source provenance</span></h3><p><span class="ja" lang="ja">custom agent、MCP、skill、plugin という仕組みの概念自体は docs.github.com に docs-grounded な説明があります。file-backed instructions の発見と、リポジトリの <code>.github/skills/</code> によるスキル発見は別々の仕組みであり、混同しません。信頼境界の具体的な扱いは release-note-grounded です。 手順内の正確なメニュー名・ボタン名・クリック順は変更履歴（changelog）に基づく記述であり、スクリーンショット付きの公式ウォークスルーで検証されたものではありません。実際の画面がここと異なる場合は、画面に表示されている表記を優先してください。</span><span class="en" lang="en">The concepts of custom agents, MCP, skills, and plugins are docs-grounded on docs.github.com. Discovering file-backed instructions is a separate mechanism from discovering repository skills under <code>.github/skills/</code> — the two are not conflated. The specific handling of the trust boundary is release-note-grounded. Exact menu names, button labels, and click order in the steps are grounded in changelog entries, not an illustrated official walkthrough. If your running build&#039;s UI differs from this text, follow what the screen actually shows instead.</span></p></article>
+        </div>
+      </section>
+
+      <section class="section" id="before-you-start">
+        <div class="section-heading"><p class="eyebrow">Before you start</p><h2><span class="ja" lang="ja">開始前の安全確認</span><span class="en" lang="en">Before-you-start safety check</span></h2></div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全・データ・コスト・権限への影響</span><span class="en" lang="en">Safety, data, cost, and permission implications</span>:</strong> <span class="ja" lang="ja">MCP サーバーの API キーやトークンは、チャットのプロンプトに貼り付けないでください。OAuth のサインインフロー、または MCP サーバーの資格情報・ヘッダー入力欄だけに入力します。既定以外のマーケットプレイスやリポジトリ定義の MCP サーバー・スキルを有効化する前に、そのリポジトリが信頼できることを確認してください。</span><span class="en" lang="en">Never paste MCP server API keys or tokens into a chat prompt. Enter them only through the OAuth sign-in flow, or an MCP server&#039;s own credential or header fields. Before enabling a non-default marketplace, or a repository-defined MCP server or skill, confirm that the repository is one you trust.</span></div>
+      </section>
+
+      <section class="section" id="launchers">
+        <div class="section-heading"><p class="eyebrow">Open safely</p><h2><span class="ja" lang="ja">コピー可能なプロンプト／コマンドとランチャー</span><span class="en" lang="en">Copyable prompts/commands and launchers</span></h2></div>
+
+        <div class="card-grid"><article class="card">
+  <h3><span class="ja" lang="ja">マーケットプレイス追加フォームを開く</span><span class="en" lang="en">Open the marketplace add form</span></h3>
+  <p><span class="ja" lang="ja">既定で追加済みの awesome-copilot を例に、マーケットプレイス追加フォームを事前入力して開きます。追加はアプリ内で確認してから行われます。</span><span class="en" lang="en">Opens the marketplace add form pre-filled with awesome-copilot, which is already added by default, as an example. Nothing is added until you confirm inside the app.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fplugins%2Fmarketplace%2Fadd%3Fsource%3Dgithub%252Fawesome-copilot" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article>
+<article class="card">
+  <h3><span class="ja" lang="ja">プラグインインストールフォームを開く</span><span class="en" lang="en">Open the plugin install form</span></h3>
+  <p><span class="ja" lang="ja">awesome-copilot の Impeccable プラグインを例に、インストールフォームを事前入力して開きます。インストールはアプリ内で確認してから行われます。</span><span class="en" lang="en">Opens the plugin install form pre-filled with the Impeccable plugin from awesome-copilot, as an example. Nothing is installed until you confirm inside the app.</span></p>
+  <div class="card-actions"><a class="button" href="https://github.com/copilot/app/launch?open=ghapp%3A%2F%2Fplugins%2Finstall%3Fsource%3Dimpeccable%2540awesome-copilot" rel="noopener noreferrer"><span class="ja" lang="ja">公式リンク／ホスト型ランチャーを開く</span><span class="en" lang="en">Open the official link / hosted launcher</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a></div>
+</article></div>
+      </section>
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="mono">1.</span> <span class="ja" lang="ja">MCP サーバーを追加し OAuth でサインインする</span><span class="en" lang="en">Add an MCP server and sign in with OAuth</span></h3>
+  <p><span class="ja" lang="ja">Settings → MCP Servers を開き、カタログから選ぶかカスタムサーバーを追加します。OAuth が必要なサーバーはアプリ内のサインインフローを使い、トークンをチャットに貼り付けないでください。</span><span class="en" lang="en">Open Settings → MCP Servers, and choose one from the catalog or add a custom server. For servers that require OAuth, use the in-app sign-in flow, and never paste a token into chat.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">サーバーのステータスが Connected になり、利用可能なツールが一覧に表示されます。</span><span class="en" lang="en">The server&#039;s status shows Connected, and its available tools are listed.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">2.</span> <span class="ja" lang="ja">リポジトリ定義の MCP サーバーの信頼と有効/無効を確認する</span><span class="en" lang="en">Confirm trust and enable/disable for repository-defined MCP servers</span></h3>
+  <p><span class="ja" lang="ja">プロジェクトの MCP 設定セクションを開き、信頼済みリポジトリで定義された MCP サーバーの接続状況を確認します。ここから個々のサーバーを有効/無効にできます。信頼していないリポジトリのサーバーは有効化しないでください。</span><span class="en" lang="en">Open the project&#039;s MCP settings section and review the connection status of MCP servers defined in the trusted repository. You can enable or disable individual servers from here. Do not enable a server from a repository you do not trust.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">信頼済みリポジトリのサーバーだけが一覧に表示され、必要に応じて有効/無効を切り替えられます。</span><span class="en" lang="en">Only servers from the trusted repository appear, and you can toggle each one on or off as needed.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">3.</span> <span class="ja" lang="ja">Skills 設定を確認する</span><span class="en" lang="en">Review the Skills settings</span></h3>
+  <p><span class="ja" lang="ja">Settings → Skills を開き、リポジトリまたは Copilot CLI 側の設定から自動的に一覧に出ているスキルを確認します。必要であればカスタムのスキルディレクトリを追加します。</span><span class="en" lang="en">Open Settings → Skills and review the skills already listed automatically from the repository or Copilot CLI configuration. Add a custom skill directory if you need one.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">既存のスキルが一覧に表示され、追加したカスタムディレクトリも認識されます。</span><span class="en" lang="en">Existing skills are listed, and any custom directory you add is recognized.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">4.</span> <span class="ja" lang="ja">デフォルトのマーケットプレイスからプラグインをインストールする</span><span class="en" lang="en">Install a plugin from a default marketplace</span></h3>
+  <p><span class="ja" lang="ja">Settings → Plugins を開き、Editor&#039;s Picks または Browse by Category から、awesome-copilot に含まれる Impeccable のようなプラグインをインストールします。下のランチャーでインストールフォームを直接開くこともできます。</span><span class="en" lang="en">Open Settings → Plugins, then install a plugin such as Impeccable from awesome-copilot, either from Editor&#039;s Picks or Browse by Category. You can also open the install form directly using the launcher below.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">リポジトリのプラグイン設定（.github/copilot/settings.json）</span><span class="en" lang="en">Repository plugin configuration (.github/copilot/settings.json)</span></span>
+    <button class="copy-button" type="button" data-copy="lab-19-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-19-code-1" data-language="json">{
+  &quot;enabledPlugins&quot;: [&quot;impeccable@awesome-copilot&quot;],
+  &quot;extraKnownMarketplaces&quot;: {
+    &quot;acme-plugins&quot;: &quot;https://github.com/acme/plugins&quot;
+  }
+}</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">プラグインが Installed として表示され、それが提供するエージェントやスキルが利用可能になります。</span><span class="en" lang="en">The plugin shows as Installed, and the agents or skills it provides become available.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">5.</span> <span class="ja" lang="ja">非デフォルトのマーケットプレイスを追加する（必要な場合のみ）</span><span class="en" lang="en">Add a non-default marketplace (only if needed)</span></h3>
+  <p><span class="ja" lang="ja">社内や個人のマーケットプレイスを使いたい場合だけ、Settings → Plugins からマーケットプレイスを追加します。追加前に、そのリポジトリまたは URL を信頼できるかどうかを確認してください。</span><span class="en" lang="en">Only if you need an internal or personal marketplace, add it from Settings → Plugins. Before adding it, confirm you trust the source repository or URL.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">追加したマーケットプレイスのプラグイン一覧が表示され、信頼できないものは追加していません。</span><span class="en" lang="en">The added marketplace&#039;s plugin list appears, and you have not added anything you do not trust.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">6.</span> <span class="ja" lang="ja">セッション内で Canvas 拡張を作成する</span><span class="en" lang="en">Create a canvas extension inside a session</span></h3>
+  <p><span class="ja" lang="ja">セッションを開き、下のプロンプトのように /create-canvas を使ってボードを作らせます。チーム共有にするならプロジェクトスコープ（<code>.github/extensions</code>）を、個人用ならユーザースコープ（<code>~/.copilot/extensions</code>）を選びます。</span><span class="en" lang="en">Open a session and use /create-canvas as in the prompt below to have the agent build the board. Choose project scope (<code>.github/extensions</code>) to share it with the team, or user scope (<code>~/.copilot/extensions</code>) to keep it personal.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">Canvas 拡張を作成するプロンプト</span><span class="en" lang="en">Prompt that creates a canvas extension</span></span>
+    <button class="copy-button" type="button" data-copy="lab-19-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-19-code-2" data-language="text">/create-canvas Create a small triage board canvas with columns for New, Investigating, and Done, plus agent-callable capabilities to add and move cards.</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">右側パネルに Canvas が開き、選んだスコープのディレクトリにファイルが作成されます。</span><span class="en" lang="en">The canvas opens in the right side panel, and files are created under the directory matching the scope you chose.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">7.</span> <span class="ja" lang="ja">Canvas を操作し、URL からのインストールも確認する</span><span class="en" lang="en">Interact with the canvas and confirm installing from a URL</span></h3>
+  <p><span class="ja" lang="ja">作成した Canvas のボタンやカードを直接操作し、続けてエージェントにもカードの追加や移動を依頼します。プロジェクトスコープを選んだ場合は、下のコマンドでファイルの配置を確認します。別のマシンでは、Extensions の Canvas タブの「Install from URL…」を使って gist や GitHub フォルダーの URL からインストールできることも確認します（v1.0.24 以降）。</span><span class="en" lang="en">Interact with the canvas&#039;s buttons or cards directly, then also ask the agent to add or move a card. If you chose project scope, use the command below to confirm the file layout. On another machine, also confirm you can use “Install from URL…” in the Extensions Canvas tab to install from a gist or GitHub folder URL, since v1.0.24.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">プロジェクト共有 Canvas 拡張の一覧</span><span class="en" lang="en">List project-shared canvas extensions</span></span>
+    <button class="copy-button" type="button" data-copy="lab-19-code-3" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-19-code-3" data-language="shell">ls .github/extensions</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">UI 操作とエージェントの呼び出しの両方でボードの状態が更新され、プロジェクトスコープのファイルが <code>.github/extensions</code> 配下に存在します。</span><span class="en" lang="en">The board&#039;s state updates from both UI actions and agent calls, and the project-scoped files exist under <code>.github/extensions</code>.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">8.</span> <span class="ja" lang="ja">file-backed instructions と <code>.github/skills/</code> を別々の設定面で確認する</span><span class="en" lang="en">Inspect file-backed instructions and <code>.github/skills/</code> on their distinct settings surfaces</span></h3>
+  <p><span class="ja" lang="ja">Settings &gt; Sessions で、システムから発見された file-backed instructions が app-managed instructions と並んで表示されるか確認します。各 instruction について source path と、その path をコピー／file manager で表示する操作を観察します。</span><span class="en" lang="en">In Settings &gt; Sessions, check whether file-backed instructions discovered from your system appear alongside app-managed instructions. For each instruction, observe its source path and the actions to copy that path or reveal it in the file manager.</span></p>
+<p><span class="ja" lang="ja">次に Settings &gt; Skills を開き、信頼済みリポジトリの <code>.github/skills/</code> にある skill が「not found」ではなく一覧に表示されるか確認します。これは instructions discovery とは別の機能で、v1.1.4 の Fixed 項目です。</span><span class="en" lang="en">Then open Settings &gt; Skills and confirm that a skill from the trusted repository&#039;s <code>.github/skills/</code> directory is listed rather than shown as not found. This is separate from instructions discovery and is a v1.1.4 Fixed item.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">Settings &gt; Sessions では instruction の source path と copy/reveal 操作を、Settings &gt; Skills では <code>.github/skills/</code> の skill を確認でき、2つを混同していない。</span><span class="en" lang="en">Settings &gt; Sessions shows instruction source paths with copy/reveal actions, while Settings &gt; Skills lists the <code>.github/skills/</code> skill; you keep the two mechanisms distinct.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="decision-points">
+        <div class="section-heading"><p class="eyebrow">Decide</p><h2><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></h2></div>
+        <ul class="decision-list"><li><span class="ja" lang="ja">MCP / plugin / Canvas extensionをuser scopeに置くかrepository scopeに置くか。</span><span class="en" lang="en">Place the MCP/plugin/Canvas extension in user scope or repository scope?</span></li>
+<li><span class="ja" lang="ja">server / marketplace / repositoryを信頼し、要求toolsを許可してよいか。</span><span class="en" lang="en">Do you trust the server, marketplace, or repository and its requested tools?</span></li></ul>
+      </section>
+
+      <section class="section" id="checkpoints">
+        <div class="section-heading"><p class="eyebrow">Checkpoints</p><h2><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></h2></div>
+        <ul class="checkpoint-list"><li><span class="ja" lang="ja">チェックポイント1: MCP serverがConnectedとなり、公開されたtoolsを確認できる。</span><span class="en" lang="en">Checkpoint 1: the MCP server is Connected and its exposed tools are visible.</span></li>
+<li><span class="ja" lang="ja">チェックポイント2: Settings &gt; Sessionsでinstruction source path、Settings &gt; Skillsで<code>.github/skills/</code> skillを別々に確認できる。</span><span class="en" lang="en">Checkpoint 2: Settings &gt; Sessions shows instruction source paths, while Settings &gt; Skills separately lists the <code>.github/skills/</code> skill.</span></li>
+<li><span class="ja" lang="ja">チェックポイント3: pluginまたはCanvas extensionが選択したscopeから利用できる。</span><span class="en" lang="en">Checkpoint 3: the plugin or Canvas extension is usable from the scope you selected.</span></li></ul>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">MCP サーバーが Connected と表示され、トークンをチャットのプロンプトに貼り付けていない。</span><span class="en" lang="en">The MCP server shows Connected, and no token was pasted into a chat prompt.</span></li>
+<li><span class="ja" lang="ja">インストールしたプラグインが Settings → Plugins に表示され、それが提供するエージェントやスキルが使える。</span><span class="en" lang="en">The installed plugin appears in Settings → Plugins, and the agents or skills it provides work.</span></li>
+<li><span class="ja" lang="ja">作成した Canvas 拡張が選んだスコープ（<code>.github/extensions</code> または <code>~/.copilot/extensions</code>）のディレクトリに存在し、右側パネルで正しく開く。</span><span class="en" lang="en">The created canvas extension exists under the directory matching the scope you chose (<code>.github/extensions</code> or <code>~/.copilot/extensions</code>), and opens correctly in the right side panel.</span></li>
+<li><span class="ja" lang="ja">信頼していないリポジトリ由来の MCP サーバー、スキル、マーケットプレイスを有効化していない。</span><span class="en" lang="en">You have not enabled an MCP server, skill, or marketplace from a repository you do not trust.</span></li></ul>
+      </section>
+
+      <section class="section" id="under-the-hood">
+        <div class="section-heading"><p class="eyebrow">Mental model</p><h2><span class="ja" lang="ja">Under the hood: 内部で何が起きているか</span><span class="en" lang="en">Under the hood: what happens internally</span></h2></div>
+        <p><span class="ja" lang="ja">MCPは外部tool protocol、skillは関連時にloadされるinstructions/resources、pluginはagents/skills/hooks/MCPなどのbundle、Canvas extensionはApp内のshared UI surfaceです。file-backed instructions discoveryとrepository skill discoveryは別々で、いずれもsource trustとpermission boundaryを確認してからloadします。</span><span class="en" lang="en">MCP is an external tool protocol; a skill is instructions/resources loaded when relevant; a plugin bundles agents, skills, hooks, MCP, and related configuration; a Canvas extension is a shared UI surface inside the app. File-backed instruction discovery and repository-skill discovery are separate, and each must respect source trust and permission boundaries.</span></p>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング（症状から探す）</span><span class="en" lang="en">Troubleshooting (start from your symptom)</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja">サードパーティ OAuth の MCP サーバーが「authenticating」のまま止まる</span><span class="en" lang="en">A third-party OAuth MCP server stays stuck on “authenticating”</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">この不具合は v1.0.16 と v1.1.0 でそれぞれ修正されています。v1.1.4（最新版） に更新し、サインインをやり直してください。</span><span class="en" lang="en">This bug was fixed separately in v1.0.16 and v1.1.0. Update to the latest version (v1.1.4) and retry the sign-in.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">Windows でプラグインのマーケットプレイス追加やインストールが失敗する</span><span class="en" lang="en">Adding a plugin marketplace or installing a plugin fails on Windows</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">アプリ同梱の Git で資格情報ヘルパーのサイドカーが起動できず失敗する不具合が v1.0.17 で修正されています。プライベートリポジトリのクローンに失敗する不具合も同じバージョンで修正済みです。v1.1.4（最新版） に更新してください。</span><span class="en" lang="en">A bug where the bundled Git&#039;s credential helper sidecar failed to launch, causing this to fail, was fixed in v1.0.17. A separate bug where cloning private repositories failed was also fixed in the same version. Update to the latest version (v1.1.4).</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">設定したカスタムスキルディレクトリが無視される</span><span class="en" lang="en">A configured custom skill directory is ignored</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">Settings で設定したカスタムスキルディレクトリがスキル実行時に無視される不具合が v1.0.17 で修正されています。v1.1.4（最新版） に更新し、パスが正しいか再確認してください。</span><span class="en" lang="en">A bug where custom skill directories configured in Settings were ignored when running skills was fixed in v1.0.17. Update to the latest version (v1.1.4) and double-check the path is correct.</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">プロジェクトスコープの Canvas で New session が汎用の Canvas ピッカーを開いてしまう</span><span class="en" lang="en">New session on a project-scoped canvas opens the generic canvas picker instead</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">Extensions の Canvas タブでプロジェクトスコープの Canvas から New session を選んだときに、直接セッションを開始せず汎用ピッカーが開いてしまう不具合が v1.0.19 で修正されています。v1.1.4（最新版） に更新してください。</span><span class="en" lang="en">A bug where choosing New session on a project-scoped canvas in the Extensions Canvas tab opened the generic canvas picker instead of starting the session directly was fixed in v1.0.19. Update to the latest version (v1.1.4).</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="recovery">
+        <div class="section-heading"><p class="eyebrow">Recovery path</p><h2><span class="ja" lang="ja">明示的な復旧手順</span><span class="en" lang="en">Explicit recovery path</span></h2></div>
+        <div class="callout callout--danger"><span class="ja" lang="ja">追加した拡張が反映されない場合は、セッションを再開するかアプリを再起動し、それでも表示されない場合は定義ファイルの構文とスコープ（user/repository）を確認してください。</span><span class="en" lang="en">If a newly added extension does not take effect, resume the session or restart the app; if it still does not appear, check the definition file&#039;s syntax and scope (user/repository).</span></div>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">テストのために接続した MCP サーバーは無効化するか削除し、必要であれば OAuth 側のアプリ連携も取り消します。</span><span class="en" lang="en">Disable or remove the MCP server you connected for testing, and revoke the OAuth app authorization on the provider&#039;s side if needed.</span></li>
+<li><span class="ja" lang="ja">テストでインストールしたプラグインをアンインストールし、テストのためだけに追加したマーケットプレイスも削除します。</span><span class="en" lang="en">Uninstall the plugin you installed for testing, and remove any marketplace you added only for the test.</span></li>
+<li><span class="ja" lang="ja">追加したカスタムスキルディレクトリが不要であれば設定から外します。</span><span class="en" lang="en">Remove the custom skill directory from settings if it is no longer needed.</span></li>
+<li><span class="ja" lang="ja">テスト用の Canvas 拡張ディレクトリ（<code>.github/extensions</code> または <code>~/.copilot/extensions</code> 配下）を削除し、プロジェクトスコープでコミットしていた場合はそのプルリクエストも閉じます。</span><span class="en" lang="en">Delete the test canvas extension directory under <code>.github/extensions</code> or <code>~/.copilot/extensions</code>, and close the pull request if you committed a project-scoped copy.</span></li></ol>
+      </section>
+
+      <section class="section" id="rubric">
+        <div class="section-heading"><p class="eyebrow">Success rubric</p><h2><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></h2></div>
+        <ul class="rubric-list"><li><span class="ja" lang="ja">credentialをchatへ貼らずにMCP接続を確認した。</span><span class="en" lang="en">You connected MCP without pasting credentials into chat.</span></li>
+<li><span class="ja" lang="ja">instructionsと<code>.github/skills/</code>を異なるdiscovery surfaceで検証した。</span><span class="en" lang="en">You verified instructions and <code>.github/skills/</code> on different discovery surfaces.</span></li>
+<li><span class="ja" lang="ja">trusted pluginまたはCanvas extensionを意図したscopeで動かした。</span><span class="en" lang="en">You ran a trusted plugin or Canvas extension in the intended scope.</span></li></ul>
+      </section>
+
+      <section class="section" id="stretch">
+        <div class="section-heading"><p class="eyebrow">Go further</p><h2><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></h2></div>
+        <div class="callout callout--success"><span class="ja" lang="ja">同じ機能を提供するuserスコープとrepositoryスコープの拡張を両方定義し、どちらが優先されるかを確認してください。</span><span class="en" lang="en">Define both a user-scoped and a repository-scoped extension offering the same capability, and confirm which one takes precedence.</span></div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">Windows ではアプリ同梱の Git を使う場合、プラグインのマーケットプレイス追加やプライベートリポジトリのクローンに関する既知の不具合が v1.0.17 で修正されています。パス区切りは <code>.github\extensions</code> のようにバックスラッシュでも、Git Bash 経由のフォワードスラッシュでも動作します。</span><span class="en" lang="en">On Windows, using the app&#039;s bundled Git, known issues with adding plugin marketplaces and cloning private repositories were fixed in v1.0.17. Path separators work either as backslashes, like <code>.github\extensions</code>, or as forward slashes through Git Bash.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">macOS では Canvas 拡張や MCP サーバーの設定ファイルは通常のホームディレクトリ配下に置かれ、Finder の「隠しフォルダを表示」で <code>~/.copilot/extensions</code> を確認できます。</span><span class="en" lang="en">On macOS, canvas extension and MCP server configuration files live under your normal home directory; enable “Show hidden files” in Finder to inspect <code>~/.copilot/extensions</code>.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">Linux では、ログインシェルのプロファイルで設定した PATH エントリなど、カスタム PATH 経由のツールが拡張機能から見つからない不具合が v1.0.26 で修正されています。スキルやプラグインが外部コマンドを呼び出す場合は、この修正を含む v1.1.4 以降を使ってください。</span><span class="en" lang="en">On Linux, a bug where tools installed via the login shell profile, such as custom PATH entries, were not found by extensions was fixed in v1.0.26. Use v1.1.4 or later, which includes this fix, if your skills or plugins call external commands.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">WSL リモート環境では、v1.1.2 で GitHub の Issue/PR ワークフロースキルが標準搭載され、リモートセッション接続の信頼性も向上しています。Canvas やプラグインの拡張機能ファイルは、開いているプロジェクトがホスト側か WSL ディストリビューション内かに応じて置き場所が変わります。</span><span class="en" lang="en">In WSL remote environments, v1.1.2 bundles GitHub pull request and issue workflow skills by default and improves remote session connection reliability. Where canvas and plugin extension files live depends on whether the open project is on the host or inside the WSL distribution.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/customize-github-copilot-app" rel="noopener noreferrer">Customizing the GitHub Copilot app</a></li>
+<li><a href="https://docs.github.com/en/copilot/how-tos/github-copilot-app/working-with-canvas-extensions" rel="noopener noreferrer">Working with canvas extensions in the GitHub Copilot app</a></li>
+<li><a href="https://docs.github.com/en/copilot/concepts/agents/about-plugins" rel="noopener noreferrer">About GitHub Copilot plugins</a></li>
+<li><a href="https://github.com/github/app/releases/tag/v1.1.2" rel="noopener noreferrer">GitHub Copilot app v1.1.2 release</a></li>
+<li><a href="https://github.com/github/app/blob/main/changelog.md#v114" rel="noopener noreferrer">GitHub Copilot app v1.1.4 changelog</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></h2></div>
+        <ul class="plain-list related-list"><li><a class="badge" href="10-canvases-artifacts.html"><span class="mono">10</span> <span class="ja" lang="ja">Canvasとアーティファクトで人とエージェントが協働する</span><span class="en" lang="en">Collaborate with canvases and artifacts</span></a></li>
+<li><a class="badge" href="16-local-automations.html"><span class="mono">16</span> <span class="ja" lang="ja">ローカル自動化を作成する</span><span class="en" lang="en">Create local automations</span></a></li>
+<li><a class="badge" href="18-custom-agents.html"><span class="mono">18</span> <span class="ja" lang="ja">カスタムエージェントを作成して使う</span><span class="en" lang="en">Create and use custom agents</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Lab navigation">
+        <a href="18-custom-agents.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のラボ</span><span class="en" lang="en">Previous lab</span></span><br><strong><span class="ja" lang="ja">カスタムエージェントを作成して使う</span><span class="en" lang="en">Create and use custom agents</span></strong></a>
+        <a href="20-memory-chronicle-insights.html"><span class="muted"><span class="ja" lang="ja">次のラボ</span><span class="en" lang="en">Next lab</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">Memory・Chronicle・Insights</span><span class="en" lang="en">Memory, Chronicle, and Insights</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Lab progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 25</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="25"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このラボを完了にする</span><span class="en" lang="en">Mark this lab complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#persona"><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></a></li>
+          <li><a href="#objectives"><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Objectives</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#availability"><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></a></li>
+          <li><a href="#before-you-start"><span class="ja" lang="ja">開始前の確認</span><span class="en" lang="en">Before you start</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#decision-points"><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></a></li>
+          <li><a href="#checkpoints"><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#under-the-hood"><span class="ja" lang="ja">Under the hood</span><span class="en" lang="en">Under the hood</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#recovery"><span class="ja" lang="ja">復旧手順</span><span class="en" lang="en">Recovery</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#rubric"><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></a></li>
+          <li><a href="#stretch"><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></a></li>
+          <li><a href="#platforms"><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+          <li><a href="#related"><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="ja" lang="ja">v1.1.4 機能ガイド</span><span class="en" lang="en">v1.1.4 feature guide</span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">v1.1.2 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.1.2 hands-on (archive)</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.0.12 hands-on (archive)</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性、ポリシー、料金は公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability, policy, and pricing in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>

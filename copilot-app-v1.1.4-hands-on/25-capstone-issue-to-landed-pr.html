@@ -1,0 +1,384 @@
+<!DOCTYPE html>
+<html lang="ja" data-lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="color-scheme" content="light dark">
+<meta name="description" content="Run the full flow — from picking an issue through plan, implementation, Copilot review, CI, stack/merge-queue/Agent Merge verification, landing, and operational cleanup — as one continuous exercise.">
+<title>GitHub Copilot App v1.1.4 — Capstone: from issue to a verified, landed PR with operational cleanup</title>
+<script>
+  (() => {
+    const param = new URLSearchParams(window.location.search).get("scoutTheme");
+    const theme =
+      param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+    document.documentElement.setAttribute("data-theme", theme);
+  })();
+</script>
+<script>
+  (() => {
+    document.documentElement.classList.add("js");
+    try {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const storedTheme = localStorage.getItem("copilot-app-docs-theme");
+      if (!param && (storedTheme === "light" || storedTheme === "dark")) {
+        document.documentElement.setAttribute("data-theme", storedTheme);
+      }
+      const storedLanguage = localStorage.getItem("copilot-app-docs-language");
+      const language = storedLanguage === "en" ? "en" : "ja";
+      document.documentElement.setAttribute("data-lang", language);
+      document.documentElement.setAttribute("lang", language);
+    } catch {
+      document.documentElement.setAttribute("data-lang", "ja");
+    }
+  })();
+</script>
+<style>
+:root {
+  color-scheme: light;
+  --cp-bg: #f7f4ef;
+  --cp-bg-elevated: #fcfbf8;
+  --cp-surface: #ffffff;
+  --cp-surface-soft: #f5f5f5;
+  --cp-border: #dedede;
+  --cp-border-strong: #919191;
+  --cp-text: #242424;
+  --cp-text-muted: #5c5c5c;
+  --cp-text-soft: #6f6f6f;
+  --cp-accent: #b11f4b;
+  --cp-accent-hover: #9a1a41;
+  --cp-accent-soft: rgba(177, 31, 75, 0.08);
+  --cp-accent-fg: #ffffff;
+  --cp-success: #16a34a;
+  --cp-danger: #dc2626;
+  --cp-warning: #f59e0b;
+  --cp-link: #0078d4;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+  --cp-overlay: rgba(255, 255, 255, 0.8);
+  --cp-panel: rgba(255, 255, 255, 0.86);
+  --cp-panel-strong: rgba(255, 255, 255, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.55);
+  --cp-highlight: rgba(177, 31, 75, 0.12);
+}
+html[data-theme="dark"] {
+  color-scheme: dark;
+  --cp-bg: #3d3b3a;
+  --cp-bg-elevated: #343231;
+  --cp-surface: #292929;
+  --cp-surface-soft: #2e2e2e;
+  --cp-border: #474747;
+  --cp-border-strong: #5f5f5f;
+  --cp-text: #dedede;
+  --cp-text-muted: #919191;
+  --cp-text-soft: #b0b0b0;
+  --cp-accent: #fd8ea1;
+  --cp-accent-hover: #fb7b91;
+  --cp-accent-soft: rgba(253, 142, 161, 0.14);
+  --cp-accent-fg: #1a1a1a;
+  --cp-success: #4ade80;
+  --cp-danger: #f87171;
+  --cp-warning: #fbbf24;
+  --cp-link: #4da6ff;
+  --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+  --cp-overlay: rgba(41, 41, 41, 0.88);
+  --cp-panel: rgba(41, 41, 41, 0.72);
+  --cp-panel-strong: rgba(41, 41, 41, 0.96);
+  --cp-sheen: rgba(255, 255, 255, 0.04);
+  --cp-highlight: rgba(253, 142, 161, 0.12);
+}
+</style>
+<link rel="stylesheet" href="assets/style.css">
+<script src="assets/app.js" defer></script>
+</head>
+<body data-guide-id="25" data-guide-count="25">
+<a class="skip-link" href="#main"><span class="ja" lang="ja">本文へ移動</span><span class="en" lang="en">Skip to main content</span></a>
+<header class="site-header">
+  <div class="site-header__inner">
+    <a class="brand" href="index.html" aria-label="GitHub Copilot App v1.1.4 hands-on">
+      <span class="brand__mark"><svg width="26" height="26" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0C3.58 0 0 3.58 0 8c0 3.54 2.29 6.53 5.47 7.59.4.07.55-.17.55-.38 0-.19-.01-.82-.01-1.49-2.01.37-2.53-.49-2.69-.94-.09-.23-.48-.94-.82-1.13-.28-.15-.68-.52-.01-.53.63-.01 1.08.58 1.23.82.72 1.21 1.87.87 2.33.66.07-.52.28-.87.51-1.07-1.78-.2-3.64-.89-3.64-3.95 0-.87.31-1.59.82-2.15-.08-.2-.36-1.02.08-2.12 0 0 .67-.21 2.2.82.64-.18 1.32-.27 2-.27.68 0 1.36.09 2 .27 1.53-1.04 2.2-.82 2.2-.82.44 1.1.16 1.92.08 2.12.51.56.82 1.27.82 2.15 0 3.07-1.87 3.75-3.65 3.95.29.25.54.73.54 1.48 0 1.07-.01 1.93-.01 2.2 0 .21.15.46.55.38A8.013 8.013 0 0016 8c0-4.42-3.58-8-8-8z"></path></svg></span>
+      <span>GitHub Copilot <span class="brand__version">App</span></span>
+    </a>
+    <span class="version-pill version-pill--current">v1.1.4</span>
+    <nav class="header-nav" aria-label="Primary">
+      <a href="../copilot-app/"><span class="header-nav__label"><span class="ja" lang="ja">バージョンハブ</span><span class="en" lang="en">Version hub</span></span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="header-nav__label"><span class="ja" lang="ja">機能ガイド</span><span class="en" lang="en">Feature guide</span></span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="header-nav__label"><span class="ja" lang="ja">リリース差分</span><span class="en" lang="en">Releases</span></span></a>
+      <button class="icon-button" type="button" data-language-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 0a8 8 0 100 16A8 8 0 008 0ZM5.78 8.75a9.64 9.64 0 001.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0010.22 8.75Zm4.44-1.5a9.64 9.64 0 00-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 00-.857 1.215A9.64 9.64 0 005.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 004.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 00-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 004.666-5.5Zm2.733-1.5a6.507 6.507 0 00-4.666-5.5c.123.181.24.365.352.552.715 1.192 1.437 2.874 1.581 4.948Z"></path></svg></span><span data-toggle-label>EN</span></button>
+      <button class="icon-button" type="button" data-theme-toggle><span aria-hidden="true"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8 12a4 4 0 100-8 4 4 0 000 8zM8 0a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0V.75A.75.75 0 018 0zm0 13a.75.75 0 01.75.75v1.5a.75.75 0 01-1.5 0v-1.5A.75.75 0 018 13z"></path></svg></span><span class="header-nav__label" data-toggle-label>Dark</span></button>
+    </nav>
+  </div>
+</header>
+<section class="hero" aria-labelledby="lab-title">
+  <div class="hero__inner">
+    <p class="eyebrow"><span class="ja" lang="ja">ラボ 25 / 25</span><span class="en" lang="en">Lab 25 of 25</span></p>
+    <h1 id="lab-title"><span class="ja" lang="ja">キャップストーン: Issueから検証済みPRの着地と運用クリーンアップまで</span><span class="en" lang="en">Capstone: from issue to a verified, landed PR with operational cleanup</span></h1>
+    <p class="lede"><span class="ja" lang="ja">Issueの選定から計画、実装、Copilotレビュー、CI、stack/merge queue/Agent Mergeの確認、着地、そして運用クリーンアップまでを一つの連続した流れとして実行します。</span><span class="en" lang="en">Run the full flow — from picking an issue through plan, implementation, Copilot review, CI, stack/merge-queue/Agent Merge verification, landing, and operational cleanup — as one continuous exercise.</span></p>
+    <div class="meta-row" aria-label="Lab metadata">
+      <span class="badge"><span class="ja" lang="ja">上級</span><span class="en" lang="en">Advanced</span></span>
+      <span class="badge badge--accent"><span class="ja" lang="ja">提供中</span><span class="en" lang="en">Available</span></span>
+      <span class="badge"><span class="ja" lang="ja">v1.1.4 で確認</span><span class="en" lang="en">Verified for v1.1.4</span></span>
+      <span class="badge"><span class="ja" lang="ja">約65分</span><span class="en" lang="en">About 65 min</span></span>
+      <span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span>
+    </div>
+    <div class="chips" aria-label="Journeys and tracks"><a class="badge badge--accent" href="index.html#journey-j1"><span class="ja" lang="ja">導入から最初の検証済みPRまで</span><span class="en" lang="en">Install to first verified PR</span></a> <a class="badge badge--accent" href="index.html#journey-j3"><span class="ja" lang="ja">Issueからstacked PR配信まで</span><span class="en" lang="en">Issue-to-stacked-PR delivery</span></a> <a class="badge badge--accent" href="index.html#journey-j6"><span class="ja" lang="ja">プロダクション運用: モデル、コスト、アクセシビリティ、復旧</span><span class="en" lang="en">Production operations</span></a> <a class="badge" href="index.html#track-t6"><span class="ja" lang="ja">PR、Copilotレビュー、stacked PR、merge queue、Agent Merge、CI</span><span class="en" lang="en">PR review, stacked PRs, merge queue, Agent Merge, and CI</span></a></div>
+    <div class="hero-actions">
+      <a class="button button--primary" href="#steps"><span class="ja" lang="ja">手順を始める</span><span class="en" lang="en">Start the steps</span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg></a>
+      <a class="button" href="index.html#labs"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="ja" lang="ja">25 ラボ一覧</span><span class="en" lang="en">All 25 labs</span></a>
+    </div>
+  </div>
+</section>
+<main id="main" class="page-shell">
+  <div class="page-grid">
+    <div class="main-content">
+      <section class="section" id="persona">
+        <div class="section-heading"><p class="eyebrow">Scenario &amp; persona</p><h2><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">具体的なシナリオ</span><span class="en" lang="en">Concrete scenario</span></h3><p><span class="ja" lang="ja">使い捨てのサンプルリポジトリで、小さく範囲の定まったIssueを選び、計画レビューから実装、レビュー、CI、マージ、そして後片付けまでを、本番相当の緊張感で一人称のデリバリー担当者として通しで実行します。</span><span class="en" lang="en">In a disposable sample repository, pick a small, well-scoped issue and carry it through plan review, implementation, review, CI, merge, and cleanup end to end, as the delivery owner, with production-like rigor.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">担当者像</span><span class="en" lang="en">Persona</span></h3><p><span class="ja" lang="ja">Issueの発見から本番相当のPRの着地と後片付けまでを一人称で担当するデリバリー担当者です。</span><span class="en" lang="en">As the delivery owner carrying an issue end to end through a production-like landed PR and cleanup.</span></p></article>
+        </div>
+        <div class="callout"><strong><span class="ja" lang="ja">なぜ重要か</span><span class="en" lang="en">Why it matters</span>:</strong> <span class="ja" lang="ja">個々の機能を単独で知っていても、Issueから着地、そして運用クリーンアップまでを一つの連続した流れとして実行できなければ、実際の開発サイクルでは価値が発揮されません。</span><span class="en" lang="en">Knowing each capability in isolation does not translate into real value unless you can execute the whole continuous flow from issue to landing to operational cleanup.</span></div>
+      </section>
+
+      <section class="section" id="objectives">
+        <div class="section-heading"><p class="eyebrow">Goals</p><h2><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Learning objectives</span></h2></div>
+        <ul><li><span class="ja" lang="ja">Issueから計画、実装、レビュー、マージまでを一つの流れで実行する</span><span class="en" lang="en">Execute issue through plan, implementation, review, and merge as one continuous flow</span></li>
+<li><span class="ja" lang="ja">stack/merge queue/Agent Mergeの状態を人の判断で最終確認する</span><span class="en" lang="en">Give final human judgment on stack/merge-queue/Agent Merge state</span></li>
+<li><span class="ja" lang="ja">着地後の運用クリーンアップ（セッション、worktree、設定）を完了する</span><span class="en" lang="en">Complete post-landing operational cleanup (sessions, worktrees, settings)</span></li></ul>
+      </section>
+
+      <section class="section" id="prerequisites">
+        <div class="section-heading"><p class="eyebrow">Prepare</p><h2><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></h2></div>
+        <ul><li><span class="ja" lang="ja">lab 01（導入）、04（worktree）、11（My Work）、13（PRレビュー）を完了していること。</span><span class="en" lang="en">Labs 01 (install), 04 (worktrees), 11 (My Work), and 13 (PR review) completed.</span></li>
+<li><span class="ja" lang="ja">ブランチとコミットの基本的なgit操作に慣れていること。</span><span class="en" lang="en">Comfort with basic Git branch and commit operations.</span></li>
+<li><span class="ja" lang="ja">CIが構成されたサンプルリポジトリ（構成がない場合はCI確認手順を任意として進めてよい）。</span><span class="en" lang="en">A sample repository with CI configured (if none is available, the CI-check step can be treated as optional).</span></li></ul>
+      </section>
+
+      <section class="section" id="availability">
+        <div class="section-heading"><p class="eyebrow">Availability</p><h2><span class="ja" lang="ja">公式な提供状況とスコープ</span><span class="en" lang="en">Official availability and scope</span></h2></div>
+        <div class="card-grid">
+          <article class="card"><h3><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></h3><p><span class="ja" lang="ja">v1.1.4 時点。個々の機能はlab 01-24で提供中として確認済みのものを組み合わせています。リポジトリ設定（branch protection、merge queueなど）によって一部の手順は省略できます。</span><span class="en" lang="en">Current in v1.1.4. It combines capabilities already confirmed as available in labs 01-24. Some steps can be skipped depending on repository settings such as branch protection and the merge queue.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">対象範囲</span><span class="en" lang="en">Feature boundary</span></h3><p><span class="ja" lang="ja">このガイドはlab 01, 03-05, 11-14, 20-24で個別に扱った機能を1つの流れに接続する統合演習です。各機能自体の詳細な操作説明は重複させず、それぞれの専用ガイドを参照します。新しいUI要素はここでは導入しません。</span><span class="en" lang="en">This guide is an integration exercise chaining capabilities individually covered in labs 01, 03-05, 11-14, and 20-24 into one flow. It does not duplicate each capability&#039;s detailed operation and instead references its dedicated guide. No new UI surface is introduced here.</span></p></article>
+          <article class="card"><h3><span class="ja" lang="ja">時間の見積もり</span><span class="en" lang="en">Time estimate</span></h3><p><span class="ja" lang="ja">hands-on操作の目安は約65分です。CI、Copilot review、merge queue、Agent Mergeの待ち時間は含まず、実経過時間はrepository状態により大きく延びます。</span><span class="en" lang="en">Hands-on work is estimated at about 65 minutes. This excludes waits for CI, Copilot review, merge queue, and Agent Merge, so elapsed time can be substantially longer.</span></p></article>
+          <article class="card"><h3><span class="badge badge--warning" data-provenance="mixed"><span class="ja" lang="ja">Docs + Release-note</span><span class="en" lang="en">Docs + release-note</span></span> <span class="ja" lang="ja">情報源の裏付け</span><span class="en" lang="en">Source provenance</span></h3><p><span class="ja" lang="ja">このラボはlab 01-24のdocs-groundedな内容とrelease-note-groundedな内容の両方を連続した流れとして組み合わせます。各段階の裏付けは、参照元のlab（例: lab 13のレビュー、lab 22のstack/Agent Merge、lab 24のworktree/attribution）に従います。</span><span class="en" lang="en">This lab chains both docs-grounded and release-note-grounded content from labs 01-24 into one continuous flow. Each stage&#039;s grounding follows its source lab (for example, review in lab 13, stack/Agent Merge in lab 22, worktree/attribution in lab 24).</span></p></article>
+        </div>
+      </section>
+
+      <section class="section" id="before-you-start">
+        <div class="section-heading"><p class="eyebrow">Before you start</p><h2><span class="ja" lang="ja">開始前の安全確認</span><span class="en" lang="en">Before-you-start safety check</span></h2></div>
+        <div class="callout callout--warning"><strong><span class="ja" lang="ja">安全・データ・コスト・権限への影響</span><span class="en" lang="en">Safety, data, cost, and permission implications</span>:</strong> <span class="ja" lang="ja">本番リポジトリではなく使い捨てのサンプルリポジトリで通しの練習をしてください。Issue作成、PR作成、Agent Mergeの有効化のいずれについても、対象リポジトリを毎回確認してください。</span><span class="en" lang="en">Rehearse the full flow in a disposable sample repository, not production. Verify the target repository every time before creating an issue, opening a PR, or enabling Agent Merge.</span></div>
+      </section>
+
+
+
+      <section class="section" id="steps">
+        <div class="section-heading"><p class="eyebrow">Hands-on</p><h2><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></h2></div>
+        <ol class="steps"><li class="step">
+  <h3><span class="mono">1.</span> <span class="ja" lang="ja">Issueを選びマイルストーンを確認する</span><span class="en" lang="en">Pick an issue and confirm its milestone</span></h3>
+  <p><span class="ja" lang="ja">My Workまたは新規作成で、小さく範囲の定まったIssueを1つ選び、マイルストーンが設定されていることを確認します（未設定なら設定します）。</span><span class="en" lang="en">From My Work, or by creating one, pick a small, well-scoped issue and confirm it has a milestone (set one if it does not).</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">受け入れ条件が明確な1つのIssueが選ばれ、マイルストーンが設定されている。</span><span class="en" lang="en">One issue with clear acceptance criteria is selected and has a milestone.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">2.</span> <span class="ja" lang="ja">worktreeでセッションを開始しPlanで合意する</span><span class="en" lang="en">Start a session in a worktree and agree on a Plan</span></h3>
+  <p><span class="ja" lang="ja">新しいworktreeでセッションを開始し、Plan modeで受け入れ条件に沿った実装方針を提示させ、承認前にファイルを変更させません。</span><span class="en" lang="en">Start a session in a new worktree, use Plan mode to have the agent propose an approach matching the acceptance criteria, and do not allow file changes before approval.</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">低リスクな実装プロンプトの例</span><span class="en" lang="en">Example low-risk implementation prompt</span></span>
+    <button class="copy-button" type="button" data-copy="lab-25-code-1" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-25-code-1" data-language="text">Read issue #&lt;number&gt; in this repository. Propose a plan that satisfies its acceptance criteria with the smallest possible diff, and wait for my approval before editing any files.</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">承認可能なPlanが提示され、ファイル変更が行われていない。</span><span class="en" lang="en">An approvable plan is presented and no files have changed yet.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">3.</span> <span class="ja" lang="ja">実装し差分をレビューする</span><span class="en" lang="en">Implement and review the diff</span></h3>
+  <p><span class="ja" lang="ja">Planを承認し、Interactiveまたは適切なモードで実装させ、Files/Changesで差分を確認します。</span><span class="en" lang="en">Approve the plan, implement in Interactive or another appropriate mode, and review the diff in Files/Changes.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">差分がIssueの受け入れ条件に対応し、範囲外の変更が含まれていない。</span><span class="en" lang="en">The diff addresses the issue&#039;s acceptance criteria with no out-of-scope changes.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">4.</span> <span class="ja" lang="ja">PRを開きCopilotレビューを要求する</span><span class="en" lang="en">Open a PR and request Copilot review</span></h3>
+  <p><span class="ja" lang="ja">セッションからプルリクエストを作成します。現在のアプリ、アカウント、ポリシー、リポジトリでCopilot code reviewの要求操作が利用できる場合だけ要求し、再要求操作も表示される場合だけ使います。利用できない場合は理由を記録し、人のレビューへ進みます。</span><span class="en" lang="en">Open a pull request from the session. Request a Copilot code review only if the action is available for the current app, account, policy, and repository; re-request only if that action is also shown. Otherwise record the limitation and continue with human review.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">利用可能なレビュー結果には対応し、Copilot reviewが利用できない場合も人のレビュー結果と制約を記録できる。</span><span class="en" lang="en">You addressed any available review result, or recorded the limitation and human-review outcome when Copilot review was unavailable.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">5.</span> <span class="ja" lang="ja">CIとstack/queueの状態を確認する</span><span class="en" lang="en">Check CI and stack/queue state</span></h3>
+  <p><span class="ja" lang="ja">必須チェックの状態を確認し、PRがstackの一部であればstack summaryを、merge queueが有効であればqueue positionを確認します。</span><span class="en" lang="en">Check required-check status, and if the PR is part of a stack review the stack summary, or if the merge queue is enabled check the queue position.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">必須チェックが成功し、stack/queueの状態が着地の妨げになっていない。</span><span class="en" lang="en">Required checks pass and stack/queue state does not block landing.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">6.</span> <span class="ja" lang="ja">Agent Mergeを有効にするか人手でマージする</span><span class="en" lang="en">Enable Agent Merge or merge by hand</span></h3>
+  <p><span class="ja" lang="ja">Agent Mergeを有効にして着地を任せるか、必須チェック完了を確認したうえで人手でマージします。Agent Mergeが一時停止した場合は理由を読んで対応します。</span><span class="en" lang="en">Enable Agent Merge to land it automatically, or merge by hand once required checks pass. If Agent Merge pauses, read and act on the reason.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">PRがマージされ、対応するIssueがクローズまたは正しく更新される。</span><span class="en" lang="en">The PR is merged and the corresponding issue closes or updates correctly.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">7.</span> <span class="ja" lang="ja">着地とコミット帰属を検証する</span><span class="en" lang="en">Verify the landing and commit attribution</span></h3>
+  <p><span class="ja" lang="ja">着地後のコミットをgitで確認し、Commit attribution設定（lab 24）と一致するトレーラーになっていることを確認します。</span><span class="en" lang="en">Verify the landed commit with git and confirm its trailer matches your Commit attribution setting (lab 24).</span></p>
+  <div class="code-block">
+  <div class="code-block__label">
+    <span><span class="ja" lang="ja">着地したコミットを確認する</span><span class="en" lang="en">Verify the landed commit</span></span>
+    <button class="copy-button" type="button" data-copy="lab-25-code-2" data-ja-label="コピー" data-en-label="Copy"><span class="ja" lang="ja">コピー</span><span class="en" lang="en">Copy</span></button>
+  </div>
+  <pre><code id="lab-25-code-2" data-language="shell">git fetch origin &amp;&amp; git log --oneline -5 origin/main</code></pre>
+</div>
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">既定ブランチに着地したコミットが確認でき、トレーラーが設定と一致する。</span><span class="en" lang="en">The landed commit is visible on the default branch and its trailer matches the setting.</span></div>
+</li>
+<li class="step">
+  <h3><span class="mono">8.</span> <span class="ja" lang="ja">運用クリーンアップを完了する</span><span class="en" lang="en">Complete operational cleanup</span></h3>
+  <p><span class="ja" lang="ja">セッションをアーカイブし、worktreeとブランチを削除し、テストのためだけにピン留めしたセッションがあれば解除して、Manage sessionsに不要なテスト項目が残っていないことを確認します。</span><span class="en" lang="en">Archive the session, delete the worktree and branch, unpin any session pinned only for this test, and confirm Manage sessions contains no unnecessary test entries.</span></p>
+
+  <div class="step__expected"><strong><span class="ja" lang="ja">この段階で期待される状態</span><span class="en" lang="en">Expected state after this phase</span>:</strong> <span class="ja" lang="ja">開いたままのテストセッション、worktree、ピン留めが残っていない。</span><span class="en" lang="en">No open test session, worktree, or pin remains.</span></div>
+</li></ol>
+      </section>
+
+      <section class="section" id="decision-points">
+        <div class="section-heading"><p class="eyebrow">Decide</p><h2><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></h2></div>
+        <ul class="decision-list"><li><span class="ja" lang="ja">Plan reviewを承認して進めるか、スコープを絞って差し戻すか。</span><span class="en" lang="en">Approve the plan review and proceed, or reject it to narrow scope?</span></li>
+<li><span class="ja" lang="ja">Agent Mergeに任せるか、人手で最終マージするか。</span><span class="en" lang="en">Rely on Agent Merge, or merge by hand as the final step?</span></li></ul>
+      </section>
+
+      <section class="section" id="checkpoints">
+        <div class="section-heading"><p class="eyebrow">Checkpoints</p><h2><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></h2></div>
+        <ul class="checkpoint-list"><li><span class="ja" lang="ja">チェックポイント1: 実装がIssueの受け入れ条件を満たしている。</span><span class="en" lang="en">Checkpoint 1: the implementation satisfies the issue&#039;s acceptance criteria.</span></li>
+<li><span class="ja" lang="ja">チェックポイント2: 必須チェックが成功し、Copilot reviewが利用可能なら対応済み、利用不可なら制約と人のreview結果を記録している。</span><span class="en" lang="en">Checkpoint 2: required checks pass; if Copilot review is available its feedback is addressed, otherwise the limitation and human-review result are recorded.</span></li>
+<li><span class="ja" lang="ja">チェックポイント3: セッション・worktree・設定のクリーンアップが完了している。</span><span class="en" lang="en">Checkpoint 3: session, worktree, and settings cleanup is complete.</span></li></ul>
+      </section>
+
+      <section class="section" id="results">
+        <div class="section-heading"><p class="eyebrow">Verify</p><h2><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></h2></div>
+        <ul><li><span class="ja" lang="ja">Issueから着地までを中断なく実行できた。</span><span class="en" lang="en">You executed issue-to-landing without interruption.</span></li>
+<li><span class="ja" lang="ja">マージ前にレビューとCIの両方を人が確認した。</span><span class="en" lang="en">A human confirmed both review and CI before merging.</span></li>
+<li><span class="ja" lang="ja">着地後の運用クリーンアップをすべて完了した。</span><span class="en" lang="en">You completed all post-landing operational cleanup.</span></li></ul>
+      </section>
+
+      <section class="section" id="under-the-hood">
+        <div class="section-heading"><p class="eyebrow">Mental model</p><h2><span class="ja" lang="ja">Under the hood: 内部で何が起きているか</span><span class="en" lang="en">Under the hood: what happens internally</span></h2></div>
+        <p><span class="ja" lang="ja">このラボはlab 01, 04, 05, 11-14, 20-24で個別に扱った各サーフェスを、単一のGitHubイベントストリーム（Issue作成、PRオープン、レビュー、CI、マージ、クローズ）に沿って直列に接続します。各サーフェスの内部動作はそれぞれの専用labを参照してください。</span><span class="en" lang="en">This lab chains the surfaces covered individually in labs 01, 04, 05, 11-14, and 20-24 along a single GitHub event stream (issue creation, PR open, review, CI, merge, close). Refer to each surface&#039;s dedicated lab for its own internal mechanics.</span></p>
+      </section>
+
+      <section class="section" id="troubleshooting">
+        <div class="section-heading"><p class="eyebrow">Recover</p><h2><span class="ja" lang="ja">トラブルシューティング（症状から探す）</span><span class="en" lang="en">Troubleshooting (start from your symptom)</span></h2></div>
+        <details>
+  <summary><span class="ja" lang="ja">Planが受け入れ条件から外れた変更を提案する</span><span class="en" lang="en">The plan proposes changes outside the acceptance criteria</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">Plan reviewをフィードバック付きで差し戻し、範囲を狭めた具体的な指示を与えます（lab 05を参照）。</span><span class="en" lang="en">Reject the plan review with feedback narrowing the scope with specific instructions (see lab 05).</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">PRがマージされてもIssueが自動クローズしない</span><span class="en" lang="en">The issue does not auto-close when the PR merges</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">クロージングキーワードでIssueがリンクされているか確認し、リンクされていなければ手動でクローズ・関連付けします（lab 23を参照）。</span><span class="en" lang="en">Confirm the issue is linked via a closing keyword; if it is not, close and associate it manually (see lab 23).</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">Agent Mergeが理由付きで一時停止している</span><span class="en" lang="en">Agent Merge is paused with a stated reason</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">表示された理由（保留中のチェックなど）に対応し、理由を確認せずにトグルを繰り返し切り替えないでください（lab 22を参照）。</span><span class="en" lang="en">Address the stated reason (such as a pending check) instead of repeatedly toggling Agent Merge without reading it (see lab 22).</span></p></div>
+</details>
+<details>
+  <summary><span class="ja" lang="ja">複数回の演習後にセッションやworktreeが溜まっている</span><span class="en" lang="en">Sessions or worktrees accumulate after several runs</span></summary>
+  <div class="details-body"><p><span class="ja" lang="ja">Manage sessionsの一括操作で片付けますが、ピン留めされたセッションが意図通り除外されることを確認してください（lab 24を参照）。</span><span class="en" lang="en">Clean up with Manage sessions&#039; bulk actions, and confirm pinned sessions are excluded as expected (see lab 24).</span></p></div>
+</details>
+      </section>
+
+      <section class="section" id="recovery">
+        <div class="section-heading"><p class="eyebrow">Recovery path</p><h2><span class="ja" lang="ja">明示的な復旧手順</span><span class="en" lang="en">Explicit recovery path</span></h2></div>
+        <div class="callout callout--danger"><span class="ja" lang="ja">途中のどの段階で失敗しても、直前のチェックポイントまで巻き戻して再開できます。実装が破綻した場合はセッションをアーカイブし、新しいworktreeで同じIssueから再開してください。</span><span class="en" lang="en">If any stage fails, you can rewind to the previous checkpoint and resume. If the implementation itself goes wrong, archive the session and resume from the same issue in a fresh worktree.</span></div>
+      </section>
+
+      <section class="section" id="cleanup">
+        <div class="section-heading"><p class="eyebrow">Reset</p><h2><span class="ja" lang="ja">クリーンアップとリセット</span><span class="en" lang="en">Cleanup and reset</span></h2></div>
+        <ol><li><span class="ja" lang="ja">セッションをアーカイブまたは削除する。</span><span class="en" lang="en">Archive or delete the session.</span></li>
+<li><span class="ja" lang="ja">ローカルとリモートのブランチ・worktreeを削除する。</span><span class="en" lang="en">Delete the local and remote branch and worktree.</span></li>
+<li><span class="ja" lang="ja">演習のためだけに残った未クローズのIssue/PRを閉じる。</span><span class="en" lang="en">Close any issue/PR left open only for this exercise.</span></li>
+<li><span class="ja" lang="ja">演習のためだけに変更したWorktree location/Commit attribution設定を元に戻す。</span><span class="en" lang="en">Revert any Worktree location/Commit attribution setting changed only for this exercise.</span></li></ol>
+      </section>
+
+      <section class="section" id="rubric">
+        <div class="section-heading"><p class="eyebrow">Success rubric</p><h2><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></h2></div>
+        <ul class="rubric-list"><li><span class="ja" lang="ja">Issueから着地までを中断なく一つの流れとして完了した。</span><span class="en" lang="en">You completed issue-to-landing as one uninterrupted flow.</span></li>
+<li><span class="ja" lang="ja">マージ前にレビューとCIの両方を人が確認した。</span><span class="en" lang="en">A human confirmed both review and CI before merge.</span></li>
+<li><span class="ja" lang="ja">着地後の運用クリーンアップをすべて実施した。</span><span class="en" lang="en">You completed all post-landing operational cleanup.</span></li>
+<li><span class="ja" lang="ja">設定を変更した場合は元の状態に戻すか、意図的な変更として記録した。</span><span class="en" lang="en">Any changed settings were reverted or recorded as an intentional change.</span></li></ul>
+      </section>
+
+      <section class="section" id="stretch">
+        <div class="section-heading"><p class="eyebrow">Go further</p><h2><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></h2></div>
+        <div class="callout callout--success"><span class="ja" lang="ja">同じ流れを2つ目のIssueに対して繰り返し、2回目の所要時間と手順の再現性を比較してください。</span><span class="en" lang="en">Repeat the same flow for a second issue and compare the time taken and reproducibility of the steps.</span></div>
+      </section>
+
+      <section class="section" id="platforms">
+        <div class="section-heading"><p class="eyebrow">Platforms</p><h2><span class="ja" lang="ja">プラットフォーム別の注意</span><span class="en" lang="en">Platform-specific notes</span></h2></div>
+        <div class="card-grid"><article class="card"><h3>Windows</h3><p><span class="ja" lang="ja">ここまでの全ラボと同様、OS間の手順差はありません。</span><span class="en" lang="en">As with every earlier lab, there is no OS-specific difference in this flow.</span></p></article>
+<article class="card"><h3>macOS</h3><p><span class="ja" lang="ja">同上。</span><span class="en" lang="en">Same as above.</span></p></article>
+<article class="card"><h3>Linux</h3><p><span class="ja" lang="ja">同上。</span><span class="en" lang="en">Same as above.</span></p></article>
+<article class="card"><h3>WSL</h3><p><span class="ja" lang="ja">WSLリモートで通しの演習を行う場合はlab 08のWSL接続とhandoffの注意点を確認してください。Windows integrated terminalのPowerShell profile反映は別の実行境界です。</span><span class="en" lang="en">If you run the full exercise over WSL remote, first review lab 08&#039;s WSL connection and handoff notes. PowerShell-profile pickup in the Windows integrated terminal is a separate execution boundary.</span></p></article></div>
+      </section>
+
+      <section class="section" id="sources">
+        <div class="section-heading"><p class="eyebrow">Grounding</p><h2><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></h2></div>
+        <ul class="source-list"><li><a href="https://github.com/github/app/blob/main/changelog.md#v114" rel="noopener noreferrer">GitHub Copilot app v1.1.4 changelog</a></li>
+<li><a href="https://docs.github.com/en/pull-requests/collaborating-with-pull-requests/reviewing-changes-in-pull-requests/reviewing-proposed-changes-in-a-pull-request" rel="noopener noreferrer">Reviewing proposed changes in a pull request</a></li>
+<li><a href="https://docs.github.com/en/issues/tracking-your-work-with-issues/using-issues/creating-an-issue" rel="noopener noreferrer">Creating an issue</a></li></ul>
+      </section>
+
+      <section class="section" id="related">
+        <div class="section-heading"><p class="eyebrow">Continue</p><h2><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></h2></div>
+        <ul class="plain-list related-list"><li><a class="badge" href="01-install-projects.html"><span class="mono">01</span> <span class="ja" lang="ja">インストールとプロジェクト接続</span><span class="en" lang="en">Install and connect projects</span></a></li>
+<li><a class="badge" href="13-pull-request-review.html"><span class="mono">13</span> <span class="ja" lang="ja">プルリクエストレビューを完了する</span><span class="en" lang="en">Complete a pull request review</span></a></li>
+<li><a class="badge" href="14-agent-merge-ci-queue.html"><span class="mono">14</span> <span class="ja" lang="ja">Agent Merge で CI とマージキューを管理する</span><span class="en" lang="en">Manage CI and the merge queue with Agent Merge</span></a></li>
+<li><a class="badge" href="22-stacked-pr-copilot-review.html"><span class="mono">22</span> <span class="ja" lang="ja">スタックPR、Copilotレビュー、マージキュー、Agent Merge</span><span class="en" lang="en">Stacked PRs, Copilot review, merge queue, and Agent Merge</span></a></li>
+<li><a class="badge" href="23-cross-repo-issues-milestones.html"><span class="mono">23</span> <span class="ja" lang="ja">別リポジトリへのIssue作成とマイルストーン、ディープリンク</span><span class="en" lang="en">Cross-repository issues, milestones, and deep links</span></a></li>
+<li><a class="badge" href="24-worktree-attribution-diagnostics.html"><span class="mono">24</span> <span class="ja" lang="ja">Worktreeの保存場所、コミット帰属、診断の安全な観察</span><span class="en" lang="en">Worktree location, commit attribution, and diagnostics: a safe guided observation</span></a></li></ul>
+      </section>
+
+      <nav class="guide-pagination" aria-label="Lab navigation">
+        <a href="24-worktree-attribution-diagnostics.html"><svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M7.78 12.53a.75.75 0 01-1.06 0L2.47 8.28a.75.75 0 010-1.06l4.25-4.25a.75.75 0 011.06 1.06L4.81 7h8.44a.75.75 0 010 1.5H4.81l2.97 2.97a.75.75 0 010 1.06Z"></path></svg> <span class="muted"><span class="ja" lang="ja">前のラボ</span><span class="en" lang="en">Previous lab</span></span><br><strong><span class="ja" lang="ja">Worktreeの保存場所、コミット帰属、診断の安全な観察</span><span class="en" lang="en">Worktree location, commit attribution, and diagnostics: a safe guided observation</span></strong></a>
+        <a href="../copilot-app-v1.1.4/"><span class="muted"><span class="ja" lang="ja">次へ</span><span class="en" lang="en">Next</span></span> <svg width="16" height="16" viewBox="0 0 16 16" aria-hidden="true"><path d="M8.22 2.97a.75.75 0 011.06 0l4.25 4.25a.75.75 0 010 1.06l-4.25 4.25a.75.75 0 01-1.06-1.06L11.44 8.5H1.75a.75.75 0 010-1.5h9.69L8.22 4.03a.75.75 0 010-1.06Z"></path></svg><br><strong><span class="ja" lang="ja">機能ガイドへ戻る</span><span class="en" lang="en">Return to the feature guide</span></strong></a>
+      </nav>
+    </div>
+
+    <aside class="sticky-panel" aria-label="Lab progress and navigation">
+      <div class="progress-panel">
+        <h2><span class="ja" lang="ja">学習進捗</span><span class="en" lang="en">Learning progress</span></h2>
+        <p data-progress-count>0 / 25</p>
+        <div class="progress-track" role="progressbar" aria-label="Learning progress" aria-valuemin="0" aria-valuemax="25"><div class="progress-track__fill" data-progress-fill></div></div>
+        <button class="progress-button" type="button" data-guide-complete aria-pressed="false"><span class="ja" lang="ja">このラボを完了にする</span><span class="en" lang="en">Mark this lab complete</span></button>
+      </div>
+      <nav class="on-this-page" aria-labelledby="on-this-page-title">
+        <h2 id="on-this-page-title"><span class="ja" lang="ja">このページ</span><span class="en" lang="en">On this page</span></h2>
+        <ol>
+          <li><a href="#persona"><span class="ja" lang="ja">シナリオと担当者像</span><span class="en" lang="en">Scenario and persona</span></a></li>
+          <li><a href="#objectives"><span class="ja" lang="ja">学習目標</span><span class="en" lang="en">Objectives</span></a></li>
+          <li><a href="#prerequisites"><span class="ja" lang="ja">前提条件</span><span class="en" lang="en">Prerequisites</span></a></li>
+          <li><a href="#availability"><span class="ja" lang="ja">提供状況</span><span class="en" lang="en">Availability</span></a></li>
+          <li><a href="#before-you-start"><span class="ja" lang="ja">開始前の確認</span><span class="en" lang="en">Before you start</span></a></li>
+          <li><a href="#steps"><span class="ja" lang="ja">手順</span><span class="en" lang="en">Steps</span></a></li>
+          <li><a href="#decision-points"><span class="ja" lang="ja">判断点</span><span class="en" lang="en">Decision points</span></a></li>
+          <li><a href="#checkpoints"><span class="ja" lang="ja">チェックポイント</span><span class="en" lang="en">Checkpoints</span></a></li>
+          <li><a href="#results"><span class="ja" lang="ja">完了時の確認</span><span class="en" lang="en">Completion checks</span></a></li>
+          <li><a href="#under-the-hood"><span class="ja" lang="ja">Under the hood</span><span class="en" lang="en">Under the hood</span></a></li>
+          <li><a href="#troubleshooting"><span class="ja" lang="ja">トラブルシューティング</span><span class="en" lang="en">Troubleshooting</span></a></li>
+          <li><a href="#recovery"><span class="ja" lang="ja">復旧手順</span><span class="en" lang="en">Recovery</span></a></li>
+          <li><a href="#cleanup"><span class="ja" lang="ja">クリーンアップ</span><span class="en" lang="en">Cleanup</span></a></li>
+          <li><a href="#rubric"><span class="ja" lang="ja">成功の基準</span><span class="en" lang="en">Success rubric</span></a></li>
+          <li><a href="#stretch"><span class="ja" lang="ja">発展課題</span><span class="en" lang="en">Stretch exercise</span></a></li>
+          <li><a href="#platforms"><span class="ja" lang="ja">プラットフォーム</span><span class="en" lang="en">Platforms</span></a></li>
+          <li><a href="#sources"><span class="ja" lang="ja">公式ソース</span><span class="en" lang="en">Official sources</span></a></li>
+          <li><a href="#related"><span class="ja" lang="ja">関連ラボ</span><span class="en" lang="en">Related labs</span></a></li>
+        </ol>
+      </nav>
+    </aside>
+  </div>
+</main>
+<footer class="site-footer">
+  <div class="site-footer__inner">
+    <div class="site-footer__links">
+      <a href="../copilot-app/"><span class="ja" lang="ja">安定版ハブ</span><span class="en" lang="en">Stable hub</span></a>
+      <a href="../copilot-app-v1.1.4/"><span class="ja" lang="ja">v1.1.4 機能ガイド</span><span class="en" lang="en">v1.1.4 feature guide</span></a>
+      <a href="../copilot-app-v1.1.4/releases.html"><span class="ja" lang="ja">全リリース差分</span><span class="en" lang="en">Full release delta</span></a>
+      <a href="../copilot-app-v1.1.2-hands-on/"><span class="ja" lang="ja">v1.1.2 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.1.2 hands-on (archive)</span></a>
+      <a href="../copilot-app-v1.0.12-hands-on/"><span class="ja" lang="ja">v1.0.12 ハンズオン（アーカイブ）</span><span class="en" lang="en">v1.0.12 hands-on (archive)</span></a>
+    </div>
+    <p><span class="ja" lang="ja">非公式の学習ガイドです。機能の可用性、ポリシー、料金は公式ドキュメントを確認してください。</span><span class="en" lang="en">This is an unofficial learning guide. Confirm feature availability, policy, and pricing in the official documentation.</span></p>
+  </div>
+</footer>
+</body>
+</html>
