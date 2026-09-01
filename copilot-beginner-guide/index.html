@@ -1,0 +1,3788 @@
+<!doctype html>
+<html lang="ja">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="description" content="2026年9月1日時点のGitHub公式情報に基づく、GitHub Copilot初学者向けガイド">
+  <title>GitHub Copilot はじめの一歩</title>
+  <script>
+    (() => {
+      const param = new URLSearchParams(window.location.search).get("scoutTheme");
+      const theme =
+        param || (window.matchMedia("(prefers-color-scheme: dark)").matches ? "dark" : "light");
+      document.documentElement.setAttribute("data-theme", theme);
+    })();
+  </script>
+  <script>
+    (() => {
+      const storageKey = "github-copilot-beginner-guide:locale";
+      const supportedLocales = new Set(["ja", "en"]);
+      let locale;
+      try {
+        const savedLocale = window.localStorage.getItem(storageKey);
+        if (supportedLocales.has(savedLocale)) {
+          locale = savedLocale;
+        } else if (savedLocale !== null) {
+          window.localStorage.removeItem(storageKey);
+        }
+      } catch (error) {
+        document.documentElement.dataset.localeStorage = "unavailable";
+        console.warn("Language preference storage is unavailable.", error);
+      }
+      if (!locale) {
+        const browserLocale = navigator.languages?.[0] || navigator.language || "";
+        locale = browserLocale.toLowerCase().startsWith("ja") ? "ja" : "en";
+      }
+      document.documentElement.lang = locale;
+      document.documentElement.dataset.locale = locale;
+    })();
+  </script>
+  <!--
+    THESIS: Copilotは「自動で完成させる魔法」ではなく、依頼・提案・検証を往復する共同作業。静的な機能カード一覧を拒む。
+    OWN-WORLD: GitHub Primer風の静かな面、Link Blueの操作、検証のGreen、Copilot識別のRose、差分・注釈・チェックポイントで構成する。
+    STORY: 全体像をつかみ、15分で試し、適切に頼み、プランを選び、人の責任で安全に採用する。
+    FIRST VIEWPORT: 左に主張と入口、右に依頼から採用まで状態が変わる大きな作業台。下端で学習ルートへ接続する。
+    FORM: 7番目の構造候補「共同作業のフルステート・トレース」。seed 7d6f1892、Readモード。
+  -->
+  <style>
+    :root {
+      color-scheme: light;
+      --cp-bg: #f7f4ef;
+      --cp-bg-elevated: #fcfbf8;
+      --cp-surface: #ffffff;
+      --cp-surface-soft: #f5f5f5;
+      --cp-border: #dedede;
+      --cp-border-strong: #919191;
+      --cp-text: #242424;
+      --cp-text-muted: #5c5c5c;
+      --cp-text-soft: #6f6f6f;
+      --cp-accent: #b11f4b;
+      --cp-accent-hover: #9a1a41;
+      --cp-accent-soft: rgba(177, 31, 75, 0.08);
+      --cp-accent-fg: #ffffff;
+      --cp-success: #16a34a;
+      --cp-danger: #dc2626;
+      --cp-warning: #f59e0b;
+      --cp-link: #0078d4;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+      --cp-overlay: rgba(255, 255, 255, 0.8);
+      --cp-panel: rgba(255, 255, 255, 0.86);
+      --cp-panel-strong: rgba(255, 255, 255, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.55);
+      --cp-highlight: rgba(177, 31, 75, 0.12);
+    }
+    html[data-theme="dark"] {
+      color-scheme: dark;
+      --cp-bg: #3d3b3a;
+      --cp-bg-elevated: #343231;
+      --cp-surface: #292929;
+      --cp-surface-soft: #2e2e2e;
+      --cp-border: #474747;
+      --cp-border-strong: #5f5f5f;
+      --cp-text: #dedede;
+      --cp-text-muted: #919191;
+      --cp-text-soft: #b0b0b0;
+      --cp-accent: #fd8ea1;
+      --cp-accent-hover: #fb7b91;
+      --cp-accent-soft: rgba(253, 142, 161, 0.14);
+      --cp-accent-fg: #1a1a1a;
+      --cp-success: #4ade80;
+      --cp-danger: #f87171;
+      --cp-warning: #fbbf24;
+      --cp-link: #4da6ff;
+      --cp-shadow: 0 18px 48px rgba(0, 0, 0, 0.32);
+      --cp-overlay: rgba(41, 41, 41, 0.88);
+      --cp-panel: rgba(41, 41, 41, 0.72);
+      --cp-panel-strong: rgba(41, 41, 41, 0.96);
+      --cp-sheen: rgba(255, 255, 255, 0.04);
+      --cp-highlight: rgba(253, 142, 161, 0.12);
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html {
+      scroll-behavior: smooth;
+      scroll-padding-top: 5rem;
+    }
+
+    body {
+      margin: 0;
+      background: var(--cp-bg);
+      color: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+      font-size: 1rem;
+      line-height: 1.7;
+    }
+
+    button,
+    input {
+      font: inherit;
+    }
+
+    a {
+      color: var(--cp-link);
+      text-decoration-thickness: 0.08em;
+      text-underline-offset: 0.18em;
+    }
+
+    a:hover {
+      text-decoration-thickness: 0.14em;
+    }
+
+    :focus-visible {
+      outline: 0.1875rem solid var(--cp-accent);
+      outline-offset: 0.1875rem;
+    }
+
+    ::selection {
+      background: var(--cp-highlight);
+      color: var(--cp-text);
+    }
+
+    .skip-link {
+      position: fixed;
+      z-index: 100;
+      inset: 0 auto auto 0;
+      padding: 0.75rem 1rem;
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      transform: translateY(-120%);
+    }
+
+    .skip-link:focus {
+      transform: translateY(0);
+    }
+
+    .reading-progress {
+      position: fixed;
+      z-index: 90;
+      inset: 0 auto auto 0;
+      width: 0;
+      height: 0.25rem;
+      background: var(--cp-accent);
+    }
+
+    .snapshot-bar {
+      display: flex;
+      justify-content: center;
+      gap: 0.75rem;
+      align-items: center;
+      padding: 0.5rem 1rem;
+      border-bottom: 0.0625rem solid var(--cp-border);
+      background: var(--cp-bg-elevated);
+      color: var(--cp-text-muted);
+      font-size: 0.8125rem;
+      font-weight: 650;
+      letter-spacing: 0.02em;
+      text-align: center;
+    }
+
+    .snapshot-dot {
+      width: 0.5rem;
+      height: 0.5rem;
+      border-radius: 50%;
+      background: var(--cp-success);
+      flex: 0 0 auto;
+    }
+
+    .snapshot-bar span:last-child {
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    .snapshot-short {
+      display: none;
+    }
+
+    .masthead {
+      position: relative;
+      overflow: clip;
+      border-bottom: 0.0625rem solid var(--cp-border);
+      background: var(--cp-bg-elevated);
+    }
+
+    .masthead-grid {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      color: var(--cp-border);
+      pointer-events: none;
+      opacity: 0.72;
+    }
+
+    .hero {
+      position: relative;
+      z-index: 1;
+      width: min(92rem, calc(100% - 2rem));
+      min-height: min(50rem, calc(100vh - 2.5rem));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: minmax(18rem, 0.82fr) minmax(34rem, 1.18fr);
+      gap: clamp(2rem, 6vw, 6rem);
+      align-items: center;
+      padding: clamp(3rem, 7vw, 7rem) 0;
+    }
+
+    .hero-copy {
+      max-width: 42rem;
+      min-width: 0;
+    }
+
+    .hero-mark {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.625rem;
+      margin-bottom: 1.5rem;
+      color: var(--cp-accent);
+      font-size: 0.875rem;
+      font-weight: 750;
+    }
+
+    .hero-mark svg {
+      width: 1.5rem;
+      height: 1.5rem;
+      flex: 0 0 auto;
+    }
+
+    h1,
+    h2,
+    h3 {
+      margin: 0;
+      line-height: 1.15;
+      text-wrap: balance;
+    }
+
+    h1 {
+      max-width: 11ch;
+      font-size: clamp(3.1rem, 7vw, 6rem);
+      letter-spacing: -0.04em;
+      font-weight: 780;
+    }
+
+    h1 em {
+      color: var(--cp-accent);
+      font-style: normal;
+    }
+
+    .hero-lead {
+      max-width: 40rem;
+      margin: 1.75rem 0 0;
+      color: var(--cp-text-soft);
+      font-size: clamp(1.125rem, 2vw, 1.375rem);
+      line-height: 1.65;
+    }
+
+    .hero-actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.75rem;
+      margin-top: 2rem;
+    }
+
+    .button {
+      display: inline-flex;
+      min-height: 2.75rem;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 0.625rem 1rem;
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      font-weight: 700;
+      text-decoration: none;
+      cursor: pointer;
+    }
+
+    .button:hover {
+      border-color: var(--cp-accent);
+      color: var(--cp-accent);
+    }
+
+    .button.primary {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+    }
+
+    .button.primary:hover {
+      border-color: var(--cp-accent-hover);
+      background: var(--cp-accent-hover);
+      color: var(--cp-accent-fg);
+    }
+
+    .trace-lab {
+      position: relative;
+      min-width: 0;
+      min-height: 38rem;
+      display: grid;
+      grid-template-rows: auto auto minmax(0, 1fr);
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 1rem;
+      background: var(--cp-surface);
+      box-shadow: 0 0.125rem 0 var(--cp-border);
+      overflow: hidden;
+    }
+
+    .trace-lab::before {
+      content: "";
+      position: absolute;
+      inset: 0 auto 0 4.25rem;
+      width: 0.125rem;
+      background: var(--cp-accent);
+    }
+
+    .lab-topbar {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      min-height: 3rem;
+      padding: 0.625rem 1rem;
+      border-bottom: 0.0625rem solid var(--cp-border);
+      background: var(--cp-surface-soft);
+      font-size: 0.8125rem;
+      font-weight: 700;
+    }
+
+    .lab-file {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .lab-file::before {
+      content: "";
+      width: 0.625rem;
+      height: 0.625rem;
+      border-radius: 50%;
+      background: var(--cp-accent);
+    }
+
+    .lab-mode {
+      min-width: 0;
+      color: var(--cp-text-muted);
+      overflow-wrap: anywhere;
+      text-align: right;
+    }
+
+    .trace-steps {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      margin: 0;
+      padding: 0;
+      border-bottom: 0.0625rem solid var(--cp-border);
+      list-style: none;
+    }
+
+    .trace-step {
+      position: relative;
+      min-width: 0;
+    }
+
+    .trace-step button {
+      position: relative;
+      width: 100%;
+      min-height: 4.5rem;
+      padding: 0.75rem 0.5rem;
+      border: 0;
+      border-right: 0.0625rem solid var(--cp-border);
+      background: var(--cp-surface);
+      color: var(--cp-text-muted);
+      font-size: 0.75rem;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .trace-step:last-child button {
+      border-right: 0;
+    }
+
+    .trace-step button[aria-selected="true"] {
+      background: var(--cp-accent-soft);
+      color: var(--cp-accent);
+    }
+
+    .trace-step button::before {
+      content: attr(data-step);
+      display: grid;
+      width: 1.5rem;
+      height: 1.5rem;
+      margin: 0 auto 0.25rem;
+      place-items: center;
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 50%;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-size: 0.6875rem;
+    }
+
+    .trace-step button[aria-selected="true"]::before {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+    }
+
+    .trace-step button[data-complete="true"]::after {
+      content: "✓";
+      position: absolute;
+      top: 0.35rem;
+      right: 0.45rem;
+      color: var(--cp-success);
+      font-size: 0.6875rem;
+      font-weight: 800;
+    }
+
+    .lab-body {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      min-height: 26rem;
+    }
+
+    .lab-explain,
+    .lab-state {
+      display: grid;
+      grid-template-rows: auto 1fr;
+      min-width: 0;
+      padding: clamp(1.25rem, 3vw, 2rem);
+    }
+
+    .lab-explain {
+      padding-left: clamp(5.5rem, 8vw, 7rem);
+      border-right: 0.0625rem solid var(--cp-border);
+    }
+
+    .lab-explain h2 {
+      font-size: clamp(1.5rem, 3vw, 2.25rem);
+      letter-spacing: -0.025em;
+    }
+
+    .lab-explain p {
+      margin: 1rem 0 0;
+      color: var(--cp-text-soft);
+    }
+
+    .state-label {
+      display: block;
+      margin-bottom: 0.75rem;
+      color: var(--cp-text-muted);
+      font-size: 0.75rem;
+      font-weight: 750;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .lab-code {
+      max-width: 100%;
+      height: 100%;
+      min-height: 11rem;
+      margin: 0;
+      padding: 1rem;
+      border: 0.0625rem solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-bg-elevated);
+      color: var(--cp-text);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-size: 0.8125rem;
+      line-height: 1.65;
+      overflow-x: auto;
+      overflow-wrap: anywhere;
+      white-space: pre-wrap;
+    }
+
+    .code-line {
+      display: block;
+      min-height: 1.65em;
+      margin: 0 -0.5rem;
+      padding: 0 0.5rem;
+      border-left: 0.0625rem solid var(--cp-border);
+    }
+
+    .code-line.add {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent-soft);
+    }
+
+    .code-line.success {
+      border-color: var(--cp-success);
+      color: var(--cp-success);
+    }
+
+    .code-line.warning {
+      border-color: var(--cp-warning);
+      color: var(--cp-warning);
+    }
+
+    .lab-rule {
+      margin-top: 1rem;
+      padding-top: 1rem;
+      border-top: 0.0625rem solid var(--cp-border);
+      color: var(--cp-text-muted);
+      font-size: 0.875rem;
+    }
+
+    .hero-route {
+      position: absolute;
+      inset: auto 0 1.25rem;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--cp-text-muted);
+      font-size: 0.8125rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .hero-route:hover {
+      color: var(--cp-accent);
+    }
+
+    .hero-route svg {
+      width: 1rem;
+      height: 1rem;
+    }
+
+    .page-shell {
+      width: min(92rem, calc(100% - 2rem));
+      margin: 0 auto;
+      display: grid;
+      grid-template-columns: 15rem minmax(0, 1fr);
+      gap: clamp(2rem, 5vw, 5rem);
+      padding: 4rem 0 8rem;
+    }
+
+    .side-nav {
+      align-self: start;
+      position: sticky;
+      top: 2rem;
+      padding: 1rem 0;
+    }
+
+    .side-nav strong {
+      display: block;
+      margin-bottom: 0.75rem;
+      color: var(--cp-text-muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+    }
+
+    .side-nav ol {
+      position: relative;
+      margin: 0;
+      padding: 0 0 0 1.5rem;
+      list-style: none;
+    }
+
+    .side-nav ol::before {
+      content: "";
+      position: absolute;
+      inset: 0.75rem auto 0.75rem 0.3125rem;
+      width: 0.0625rem;
+      background: var(--cp-border);
+    }
+
+    .side-nav li {
+      position: relative;
+      margin: 0;
+    }
+
+    .side-nav li::before {
+      content: "";
+      position: absolute;
+      left: -1.45rem;
+      top: 1.02rem;
+      width: 0.5rem;
+      height: 0.5rem;
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 50%;
+      background: var(--cp-bg);
+    }
+
+    .side-nav li:has(a[aria-current="true"])::before {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent);
+    }
+
+    .side-nav a {
+      display: block;
+      padding: 0.45rem 0;
+      color: var(--cp-text-muted);
+      font-size: 0.875rem;
+      font-weight: 650;
+      text-decoration: none;
+    }
+
+    .side-nav a:hover,
+    .side-nav a[aria-current="true"] {
+      color: var(--cp-accent);
+    }
+
+    main {
+      min-width: 0;
+    }
+
+    .section {
+      padding: clamp(4rem, 8vw, 7rem) 0;
+      border-bottom: 0.0625rem solid var(--cp-border);
+    }
+
+    .section:first-child {
+      padding-top: 1rem;
+    }
+
+    .section:last-child {
+      border-bottom: 0;
+    }
+
+    .section-heading {
+      display: grid;
+      grid-template-columns: minmax(0, 0.7fr) minmax(18rem, 0.3fr);
+      gap: 2rem;
+      align-items: end;
+      margin-bottom: clamp(2rem, 5vw, 4rem);
+    }
+
+    .section-heading h2 {
+      max-width: 15ch;
+      font-size: clamp(2.25rem, 5vw, 4.5rem);
+      letter-spacing: -0.04em;
+    }
+
+    .section-heading p {
+      margin: 0;
+      color: var(--cp-text-soft);
+    }
+
+    .cite {
+      display: inline-block;
+      margin-left: 0.125rem;
+      font-size: 0.72em;
+      font-weight: 750;
+      vertical-align: super;
+      text-decoration: none;
+    }
+
+    .concept-line {
+      display: grid;
+      grid-template-columns: minmax(0, 1.1fr) minmax(16rem, 0.9fr);
+      gap: 2rem;
+      align-items: center;
+    }
+
+    .concept-statement {
+      font-size: clamp(1.5rem, 3vw, 2.5rem);
+      line-height: 1.35;
+      letter-spacing: -0.025em;
+      text-wrap: balance;
+    }
+
+    .concept-statement strong {
+      color: var(--cp-accent);
+    }
+
+    .concept-note {
+      padding: 1.25rem 0 1.25rem 1.5rem;
+      border-left: 0.0625rem solid var(--cp-accent);
+      color: var(--cp-text-soft);
+    }
+
+    .surface-map {
+      margin-top: 3rem;
+      padding: clamp(1rem, 3vw, 2rem);
+      border: 0.0625rem solid var(--cp-border);
+      border-radius: 1rem;
+      background: var(--cp-surface);
+      overflow: hidden;
+    }
+
+    .surface-map svg {
+      display: block;
+      width: 100%;
+      height: auto;
+      min-height: 26rem;
+    }
+
+    .surface-map text {
+      fill: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .surface-map .muted {
+      fill: var(--cp-text-muted);
+    }
+
+    .surface-map .on-accent,
+    .safety-loop .on-accent {
+      fill: var(--cp-accent-fg);
+    }
+
+    .surface-map .node {
+      fill: var(--cp-surface);
+      stroke: var(--cp-border-strong);
+      stroke-width: 1.5;
+    }
+
+    .surface-map .core {
+      fill: var(--cp-accent);
+      stroke: var(--cp-accent);
+    }
+
+    .surface-map .route {
+      fill: none;
+      stroke: var(--cp-border-strong);
+      stroke-width: 1.5;
+      stroke-dasharray: 5 7;
+    }
+
+    .surface-map .pulse {
+      fill: var(--cp-surface);
+      stroke: var(--cp-accent);
+      stroke-width: 2;
+    }
+
+    .surface-notes {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin: 0;
+      padding: 0;
+      border: 0.0625rem solid var(--cp-border);
+      border-top: 0;
+      list-style: none;
+    }
+
+    .surface-notes li {
+      padding: 1.25rem;
+      border-right: 0.0625rem solid var(--cp-border);
+      background: var(--cp-bg-elevated);
+    }
+
+    .surface-notes li:last-child {
+      border-right: 0;
+    }
+
+    .surface-notes strong,
+    .surface-notes span {
+      display: block;
+    }
+
+    .surface-notes span {
+      margin-top: 0.35rem;
+      color: var(--cp-text-muted);
+      font-size: 0.875rem;
+    }
+
+    .legend {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.625rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .badge {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.375rem;
+      padding: 0.25rem 0.55rem;
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text-muted);
+      font-size: 0.6875rem;
+      font-weight: 780;
+      letter-spacing: 0.04em;
+      white-space: nowrap;
+    }
+
+    .badge::before {
+      content: "";
+      width: 0.45rem;
+      height: 0.45rem;
+      border-radius: 50%;
+      background: var(--cp-border-strong);
+    }
+
+    .badge.ga::before {
+      background: var(--cp-success);
+    }
+
+    .badge.preview::before {
+      background: var(--cp-warning);
+    }
+
+    .badge.future::before {
+      background: var(--cp-accent);
+    }
+
+    .tool-bands {
+      border-top: 0.0625rem solid var(--cp-border-strong);
+    }
+
+    .tool-band {
+      display: grid;
+      grid-template-columns: minmax(9rem, 0.24fr) minmax(0, 0.76fr);
+      gap: 2rem;
+      padding: 2rem 0;
+      border-bottom: 0.0625rem solid var(--cp-border);
+    }
+
+    .tool-band h3 {
+      font-size: 1.125rem;
+      letter-spacing: -0.015em;
+    }
+
+    .tool-band > div > p {
+      margin: 0.5rem 0 0;
+      color: var(--cp-text-muted);
+      font-size: 0.875rem;
+    }
+
+    .tool-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .tool-list li {
+      display: grid;
+      grid-template-columns: minmax(10rem, 0.34fr) minmax(0, 0.66fr);
+      gap: 1.25rem;
+      padding: 1rem 0;
+      border-bottom: 0.0625rem solid var(--cp-border);
+    }
+
+    .tool-list li:last-child {
+      border-bottom: 0;
+    }
+
+    .tool-name {
+      display: flex;
+      align-items: flex-start;
+      gap: 0.5rem;
+      font-weight: 750;
+    }
+
+    .tool-list p {
+      margin: 0;
+      color: var(--cp-text-soft);
+    }
+
+    .tool-verb {
+      color: var(--cp-accent);
+      font-weight: 750;
+    }
+
+    .callout {
+      margin-top: 2rem;
+      padding: 1.25rem 1.5rem;
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 0.625rem;
+      background: var(--cp-surface-soft);
+    }
+
+    .callout strong {
+      display: block;
+      margin-bottom: 0.35rem;
+    }
+
+    .callout p {
+      margin: 0;
+      color: var(--cp-text-soft);
+    }
+
+    .minute-track {
+      position: relative;
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0;
+      margin-top: 2rem;
+      border-top: 0.125rem solid var(--cp-accent);
+    }
+
+    .minute-step {
+      position: relative;
+      padding: 2rem 1.25rem 1.25rem 0;
+    }
+
+    .minute-step::before {
+      content: "";
+      position: absolute;
+      top: -0.5rem;
+      left: 0;
+      width: 0.75rem;
+      height: 0.75rem;
+      border: 0.125rem solid var(--cp-accent);
+      border-radius: 50%;
+      background: var(--cp-bg);
+    }
+
+    .minute-step time {
+      display: block;
+      color: var(--cp-accent);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-size: 0.8125rem;
+      font-weight: 750;
+    }
+
+    .minute-step h3 {
+      margin-top: 0.5rem;
+      font-size: 1.125rem;
+    }
+
+    .minute-step p {
+      margin: 0.5rem 0 0;
+      color: var(--cp-text-soft);
+      font-size: 0.9375rem;
+    }
+
+    .try-checklist {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 0.75rem;
+      margin-top: 1.5rem;
+    }
+
+    .try-check {
+      display: flex;
+      min-height: 4rem;
+      align-items: flex-start;
+      gap: 0.625rem;
+      padding: 0.875rem;
+      border: 0.0625rem solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      cursor: pointer;
+    }
+
+    .try-check input {
+      width: 1.125rem;
+      height: 1.125rem;
+      margin: 0.15rem 0 0;
+      accent-color: var(--cp-accent);
+      flex: 0 0 auto;
+    }
+
+    .prompt-workshop {
+      display: grid;
+      grid-template-columns: minmax(16rem, 0.42fr) minmax(0, 0.58fr);
+      gap: 2rem;
+      align-items: start;
+    }
+
+    .prompt-formula {
+      margin: 0;
+      padding: 0;
+      counter-reset: prompt-part;
+      list-style: none;
+    }
+
+    .prompt-formula li {
+      position: relative;
+      padding: 1rem 0 1rem 3rem;
+      border-bottom: 0.0625rem solid var(--cp-border);
+      counter-increment: prompt-part;
+    }
+
+    .prompt-formula li::before {
+      content: counter(prompt-part);
+      position: absolute;
+      left: 0;
+      top: 1rem;
+      display: grid;
+      width: 2rem;
+      height: 2rem;
+      place-items: center;
+      border-radius: 50%;
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-size: 0.75rem;
+      font-weight: 750;
+    }
+
+    .prompt-formula strong,
+    .prompt-formula span {
+      display: block;
+    }
+
+    .prompt-formula span {
+      margin-top: 0.25rem;
+      color: var(--cp-text-muted);
+      font-size: 0.875rem;
+    }
+
+    .prompt-sheet {
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 1rem;
+      background: var(--cp-surface);
+      overflow: hidden;
+    }
+
+    .prompt-sheet-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 0.75rem 1rem;
+      border-bottom: 0.0625rem solid var(--cp-border);
+      background: var(--cp-surface-soft);
+      font-size: 0.8125rem;
+      font-weight: 750;
+    }
+
+    .copy-button {
+      min-height: 2rem;
+      padding: 0.25rem 0.625rem;
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      font-size: 0.75rem;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .copy-button:hover {
+      border-color: var(--cp-accent);
+      color: var(--cp-accent);
+    }
+
+    .prompt-code {
+      margin: 0;
+      padding: 1.5rem;
+      color: var(--cp-text);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-size: 0.875rem;
+      line-height: 1.75;
+      white-space: pre-wrap;
+    }
+
+    .prompt-annotation {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      border-top: 0.0625rem solid var(--cp-border);
+    }
+
+    .prompt-annotation span {
+      padding: 0.75rem;
+      border-right: 0.0625rem solid var(--cp-border);
+      color: var(--cp-text-muted);
+      font-size: 0.75rem;
+      text-align: center;
+    }
+
+    .prompt-annotation span:last-child {
+      border-right: 0;
+    }
+
+    details {
+      border-bottom: 0.0625rem solid var(--cp-border);
+    }
+
+    summary {
+      padding: 1rem 2.25rem 1rem 0;
+      color: var(--cp-text);
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    details p {
+      max-width: 72ch;
+      margin: 0 0 1.25rem;
+      color: var(--cp-text-soft);
+    }
+
+    .plan-controls {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 0.5rem;
+      margin-bottom: 1rem;
+    }
+
+    .plan-filter {
+      min-height: 2.5rem;
+      padding: 0.45rem 0.875rem;
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      font-size: 0.875rem;
+      font-weight: 750;
+      cursor: pointer;
+    }
+
+    .plan-filter[aria-pressed="true"] {
+      border-color: var(--cp-accent);
+      background: var(--cp-accent);
+      color: var(--cp-accent-fg);
+    }
+
+    .table-wrap {
+      border: 0.0625rem solid var(--cp-border);
+      border-radius: 1rem;
+      background: var(--cp-surface);
+      overflow-x: auto;
+    }
+
+    table {
+      width: 100%;
+      min-width: 50rem;
+      border-collapse: collapse;
+      text-align: left;
+    }
+
+    th,
+    td {
+      padding: 1rem;
+      border-bottom: 0.0625rem solid var(--cp-border);
+      vertical-align: top;
+    }
+
+    th {
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-muted);
+      font-size: 0.75rem;
+      letter-spacing: 0.04em;
+      text-transform: uppercase;
+    }
+
+    tr:last-child td {
+      border-bottom: 0;
+    }
+
+    tbody tr:hover {
+      background: var(--cp-accent-soft);
+    }
+
+    .plan-name {
+      font-weight: 780;
+      white-space: nowrap;
+    }
+
+    .plan-price {
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-weight: 750;
+      white-space: nowrap;
+    }
+
+    .table-note {
+      margin: 1rem 0 0;
+      color: var(--cp-text-muted);
+      font-size: 0.8125rem;
+    }
+
+    .safety-layout {
+      display: grid;
+      grid-template-columns: minmax(18rem, 0.9fr) minmax(0, 1.1fr);
+      gap: clamp(2rem, 5vw, 5rem);
+      align-items: center;
+    }
+
+    .safety-loop {
+      position: relative;
+      min-height: 33rem;
+      display: grid;
+      place-items: center;
+    }
+
+    .safety-loop svg {
+      width: min(100%, 34rem);
+      height: auto;
+    }
+
+    .safety-loop text {
+      fill: var(--cp-text);
+      font-family: "Segoe UI", Aptos, Calibri, -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+
+    .safety-loop .soft {
+      fill: var(--cp-text-muted);
+    }
+
+    .safety-loop .ring {
+      fill: none;
+      stroke: var(--cp-border);
+      stroke-width: 18;
+    }
+
+    .safety-loop .path {
+      fill: none;
+      stroke: var(--cp-accent);
+      stroke-width: 4;
+      stroke-linecap: round;
+      stroke-dasharray: 18 10;
+    }
+
+    .safety-loop .stop {
+      fill: var(--cp-surface);
+      stroke: var(--cp-accent);
+      stroke-width: 2;
+    }
+
+    .safety-loop .core-disc {
+      fill: var(--cp-accent);
+    }
+
+    .safety-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: safety;
+    }
+
+    .safety-list li {
+      position: relative;
+      padding: 1.1rem 0 1.1rem 3.25rem;
+      border-bottom: 0.0625rem solid var(--cp-border);
+      counter-increment: safety;
+    }
+
+    .safety-list li::before {
+      content: counter(safety);
+      position: absolute;
+      left: 0;
+      top: 1.15rem;
+      display: grid;
+      width: 2rem;
+      height: 2rem;
+      place-items: center;
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 50%;
+      color: var(--cp-accent);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-size: 0.75rem;
+      font-weight: 750;
+    }
+
+    .safety-list strong,
+    .safety-list span {
+      display: block;
+    }
+
+    .safety-list span {
+      margin-top: 0.25rem;
+      color: var(--cp-text-soft);
+    }
+
+    .release-track {
+      display: grid;
+      grid-template-columns: 9rem minmax(0, 1fr);
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+
+    .release-track li {
+      display: contents;
+    }
+
+    .release-date,
+    .release-event {
+      padding: 1.25rem 0;
+      border-bottom: 0.0625rem solid var(--cp-border);
+    }
+
+    .release-date {
+      position: relative;
+      padding-right: 2rem;
+      color: var(--cp-accent);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-size: 0.8125rem;
+      font-weight: 750;
+    }
+
+    .release-date::after {
+      content: "";
+      position: absolute;
+      right: 0.75rem;
+      top: 1.65rem;
+      width: 0.625rem;
+      height: 0.625rem;
+      border: 0.125rem solid var(--cp-accent);
+      border-radius: 50%;
+      background: var(--cp-bg);
+    }
+
+    .release-event {
+      position: relative;
+      padding-left: 1.5rem;
+      border-left: 0.0625rem solid var(--cp-accent);
+    }
+
+    .release-event strong {
+      display: block;
+    }
+
+    .release-event p {
+      margin: 0.35rem 0 0;
+      color: var(--cp-text-soft);
+    }
+
+    .release-event .badge {
+      margin-top: 0.625rem;
+    }
+
+    .learning-path {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+
+    .learning-stage {
+      position: relative;
+      min-height: 17rem;
+      padding: 1.5rem;
+      border: 0.0625rem solid var(--cp-border);
+      border-radius: 1rem;
+      background: var(--cp-surface);
+    }
+
+    .learning-stage::after {
+      content: "";
+      position: absolute;
+      top: 3rem;
+      right: -1.1rem;
+      width: 1.2rem;
+      height: 0.125rem;
+      background: var(--cp-accent);
+    }
+
+    .learning-stage:last-child::after {
+      display: none;
+    }
+
+    .learning-stage time {
+      color: var(--cp-accent);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-size: 0.8125rem;
+      font-weight: 750;
+    }
+
+    .learning-stage h3 {
+      margin-top: 0.75rem;
+      font-size: 1.5rem;
+    }
+
+    .learning-stage ul {
+      margin: 1rem 0 0;
+      padding-left: 1.25rem;
+      color: var(--cp-text-soft);
+    }
+
+    .glossary-grid {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      column-gap: 2rem;
+      border-top: 0.0625rem solid var(--cp-border);
+    }
+
+    .glossary-grid details:nth-child(odd) {
+      padding-right: 1rem;
+    }
+
+    .glossary-grid details:nth-child(even) {
+      padding-left: 1rem;
+    }
+
+    .sources {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      counter-reset: sources;
+      column-count: 2;
+      column-gap: 2rem;
+    }
+
+    .sources li {
+      break-inside: avoid;
+      position: relative;
+      padding: 0.75rem 0 0.75rem 2.25rem;
+      border-bottom: 0.0625rem solid var(--cp-border);
+      counter-increment: sources;
+    }
+
+    .sources li::before {
+      content: "[" counter(sources) "]";
+      position: absolute;
+      left: 0;
+      top: 0.75rem;
+      color: var(--cp-accent);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-size: 0.75rem;
+      font-weight: 750;
+    }
+
+    .sources a {
+      font-weight: 700;
+    }
+
+    .sources span {
+      display: block;
+      margin-top: 0.25rem;
+      color: var(--cp-text-muted);
+      font-size: 0.75rem;
+    }
+
+    .freshness {
+      margin-top: 2rem;
+      padding: 1.25rem;
+      border: 0.0625rem solid var(--cp-warning);
+      border-radius: 0.625rem;
+      background: var(--cp-surface);
+    }
+
+    .freshness strong {
+      color: var(--cp-text);
+    }
+
+    .freshness p {
+      margin: 0.35rem 0 0;
+      color: var(--cp-text-soft);
+    }
+
+    .footer {
+      padding: 2rem 1rem;
+      border-top: 0.0625rem solid var(--cp-border);
+      background: var(--cp-bg-elevated);
+      color: var(--cp-text-muted);
+      text-align: center;
+      font-size: 0.8125rem;
+    }
+
+    .back-top {
+      position: fixed;
+      z-index: 50;
+      right: 1rem;
+      bottom: 1rem;
+      width: 2.75rem;
+      height: 2.75rem;
+      display: grid;
+      place-items: center;
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 50%;
+      background: var(--cp-surface);
+      color: var(--cp-text);
+      box-shadow: 0 0.125rem 0 var(--cp-border);
+      text-decoration: none;
+    }
+
+    .back-top:hover {
+      border-color: var(--cp-accent);
+      color: var(--cp-accent);
+    }
+
+    .visually-hidden {
+      position: absolute;
+      width: 0.0625rem;
+      height: 0.0625rem;
+      padding: 0;
+      margin: -0.0625rem;
+      overflow: hidden;
+      clip: rect(0, 0, 0, 0);
+      white-space: nowrap;
+      border: 0;
+    }
+
+    [hidden] {
+      display: none;
+    }
+
+    @media (max-width: 68rem) {
+      .hero {
+        grid-template-columns: 1fr;
+        min-height: auto;
+      }
+
+      h1 {
+        max-width: 13ch;
+      }
+
+      .trace-lab {
+        min-height: 34rem;
+      }
+
+      .page-shell {
+        grid-template-columns: 1fr;
+        padding-top: 0;
+      }
+
+      .side-nav {
+        z-index: 40;
+        top: 0.25rem;
+        margin: 0;
+        padding: 0.5rem 0;
+        border-bottom: 0.0625rem solid var(--cp-border);
+        background: var(--cp-overlay);
+        overflow-x: auto;
+      }
+
+      .side-nav strong {
+        display: none;
+      }
+
+      .side-nav ol {
+        display: flex;
+        width: max-content;
+        padding: 0;
+        gap: 0.375rem;
+      }
+
+      .side-nav ol::before,
+      .side-nav li::before {
+        display: none;
+      }
+
+      .side-nav a {
+        padding: 0.4rem 0.7rem;
+        border: 0.0625rem solid var(--cp-border);
+        border-radius: 0.625rem;
+        background: var(--cp-surface);
+        white-space: nowrap;
+      }
+
+      .side-nav a[aria-current="true"] {
+        border-color: var(--cp-accent);
+      }
+    }
+
+    @media (max-width: 52rem) {
+      .section-heading,
+      .concept-line,
+      .prompt-workshop,
+      .safety-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .section-heading h2 {
+        max-width: 18ch;
+      }
+
+      .lab-body {
+        grid-template-columns: 1fr;
+      }
+
+      .lab-explain {
+        min-height: 12rem;
+        padding-left: 5.5rem;
+        border-right: 0;
+        border-bottom: 0.0625rem solid var(--cp-border);
+      }
+
+      .surface-notes,
+      .minute-track,
+      .try-checklist,
+      .learning-path {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .surface-notes li:nth-child(2) {
+        border-right: 0;
+      }
+
+      .surface-notes li:nth-child(-n+2) {
+        border-bottom: 0.0625rem solid var(--cp-border);
+      }
+
+      .minute-track {
+        border-top: 0;
+        border-left: 0.125rem solid var(--cp-accent);
+      }
+
+      .minute-step {
+        padding: 1rem 1rem 1rem 1.5rem;
+      }
+
+      .minute-step::before {
+        top: 1.4rem;
+        left: -0.5rem;
+      }
+
+      .learning-stage::after {
+        display: none;
+      }
+
+      .sources {
+        column-count: 1;
+      }
+    }
+
+    @media (max-width: 38rem) {
+      .snapshot-bar {
+        align-items: flex-start;
+        gap: 0.5rem;
+        padding-inline: 0.625rem;
+        font-size: 0.75rem;
+        text-align: left;
+      }
+
+      .snapshot-long {
+        display: none;
+      }
+
+      .snapshot-short {
+        display: inline;
+      }
+
+      .hero {
+        width: min(100% - 1.25rem, 92rem);
+        padding: 3rem 0 4rem;
+      }
+
+      h1 {
+        font-size: clamp(2.8rem, 14vw, 4rem);
+      }
+
+      .hero-actions {
+        align-items: stretch;
+        flex-direction: column;
+      }
+
+      .button {
+        width: 100%;
+      }
+
+      .trace-lab::before {
+        left: 2.25rem;
+      }
+
+      .trace-step button {
+        min-height: 4rem;
+        padding: 0.5rem 0.2rem;
+        font-size: 0.625rem;
+      }
+
+      .trace-step button::before {
+        margin-bottom: 0.15rem;
+        font-size: 0.6875rem;
+      }
+
+      .lab-explain,
+      .lab-state {
+        padding: 1.25rem;
+      }
+
+      .lab-explain {
+        padding-left: 3.5rem;
+      }
+
+      .page-shell {
+        width: min(100% - 1.25rem, 92rem);
+      }
+
+      .section {
+        padding: 4rem 0;
+      }
+
+      .surface-map {
+        padding: 0.5rem;
+        overflow-x: auto;
+      }
+
+      .surface-map svg {
+        width: 42rem;
+        max-width: none;
+      }
+
+      .surface-notes,
+      .try-checklist,
+      .learning-path,
+      .glossary-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .surface-notes li,
+      .surface-notes li:nth-child(2) {
+        border-right: 0;
+        border-bottom: 0.0625rem solid var(--cp-border);
+      }
+
+      .surface-notes li:last-child {
+        border-bottom: 0;
+      }
+
+      .tool-band,
+      .tool-list li {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+
+      .minute-track {
+        grid-template-columns: 1fr;
+      }
+
+      .prompt-annotation {
+        grid-template-columns: 1fr 1fr;
+      }
+
+      .prompt-annotation span:nth-child(2) {
+        border-right: 0;
+      }
+
+      .prompt-annotation span:nth-child(-n+2) {
+        border-bottom: 0.0625rem solid var(--cp-border);
+      }
+
+      .release-track {
+        grid-template-columns: 6.5rem minmax(0, 1fr);
+      }
+
+      .glossary-grid details:nth-child(odd),
+      .glossary-grid details:nth-child(even) {
+        padding: 0;
+      }
+
+      .back-top {
+        width: 2.5rem;
+        height: 2.5rem;
+      }
+    }
+
+    @media (prefers-reduced-motion: reduce) {
+      html {
+        scroll-behavior: auto;
+      }
+
+      *,
+      *::before,
+      *::after {
+        animation-duration: 0.01ms;
+        animation-iteration-count: 1;
+        transition-duration: 0.01ms;
+      }
+    }
+
+    /* GitHub brand refinement: Primer-like hierarchy over the required Clawpilot tokens. */
+    body {
+      min-width: 20rem;
+      text-rendering: optimizeLegibility;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    .reading-progress {
+      background: var(--cp-link);
+    }
+
+    .snapshot-bar {
+      position: sticky;
+      z-index: 80;
+      top: 0;
+      min-height: 4rem;
+      justify-content: space-between;
+      padding: 0.625rem 1.25rem;
+      background: var(--cp-surface);
+      box-shadow: 0 0.0625rem 0 var(--cp-border);
+      text-align: left;
+    }
+
+    .snapshot-brand {
+      display: inline-flex;
+      align-items: center;
+      gap: 0.75rem;
+      color: var(--cp-text);
+      text-decoration: none;
+    }
+
+    .snapshot-brand-mark {
+      display: grid;
+      width: 2.5rem;
+      height: 2.5rem;
+      place-items: center;
+      border: 0.0625rem solid var(--cp-border-strong);
+      border-radius: 0.625rem;
+      background: var(--cp-bg-elevated);
+      color: var(--cp-accent);
+    }
+
+    .snapshot-brand-mark svg {
+      width: 1.25rem;
+      height: 1.25rem;
+    }
+
+    .snapshot-brand-copy {
+      display: grid;
+      line-height: 1.2;
+    }
+
+    .snapshot-brand-copy strong {
+      color: var(--cp-text);
+      font-size: 0.875rem;
+    }
+
+    .snapshot-brand-copy small {
+      color: var(--cp-text-muted);
+      font-size: 0.6875rem;
+    }
+
+    .snapshot-meta {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 0.625rem;
+    }
+
+    .snapshot-actions {
+      display: flex;
+      min-width: 0;
+      align-items: center;
+      gap: 1rem;
+    }
+
+    .language-control {
+      display: flex;
+      align-items: center;
+      gap: 0.45rem;
+      flex: 0 0 auto;
+    }
+
+    .language-control > svg {
+      width: 1rem;
+      height: 1rem;
+      color: var(--cp-text-muted);
+    }
+
+    .language-buttons {
+      display: inline-flex;
+      align-items: center;
+      padding: 0.125rem;
+      border: 0.0625rem solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-surface-soft);
+    }
+
+    .language-buttons button {
+      min-width: 3rem;
+      min-height: 2.25rem;
+      padding: 0.35rem 0.65rem;
+      border: 0;
+      border-radius: 0.5rem;
+      background: var(--cp-surface-soft);
+      color: var(--cp-text-muted);
+      font-size: 0.75rem;
+      font-weight: 700;
+      cursor: pointer;
+    }
+
+    .language-buttons button:hover {
+      color: var(--cp-text);
+    }
+
+    .language-buttons button[aria-pressed="true"] {
+      background: var(--cp-surface);
+      box-shadow: inset 0 0 0 0.0625rem var(--cp-border-strong);
+      color: var(--cp-text);
+    }
+
+    .language-short {
+      display: none;
+    }
+
+    .locale-status {
+      position: fixed;
+      z-index: 95;
+      right: 1rem;
+      bottom: 1rem;
+      max-width: min(26rem, calc(100% - 2rem));
+      min-height: 3rem;
+      padding: 0.75rem 1rem;
+      border: 0.0625rem solid var(--cp-border);
+      border-radius: 0.625rem;
+      background: var(--cp-panel-strong);
+      box-shadow: var(--cp-shadow);
+      color: var(--cp-text);
+      font-size: 0.8125rem;
+    }
+
+    .locale-status[data-tone="warning"] {
+      border-color: var(--cp-warning);
+    }
+
+    .masthead {
+      background: var(--cp-bg);
+    }
+
+    .masthead-grid {
+      opacity: 0.58;
+    }
+
+    .hero {
+      width: min(80rem, calc(100% - 2rem));
+      min-height: min(48rem, calc(100vh - 4rem));
+      grid-template-columns: minmax(18rem, 0.9fr) minmax(32rem, 1.1fr);
+      gap: clamp(2rem, 5vw, 4.5rem);
+    }
+
+    h1 {
+      max-width: 12ch;
+      font-size: clamp(2.55rem, 6vw, 4.8rem);
+      font-weight: 720;
+      letter-spacing: -0.055em;
+    }
+
+    h1 em {
+      color: var(--cp-success);
+    }
+
+    .hero-mark {
+      color: var(--cp-text);
+    }
+
+    .button {
+      border-color: var(--cp-border);
+      box-shadow: 0 0.0625rem 0 var(--cp-border);
+      font-weight: 650;
+    }
+
+    .button:hover {
+      border-color: var(--cp-link);
+      background: var(--cp-surface);
+      color: var(--cp-link);
+    }
+
+    .button.primary {
+      border-color: var(--cp-text);
+      background: var(--cp-text);
+      color: var(--cp-surface);
+    }
+
+    .button.primary:hover {
+      border-color: var(--cp-text-soft);
+      background: var(--cp-text-soft);
+      color: var(--cp-surface);
+    }
+
+    .trace-lab,
+    .surface-map,
+    .prompt-sheet,
+    .table-wrap,
+    .learning-stage {
+      box-shadow: 0 0.0625rem 0 var(--cp-border);
+    }
+
+    .trace-lab::before {
+      background: var(--cp-link);
+    }
+
+    .lab-window {
+      display: inline-flex;
+      min-width: 0;
+      align-items: center;
+      gap: 0.75rem;
+    }
+
+    .lab-dots {
+      display: inline-flex;
+      gap: 0.3rem;
+      flex: 0 0 auto;
+    }
+
+    .lab-dots i {
+      width: 0.55rem;
+      height: 0.55rem;
+      border-radius: 50%;
+      background: var(--cp-border-strong);
+    }
+
+    .lab-dots i:first-child {
+      background: var(--cp-danger);
+    }
+
+    .lab-dots i:nth-child(2) {
+      background: var(--cp-warning);
+    }
+
+    .lab-dots i:last-child {
+      background: var(--cp-success);
+    }
+
+    .lab-file::before {
+      display: none;
+    }
+
+    .trace-step button[aria-selected="true"] {
+      background: var(--cp-surface);
+      color: var(--cp-link);
+    }
+
+    .trace-step button[aria-selected="true"]::before {
+      border-color: var(--cp-link);
+      background: var(--cp-link);
+      color: var(--cp-surface);
+    }
+
+    .code-line.add {
+      border-color: var(--cp-link);
+      background: var(--cp-surface-soft);
+    }
+
+    .hero-route:hover {
+      color: var(--cp-link);
+    }
+
+    .page-shell {
+      width: min(80rem, calc(100% - 2rem));
+      grid-template-columns: 16rem minmax(0, 1fr);
+      gap: clamp(2rem, 4vw, 4rem);
+    }
+
+    .side-nav {
+      top: 5.25rem;
+    }
+
+    .side-nav ol {
+      padding: 0;
+      counter-reset: route;
+    }
+
+    .side-nav ol::before {
+      display: none;
+    }
+
+    .side-nav li {
+      counter-increment: route;
+    }
+
+    .side-nav li::before {
+      content: counter(route);
+      left: 0.65rem;
+      top: 0.75rem;
+      display: grid;
+      width: 2rem;
+      height: 2rem;
+      place-items: center;
+      border: 0.0625rem solid var(--cp-border);
+      background: var(--cp-surface);
+      color: var(--cp-text-muted);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-size: 0.6875rem;
+      font-weight: 750;
+    }
+
+    .side-nav li:has(a[aria-current="true"])::before {
+      border-color: var(--cp-link);
+      background: var(--cp-surface);
+      color: var(--cp-link);
+    }
+
+    .side-nav a {
+      min-height: 3.5rem;
+      padding: 0.75rem 0.65rem 0.75rem 3.25rem;
+      border-radius: 0.625rem;
+    }
+
+    .side-nav a:hover {
+      background: var(--cp-surface-soft);
+      color: var(--cp-text);
+    }
+
+    .side-nav a[aria-current="true"] {
+      border-color: var(--cp-border);
+      background: var(--cp-surface);
+      box-shadow: inset 0.0625rem 0 var(--cp-link);
+      color: var(--cp-link);
+    }
+
+    main {
+      counter-reset: guide-section;
+    }
+
+    .section {
+      counter-increment: guide-section;
+    }
+
+    .section-heading {
+      grid-template-columns: 5.5rem minmax(0, 1fr) minmax(15rem, 0.38fr);
+      gap: 1.5rem;
+      align-items: start;
+    }
+
+    .section-heading::before {
+      content: counter(guide-section, decimal-leading-zero);
+      color: var(--cp-border-strong);
+      font-family: Consolas, "Courier New", Courier, monospace;
+      font-size: clamp(2.75rem, 6vw, 4.75rem);
+      font-weight: 750;
+      line-height: 1;
+      letter-spacing: -0.08em;
+    }
+
+    .section-heading h2 {
+      max-width: 18ch;
+      margin-top: 0.2rem;
+      font-size: clamp(2rem, 4vw, 3.25rem);
+      font-weight: 720;
+    }
+
+    .section-heading p {
+      margin-top: 0.75rem;
+    }
+
+    .concept-statement strong {
+      color: var(--cp-link);
+    }
+
+    .prompt-formula li::before {
+      background: var(--cp-text);
+      color: var(--cp-surface);
+    }
+
+    .surface-map .core,
+    .safety-loop .core-disc {
+      fill: var(--cp-text);
+      stroke: var(--cp-text);
+    }
+
+    .surface-map .on-accent,
+    .safety-loop .on-accent {
+      fill: var(--cp-surface);
+    }
+
+    .surface-map .route {
+      stroke: var(--cp-link);
+    }
+
+    .surface-map .pulse {
+      stroke: var(--cp-link);
+    }
+
+    .badge {
+      border-radius: 999px;
+    }
+
+    .badge.future::before {
+      background: var(--cp-link);
+    }
+
+    .minute-track {
+      border-color: var(--cp-link);
+    }
+
+    .minute-step::before {
+      border-color: var(--cp-link);
+    }
+
+    .minute-step time {
+      color: var(--cp-text);
+    }
+
+    .copy-button:hover {
+      border-color: var(--cp-link);
+      color: var(--cp-link);
+    }
+
+    .plan-filter[aria-pressed="true"] {
+      border-color: var(--cp-text);
+      background: var(--cp-text);
+      color: var(--cp-surface);
+    }
+
+    .safety-loop .path {
+      stroke: var(--cp-success);
+    }
+
+    .safety-loop .stop {
+      stroke: var(--cp-success);
+    }
+
+    .release-date::after {
+      border-color: var(--cp-success);
+    }
+
+    .release-event {
+      border-color: var(--cp-link);
+    }
+
+    .learning-stage::after {
+      background: var(--cp-link);
+    }
+
+    .concept-note {
+      border-left-color: var(--cp-border-strong);
+    }
+
+    .tool-verb,
+    .release-date,
+    .learning-stage time,
+    .sources li::before {
+      color: var(--cp-text);
+    }
+
+    .safety-list li::before {
+      color: var(--cp-success);
+    }
+
+    .try-check input {
+      accent-color: var(--cp-success);
+    }
+
+    tbody tr:hover {
+      background: var(--cp-surface-soft);
+    }
+
+    .section-heading::before {
+      color: var(--cp-text-muted);
+    }
+
+    .back-top {
+      border-color: var(--cp-text);
+      background: var(--cp-text);
+      color: var(--cp-surface);
+    }
+
+    .back-top:hover {
+      border-color: var(--cp-text-soft);
+      background: var(--cp-text-soft);
+      color: var(--cp-surface);
+    }
+
+    @media (max-width: 68rem) {
+      .hero {
+        grid-template-columns: 1fr;
+      }
+
+      .page-shell {
+        grid-template-columns: 1fr;
+        padding-top: 0;
+      }
+
+      .side-nav {
+        top: 4.25rem;
+      }
+
+      .side-nav li::before {
+        display: none;
+      }
+
+      .side-nav a {
+        min-height: auto;
+        padding: 0.4rem 0.7rem;
+      }
+    }
+
+    @media (max-width: 52rem) {
+      .snapshot-meta {
+        display: none;
+      }
+
+      .section-heading {
+        grid-template-columns: 4rem minmax(0, 1fr);
+        gap: 1rem;
+      }
+
+      .section-heading::before {
+        font-size: 2.75rem;
+      }
+
+      .section-heading p {
+        grid-column: 2;
+        margin-top: 0;
+      }
+    }
+
+    @media (max-width: 38rem) {
+      .snapshot-bar {
+        min-height: 3.75rem;
+        padding-inline: 0.625rem;
+      }
+
+      .snapshot-brand {
+        gap: 0.5rem;
+      }
+
+      .snapshot-brand-mark {
+        width: 2.25rem;
+        height: 2.25rem;
+      }
+
+      .snapshot-brand-copy small {
+        display: none;
+      }
+
+      .snapshot-meta {
+        gap: 0.4rem;
+      }
+
+      .snapshot-actions {
+        gap: 0.5rem;
+      }
+
+      .language-full {
+        display: none;
+      }
+
+      .language-short {
+        display: inline;
+      }
+
+      .language-buttons button {
+        min-width: 2.5rem;
+        padding-inline: 0.45rem;
+      }
+
+      .snapshot-short {
+        font-size: 0.6875rem;
+      }
+
+      .hero {
+        width: min(100% - 1.25rem, 80rem);
+      }
+
+      .section-heading {
+        grid-template-columns: 3.25rem minmax(0, 1fr);
+      }
+
+      .section-heading::before {
+        font-size: 2.25rem;
+      }
+    }
+  </style>
+</head>
+<body id="top">
+  <a class="skip-link" href="#main">本文へ移動</a>
+  <div class="reading-progress" id="reading-progress" aria-hidden="true"></div>
+
+  <div class="snapshot-bar">
+    <a class="snapshot-brand" href="#top" aria-label="ページ上部へ戻る">
+      <span class="snapshot-brand-mark" aria-hidden="true">
+        <svg viewBox="0 0 24 24">
+          <path d="M5 8.5 12 4l7 4.5v7L12 20l-7-4.5z" fill="none" stroke="currentColor" stroke-width="1.7"/>
+          <path d="m8 10 2 2-2 2m5 0h3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </span>
+      <span class="snapshot-brand-copy">
+        <strong>GitHub Copilot</strong>
+        <small>Beginner Guide</small>
+      </span>
+    </a>
+    <div class="snapshot-actions">
+      <span class="snapshot-meta">
+        <span class="snapshot-dot" aria-hidden="true"></span>
+        <span class="snapshot-long">GitHub公式一次情報のみ · 2026年9月1日スナップショット</span>
+        <span class="snapshot-short">公式情報 · 2026-09-01</span>
+      </span>
+      <div class="language-control">
+        <svg viewBox="0 0 24 24" aria-hidden="true">
+          <path d="m5 8 6 6m-7 0 6-6 2-3M2 5h12m-7-3h1m14 20-5-10-5 10m2-4h6" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+        <div class="language-buttons" role="group" aria-label="表示言語を選択">
+          <button type="button" lang="ja" data-locale-option="ja" aria-pressed="true" aria-label="日本語">
+            <span class="language-full">日本語</span><span class="language-short" aria-hidden="true">JA</span>
+          </button>
+          <button type="button" lang="en" data-locale-option="en" aria-pressed="false" aria-label="English">
+            <span class="language-full">English</span><span class="language-short" aria-hidden="true">EN</span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </div>
+  <div class="locale-status" id="locale-status" role="status" aria-live="polite" hidden></div>
+
+  <header class="masthead">
+    <svg class="masthead-grid" viewBox="0 0 1440 800" preserveAspectRatio="none" aria-hidden="true">
+      <path d="M0 120H1440M0 280H1440M0 440H1440M0 600H1440M160 0V800M480 0V800M800 0V800M1120 0V800" fill="none" stroke="var(--cp-border)" stroke-width="1"/>
+      <path d="M160 600C360 600 320 280 480 280S640 440 800 440 960 120 1120 120 1280 280 1440 280" fill="none" stroke="var(--cp-link)" stroke-width="2"/>
+      <circle cx="160" cy="600" r="6" fill="var(--cp-surface)" stroke="var(--cp-link)" stroke-width="2"/>
+      <circle cx="480" cy="280" r="6" fill="var(--cp-surface)" stroke="var(--cp-link)" stroke-width="2"/>
+      <circle cx="800" cy="440" r="6" fill="var(--cp-surface)" stroke="var(--cp-link)" stroke-width="2"/>
+      <circle cx="1120" cy="120" r="6" fill="var(--cp-surface)" stroke="var(--cp-link)" stroke-width="2"/>
+    </svg>
+
+    <div class="hero">
+      <div class="hero-copy">
+        <div class="hero-mark">
+          <svg viewBox="0 0 24 24" aria-hidden="true">
+            <path d="M5 8.5 12 4l7 4.5v7L12 20l-7-4.5z" fill="none" stroke="var(--cp-link)" stroke-width="1.7"/>
+            <path d="m8 10 2 2-2 2m5 0h3" fill="none" stroke="var(--cp-link)" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+          初学者向けインタラクティブガイド
+        </div>
+        <h1>AIに任せる前に、<em>一緒に働く。</em></h1>
+        <p class="hero-lead">
+          Copilotはコードを書く速さだけでなく、理解・修正・レビューの流れを支えるAIコーディングアシスタントです。
+          ただし、最後に判断するのは常にあなたです。<a class="cite" href="#source-4" aria-label="出典4">[4]</a>
+        </p>
+        <div class="hero-actions">
+          <a class="button primary" href="#first-15">15分で試す</a>
+          <a class="button" href="#features">機能の違いを見る</a>
+        </div>
+      </div>
+
+      <div class="trace-lab" aria-labelledby="trace-title">
+        <div class="lab-topbar">
+          <span class="lab-window">
+            <span class="lab-dots" aria-hidden="true"><i></i><i></i><i></i></span>
+            <span class="lab-file">pair-work.trace · 架空の例</span>
+          </span>
+          <span class="lab-mode">Human in the loop</span>
+        </div>
+        <ol class="trace-steps" role="tablist" aria-label="Copilotとの共同作業">
+          <li class="trace-step" role="presentation"><button id="trace-tab-1" type="button" role="tab" aria-controls="trace-panel" aria-selected="true" tabindex="0" data-step="1" data-trace="0">依頼</button></li>
+          <li class="trace-step" role="presentation"><button id="trace-tab-2" type="button" role="tab" aria-controls="trace-panel" aria-selected="false" tabindex="-1" data-step="2" data-trace="1">文脈</button></li>
+          <li class="trace-step" role="presentation"><button id="trace-tab-3" type="button" role="tab" aria-controls="trace-panel" aria-selected="false" tabindex="-1" data-step="3" data-trace="2">提案</button></li>
+          <li class="trace-step" role="presentation"><button id="trace-tab-4" type="button" role="tab" aria-controls="trace-panel" aria-selected="false" tabindex="-1" data-step="4" data-trace="3">検証</button></li>
+          <li class="trace-step" role="presentation"><button id="trace-tab-5" type="button" role="tab" aria-controls="trace-panel" aria-selected="false" tabindex="-1" data-step="5" data-trace="4">採用</button></li>
+        </ol>
+        <div class="lab-body" id="trace-panel" role="tabpanel" tabindex="0" aria-labelledby="trace-tab-1">
+          <div class="lab-explain">
+            <h2 id="trace-title">まず目的を伝える</h2>
+            <p id="trace-description">「何を変えるか」だけでなく、理由と完了条件まで短く伝えます。</p>
+            <p class="lab-rule" id="trace-rule"><strong>人の役割:</strong> 問題と成功条件を決める。</p>
+          </div>
+          <div class="lab-state">
+            <span class="state-label">その時点の作業状態</span>
+            <pre class="lab-code" id="trace-code">依頼:
+ログインフォームに
+クライアント側の検証を追加。
+
+完了条件:
+- エラーを日本語で表示
+- キーボード操作を維持
+- 既存テストを壊さない</pre>
+          </div>
+        </div>
+      </div>
+
+      <a class="hero-route" href="#overview" aria-label="共同作業の全体像へ移動">
+        <span>スクロールして共同作業の全体像へ</span>
+        <svg viewBox="0 0 16 16">
+          <path d="m4 6 4 4 4-4" fill="none" stroke="var(--cp-text-muted)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+    </div>
+  </header>
+
+  <div class="page-shell">
+    <nav class="side-nav" aria-label="このガイドの目次">
+      <strong>Learning route</strong>
+      <ol>
+        <li><a href="#overview" aria-current="true">全体像</a></li>
+        <li><a href="#features">主要機能</a></li>
+        <li><a href="#first-15">最初の15分</a></li>
+        <li><a href="#prompting">頼み方</a></li>
+        <li><a href="#plans">プラン</a></li>
+        <li><a href="#safety">安全な使い方</a></li>
+        <li><a href="#timeline">最新動向</a></li>
+        <li><a href="#next">次に学ぶ</a></li>
+        <li><a href="#glossary">用語集</a></li>
+        <li><a href="#sources">出典</a></li>
+      </ol>
+    </nav>
+
+    <main id="main">
+      <section class="section" id="overview" aria-labelledby="overview-title">
+        <div class="section-heading">
+          <h2 id="overview-title">Copilotは、場所ごとに役割が変わる</h2>
+          <p>
+            同じCopilotでも、IDEでは実装、GitHub.comでは理解やレビュー、CLIではターミナル作業を支援します。
+            <a class="cite" href="#source-2" aria-label="出典2">[2]</a>
+          </p>
+        </div>
+
+        <div class="concept-line">
+          <p class="concept-statement">
+            中心にあるのは、<strong>依頼 → 提案 → 人の検証</strong>という一つのループです。
+          </p>
+          <p class="concept-note">
+            Copilotは専門知識の代わりではありません。コードを理解し、テストし、採用する責任は利用者に残ります。
+            <a class="cite" href="#source-4" aria-label="出典4">[4]</a>
+          </p>
+        </div>
+
+        <figure class="surface-map" tabindex="0" role="group" aria-label="Copilotの利用面を示す図。横に収まらない場合はスクロールできます">
+          <svg viewBox="0 0 900 500" role="img" aria-labelledby="map-title map-desc">
+            <title id="map-title">GitHub Copilotを利用する主な場所</title>
+            <desc id="map-desc">中央の共同作業ループから、IDE、GitHub.com、CLI、Copilot appとMobileへ接続する図。</desc>
+            <path class="route" d="M450 250C310 250 300 115 185 115M450 250C590 250 600 115 715 115M450 250C310 250 300 385 185 385M450 250C590 250 600 385 715 385"/>
+            <circle class="pulse" cx="450" cy="250" r="112"/>
+            <circle class="core" cx="450" cy="250" r="82"/>
+            <text class="on-accent" x="450" y="236" text-anchor="middle" font-size="22" font-weight="750">依頼・提案</text>
+            <text class="on-accent" x="450" y="269" text-anchor="middle" font-size="22" font-weight="750">人が検証</text>
+
+            <rect class="node" x="80" y="55" width="210" height="120" rx="10"/>
+            <text x="105" y="95" font-size="21" font-weight="750">IDE</text>
+            <text class="muted" x="105" y="127" font-size="15">補完・Chat・Edit</text>
+            <text class="muted" x="105" y="151" font-size="15">Agent mode</text>
+
+            <rect class="node" x="610" y="55" width="210" height="120" rx="10"/>
+            <text x="635" y="95" font-size="21" font-weight="750">GitHub.com</text>
+            <text class="muted" x="635" y="127" font-size="15">リポジトリを質問</text>
+            <text class="muted" x="635" y="151" font-size="15">PR要約・Code review</text>
+
+            <rect class="node" x="80" y="325" width="210" height="120" rx="10"/>
+            <text x="105" y="365" font-size="21" font-weight="750">Copilot CLI</text>
+            <text class="muted" x="105" y="397" font-size="15">調査・実装・修正</text>
+            <text class="muted" x="105" y="421" font-size="15">ターミナルでPRまで</text>
+
+            <rect class="node" x="610" y="325" width="210" height="120" rx="10"/>
+            <text x="635" y="365" font-size="21" font-weight="750">App / Mobile</text>
+            <text class="muted" x="635" y="397" font-size="15">複数Agentを管理</text>
+            <text class="muted" x="635" y="421" font-size="15">移動中も進捗を確認</text>
+          </svg>
+          <figcaption class="visually-hidden">主な利用面と、それぞれで行う作業の関係。</figcaption>
+        </figure>
+        <ul class="surface-notes">
+          <li><strong>書きながら</strong><span>IDEの補完・Inline Chat</span></li>
+          <li><strong>まとまった変更</strong><span>Edit・Agent mode</span></li>
+          <li><strong>GitHub上で</strong><span>Chat・PR・Code review</span></li>
+          <li><strong>任せて追跡</strong><span>Cloud agent・App</span></li>
+        </ul>
+      </section>
+
+      <section class="section" id="features" aria-labelledby="features-title">
+        <div class="section-heading">
+          <h2 id="features-title">最初は3つ、次に4つ</h2>
+          <p>
+            すべてを一度に覚える必要はありません。提案を受ける機能から始め、変更範囲と権限が大きい機能へ進みます。
+            <a class="cite" href="#source-2" aria-label="出典2">[2]</a>
+          </p>
+        </div>
+
+        <div class="legend" aria-label="提供段階の凡例">
+          <span class="badge ga">GA / 一般提供</span>
+          <span class="badge preview">Preview / 変更可能性あり</span>
+          <span class="badge">利用可能・クライアント差あり</span>
+          <span class="badge future">発表済み・未施行</span>
+        </div>
+
+        <div class="tool-bands">
+          <article class="tool-band">
+            <div>
+              <h3>まず使う</h3>
+              <p>人が主導し、提案をその場で確認する。</p>
+            </div>
+            <ul class="tool-list">
+              <li>
+                <div class="tool-name">Code completions <span class="badge ga">GA</span></div>
+                <p><span class="tool-verb">書く。</span>入力中にコード候補を受け取り、必要な部分だけ採用します。</p>
+              </li>
+              <li>
+                <div class="tool-name">Copilot Chat <span class="badge ga">GA</span></div>
+                <p><span class="tool-verb">理解する。</span>コードの説明、デバッグ、テスト案などを自然言語で相談します。</p>
+              </li>
+              <li>
+                <div class="tool-name">Inline Chat <span class="badge">Client差</span></div>
+                <p><span class="tool-verb">その場で直す。</span>選択したコードを説明・修正し、差分を小さく保ちます。</p>
+              </li>
+            </ul>
+          </article>
+
+          <article class="tool-band">
+            <div>
+              <h3>作業を広げる</h3>
+              <p>複数ファイルやコマンドを扱う。必ず差分と実行内容を確認する。</p>
+            </div>
+            <ul class="tool-list">
+              <li>
+                <div class="tool-name">Edit mode <span class="badge">Client差</span></div>
+                <p><span class="tool-verb">まとめて編集。</span>選んだ複数ファイルへ、関連する変更を一度に提案します。</p>
+              </li>
+              <li>
+                <div class="tool-name">Agent mode <span class="badge ga">GA</span></div>
+                <p><span class="tool-verb">反復する。</span>IDE内でファイル編集やコマンドを繰り返し、完了条件へ近づけます。</p>
+              </li>
+              <li>
+                <div class="tool-name">Code review <span class="badge ga">GA*</span></div>
+                <p><span class="tool-verb">見直す。</span>選択コードやPRへレビュー提案を返します。*GitHub.comとVS CodeでGA。クライアント差があります。<a class="cite" href="#source-7" aria-label="出典7">[7]</a></p>
+              </li>
+              <li>
+                <div class="tool-name">Copilot CLI <span class="badge ga">GA</span></div>
+                <p><span class="tool-verb">端末で進める。</span>調査、修正、テスト、PR作成までをターミナルから支援します。<a class="cite" href="#source-10" aria-label="出典10">[10]</a></p>
+              </li>
+            </ul>
+          </article>
+
+          <article class="tool-band">
+            <div>
+              <h3>委任と文脈</h3>
+              <p>非同期作業や外部ツール連携。初心者は仕組みを理解してから。</p>
+            </div>
+            <ul class="tool-list">
+              <li>
+                <div class="tool-name">Cloud agent <span class="badge ga">GA</span></div>
+                <p><span class="tool-verb">Issueを任せる。</span>クラウドで調査・実装し、ブランチとPRを作ります。旧称はcoding agentです。<a class="cite" href="#source-8" aria-label="出典8">[8]</a></p>
+              </li>
+              <li>
+                <div class="tool-name">Copilot Spaces <span class="badge ga">GA</span></div>
+                <p><span class="tool-verb">文脈を束ねる。</span>コード、仕様、ドキュメントをまとめ、特定の仕事に沿った回答を得ます。<a class="cite" href="#source-9" aria-label="出典9">[9]</a></p>
+              </li>
+              <li>
+                <div class="tool-name">Custom instructions <span class="badge ga">GA</span></div>
+                <p><span class="tool-verb">ルールを共有。</span>言語、テスト、命名などの期待を個人・リポジトリ・組織の指示として伝えます。</p>
+              </li>
+              <li>
+                <div class="tool-name">MCP / Skills <span class="badge">Advanced</span></div>
+                <p><span class="tool-verb">能力を拡張。</span>外部ツールや専門手順を接続します。アクセス権と送信データを理解してから使います。</p>
+              </li>
+            </ul>
+          </article>
+        </div>
+
+        <div class="callout">
+          <strong>モデル名は暗記しなくて大丈夫です。</strong>
+          <p>対応モデルと価格は頻繁に変わります。最初はAuto model selectionを使い、複雑さ・速度・AI Credits消費を見ながら選択を学びます。</p>
+        </div>
+      </section>
+
+      <section class="section" id="first-15" aria-labelledby="first-title">
+        <div class="section-heading">
+          <h2 id="first-title">最初の15分は、小さな差分で</h2>
+          <p>
+            公式Quickstartとベストプラクティスを、失敗しにくい一連の流れへ組み直しました。
+            <a class="cite" href="#source-3" aria-label="出典3">[3]</a>
+            <a class="cite" href="#source-4" aria-label="出典4">[4]</a>
+          </p>
+        </div>
+
+        <div class="minute-track">
+          <article class="minute-step">
+            <time>00–05 min</time>
+            <h3>説明させる</h3>
+            <p>GitHub.comまたはIDEで小さなHTMLを開き、「この構造を初心者向けに説明して」と尋ねます。</p>
+          </article>
+          <article class="minute-step">
+            <time>05–10 min</time>
+            <h3>補完を試す</h3>
+            <p>追加したい要素をコメントで書き、提案を読みます。理解できる候補だけを採用します。</p>
+          </article>
+          <article class="minute-step">
+            <time>10–13 min</time>
+            <h3>一箇所直す</h3>
+            <p>短い範囲を選択し、Inline Chatでアクセシビリティ改善を依頼します。</p>
+          </article>
+          <article class="minute-step">
+            <time>13–15 min</time>
+            <h3>差分を検証</h3>
+            <p>変更前後を比較し、ブラウザ表示とテストを確認します。理解できなければ採用しません。</p>
+          </article>
+        </div>
+
+        <div class="try-checklist" aria-label="15分ワークのチェックリスト">
+          <label class="try-check"><input type="checkbox"> 説明を自分の言葉で言い直せた</label>
+          <label class="try-check"><input type="checkbox"> 提案を一行ずつ確認した</label>
+          <label class="try-check"><input type="checkbox"> 差分が目的に沿っている</label>
+          <label class="try-check"><input type="checkbox"> 実行・テストで確かめた</label>
+        </div>
+
+        <div class="callout">
+          <strong>Agent modeやCloud agentは二回目以降で。</strong>
+          <p>コマンド実行、複数ファイル変更、権限の意味を説明できるようになってから、任せる範囲を広げます。</p>
+        </div>
+      </section>
+
+      <section class="section" id="prompting" aria-labelledby="prompt-title">
+        <div class="section-heading">
+          <h2 id="prompt-title">良い依頼は、4つの部品でできている</h2>
+          <p>
+            複雑な仕事を分け、要件を具体化し、例と完了条件を渡すほど、提案を評価しやすくなります。
+            <a class="cite" href="#source-4" aria-label="出典4">[4]</a>
+          </p>
+        </div>
+
+        <div class="prompt-workshop">
+          <ol class="prompt-formula">
+            <li><strong>文脈</strong><span>対象ファイル、現在の状態、関係する仕様</span></li>
+            <li><strong>目的</strong><span>誰の、どんな問題を解決するか</span></li>
+            <li><strong>制約</strong><span>変えてはいけないもの、技術・品質の条件</span></li>
+            <li><strong>完了条件</strong><span>テスト可能な結果と確認方法</span></li>
+          </ol>
+
+          <div class="prompt-sheet">
+            <div class="prompt-sheet-header">
+              <span>beginner-safe-prompt.txt</span>
+              <button class="copy-button" id="copy-prompt" type="button">例をコピー</button>
+            </div>
+            <pre class="prompt-code" id="prompt-example">文脈:
+src/login-form.tsx の既存フォームを対象にします。
+
+目的:
+送信前に必須項目を検証し、日本語のエラーを表示してください。
+
+制約:
+外部ライブラリは追加しないでください。
+既存のキーボード操作とAPI呼び出しは変えないでください。
+
+完了条件:
+正常・未入力・不正形式のテストを追加し、
+変更したファイルと判断理由を最後に説明してください。</pre>
+            <div class="prompt-annotation" aria-hidden="true">
+              <span>context</span>
+              <span>goal</span>
+              <span>constraints</span>
+              <span>done</span>
+            </div>
+            <p class="visually-hidden" id="copy-status" aria-live="polite"></p>
+          </div>
+        </div>
+
+        <div>
+          <details>
+            <summary>「うまくいかない」時に最初に変えること</summary>
+            <p>タスクを小さくし、関係するファイルだけを開き、期待する入力と出力の例を一つ渡します。長い会話で文脈が混ざったら、新しい会話からやり直します。</p>
+          </details>
+          <details>
+            <summary>結果が長すぎる時の頼み方</summary>
+            <p>「まず計画だけ」「変更対象を3ファイル以内」「差分を小さく」「判断が必要なら実装前に列挙」など、進め方そのものを制約にします。</p>
+          </details>
+          <details>
+            <summary>Custom instructionsを使うタイミング</summary>
+            <p>同じ命名、テスト、言語、レビュー基準を繰り返し伝えているなら、個人・リポジトリ・組織の指示へ移します。指示が実際のツールやポリシーと矛盾しないことも確認します。</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="section" id="plans" aria-labelledby="plans-title">
+        <div class="section-heading">
+          <h2 id="plans-title">プランは「使う量」と「管理」で選ぶ</h2>
+          <p>
+            価格とAI Creditsは2026年9月1日時点の公式Docsです。通貨はUSD、税は含みません。
+            <a class="cite" href="#source-1" aria-label="出典1">[1]</a>
+            <a class="cite" href="#source-5" aria-label="出典5">[5]</a>
+            <a class="cite" href="#source-6" aria-label="出典6">[6]</a>
+          </p>
+        </div>
+
+        <div class="plan-controls" role="group" aria-label="プラン表の絞り込み">
+          <button class="plan-filter" type="button" data-plan-filter="all" aria-pressed="true">すべて</button>
+          <button class="plan-filter" type="button" data-plan-filter="individual" aria-pressed="false">個人向け</button>
+          <button class="plan-filter" type="button" data-plan-filter="organization" aria-pressed="false">組織向け</button>
+        </div>
+
+        <div class="table-wrap" tabindex="0" role="group" aria-label="Copilotプラン比較表。横に収まらない場合はスクロールできます">
+          <table>
+            <caption class="visually-hidden">GitHub Copilotプラン比較</caption>
+            <thead>
+              <tr>
+                <th scope="col">プラン</th>
+                <th scope="col">月額</th>
+                <th scope="col">月間AI Credits</th>
+                <th scope="col">Code completions</th>
+                <th scope="col">向いている人</th>
+              </tr>
+            </thead>
+            <tbody>
+              <tr data-plan-group="individual">
+                <td class="plan-name">Free</td>
+                <td class="plan-price">無料</td>
+                <td>枠あり・数値非公開</td>
+                <td>2,000回</td>
+                <td>まず補完とChatを試したい</td>
+              </tr>
+              <tr data-plan-group="individual">
+                <td class="plan-name">Student</td>
+                <td class="plan-price">無料*</td>
+                <td>枠あり・数値非公開</td>
+                <td>無制限</td>
+                <td>認証済み学生として学びたい</td>
+              </tr>
+              <tr data-plan-group="individual">
+                <td class="plan-name">Pro</td>
+                <td class="plan-price">$10 <a class="cite" href="#source-1" aria-label="出典1">[1]</a></td>
+                <td>1,500 <a class="cite" href="#source-5" aria-label="出典5">[5]</a></td>
+                <td>無制限</td>
+                <td>日常的に開発で使う個人</td>
+              </tr>
+              <tr data-plan-group="individual">
+                <td class="plan-name">Pro+</td>
+                <td class="plan-price">$39 <a class="cite" href="#source-1" aria-label="出典1">[1]</a></td>
+                <td>7,000 <a class="cite" href="#source-5" aria-label="出典5">[5]</a></td>
+                <td>無制限</td>
+                <td>高度なモデルを多く使う個人</td>
+              </tr>
+              <tr data-plan-group="individual">
+                <td class="plan-name">Max</td>
+                <td class="plan-price">$100 <a class="cite" href="#source-1" aria-label="出典1">[1]</a></td>
+                <td>20,000 <a class="cite" href="#source-5" aria-label="出典5">[5]</a></td>
+                <td>無制限</td>
+                <td>継続的に大量利用する個人</td>
+              </tr>
+              <tr data-plan-group="organization">
+                <td class="plan-name">Business</td>
+                <td class="plan-price">$19 / seat <a class="cite" href="#source-1" aria-label="出典1">[1]</a></td>
+                <td>1,900 / user* <a class="cite" href="#source-6" aria-label="出典6">[6]</a></td>
+                <td>無制限</td>
+                <td>ポリシーを集中管理する組織</td>
+              </tr>
+              <tr data-plan-group="organization">
+                <td class="plan-name">Enterprise</td>
+                <td class="plan-price">$39 / seat <a class="cite" href="#source-1" aria-label="出典1">[1]</a></td>
+                <td>3,900 / user* <a class="cite" href="#source-6" aria-label="出典6">[6]</a></td>
+                <td>無制限</td>
+                <td>GHECで高度な統制が必要な企業</td>
+              </tr>
+            </tbody>
+          </table>
+        </div>
+        <p class="table-note">
+          *StudentはGitHub Educationの認証が必要です。Business / EnterpriseのCreditsは課金単位でプールされます。
+          1 AI Credit = $0.01。個人有料プランのFlex allotmentは変動し得ます。Creditsは毎月1日00:00 UTCにリセットされ、繰り越されません。
+        </p>
+
+        <div class="callout">
+          <strong>迷ったらFreeで体験し、足りない理由が分かってから上げる。</strong>
+          <p>個人は利用量とモデル選択、組織はSeat、ポリシー、監査、データ条件まで含めて判断します。組織の追加利用は既定で有効のため、管理者は予算設定を確認します。</p>
+        </div>
+
+        <details>
+          <summary>GitHub Enterprise Server（GHES）で使えますか？ <span class="badge preview">Technical Preview例外</span></summary>
+          <p>
+            通常のGitHub CopilotプランはGHESでは一般提供されていません。例外として、GHES 3.22 Release Candidateには、管理者がモデルプロバイダーを設定するCopilot CLI限定のTechnical Previewがあります。これはCopilot全体のGHES対応ではありません。
+            <a class="cite" href="#source-20" aria-label="出典20">[20]</a>
+          </p>
+        </details>
+      </section>
+
+      <section class="section" id="safety" aria-labelledby="safety-title">
+        <div class="section-heading">
+          <h2 id="safety-title">採用の前に、人のゲートを置く</h2>
+          <p>
+            Copilotの提案には誤り、脆弱性、保守しにくいコード、公開コードとの類似が含まれる可能性があります。
+            <a class="cite" href="#source-4" aria-label="出典4">[4]</a>
+          </p>
+        </div>
+
+        <div class="safety-layout">
+          <div class="safety-loop">
+            <svg viewBox="0 0 520 520" role="img" aria-labelledby="safety-svg-title safety-svg-desc">
+              <title id="safety-svg-title">人が確認するレビュー・ループ</title>
+              <desc id="safety-svg-desc">目的、差分、テスト、セキュリティ、権利、ポリシーを確認してから採用する循環。</desc>
+              <circle class="ring" cx="260" cy="260" r="190"/>
+              <circle class="path" cx="260" cy="260" r="190"/>
+              <circle class="core-disc" cx="260" cy="260" r="92"/>
+              <text class="on-accent" x="260" y="247" text-anchor="middle" font-size="24" font-weight="780">YOU</text>
+              <text class="on-accent" x="260" y="278" text-anchor="middle" font-size="16">最終判断</text>
+
+              <circle class="stop" cx="260" cy="70" r="34"/>
+              <text x="260" y="75" text-anchor="middle" font-size="13" font-weight="750">目的</text>
+              <circle class="stop" cx="425" cy="165" r="34"/>
+              <text x="425" y="170" text-anchor="middle" font-size="13" font-weight="750">差分</text>
+              <circle class="stop" cx="425" cy="355" r="34"/>
+              <text x="425" y="360" text-anchor="middle" font-size="13" font-weight="750">テスト</text>
+              <circle class="stop" cx="260" cy="450" r="34"/>
+              <text x="260" y="455" text-anchor="middle" font-size="13" font-weight="750">安全</text>
+              <circle class="stop" cx="95" cy="355" r="34"/>
+              <text x="95" y="360" text-anchor="middle" font-size="13" font-weight="750">権利</text>
+              <circle class="stop" cx="95" cy="165" r="34"/>
+              <text x="95" y="170" text-anchor="middle" font-size="13" font-weight="750">規則</text>
+            </svg>
+          </div>
+
+          <ol class="safety-list">
+            <li><strong>秘密を入力しない</strong><span>鍵、トークン、個人情報、許可されていない未公開コードをプロンプトへ含めません。</span></li>
+            <li><strong>差分を一行ずつ読む</strong><span>Copilotが変更した意図と、変更していない範囲を自分で説明できる状態にします。</span></li>
+            <li><strong>実行して確かめる</strong><span>テスト、lint、code scanningなど、既存の品質ゲートを省略しません。</span></li>
+            <li><strong>公開コードとの一致を確認する</strong><span>Code referencesや組織のポリシーを確認し、必要なライセンス判断を行います。<a class="cite" href="#source-17" aria-label="出典17">[17]</a><a class="cite" href="#source-18" aria-label="出典18">[18]</a></span></li>
+            <li><strong>Content exclusionを過信しない</strong><span>機能やクライアントによって適用範囲が異なります。秘密管理の唯一の防御にはしません。<a class="cite" href="#source-16" aria-label="出典16">[16]</a></span></li>
+            <li><strong>組織のルールを優先する</strong><span>利用可能なモデル、機能、送信先、保持条件は契約と管理者設定で確認します。<a class="cite" href="#source-19" aria-label="出典19">[19]</a></span></li>
+          </ol>
+        </div>
+
+        <div class="callout">
+          <strong>「生成されたから安全」でも、「フィルターがあるから安全」でもありません。</strong>
+          <p>GitHubも、提案を理解し、レビューし、自動テストやセキュリティ検査を使って確認することを推奨しています。<a class="cite" href="#source-4" aria-label="出典4">[4]</a></p>
+        </div>
+      </section>
+
+      <section class="section" id="timeline" aria-labelledby="timeline-title">
+        <div class="section-heading">
+          <h2 id="timeline-title">2025年から「提案」より「作業」へ</h2>
+          <p>
+            Copilotは補完とChatから、レビュー、CLI、Cloud agent、企業統制へ広がりました。主要な節目だけを示します。
+          </p>
+        </div>
+
+        <ol class="release-track">
+          <li>
+            <time class="release-date">2025.04</time>
+            <div class="release-event">
+              <strong>Copilot Pro+開始、Code reviewがGA</strong>
+              <p>複数モデルとレビュー機能が、日常の開発フローへ入る節目。</p>
+              <span class="badge ga">Shipped</span>
+            </div>
+          </li>
+          <li>
+            <time class="release-date">2025.09</time>
+            <div class="release-event">
+              <strong>SpacesとCoding agentがGA、Copilot CLIがPreview</strong>
+              <p>文脈を束ねる機能と、IssueからPRまで任せる非同期作業が一般提供へ。</p>
+              <span class="badge ga">Shipped</span>
+            </div>
+          </li>
+          <li>
+            <time class="release-date">2026.02</time>
+            <div class="release-event">
+              <strong>Copilot CLIとEnterprise AI ControlsがGA</strong>
+              <p>ターミナル作業と企業のAI・Agent統制が正式な利用面として確立。<a class="cite" href="#source-11" aria-label="出典11">[11]</a></p>
+              <span class="badge ga">Shipped</span>
+            </div>
+          </li>
+          <li>
+            <time class="release-date">2026.04</time>
+            <div class="release-event">
+              <strong>「Cloud agent」表記へ移行</strong>
+              <p>調査、計画、実装をクラウドで進める役割が明確化。個人プラン変更も発表。</p>
+              <span class="badge ga">Shipped</span>
+            </div>
+          </li>
+          <li>
+            <time class="release-date">2026.06</time>
+            <div class="release-event">
+              <strong>AI Credits課金とCopilot appが本格化</strong>
+              <p>トークン量とモデルに応じるCreditsへ移行し、複数Agentを扱うデスクトップAppがGA。</p>
+              <span class="badge ga">Shipped</span>
+            </div>
+          </li>
+          <li>
+            <time class="release-date">2026.07</time>
+            <div class="release-event">
+              <strong>Copilot Visionが主要surfaceでGA</strong>
+              <p>画像や画面を文脈として渡す使い方がVS Code、GitHub.com、Copilot CLIで一般提供へ。<a class="cite" href="#source-12" aria-label="出典12">[12]</a></p>
+              <span class="badge ga">Shipped</span>
+            </div>
+          </li>
+          <li>
+            <time class="release-date">2026.08</time>
+            <div class="release-event">
+              <strong>Global model policyがGA</strong>
+              <p>企業がモデル利用を横断管理できる仕組みが一般提供へ。<a class="cite" href="#source-13" aria-label="出典13">[13]</a></p>
+              <span class="badge ga">Shipped</span>
+            </div>
+          </li>
+          <li>
+            <time class="release-date">≥ 2026.09.28</time>
+            <div class="release-event">
+              <strong>GitHub.com・Mobile・Cloud agentの統合を予告</strong>
+              <p>単一の体験とポリシー、Chat保持期間の変更、Code review既定値の変更が発表済み。9月1日時点では未施行です。<a class="cite" href="#source-14" aria-label="出典14">[14]</a></p>
+              <span class="badge future">Announced</span>
+            </div>
+          </li>
+        </ol>
+
+        <div class="freshness">
+          <strong>変化が速い領域です。</strong>
+          <p>
+            モデル、Credits、クライアントごとのPreview状態、管理ポリシーは公開後にも変わります。GitHub.com版Sparkは2026年8月4日に新規利用を停止し、既存利用も8月31日までと告知されました。
+            <a class="cite" href="#source-15" aria-label="出典15">[15]</a>
+          </p>
+        </div>
+      </section>
+
+      <section class="section" id="next" aria-labelledby="next-title">
+        <div class="section-heading">
+          <h2 id="next-title">小さく始め、検証できる範囲で広げる</h2>
+          <p>機能の数ではなく、任せる範囲と検証方法を段階的に増やします。</p>
+        </div>
+
+        <div class="learning-path">
+          <article class="learning-stage">
+            <time>DAY 1</time>
+            <h3>提案を読む</h3>
+            <ul>
+              <li>Code completions</li>
+              <li>Chatでコード説明</li>
+              <li>小さなInline Chat</li>
+              <li>差分とテスト</li>
+            </ul>
+          </article>
+          <article class="learning-stage">
+            <time>WEEK 1</time>
+            <h3>作業を分ける</h3>
+            <ul>
+              <li>4部品のプロンプト</li>
+              <li>Edit / Agent mode</li>
+              <li>Code review</li>
+              <li>Custom instructions</li>
+            </ul>
+          </article>
+          <article class="learning-stage">
+            <time>TEAM</time>
+            <h3>仕組みにする</h3>
+            <ul>
+              <li>組織ポリシー</li>
+              <li>利用量と予算</li>
+              <li>Content exclusion</li>
+              <li>監査と安全基準</li>
+            </ul>
+          </article>
+        </div>
+      </section>
+
+      <section class="section" id="glossary" aria-labelledby="glossary-title">
+        <div class="section-heading">
+          <h2 id="glossary-title">迷った時の用語集</h2>
+          <p>似た言葉は「どこで、どこまで動くか」で区別します。</p>
+        </div>
+
+        <div class="glossary-grid">
+          <details>
+            <summary>Copilot Chat</summary>
+            <p>コードやリポジトリについて会話する機能。IDE、GitHub.com、Mobileなどで利用します。</p>
+          </details>
+          <details>
+            <summary>Agent mode</summary>
+            <p>IDE内でファイル編集とコマンド実行を反復するモード。実行前の確認や権限設定が重要です。</p>
+          </details>
+          <details>
+            <summary>Copilot cloud agent</summary>
+            <p>GitHubのクラウドでリポジトリを調査・変更し、ブランチやPRを作るAgent。旧称coding agent。</p>
+          </details>
+          <details>
+            <summary>Copilot Spaces</summary>
+            <p>コード、仕様、文書などを集め、特定の仕事に必要な文脈として再利用する場所。</p>
+          </details>
+          <details>
+            <summary>MCP</summary>
+            <p>Model Context Protocol。Copilotから外部ツールやデータへ接続する仕組み。接続先と権限を確認します。</p>
+          </details>
+          <details>
+            <summary>Custom instructions</summary>
+            <p>言語、スタイル、テストなど、応答へ反映してほしい継続的なルール。</p>
+          </details>
+          <details>
+            <summary>GitHub AI Credits</summary>
+            <p>2026年の利用量ベース課金で使う単位。モデルとトークン量により消費量が変わり、1 Creditは$0.01 USDです。</p>
+          </details>
+          <details>
+            <summary>GA / Public Preview / Technical Preview</summary>
+            <p>GAは一般提供。Public Previewは公開試用、Technical Previewは技術検証段階で、後二者は仕様変更の可能性があります。</p>
+          </details>
+        </div>
+      </section>
+
+      <section class="section" id="sources" aria-labelledby="sources-title">
+        <div class="section-heading">
+          <h2 id="sources-title">公式情報を自分で確かめる</h2>
+          <p>この教材はGitHub公式一次情報だけを使用しています。リンク先は更新されるため、閲覧時点の表示を優先してください。</p>
+        </div>
+
+        <ol class="sources">
+          <li id="source-1"><a href="https://docs.github.com/en/copilot/get-started/plans" target="_blank" rel="noreferrer">Plans for GitHub Copilot</a><span>プラン、価格、機能差、GHES注記</span></li>
+          <li id="source-2"><a href="https://docs.github.com/en/copilot/get-started/features" target="_blank" rel="noreferrer">GitHub Copilot features</a><span>支援・Agent・カスタマイズ・管理機能</span></li>
+          <li id="source-3"><a href="https://docs.github.com/en/copilot/get-started/quickstart" target="_blank" rel="noreferrer">Quickstart for GitHub Copilot</a><span>最初の体験</span></li>
+          <li id="source-4"><a href="https://docs.github.com/en/copilot/get-started/best-practices" target="_blank" rel="noreferrer">Best practices for using GitHub Copilot</a><span>プロンプト、レビュー、テスト</span></li>
+          <li id="source-5"><a href="https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals" target="_blank" rel="noreferrer">Usage-based billing for individuals</a><span>個人プランのAI Credits</span></li>
+          <li id="source-6"><a href="https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-organizations-and-enterprises" target="_blank" rel="noreferrer">Usage-based billing for organizations and enterprises</a><span>組織のCredits、プール、予算</span></li>
+          <li id="source-7"><a href="https://github.blog/changelog/2025-04-04-copilot-code-review-now-generally-available" target="_blank" rel="noreferrer">Copilot code review now generally available</a><span>2025-04-04</span></li>
+          <li id="source-8"><a href="https://github.blog/changelog/2025-09-25-copilot-coding-agent-is-now-generally-available" target="_blank" rel="noreferrer">Copilot coding agent is now generally available</a><span>2025-09-25</span></li>
+          <li id="source-9"><a href="https://github.blog/changelog/2025-09-24-copilot-spaces-is-now-generally-available" target="_blank" rel="noreferrer">Copilot Spaces is now generally available</a><span>2025-09-24</span></li>
+          <li id="source-10"><a href="https://github.blog/changelog/2026-02-25-github-copilot-cli-is-now-generally-available" target="_blank" rel="noreferrer">GitHub Copilot CLI is now generally available</a><span>2026-02-25</span></li>
+          <li id="source-11"><a href="https://github.blog/changelog/2026-02-26-enterprise-ai-controls-agent-control-plane-now-generally-available" target="_blank" rel="noreferrer">Enterprise AI Controls &amp; agent control plane GA</a><span>2026-02-26</span></li>
+          <li id="source-12"><a href="https://github.blog/changelog/2026-07-01-copilot-vision-is-generally-available" target="_blank" rel="noreferrer">Copilot vision is generally available</a><span>2026-07-01</span></li>
+          <li id="source-13"><a href="https://github.blog/changelog/2026-08-26-global-model-policy-generally-available" target="_blank" rel="noreferrer">Global model policy generally available</a><span>2026-08-26</span></li>
+          <li id="source-14"><a href="https://github.blog/changelog/2026-08-28-upcoming-changes-to-github-copilot-policies-and-billing" target="_blank" rel="noreferrer">Upcoming changes to GitHub Copilot policies and billing</a><span>2026-08-28・未施行項目を含む</span></li>
+          <li id="source-15"><a href="https://github.blog/changelog/2026-08-04-upcoming-deprecation-of-github-spark-on-github-com" target="_blank" rel="noreferrer">Upcoming deprecation of GitHub Spark on github.com</a><span>2026-08-04</span></li>
+          <li id="source-16"><a href="https://docs.github.com/en/copilot/concepts/context/content-exclusion" target="_blank" rel="noreferrer">Content exclusion for GitHub Copilot</a><span>適用範囲と制限</span></li>
+          <li id="source-17"><a href="https://docs.github.com/en/copilot/concepts/completions/code-referencing" target="_blank" rel="noreferrer">GitHub Copilot code referencing</a><span>公開コードとの一致と参照</span></li>
+          <li id="source-18"><a href="https://docs.github.com/en/site-policy/github-terms/github-terms-of-service" target="_blank" rel="noreferrer">GitHub Terms of Service</a><span>AI Featuresの契約条件・2026-04-27発効</span></li>
+          <li id="source-19"><a href="https://docs.github.com/en/copilot/reference/supported-surfaces-for-policies" target="_blank" rel="noreferrer">Supported surfaces for GitHub Copilot policies</a><span>ポリシーの適用面</span></li>
+          <li id="source-20"><a href="https://docs.github.com/en/enterprise-server@3.22/admin/github-copilot/copilot-cli/set-up-and-use-copilot-cli" target="_blank" rel="noreferrer">Set up and use GitHub Copilot CLI — GHES 3.22</a><span>Technical Previewの例外</span></li>
+        </ol>
+
+        <div class="freshness">
+          <strong>調査上の注意</strong>
+          <p>GitHub Docsの一部は更新日を表示しません。提供段階が競合した場合は、日付付きChangelogのGA発表を優先し、クライアント固有のPreviewは別に扱いました。確認できない点は推測していません。</p>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <footer class="footer">
+    GitHub Copilot 初学者ガイド · Official-source snapshot: 2026-09-01 · GitHubおよびGitHub CopilotはGitHub, Inc.の商標です。
+  </footer>
+
+  <a class="back-top" href="#top" aria-label="ページ上部へ戻る">↑</a>
+
+  <noscript>
+    <div class="callout">
+      <p lang="ja">JavaScriptが無効のため、言語切り替えとインタラクティブ機能は利用できません。</p>
+      <p lang="en">JavaScript is disabled, so language switching and interactive features are unavailable.</p>
+    </div>
+  </noscript>
+
+  <script>
+    (() => {
+      const localeStorageKey = "github-copilot-beginner-guide:locale";
+      const supportedLocales = new Set(["ja", "en"]);
+      const EN_BY_JA = {
+        "本文へ移動": "Skip to main content",
+        "GitHub公式一次情報のみ · 2026年9月1日スナップショット": "Official GitHub sources only · Snapshot: September 1, 2026",
+        "公式情報 · 2026-09-01": "Official sources · 2026-09-01",
+        "初学者向けインタラクティブガイド": "Interactive guide for beginners",
+        "AIに任せる前に、": "Before you hand it to AI, ",
+        "一緒に働く。": "work together.",
+        "Copilotはコードを書く速さだけでなく、理解・修正・レビューの流れを支えるAIコーディングアシスタントです。 ただし、最後に判断するのは常にあなたです。": "Copilot is an AI coding assistant that supports understanding, editing, and review—not only faster coding. You always make the final call.",
+        "15分で試す": "Try it in 15 minutes",
+        "機能の違いを見る": "Compare the features",
+        "pair-work.trace · 架空の例": "pair-work.trace · Illustrative example",
+        "依頼": "Ask",
+        "文脈": "Context",
+        "提案": "Propose",
+        "検証": "Verify",
+        "採用": "Adopt",
+        "その時点の作業状態": "Working state at this step",
+        "スクロールして共同作業の全体像へ": "Scroll to the collaboration overview",
+        "全体像": "Overview",
+        "主要機能": "Core features",
+        "最初の15分": "First 15 minutes",
+        "頼み方": "Prompting",
+        "プラン": "Plans",
+        "安全な使い方": "Safe use",
+        "最新動向": "What's new",
+        "次に学ぶ": "Next steps",
+        "用語集": "Glossary",
+        "出典": "Sources",
+        "Copilotは、場所ごとに役割が変わる": "Copilot plays a different role in each surface",
+        "同じCopilotでも、IDEでは実装、GitHub.comでは理解やレビュー、CLIではターミナル作業を支援します。": "The same Copilot supports implementation in your IDE, understanding and review on GitHub.com, and terminal work in the CLI.",
+        "中心にあるのは、": "At the center is one loop: ",
+        "依頼 → 提案 → 人の検証": "ask → propose → human verification",
+        "という一つのループです。": ".",
+        "Copilotは専門知識の代わりではありません。コードを理解し、テストし、採用する責任は利用者に残ります。": "Copilot does not replace your expertise. You remain responsible for understanding, testing, and adopting the code.",
+        "GitHub Copilotを利用する主な場所": "Where you use GitHub Copilot",
+        "中央の共同作業ループから、IDE、GitHub.com、CLI、Copilot appとMobileへ接続する図。": "A diagram connecting the central collaboration loop to IDEs, GitHub.com, Copilot CLI, the Copilot app, and Mobile.",
+        "依頼・提案": "Ask / propose",
+        "人が検証": "Human review",
+        "補完・Chat・Edit": "Completions · Chat · Edit",
+        "リポジトリを質問": "Ask the repository",
+        "PR要約・Code review": "PR summary · Code review",
+        "調査・実装・修正": "Research · build · fix",
+        "ターミナルでPRまで": "From terminal to PR",
+        "複数Agentを管理": "Manage agent sessions",
+        "移動中も進捗を確認": "Track work on the go",
+        "主な利用面と、それぞれで行う作業の関係。": "The main Copilot surfaces and the work each one supports.",
+        "書きながら": "While you type",
+        "IDEの補完・Inline Chat": "IDE completions · Inline Chat",
+        "まとまった変更": "Coordinated changes",
+        "GitHub上で": "On GitHub",
+        "任せて追跡": "Delegate and track",
+        "最初は3つ、次に4つ": "Start with three, then add four",
+        "すべてを一度に覚える必要はありません。提案を受ける機能から始め、変更範囲と権限が大きい機能へ進みます。": "You do not need to learn everything at once. Start with features that make suggestions, then move to features with broader changes and permissions.",
+        "GA / 一般提供": "GA / Generally available",
+        "Preview / 変更可能性あり": "Preview / Subject to change",
+        "利用可能・クライアント差あり": "Available · Varies by client",
+        "発表済み・未施行": "Announced · Not yet in effect",
+        "まず使う": "Start here",
+        "人が主導し、提案をその場で確認する。": "You stay in control and review suggestions immediately.",
+        "書く。": "Write. ",
+        "入力中にコード候補を受け取り、必要な部分だけ採用します。": "Get code suggestions as you type and accept only what you need.",
+        "理解する。": "Understand. ",
+        "コードの説明、デバッグ、テスト案などを自然言語で相談します。": "Ask for code explanations, debugging help, test ideas, and more in natural language.",
+        "Client差": "Varies by client",
+        "その場で直す。": "Edit in place. ",
+        "選択したコードを説明・修正し、差分を小さく保ちます。": "Explain or edit selected code while keeping the diff small.",
+        "作業を広げる": "Expand the task",
+        "複数ファイルやコマンドを扱う。必ず差分と実行内容を確認する。": "Work across files and commands. Always inspect the diff and every operation.",
+        "まとめて編集。": "Edit together. ",
+        "選んだ複数ファイルへ、関連する変更を一度に提案します。": "Propose related changes across the files you select.",
+        "反復する。": "Iterate. ",
+        "IDE内でファイル編集やコマンドを繰り返し、完了条件へ近づけます。": "Iterate on file edits and commands in the IDE until the done criteria are met.",
+        "見直す。": "Review. ",
+        "選択コードやPRへレビュー提案を返します。*GitHub.comとVS CodeでGA。クライアント差があります。": "Review selected code or a pull request. *GA on GitHub.com and VS Code; availability varies by client.",
+        "端末で進める。": "Work in the terminal. ",
+        "調査、修正、テスト、PR作成までをターミナルから支援します。": "Use the terminal for research, fixes, tests, and creating a pull request.",
+        "委任と文脈": "Delegation and context",
+        "非同期作業や外部ツール連携。初心者は仕組みを理解してから。": "Asynchronous work and external tools. Learn how they work before using them.",
+        "Issueを任せる。": "Assign an issue. ",
+        "クラウドで調査・実装し、ブランチとPRを作ります。旧称はcoding agentです。": "Research and implement in the cloud, then create a branch and pull request. Formerly called coding agent.",
+        "文脈を束ねる。": "Bundle context. ",
+        "コード、仕様、ドキュメントをまとめ、特定の仕事に沿った回答を得ます。": "Combine code, specifications, and documents to ground responses for a specific task.",
+        "ルールを共有。": "Share rules. ",
+        "言語、テスト、命名などの期待を個人・リポジトリ・組織の指示として伝えます。": "Provide expectations for language, tests, naming, and more through personal, repository, or organization instructions.",
+        "能力を拡張。": "Extend capabilities. ",
+        "外部ツールや専門手順を接続します。アクセス権と送信データを理解してから使います。": "Connect external tools and specialist procedures. Understand permissions and transmitted data first.",
+        "モデル名は暗記しなくて大丈夫です。": "You do not need to memorize model names.",
+        "対応モデルと価格は頻繁に変わります。最初はAuto model selectionを使い、複雑さ・速度・AI Credits消費を見ながら選択を学びます。": "Supported models and prices change frequently. Start with Auto model selection, then learn to choose based on complexity, speed, and AI Credits usage.",
+        "最初の15分は、小さな差分で": "Spend your first 15 minutes on a small diff",
+        "公式Quickstartとベストプラクティスを、失敗しにくい一連の流れへ組み直しました。": "This workflow reorganizes the official Quickstart and best practices into a low-risk sequence.",
+        "説明させる": "Ask for an explanation",
+        "GitHub.comまたはIDEで小さなHTMLを開き、「この構造を初心者向けに説明して」と尋ねます。": "Open a small HTML file on GitHub.com or in your IDE and ask: Explain this structure for a beginner.",
+        "補完を試す": "Try a completion",
+        "追加したい要素をコメントで書き、提案を読みます。理解できる候補だけを採用します。": "Describe a small element in a comment, read the suggestion, and accept only code you understand.",
+        "一箇所直す": "Change one place",
+        "短い範囲を選択し、Inline Chatでアクセシビリティ改善を依頼します。": "Select a short block and ask Inline Chat for one accessibility improvement.",
+        "差分を検証": "Verify the diff",
+        "変更前後を比較し、ブラウザ表示とテストを確認します。理解できなければ採用しません。": "Compare before and after, check the browser and tests, and reject changes you do not understand.",
+        "説明を自分の言葉で言い直せた": "I can explain it in my own words",
+        "提案を一行ずつ確認した": "I reviewed the suggestion line by line",
+        "差分が目的に沿っている": "The diff matches the goal",
+        "実行・テストで確かめた": "I verified it by running and testing",
+        "Agent modeやCloud agentは二回目以降で。": "Save Agent mode and Cloud agent for a later session.",
+        "コマンド実行、複数ファイル変更、権限の意味を説明できるようになってから、任せる範囲を広げます。": "Expand the delegated scope only after you can explain command execution, multi-file changes, and permissions.",
+        "良い依頼は、4つの部品でできている": "A strong prompt has four parts",
+        "複雑な仕事を分け、要件を具体化し、例と完了条件を渡すほど、提案を評価しやすくなります。": "Break down complex work, make requirements specific, and provide examples and done criteria so suggestions are easier to evaluate.",
+        "対象ファイル、現在の状態、関係する仕様": "Target files, current state, and relevant specifications",
+        "目的": "Goal",
+        "誰の、どんな問題を解決するか": "Whose problem you are solving and why",
+        "制約": "Constraints",
+        "変えてはいけないもの、技術・品質の条件": "What must not change, plus technical and quality limits",
+        "完了条件": "Done criteria",
+        "テスト可能な結果と確認方法": "A testable result and how to verify it",
+        "「うまくいかない」時に最初に変えること": "What to change first when the result is not useful",
+        "タスクを小さくし、関係するファイルだけを開き、期待する入力と出力の例を一つ渡します。長い会話で文脈が混ざったら、新しい会話からやり直します。": "Make the task smaller, open only relevant files, and provide one example of the expected input and output. Start a new conversation when a long thread mixes unrelated context.",
+        "結果が長すぎる時の頼み方": "How to ask for a shorter result",
+        "「まず計画だけ」「変更対象を3ファイル以内」「差分を小さく」「判断が必要なら実装前に列挙」など、進め方そのものを制約にします。": "Constrain the process itself: plan first, touch no more than three files, keep the diff small, or list decisions before implementation.",
+        "Custom instructionsを使うタイミング": "When to use custom instructions",
+        "同じ命名、テスト、言語、レビュー基準を繰り返し伝えているなら、個人・リポジトリ・組織の指示へ移します。指示が実際のツールやポリシーと矛盾しないことも確認します。": "Move repeated naming, testing, language, and review expectations into personal, repository, or organization instructions. Check that those instructions do not conflict with actual tools or policies.",
+        "プランは「使う量」と「管理」で選ぶ": "Choose a plan by usage and governance",
+        "価格とAI Creditsは2026年9月1日時点の公式Docsです。通貨はUSD、税は含みません。": "Prices and AI Credits come from official Docs as of September 1, 2026. Amounts are in USD and exclude tax.",
+        "すべて": "All",
+        "個人向け": "Individual",
+        "組織向け": "Organization",
+        "GitHub Copilotプラン比較": "GitHub Copilot plan comparison",
+        "月額": "Monthly price",
+        "月間AI Credits": "Monthly AI Credits",
+        "向いている人": "Best for",
+        "無料": "Free",
+        "枠あり・数値非公開": "Allowance; amount not published",
+        "2,000回": "2,000",
+        "まず補完とChatを試したい": "Trying completions and Chat",
+        "無料*": "Free*",
+        "無制限": "Unlimited",
+        "認証済み学生として学びたい": "Verified students",
+        "日常的に開発で使う個人": "Individuals using Copilot daily",
+        "高度なモデルを多く使う個人": "Individuals using advanced models heavily",
+        "継続的に大量利用する個人": "Sustained, high-volume individual use",
+        "ポリシーを集中管理する組織": "Organizations needing centralized policy",
+        "GHECで高度な統制が必要な企業": "Enterprises needing advanced controls on GHEC",
+        "*StudentはGitHub Educationの認証が必要です。Business / EnterpriseのCreditsは課金単位でプールされます。 1 AI Credit = $0.01。個人有料プランのFlex allotmentは変動し得ます。Creditsは毎月1日00:00 UTCにリセットされ、繰り越されません。": "*Student requires GitHub Education verification. Business and Enterprise Credits are pooled at the billing-entity level. 1 AI Credit = $0.01. Flex allotments for paid individual plans may change. Credits reset at 00:00 UTC on the first day of each month and do not roll over.",
+        "迷ったらFreeで体験し、足りない理由が分かってから上げる。": "Start with Free, then upgrade when you know what is limiting you.",
+        "個人は利用量とモデル選択、組織はSeat、ポリシー、監査、データ条件まで含めて判断します。組織の追加利用は既定で有効のため、管理者は予算設定を確認します。": "Individuals should consider usage and model choice. Organizations should also evaluate seats, policies, auditability, and data terms. Additional organization usage is enabled by default, so administrators should review budgets.",
+        "GitHub Enterprise Server（GHES）で使えますか？": "Can I use it with GitHub Enterprise Server (GHES)?",
+        "Technical Preview例外": "Technical Preview exception",
+        "通常のGitHub CopilotプランはGHESでは一般提供されていません。例外として、GHES 3.22 Release Candidateには、管理者がモデルプロバイダーを設定するCopilot CLI限定のTechnical Previewがあります。これはCopilot全体のGHES対応ではありません。": "Standard GitHub Copilot plans are not generally available for GHES. As an exception, the GHES 3.22 Release Candidate has a Copilot CLI-only Technical Preview in which an administrator configures the model provider. This does not make the full Copilot service available on GHES.",
+        "採用の前に、人のゲートを置く": "Put a human gate before adoption",
+        "Copilotの提案には誤り、脆弱性、保守しにくいコード、公開コードとの類似が含まれる可能性があります。": "Copilot suggestions may contain errors, vulnerabilities, hard-to-maintain code, or similarities to public code.",
+        "人が確認するレビュー・ループ": "The human review loop",
+        "目的、差分、テスト、セキュリティ、権利、ポリシーを確認してから採用する循環。": "A loop for checking the goal, diff, tests, security, rights, and policy before adoption.",
+        "最終判断": "Final call",
+        "差分": "Diff",
+        "テスト": "Tests",
+        "安全": "Security",
+        "権利": "Rights",
+        "規則": "Policy",
+        "秘密を入力しない": "Do not enter secrets",
+        "鍵、トークン、個人情報、許可されていない未公開コードをプロンプトへ含めません。": "Do not put keys, tokens, personal data, or unauthorized private code in a prompt.",
+        "差分を一行ずつ読む": "Read the diff line by line",
+        "Copilotが変更した意図と、変更していない範囲を自分で説明できる状態にします。": "Be able to explain what Copilot changed and what it intentionally left unchanged.",
+        "実行して確かめる": "Run it to verify",
+        "テスト、lint、code scanningなど、既存の品質ゲートを省略しません。": "Do not skip existing quality gates such as tests, linting, and code scanning.",
+        "公開コードとの一致を確認する": "Check for public-code matches",
+        "Code referencesや組織のポリシーを確認し、必要なライセンス判断を行います。": "Review code references and organization policies, then make any required licensing decision.",
+        "Content exclusionを過信しない": "Do not over-rely on content exclusion",
+        "機能やクライアントによって適用範囲が異なります。秘密管理の唯一の防御にはしません。": "Coverage varies by feature and client. Do not make content exclusion your only defense for secrets.",
+        "組織のルールを優先する": "Follow organization rules",
+        "利用可能なモデル、機能、送信先、保持条件は契約と管理者設定で確認します。": "Check contracts and administrator settings for allowed models, features, destinations, and retention terms.",
+        "「生成されたから安全」でも、「フィルターがあるから安全」でもありません。": "Generated does not mean safe, and a filter does not guarantee safety.",
+        "GitHubも、提案を理解し、レビューし、自動テストやセキュリティ検査を使って確認することを推奨しています。": "GitHub recommends understanding and reviewing suggestions, then validating them with automated tests and security tooling.",
+        "2025年から「提案」より「作業」へ": "Since 2025: from suggestions to delegated work",
+        "Copilotは補完とChatから、レビュー、CLI、Cloud agent、企業統制へ広がりました。主要な節目だけを示します。": "Copilot expanded from completions and Chat into review, CLI, cloud agents, and enterprise controls. These are the major milestones.",
+        "Copilot Pro+開始、Code reviewがGA": "Copilot Pro+ launched; code review reached GA",
+        "複数モデルとレビュー機能が、日常の開発フローへ入る節目。": "Multiple models and code review entered the everyday development workflow.",
+        "SpacesとCoding agentがGA、Copilot CLIがPreview": "Spaces and coding agent reached GA; Copilot CLI entered Preview",
+        "文脈を束ねる機能と、IssueからPRまで任せる非同期作業が一般提供へ。": "Reusable context and asynchronous issue-to-PR work became generally available.",
+        "Copilot CLIとEnterprise AI ControlsがGA": "Copilot CLI and Enterprise AI Controls reached GA",
+        "ターミナル作業と企業のAI・Agent統制が正式な利用面として確立。": "Terminal workflows and enterprise AI and agent governance became established product surfaces.",
+        "「Cloud agent」表記へ移行": "Terminology shifted to cloud agent",
+        "調査、計画、実装をクラウドで進める役割が明確化。個人プラン変更も発表。": "The role of cloud-based research, planning, and implementation became clearer, alongside individual-plan changes.",
+        "AI Credits課金とCopilot appが本格化": "AI Credits billing and the Copilot app expanded",
+        "トークン量とモデルに応じるCreditsへ移行し、複数Agentを扱うデスクトップAppがGA。": "Usage shifted to Credits based on model and token volume, while the desktop app for multiple agent sessions reached GA.",
+        "Copilot Visionが主要surfaceでGA": "Copilot Vision reached GA on major surfaces",
+        "画像や画面を文脈として渡す使い方がVS Code、GitHub.com、Copilot CLIで一般提供へ。": "Using images and screens as context became generally available in VS Code, GitHub.com, and Copilot CLI.",
+        "Global model policyがGA": "Global model policy reached GA",
+        "企業がモデル利用を横断管理できる仕組みが一般提供へ。": "Enterprise-wide model controls became generally available.",
+        "GitHub.com・Mobile・Cloud agentの統合を予告": "GitHub.com, Mobile, and cloud agent convergence announced",
+        "単一の体験とポリシー、Chat保持期間の変更、Code review既定値の変更が発表済み。9月1日時点では未施行です。": "A unified experience and policy, Chat retention changes, and a new default code-review effort were announced but were not yet in effect on September 1.",
+        "変化が速い領域です。": "This area changes quickly.",
+        "モデル、Credits、クライアントごとのPreview状態、管理ポリシーは公開後にも変わります。GitHub.com版Sparkは2026年8月4日に新規利用を停止し、既存利用も8月31日までと告知されました。": "Models, Credits, client-specific Preview states, and administration policies can change after publication. GitHub.com stopped accepting new Spark users on August 4, 2026, and announced that existing access would continue only through August 31.",
+        "小さく始め、検証できる範囲で広げる": "Start small and expand only as far as you can verify",
+        "機能の数ではなく、任せる範囲と検証方法を段階的に増やします。": "Increase the delegated scope and verification methods gradually—not the number of features you use.",
+        "提案を読む": "Read suggestions",
+        "Chatでコード説明": "Explain code with Chat",
+        "小さなInline Chat": "Make a small Inline Chat edit",
+        "差分とテスト": "Review the diff and tests",
+        "作業を分ける": "Break down work",
+        "4部品のプロンプト": "Use the four-part prompt",
+        "仕組みにする": "Build a team system",
+        "組織ポリシー": "Organization policies",
+        "利用量と予算": "Usage and budgets",
+        "監査と安全基準": "Audit and safety standards",
+        "迷った時の用語集": "A glossary for when terms blur together",
+        "似た言葉は「どこで、どこまで動くか」で区別します。": "Distinguish similar terms by where they run and how far they can act.",
+        "コードやリポジトリについて会話する機能。IDE、GitHub.com、Mobileなどで利用します。": "A conversational interface for code and repositories, available in IDEs, on GitHub.com, in Mobile, and elsewhere.",
+        "IDE内でファイル編集とコマンド実行を反復するモード。実行前の確認や権限設定が重要です。": "A mode that iterates on file edits and commands inside an IDE. Approval and permission settings matter.",
+        "GitHubのクラウドでリポジトリを調査・変更し、ブランチやPRを作るAgent。旧称coding agent。": "An agent that researches and changes a repository in GitHub's cloud, then creates a branch or pull request. Formerly called coding agent.",
+        "コード、仕様、文書などを集め、特定の仕事に必要な文脈として再利用する場所。": "A reusable collection of code, specifications, documents, and other context for a specific task.",
+        "Model Context Protocol。Copilotから外部ツールやデータへ接続する仕組み。接続先と権限を確認します。": "Model Context Protocol, a way for Copilot to connect to external tools and data. Check destinations and permissions.",
+        "言語、スタイル、テストなど、応答へ反映してほしい継続的なルール。": "Persistent rules for language, style, tests, and other expectations you want reflected in responses.",
+        "2026年の利用量ベース課金で使う単位。モデルとトークン量により消費量が変わり、1 Creditは$0.01 USDです。": "The unit used for usage-based billing in 2026. Consumption depends on the model and token volume; 1 Credit equals $0.01 USD.",
+        "GAは一般提供。Public Previewは公開試用、Technical Previewは技術検証段階で、後二者は仕様変更の可能性があります。": "GA means generally available. Public Preview is public evaluation, while Technical Preview is an earlier technical stage; both Preview stages may change.",
+        "公式情報を自分で確かめる": "Verify the official sources yourself",
+        "この教材はGitHub公式一次情報だけを使用しています。リンク先は更新されるため、閲覧時点の表示を優先してください。": "This guide uses only official GitHub primary sources. Because linked pages change, prefer what they show when you read them.",
+        "プラン、価格、機能差、GHES注記": "Plans, prices, feature differences, and the GHES note",
+        "支援・Agent・カスタマイズ・管理機能": "Assistive, agentic, customization, and administration features",
+        "最初の体験": "First experience",
+        "プロンプト、レビュー、テスト": "Prompts, review, and tests",
+        "個人プランのAI Credits": "AI Credits for individual plans",
+        "組織のCredits、プール、予算": "Organization Credits, pooling, and budgets",
+        "2026-08-28・未施行項目を含む": "2026-08-28 · Includes items not yet in effect",
+        "適用範囲と制限": "Coverage and limitations",
+        "公開コードとの一致と参照": "Public-code matches and references",
+        "AI Featuresの契約条件・2026-04-27発効": "AI Features terms · Effective 2026-04-27",
+        "ポリシーの適用面": "Policy coverage by surface",
+        "Technical Previewの例外": "Technical Preview exception",
+        "調査上の注意": "Research note",
+        "GitHub Docsの一部は更新日を表示しません。提供段階が競合した場合は、日付付きChangelogのGA発表を優先し、クライアント固有のPreviewは別に扱いました。確認できない点は推測していません。": "Some GitHub Docs pages do not show an update date. When maturity labels conflicted, this guide prioritized dated Changelog GA announcements and treated client-specific Previews separately. It does not infer facts that could not be verified.",
+        "GitHub Copilot 初学者ガイド · Official-source snapshot: 2026-09-01 · GitHubおよびGitHub CopilotはGitHub, Inc.の商標です。": "GitHub Copilot Beginner Guide · Official-source snapshot: 2026-09-01 · GitHub and GitHub Copilot are trademarks of GitHub, Inc.",
+        "ページ上部へ戻る": "Back to top",
+        "表示言語を選択": "Choose display language",
+        "Copilotとの共同作業": "Working with Copilot",
+        "共同作業の全体像へ移動": "Go to the collaboration overview",
+        "このガイドの目次": "Guide contents",
+        "Copilotの利用面を示す図。横に収まらない場合はスクロールできます": "Diagram of Copilot surfaces. Scroll horizontally if it does not fit.",
+        "提供段階の凡例": "Feature status legend",
+        "15分ワークのチェックリスト": "15-minute exercise checklist",
+        "プラン表の絞り込み": "Filter the plan table",
+        "Copilotプラン比較表。横に収まらない場合はスクロールできます": "Copilot plan comparison. Scroll horizontally if it does not fit."
+      };
+
+      const NATIVE_TEXT_PAIRS = {
+        "Beginner Guide": { ja: "初学者ガイド", en: "Beginner Guide" },
+        "Human in the loop": { ja: "人が最終判断", en: "Human in the loop" },
+        "Learning route": { ja: "学習ルート", en: "Learning route" },
+        "context": { ja: "文脈", en: "context" },
+        "goal": { ja: "目的", en: "goal" },
+        "constraints": { ja: "制約", en: "constraints" },
+        "done": { ja: "完了", en: "done" },
+        "Advanced": { ja: "上級", en: "Advanced" },
+        "Shipped": { ja: "提供済み", en: "Shipped" },
+        "Announced": { ja: "発表済み", en: "Announced" },
+        "DAY 1": { ja: "1日目", en: "DAY 1" },
+        "WEEK 1": { ja: "最初の1週間", en: "WEEK 1" },
+        "TEAM": { ja: "チーム", en: "TEAM" },
+        "YOU": { ja: "あなた", en: "YOU" }
+      };
+
+      const normalizeText = (value) => value.replace(/\s+/g, " ").trim();
+      const getTextPair = (source) => {
+        if (NATIVE_TEXT_PAIRS[source]) {
+          return NATIVE_TEXT_PAIRS[source];
+        }
+        if (EN_BY_JA[source]) {
+          return { ja: source, en: EN_BY_JA[source] };
+        }
+        return null;
+      };
+
+      let currentLocale = supportedLocales.has(document.documentElement.dataset.locale)
+        ? document.documentElement.dataset.locale
+        : "ja";
+
+      const localizedTextNodes = [];
+      const textWalker = document.createTreeWalker(document.body, NodeFilter.SHOW_TEXT);
+      while (textWalker.nextNode()) {
+        const node = textWalker.currentNode;
+        const parent = node.parentElement;
+        if (
+          !parent ||
+          parent.closest(
+            "script, style, noscript, .language-control, #trace-title, #trace-description, #trace-rule, #trace-code, #prompt-example, #copy-prompt, #copy-status, #locale-status"
+          )
+        ) {
+          continue;
+        }
+        const match = node.nodeValue.match(/^(\s*)([\s\S]*?)(\s*)$/);
+        const source = normalizeText(match?.[2] || "");
+        const pair = getTextPair(source);
+        if (pair) {
+          localizedTextNodes.push({
+            node,
+            prefix: match[1],
+            suffix: match[3],
+            ja: pair.ja,
+            en: pair.en
+          });
+        }
+      }
+
+      const localizedAttributes = [];
+      document.querySelectorAll("[aria-label]").forEach((element) => {
+        if (element.matches("[data-locale-option]")) {
+          return;
+        }
+        const source = element.getAttribute("aria-label");
+        const citationMatch = source.match(/^出典(\d+)$/);
+        const pair = citationMatch
+          ? { ja: source, en: `Source ${citationMatch[1]}` }
+          : getTextPair(source);
+        if (pair) {
+          localizedAttributes.push({ element, name: "aria-label", ...pair });
+        }
+      });
+
+      const traceContent = [
+        {
+          title: { ja: "まず目的を伝える", en: "Start with the goal" },
+          description: {
+            ja: "「何を変えるか」だけでなく、理由と完了条件まで短く伝えます。",
+            en: "State not only what to change, but also why and how you will know it is done."
+          },
+          rule: {
+            ja: "人の役割: 問題と成功条件を決める。",
+            en: "Human role: Define the problem and success criteria."
+          },
+          code: {
+            ja: "依頼:\nログインフォームに\nクライアント側の検証を追加。\n\n完了条件:\n- エラーを日本語で表示\n- キーボード操作を維持\n- 既存テストを壊さない",
+            en: "Request:\nAdd client-side validation\nto the login form.\n\nDone when:\n- Errors appear in Japanese\n- Keyboard behavior is preserved\n- Existing tests still pass"
+          }
+        },
+        {
+          title: { ja: "必要な文脈を渡す", en: "Provide the right context" },
+          description: {
+            ja: "対象ファイル、既存仕様、変えてはいけない範囲を明示します。",
+            en: "Name the target files, existing behavior, and boundaries that must not change."
+          },
+          rule: {
+            ja: "人の役割: 必要な情報とアクセス範囲を選ぶ。",
+            en: "Human role: Choose the information and access scope."
+          },
+          code: {
+            ja: "文脈:\n- src/login-form.tsx\n- tests/login-form.test.tsx\n\n制約:\n- 外部依存を追加しない\n- API契約は変更しない",
+            en: "Context:\n- src/login-form.tsx\n- tests/login-form.test.tsx\n\nConstraints:\n- Do not add dependencies\n- Do not change the API contract"
+          }
+        },
+        {
+          title: { ja: "提案を小さく受け取る", en: "Keep the proposal small" },
+          description: {
+            ja: "Copilotが変更案を返します。ここではまだ正しいと決めません。",
+            en: "Copilot returns a proposed change. A proposal is not yet an accepted result."
+          },
+          rule: {
+            ja: "人の役割: 意図しない変更や前提を見つける。",
+            en: "Human role: Find unintended changes and assumptions."
+          },
+          code: {
+            ja: "提案された差分:\n+ validateEmail(value)\n+ aria-describedby\n+ 日本語エラー表示\n+ 3つのテストケース\n\n変更ファイル: 2",
+            en: "Proposed diff:\n+ validateEmail(value)\n+ aria-describedby\n+ Japanese error message\n+ Three test cases\n\nFiles changed: 2"
+          }
+        },
+        {
+          title: { ja: "差分と動作を検証する", en: "Verify the diff and behavior" },
+          description: {
+            ja: "説明、テスト、lint、ブラウザ表示を使い、目的と安全性を確かめます。",
+            en: "Use explanations, tests, linting, and the browser to verify the goal and safety."
+          },
+          rule: {
+            ja: "人の役割: 実行結果と品質基準で判断する。",
+            en: "Human role: Judge with execution results and quality gates."
+          },
+          code: {
+            ja: "検証:\n✓ 既存テスト 24件\n✓ 新規テスト 3件\n✓ lint\n✓ キーボード操作\n\n要確認:\n? APIエラー時の表示",
+            en: "Verification:\n✓ 24 existing tests\n✓ Three new tests\n✓ Lint\n✓ Keyboard behavior\n\nStill to check:\n? API error state"
+          }
+        },
+        {
+          title: { ja: "理解できた変更だけ採用する", en: "Adopt only what you understand" },
+          description: {
+            ja: "必要なら修正を依頼し、説明できる差分だけをコミットまたはPRにします。",
+            en: "Ask for revisions when needed, then commit or open a pull request only for a diff you can explain."
+          },
+          rule: {
+            ja: "人の役割: 採用、保留、破棄の責任を持つ。",
+            en: "Human role: Own the decision to adopt, defer, or discard."
+          },
+          code: {
+            ja: "最終判断:\n✓ 目的に合う\n✓ 変更範囲が妥当\n✓ テストで確認済み\n✓ レビュー可能\n\nReady for review.",
+            en: "Final decision:\n✓ Matches the goal\n✓ Scope is appropriate\n✓ Verified by tests\n✓ Reviewable\n\nReady for review."
+          }
+        }
+      ];
+
+      const traceButtons = Array.from(document.querySelectorAll("[data-trace]"));
+      const traceTitle = document.getElementById("trace-title");
+      const traceDescription = document.getElementById("trace-description");
+      const traceRule = document.getElementById("trace-rule");
+      const traceCode = document.getElementById("trace-code");
+      const tracePanel = document.getElementById("trace-panel");
+      let activeTraceIndex = 0;
+
+      const renderTraceCode = (text) => {
+        const fragment = document.createDocumentFragment();
+        text.split("\n").forEach((line) => {
+          const lineElement = document.createElement("span");
+          lineElement.className = "code-line";
+          if (line.startsWith("+")) {
+            lineElement.classList.add("add");
+          } else if (line.startsWith("✓")) {
+            lineElement.classList.add("success");
+          } else if (line.startsWith("?")) {
+            lineElement.classList.add("warning");
+          }
+          lineElement.textContent = line || "\u00a0";
+          fragment.appendChild(lineElement);
+        });
+        traceCode.replaceChildren(fragment);
+      };
+
+      const activateTrace = (index) => {
+        const item = traceContent[index];
+        if (!item) {
+          return;
+        }
+        activeTraceIndex = index;
+        traceButtons.forEach((button, buttonIndex) => {
+          button.setAttribute("aria-selected", String(buttonIndex === index));
+          button.setAttribute("tabindex", buttonIndex === index ? "0" : "-1");
+          button.dataset.complete = String(buttonIndex < index);
+        });
+        tracePanel.setAttribute("aria-labelledby", traceButtons[index].id);
+        traceTitle.textContent = item.title[currentLocale];
+        traceDescription.textContent = item.description[currentLocale];
+        traceRule.textContent = item.rule[currentLocale];
+        renderTraceCode(item.code[currentLocale]);
+      };
+
+      traceButtons.forEach((button) => {
+        button.addEventListener("click", () => activateTrace(Number(button.dataset.trace)));
+        button.addEventListener("keydown", (event) => {
+          const currentIndex = traceButtons.indexOf(button);
+          let nextIndex = currentIndex;
+          if (event.key === "ArrowRight") {
+            nextIndex = Math.min(traceButtons.length - 1, currentIndex + 1);
+          } else if (event.key === "ArrowLeft") {
+            nextIndex = Math.max(0, currentIndex - 1);
+          } else {
+            return;
+          }
+          event.preventDefault();
+          traceButtons[nextIndex].focus();
+          activateTrace(nextIndex);
+        });
+      });
+      const progress = document.getElementById("reading-progress");
+      const updateProgress = () => {
+        const available = document.documentElement.scrollHeight - window.innerHeight;
+        const ratio = available > 0 ? window.scrollY / available : 0;
+        progress.style.width = `${Math.min(100, Math.max(0, ratio * 100))}%`;
+      };
+      updateProgress();
+      window.addEventListener("scroll", updateProgress, { passive: true });
+      window.addEventListener("resize", updateProgress);
+
+      const navigationLinks = Array.from(document.querySelectorAll(".side-nav a"));
+      const sections = navigationLinks
+        .map((link) => document.querySelector(link.getAttribute("href")))
+        .filter(Boolean);
+      const sectionObserver = new IntersectionObserver(
+        (entries) => {
+          const visible = entries
+            .filter((entry) => entry.isIntersecting)
+            .sort((a, b) => b.intersectionRatio - a.intersectionRatio)[0];
+          if (!visible) {
+            return;
+          }
+          navigationLinks.forEach((link) => {
+            link.setAttribute("aria-current", String(link.getAttribute("href") === `#${visible.target.id}`));
+          });
+        },
+        { rootMargin: "-20% 0px -65% 0px", threshold: [0.05, 0.25, 0.5] }
+      );
+      sections.forEach((section) => sectionObserver.observe(section));
+
+      const copyButton = document.getElementById("copy-prompt");
+      const promptExample = document.getElementById("prompt-example");
+      const copyStatus = document.getElementById("copy-status");
+      const promptExamples = {
+        ja: `文脈:
+src/login-form.tsx の既存フォームを対象にします。
+
+目的:
+送信前に必須項目を検証し、日本語のエラーを表示してください。
+
+制約:
+外部ライブラリは追加しないでください。
+既存のキーボード操作とAPI呼び出しは変えないでください。
+
+完了条件:
+正常・未入力・不正形式のテストを追加し、
+変更したファイルと判断理由を最後に説明してください。`,
+        en: `Context:
+Work with the existing form in src/login-form.tsx.
+
+Goal:
+Validate required fields before submission and show errors in Japanese.
+
+Constraints:
+Do not add external libraries.
+Do not change existing keyboard behavior or API calls.
+
+Done criteria:
+Add tests for valid, empty, and invalid-format input.
+Finish by listing the changed files and explaining each decision.`
+      };
+      const copyMessages = {
+        ja: {
+          idle: "例をコピー",
+          copied: "コピーしました",
+          unsupported: "コピー非対応",
+          failed: "コピー失敗",
+          statusCopied: "プロンプト例をクリップボードへコピーしました。",
+          statusUnsupported: "このブラウザではクリップボードAPIを利用できません。本文を選択してコピーしてください。",
+          statusFailed: "コピーできませんでした。本文を選択してコピーしてください。"
+        },
+        en: {
+          idle: "Copy example",
+          copied: "Copied",
+          unsupported: "Copy unavailable",
+          failed: "Copy failed",
+          statusCopied: "Copied the prompt example to the clipboard.",
+          statusUnsupported: "This browser cannot access the clipboard API. Select the text and copy it manually.",
+          statusFailed: "The prompt could not be copied. Select the text and copy it manually."
+        }
+      };
+      let copyButtonState = "idle";
+      let copyResetTimer;
+
+      const updateCopyButton = () => {
+        copyButton.textContent = copyMessages[currentLocale][copyButtonState];
+      };
+
+      copyButton.addEventListener("click", async () => {
+        const text = promptExample.textContent;
+        if (!navigator.clipboard) {
+          copyButtonState = "unsupported";
+          updateCopyButton();
+          copyStatus.textContent = copyMessages[currentLocale].statusUnsupported;
+          return;
+        }
+        try {
+          await navigator.clipboard.writeText(text);
+          copyButtonState = "copied";
+          updateCopyButton();
+          copyStatus.textContent = copyMessages[currentLocale].statusCopied;
+          window.clearTimeout(copyResetTimer);
+          copyResetTimer = window.setTimeout(() => {
+            copyButtonState = "idle";
+            updateCopyButton();
+          }, 1800);
+        } catch (error) {
+          copyButtonState = "failed";
+          updateCopyButton();
+          copyStatus.textContent = copyMessages[currentLocale].statusFailed;
+          console.error("Clipboard write failed", error);
+        }
+      });
+
+      const planFilters = Array.from(document.querySelectorAll("[data-plan-filter]"));
+      const planRows = Array.from(document.querySelectorAll("[data-plan-group]"));
+      planFilters.forEach((button) => {
+        button.addEventListener("click", () => {
+          const selected = button.dataset.planFilter;
+          planFilters.forEach((filterButton) => {
+            filterButton.setAttribute("aria-pressed", String(filterButton === button));
+          });
+          planRows.forEach((row) => {
+            row.hidden = selected !== "all" && row.dataset.planGroup !== selected;
+          });
+        });
+      });
+
+      const localeButtons = Array.from(document.querySelectorAll("[data-locale-option]"));
+      const localeStatus = document.getElementById("locale-status");
+      const localeUi = {
+        ja: {
+          title: "GitHub Copilot はじめの一歩",
+          description: "2026年9月1日時点のGitHub公式情報に基づく、GitHub Copilot初学者向けガイド",
+          changed: "表示言語を日本語に切り替えました。",
+          storageUnavailable: "言語は切り替わりましたが、選択を保存できませんでした。"
+        },
+        en: {
+          title: "GitHub Copilot: A Beginner's Guide",
+          description: "A beginner-friendly guide to GitHub Copilot based on official GitHub information as of September 1, 2026.",
+          changed: "Display language changed to English.",
+          storageUnavailable: "The language changed, but your selection could not be saved."
+        }
+      };
+      let localeStatusTimer;
+
+      const showLocaleStatus = (message, tone = "info") => {
+        window.clearTimeout(localeStatusTimer);
+        localeStatus.textContent = message;
+        localeStatus.dataset.tone = tone;
+        localeStatus.hidden = false;
+        localeStatusTimer = window.setTimeout(() => {
+          localeStatus.hidden = true;
+        }, 4000);
+      };
+
+      const applyLocale = (locale) => {
+        currentLocale = locale;
+        document.documentElement.lang = locale;
+        document.documentElement.dataset.locale = locale;
+        localizedTextNodes.forEach((entry) => {
+          entry.node.nodeValue = `${entry.prefix}${entry[locale]}${entry.suffix}`;
+        });
+        localizedAttributes.forEach((entry) => {
+          entry.element.setAttribute(entry.name, entry[locale]);
+        });
+        localeButtons.forEach((button) => {
+          button.setAttribute("aria-pressed", String(button.dataset.localeOption === locale));
+        });
+        document.title = localeUi[locale].title;
+        const metaDescription = document.querySelector('meta[name="description"]');
+        if (metaDescription) {
+          metaDescription.setAttribute("content", localeUi[locale].description);
+        }
+        promptExample.textContent = promptExamples[locale];
+        updateCopyButton();
+        activateTrace(activeTraceIndex);
+        document.querySelectorAll(".sources a").forEach((link) => {
+          link.lang = "en";
+        });
+      };
+
+      const selectLocale = (locale, { persist = true, announce = true } = {}) => {
+        if (!supportedLocales.has(locale)) {
+          return;
+        }
+        applyLocale(locale);
+        let saved = true;
+        if (persist) {
+          try {
+            window.localStorage.setItem(localeStorageKey, locale);
+            delete document.documentElement.dataset.localeStorage;
+          } catch (error) {
+            saved = false;
+            document.documentElement.dataset.localeStorage = "unavailable";
+            console.warn("Language preference could not be saved.", error);
+          }
+        }
+        if (announce) {
+          showLocaleStatus(
+            saved ? localeUi[locale].changed : localeUi[locale].storageUnavailable,
+            saved ? "info" : "warning"
+          );
+        }
+      };
+
+      localeButtons.forEach((button) => {
+        button.addEventListener("click", () => {
+          selectLocale(button.dataset.localeOption);
+        });
+      });
+
+      selectLocale(currentLocale, { persist: false, announce: false });
+      if (document.documentElement.dataset.localeStorage === "unavailable") {
+        showLocaleStatus(localeUi[currentLocale].storageUnavailable, "warning");
+      }
+
+      window.addEventListener("beforeunload", () => {
+        window.clearTimeout(copyResetTimer);
+        window.clearTimeout(localeStatusTimer);
+      });
+    })();
+  </script>
+</body>
+</html>
