@@ -15,6 +15,8 @@ This repository is an evolving knowledge base where I accumulate files, slides, 
 
 | Topic | Description | Formats |
 |-------|-------------|---------|
+| [**GitHub Copilot Beginner Guide**](./copilot-beginner-guide/) | Interactive introduction to GitHub Copilot for developers who know the basics of Git and GitHub — core features, a first 15-minute workflow, prompting, plans and AI Credits, safe use, major releases, and a glossary. The page switches all visible, dynamic, SVG, and accessible content between Japanese and English | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-beginner-guide/)) |
+| [**GitHub Copilot CLI Beginner Guide**](./copilot-cli-beginner-guide/) | Progressive, interactive guide to installing and safely using GitHub Copilot CLI — trust and authentication, tool approvals, context, direct shell versus agent execution, a verified change workflow, VS Code integration, and a searchable command reference | HTML · JP / EN ([live page](https://shinyay.github.io/something-something-something/copilot-cli-beginner-guide/)) |
 | [**Agentic SDLC Practical Guide with GitHub Copilot**](./agentic-sdlc/) | Self-standing technical guide that designs, delegates, and governs bounded, verifiable work with GitHub Copilot — the five interaction modes, Context Engineering, Delegation Contract, autonomy budget, Modernization Loop, deterministic verification, the PR as governance boundary, security, drift and recovery, adoption ladder, cost model, delegation anti-patterns, and a glossary — across 19 sections in 6 parts, illustrated with six hand-authored inline-SVG concept diagrams, readable without the slides; the original talk deck is included as an appendix PDF. A fully translated [English edition](./agentic-sdlc/en/) covers the same 19 sections and all six diagrams | HTML · JP / EN + PDF ([live page](https://shinyay.github.io/something-something-something/agentic-sdlc/)) |
 | [**Microsoft Build 2026 — GitHub Updates**](./build2026-github/) | Summary of GitHub-related announcements from Microsoft Build 2026 (Copilot app, Canvas, code review, SDK / CLI, security, and more) | HTML · JP ([live page](https://shinyay.github.io/something-something-something/build2026-github/)) |
 | [**VS Code Monthly Updates**](./vscode-monthy-update/) | Summary slides covering what's new in each VS Code release | PDF (EN / JP) |
@@ -35,6 +37,10 @@ something-something-something/
 │   └── assets/                 # Primer-themed CSS plus theme, table-of-contents, and language-switch logic (shared by both editions)
 ├── build2026-github/           # Microsoft Build 2026 GitHub updates (web page)
 │   └── index.html              # Summary page (HTML · JP, served via GitHub Pages)
+├── copilot-beginner-guide/     # Interactive GitHub Copilot beginner guide
+│   └── index.html              # Self-contained bilingual guide (HTML · JP / EN, served via GitHub Pages)
+├── copilot-cli-beginner-guide/ # Interactive GitHub Copilot CLI beginner guide
+│   └── index.html              # Self-contained bilingual guide (HTML · JP / EN, served via GitHub Pages)
 ├── scripts/                    # Rendering tooling for the Agentic SDLC guide
 │   ├── agentic-sdlc-content/   # Section modules, inline-SVG diagram builders, and the ja/en UI strings plus terminology contract for the Agentic SDLC practical guide
 │   └── render-agentic-sdlc.mjs # Renders both editions of agentic-sdlc/ from those modules
@@ -56,6 +62,8 @@ Each content directory follows a consistent naming convention:
 
 ## 🗓️ Latest Additions
 
+- **2026-09-02** — [GitHub Copilot Beginner Guide](./copilot-beginner-guide/) — bilingual interactive introduction to features, prompting, plans, safe use, and the first 15 minutes ([live page](https://shinyay.github.io/something-something-something/copilot-beginner-guide/))
+- **2026-09-02** — [GitHub Copilot CLI Beginner Guide](./copilot-cli-beginner-guide/) — bilingual progressive guide to installation, approvals, verified changes, and VS Code integration ([live page](https://shinyay.github.io/something-something-something/copilot-cli-beginner-guide/))
 - **2026-08-08** — The GitHub Copilot App content moved to [shinyay/getting-started-with-copilot-app](https://github.com/shinyay/getting-started-with-copilot-app) and is published at [https://shinyay.github.io/getting-started-with-copilot-app/](https://shinyay.github.io/getting-started-with-copilot-app/)
 - **2026-08-04** — [Agentic SDLC Practical Guide with GitHub Copilot](./agentic-sdlc/) completes its English edition — all 19 sections and all six inline-SVG diagrams are translated, with no Japanese fallback remaining ([English edition](https://shinyay.github.io/something-something-something/agentic-sdlc/en/))
 - **2026-08-03** — [Agentic SDLC Practical Guide with GitHub Copilot](./agentic-sdlc/) gains a Japanese ⇄ English language switch; §00 is translated and the remaining 18 sections fall back to the Japanese text ([English edition](https://shinyay.github.io/something-something-something/agentic-sdlc/en/))
