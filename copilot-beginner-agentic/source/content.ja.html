@@ -1,0 +1,291 @@
+<section data-unit="start">
+  <p><strong>補完から、一連の作業を任せる使い方へ。</strong></p>
+  <p>基本を知る。小さく任せる。結果を確かめる。</p>
+  <div data-component="note"><p>VS Codeを中心に、Copilot CLIとGitHubでの利用も紹介します。</p></div>
+  <p>公開情報を基にした学習用の説明資料です。</p>
+</section>
+
+<section data-unit="overview">
+  <p>GitHub Copilotは、コードの理解から変更までを支援するAIです。</p>
+  <div data-component="comparison">
+    <div>
+      <h3>理解する・書く</h3>
+      <ul>
+        <li>知らないコードを説明してもらう。</li>
+        <li>入力中に、コードの候補を得る。</li>
+        <li>実装の方針を相談する。</li>
+      </ul>
+    </div>
+    <div>
+      <h3>変更する・確かめる</h3>
+      <ul>
+        <li>バグ修正や改善を依頼する。</li>
+        <li>テストの追加や実行を依頼する。</li>
+        <li>変更のレビューを支援してもらう。</li>
+      </ul>
+    </div>
+  </div>
+  <p>利用できる機能は、プラン・クライアント・組織ポリシーによって異なります。</p>
+</section>
+
+<section data-unit="inline-help">
+  <p>入力中のコードや文脈に応じて、続きの候補を提案します。</p>
+  <pre><code>// 説明用の仮想例：title は文字列
+const valid = title.trim().length &gt; 0;</code></pre>
+  <div data-component="note"><p><strong>採用する・書き直す・使わない。</strong>判断するのは人です。</p></div>
+  <p>候補が出ても、前提と動作の確認は必要です。</p>
+</section>
+
+<section data-unit="chat-help">
+  <p>まずは「このコードを理解したい」から始められます。</p>
+  <div data-component="comparison">
+    <div>
+      <h3>理解するための依頼例</h3>
+      <blockquote><p>この関数は、何を受け取り、何を返しますか。処理の流れも説明してください。</p></blockquote>
+    </div>
+    <div>
+      <h3>方針を相談する依頼例</h3>
+      <blockquote><p>このエラーの原因候補を挙げ、調べる順番を提案してください。</p></blockquote>
+    </div>
+  </div>
+  <p>対象のコードやエラーを添え、分からない点を追加で質問します。</p>
+</section>
+
+<section data-unit="good-request">
+  <table>
+    <caption>依頼にそろえる情報</caption>
+    <tbody>
+      <tr><th scope="row">目的</th><td>何を実現したいか。</td></tr>
+      <tr><th scope="row">対象</th><td>どの機能・ファイル・エラーを扱うか。</td></tr>
+      <tr><th scope="row">制約</th><td>何を変えず、どのルールを守るか。</td></tr>
+      <tr><th scope="row">完了条件</th><td>何を確認できれば、終わりとするか。</td></tr>
+    </tbody>
+  </table>
+  <p><strong>コンテキスト</strong>は、判断に必要な背景情報。コードやテスト結果も含みます。</p>
+</section>
+
+<section data-unit="limits">
+  <ul>
+    <li>意図を取り違えたり、誤ったコードを出したりすることがあります。</li>
+    <li><strong>差分</strong>（変更前後の違い）と、<strong>テスト</strong>（動作の確認）を見ます。</li>
+    <li>重要な変更ほど、既存のレビューや検証を省きません。</li>
+  </ul>
+  <div data-component="note"><p>テストが通っても、すべての動作や安全性が保証されるわけではありません。</p></div>
+</section>
+
+<section data-unit="agentic">
+  <p><strong>Agentic</strong>：目標を伝え、必要な調査・変更・検証を進めてもらう使い方。</p>
+  <div data-diagram="ways-to-ask" data-occurrence="main-ways-to-ask"></div>
+  <p>対話の中から、エージェントに作業を依頼することもできます。</p>
+</section>
+
+<section data-unit="loop">
+  <div data-diagram="agent-loop" data-occurrence="main-agent-loop"></div>
+</section>
+
+<section data-unit="human-control">
+  <div data-diagram="human-and-agent" data-occurrence="main-human-and-agent"></div>
+  <div data-component="note"><p>実行を許可することと、できた変更を採用することは別です。</p></div>
+</section>
+
+<section data-unit="vscode-start">
+  <p>VS CodeのCopilotセッションで、先に計画を相談する例。</p>
+  <ol>
+    <li>信頼できるプロジェクトを開き、ChatでCopilotを選ぶ。</li>
+    <li><strong>Plan</strong>を選び、目的と完了条件を伝える。</li>
+    <li>計画を見直し、実装を依頼する。</li>
+    <li>差分と検証結果を確認する。</li>
+  </ol>
+  <p>UIや機能は、セッション・バージョン・組織設定によって異なります。</p>
+</section>
+
+<section data-unit="small-task">
+  <p><strong>仮想例：</strong>タスク一覧アプリの入力チェックを直します。</p>
+  <div data-component="comparison">
+    <div>
+      <h3>困っていること</h3>
+      <p>空白だけのタイトルでも、タスクを登録できてしまう。</p>
+    </div>
+    <div>
+      <h3>実現したいこと</h3>
+      <p>空文字・空白だけなら拒否し、有効なタイトルは今までどおり登録する。</p>
+    </div>
+  </div>
+  <div data-component="note"><p>今回は入力チェックとテストに絞り、アプリ全体は作り直しません。</p></div>
+</section>
+
+<section data-unit="task-prompt">
+  <p>依頼例（架空のタスク一覧アプリ）</p>
+  <blockquote>
+    <p>タスク登録で、空文字と空白だけのタイトルを拒否してください。<br>
+    有効なタイトルの登録動作は変えないでください。<br>
+    既存の入力チェックとエラー表示の仕組みを使ってください。<br>
+    正常系と境界値のテストを追加し、既存テストも確認してください。<br>
+    まず変更対象と計画を示し、私の確認後に実装してください。</p>
+  </blockquote>
+  <p>目的だけでなく、<strong>変えないこと・確かめ方・進め方</strong>も伝えます。</p>
+</section>
+
+<section data-unit="review-plan">
+  <table>
+    <caption>この仮想例で、計画を読むときの観点</caption>
+    <tbody>
+      <tr><th scope="row">変更範囲</th><td>入力チェックと関連テストに絞れているか。</td></tr>
+      <tr><th scope="row">既存の仕組み</th><td>今ある検証・エラー表示を利用するか。</td></tr>
+      <tr><th scope="row">確認方法</th><td>空文字・空白・有効なタイトルを確かめるか。</td></tr>
+      <tr><th scope="row">未決事項</th><td>空白の定義や表示方法を、推測で決めていないか。</td></tr>
+    </tbody>
+  </table>
+  <p>ずれがあれば、この段階で範囲や条件を具体的に直します。</p>
+</section>
+
+<section data-unit="review-results">
+  <table>
+    <caption>変更後に確認すること</caption>
+    <tbody>
+      <tr><th scope="row">差分</th><td>意図した変更か。無関係な変更はないか。</td></tr>
+      <tr><th scope="row">検証結果</th><td>何を実行し、どの入力・動作を確かめたか。</td></tr>
+      <tr><th scope="row">残ったこと</th><td>失敗・未実行・未解決の判断がないか。</td></tr>
+    </tbody>
+  </table>
+  <div data-component="note"><p>「完了しました」だけでは、期待どおりに動く証拠にはなりません。</p></div>
+  <p>必要なら自分でも動作を確認し、修正を依頼します。</p>
+</section>
+
+<section data-unit="safe-permissions">
+  <div data-component="comparison">
+    <div>
+      <h3>承認する前に見る</h3>
+      <ul>
+        <li>どのファイルを変更するか。</li>
+        <li>どのコマンドを実行するか。</li>
+        <li>外部への送信や公開を伴うか。</li>
+      </ul>
+    </div>
+    <div>
+      <h3>範囲を広げすぎない</h3>
+      <ul>
+        <li>信頼する作業対象とツールを選ぶ。</li>
+        <li>機密情報の扱いを確認する。</li>
+        <li>必要な範囲・期間だけ許可する。</li>
+      </ul>
+    </div>
+  </div>
+  <div data-component="note"><p>「何でも自動承認」から始めず、何が実行されるかを把握します。</p></div>
+</section>
+
+<section data-unit="project-guidance">
+  <div data-component="comparison">
+    <div>
+      <h3>プロジェクトで共有する</h3>
+      <ul>
+        <li>構成と、ファイルを置く場所。</li>
+        <li>コーディング規約。</li>
+        <li>正しいビルド・テストの手順。</li>
+      </ul>
+    </div>
+    <div>
+      <h3>今回の依頼に書く</h3>
+      <ul>
+        <li>今回実現したいこと。</li>
+        <li>変更する範囲・しない範囲。</li>
+        <li>今回の完了条件。</li>
+      </ul>
+    </div>
+  </div>
+  <p>指示を置いただけで、守られたことや正しさが保証されるわけではありません。</p>
+</section>
+
+<section data-unit="terminal">
+  <p>セットアップ後、対象のプロジェクトで起動して対話します。</p>
+  <pre><code>copilot</code></pre>
+  <blockquote><p>この変更の影響範囲を調べ、必要なテストを提案してください。まだファイルは変更しないでください。</p></blockquote>
+  <p>相談から、計画・変更・検証へ。端末を中心に作業する人の入口です。</p>
+  <div data-component="note"><p>「変更しないで」という依頼と、ツールの権限設定は別です。</p></div>
+</section>
+
+<section data-unit="github-delegation">
+  <div data-diagram="cloud-to-review" data-occurrence="main-cloud-to-review"></div>
+  <p><strong>Pull Request（PR）</strong>は、変更案を確認・相談する場です。</p>
+  <p>利用には、対応するプランや組織・リポジトリの設定が必要です。</p>
+</section>
+
+<section data-unit="choose-work">
+  <table>
+    <caption>仕事に合わせた始め方の目安</caption>
+    <thead><tr><th scope="col">やりたいこと</th><th scope="col">始め方</th><th scope="col">先に決めること</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">コードの意味を知る</th><td>対話で説明を求める。</td><td>説明してほしい対象。</td></tr>
+      <tr><th scope="row">範囲の明確な修正</th><td>エージェントに依頼する。</td><td>範囲と完了条件。</td></tr>
+      <tr><th scope="row">大きい・曖昧な変更</th><td>先に相談・計画する。</td><td>要件と、仕事の分け方。</td></tr>
+    </tbody>
+  </table>
+  <p>自律性を最大にするのではなく、<strong>仕事に合う進め方</strong>を選びます。</p>
+</section>
+
+<section data-unit="takeaway">
+  <p><strong>「何を任せ、どう確かめるか」をセットにする。</strong></p>
+  <ol>
+    <li>確認方法が分かる、小さな変更を一つ選ぶ。</li>
+    <li>目的・範囲・完了条件を伝え、計画を見直す。</li>
+    <li>差分と検証結果を確認してから、採用する。</li>
+  </ol>
+  <div data-component="note"><p>Copilotに任せる範囲が広がっても、人の判断はなくなりません。</p></div>
+  <p><a data-slide="appendix-template">補足：依頼テンプレート</a></p>
+</section>
+
+<section data-unit="appendix-terms">
+  <div data-component="comparison">
+    <div>
+      <h3>GitHubの言葉</h3>
+      <ul>
+        <li><strong>リポジトリ：</strong>コードと変更履歴などを管理する場所。</li>
+        <li><strong>Issue：</strong>作業や相談を記録する項目。</li>
+        <li><strong>Pull Request：</strong>変更案を確認・相談する場。</li>
+      </ul>
+    </div>
+    <div>
+      <h3>作業の言葉</h3>
+      <ul>
+        <li><strong>差分：</strong>変更前と変更後の違い。</li>
+        <li><strong>テスト：</strong>意図した動作かを確かめる確認。</li>
+        <li><strong>コンテキスト：</strong>判断に必要な背景情報。</li>
+        <li><strong>ツール：</strong>読み書きや実行を行う機能。</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+<section data-unit="appendix-template">
+  <blockquote>
+    <p>目的は［実現したいこと］です。対象は［機能・ファイル］です。<br>
+    ［変えてはいけないこと］を守り、既存の仕組みを使ってください。<br>
+    完了条件は［期待する動作と確認方法］です。<br>
+    まず調査と計画を示し、未決事項を質問してください。<br>
+    私が確認してから実装し、差分・検証結果・未確認事項を報告してください。</p>
+  </blockquote>
+  <div data-component="note"><p>計画修正の例：「今回はUI変更を除き、入力チェックとテストに絞ってください。」</p></div>
+</section>
+
+<section data-unit="appendix-checklist">
+  <ul>
+    <li><strong>利用条件：</strong>プラン・クライアント・組織ポリシーを確認する。</li>
+    <li><strong>作業場所：</strong>信頼できるリポジトリと、変更対象を確認する。</li>
+    <li><strong>情報と権限：</strong>機密情報、外部ツール、実行の許可範囲を確認する。</li>
+    <li><strong>確かめ方：</strong>正常系・境界値・既存動作の確認方法を決める。</li>
+  </ul>
+  <div data-component="note"><p>実行できなかった確認は、確認済みとして扱わないでください。</p></div>
+</section>
+
+<section data-unit="appendix-reading">
+  <ul>
+    <li><a data-source="gh-overview">全体像：GitHub Copilotの概要</a></li>
+    <li><a data-source="vscode-agents">VS Code：基本の使い方とエージェント</a></li>
+    <li><a data-source="vscode-planning">VS Code：計画を相談し、見直す</a></li>
+    <li><a data-source="vscode-security">VS Code：安全なAI支援開発</a></li>
+    <li><a data-source="vscode-instructions">VS Code：プロジェクトの指示を共有する</a></li>
+    <li><a data-source="copilot-cli">端末：GitHub Copilot CLI</a></li>
+    <li><a data-source="github-cloud">GitHub.com：作業委任とレビュー</a></li>
+  </ul>
+  <p>利用前に、対象環境の公式情報を確認してください。</p>
+</section>
