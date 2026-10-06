@@ -1,0 +1,381 @@
+{
+  "schemaVersion": 1,
+  "id": "copilot-beginner-agentic",
+  "formats": ["presentation"],
+  "theme": "primary",
+  "languages": ["ja"],
+  "defaultLanguage": "ja",
+  "audience": {"ja": "GitHub Copilotをこれから使う方・基本から学び直したい方"},
+  "title": {"ja": "GitHub Copilot入門 — 基本とAgenticな使い方"},
+  "visibility": "public",
+  "asOf": "2026-10-06",
+  "sources": [
+    {
+      "id": "gh-overview",
+      "title": {"ja": "Copilotの概要｜GitHub Docs"},
+      "url": "https://docs.github.com/en/copilot/get-started/about-github-copilot",
+      "visibility": "public",
+      "verification": "confirmed"
+    },
+    {
+      "id": "vscode-agents",
+      "title": {"ja": "VS CodeでAIを使う｜VS Code公式"},
+      "url": "https://code.visualstudio.com/docs/agents/overview",
+      "visibility": "public",
+      "verification": "confirmed"
+    },
+    {
+      "id": "vscode-planning",
+      "title": {"ja": "エージェントと計画する｜VS Code公式"},
+      "url": "https://code.visualstudio.com/docs/agents/run/planning",
+      "visibility": "public",
+      "verification": "confirmed"
+    },
+    {
+      "id": "vscode-security",
+      "title": {"ja": "安全なAI支援開発｜VS Code公式"},
+      "url": "https://code.visualstudio.com/docs/agents/run/security",
+      "visibility": "public",
+      "verification": "confirmed"
+    },
+    {
+      "id": "vscode-instructions",
+      "title": {"ja": "プロジェクトの指示を共有する｜VS Code公式"},
+      "url": "https://code.visualstudio.com/docs/agents/guides/customize-copilot-guide",
+      "visibility": "public",
+      "verification": "confirmed"
+    },
+    {
+      "id": "copilot-cli",
+      "title": {"ja": "Copilot CLI｜GitHub Docs"},
+      "url": "https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-cli",
+      "visibility": "public",
+      "verification": "confirmed"
+    },
+    {
+      "id": "github-cloud",
+      "title": {"ja": "GitHub.comでのCopilot｜GitHub Docs"},
+      "url": "https://docs.github.com/en/copilot/concepts/copilot-surfaces/copilot-on-github",
+      "visibility": "public",
+      "verification": "confirmed"
+    }
+  ],
+  "facts": [],
+  "diagrams": [
+    {
+      "id": "ways-to-ask",
+      "kind": "comparison",
+      "title": {"ja": "提案を受け取る使い方と、作業を任せる使い方"},
+      "caption": {"ja": "欲しいのは、提案か、それとも作業の成果か。"},
+      "description": {"ja": "依頼する内容の違いを示します。"},
+      "legend": {"ja": "枠は使い方の比較です。優劣や固定のUI区分ではありません。"},
+      "sourceIds": ["gh-overview"],
+      "visibility": "public",
+      "nodes": [
+        {"id": "assist", "label": {"ja": "提案を受け取る\n補完・対話"}},
+        {"id": "delegate", "label": {"ja": "作業を任せる\nエージェント"}, "role": "emphasis"}
+      ],
+      "edges": [],
+      "groups": []
+    },
+    {
+      "id": "agent-loop",
+      "kind": "custom",
+      "title": {"ja": "調査・変更・テスト・確認の反復"},
+      "caption": {"ja": "結果を読み、必要なら調査へ戻る一例です。"},
+      "description": {"ja": "ツールは、読み書き・コマンド実行の機能です。"},
+      "legend": {"ja": "E番号は接続の説明。破線は必要な場合の反復です。"},
+      "sourceIds": ["vscode-agents"],
+      "visibility": "public",
+      "nodes": [
+        {"id": "research", "label": {"ja": "調査"}},
+        {"id": "edit", "label": {"ja": "変更"}},
+        {"id": "test", "label": {"ja": "テスト"}},
+        {"id": "check", "label": {"ja": "確認"}, "role": "emphasis"}
+      ],
+      "edges": [
+        {"id": "investigate", "from": "research", "to": "edit", "label": {"ja": "方針"}, "directed": true, "style": "solid"},
+        {"id": "validate", "from": "edit", "to": "test", "label": {"ja": "検証"}, "directed": true, "style": "solid"},
+        {"id": "inspect", "from": "test", "to": "check", "label": {"ja": "結果"}, "directed": true, "style": "solid"},
+        {"id": "iterate", "from": "check", "to": "research", "label": {"ja": "再調査"}, "directed": true, "style": "dashed"}
+      ],
+      "groups": [],
+      "layouts": [
+        {
+          "format": "presentation", "language": "ja", "variant": "wide", "width": 640, "height": 304,
+          "nodes": [
+            {"id": "research", "x": 16, "y": 16, "width": 232, "height": 72},
+            {"id": "edit", "x": 392, "y": 16, "width": 232, "height": 72},
+            {"id": "test", "x": 392, "y": 200, "width": 232, "height": 72},
+            {"id": "check", "x": 16, "y": 200, "width": 232, "height": 72}
+          ],
+          "groups": [],
+          "routes": [
+            {"id": "investigate", "points": [[248,52],[392,52]]},
+            {"id": "validate", "points": [[508,88],[508,200]]},
+            {"id": "inspect", "points": [[392,236],[248,236]]},
+            {"id": "iterate", "points": [[132,200],[132,88]]}
+          ]
+        },
+        {
+          "format": "presentation", "language": "ja", "variant": "narrow", "width": 256, "height": 664,
+          "nodes": [
+            {"id": "research", "x": 104, "y": 16, "width": 136, "height": 80},
+            {"id": "edit", "x": 104, "y": 200, "width": 136, "height": 80},
+            {"id": "test", "x": 104, "y": 384, "width": 136, "height": 80},
+            {"id": "check", "x": 104, "y": 568, "width": 136, "height": 80}
+          ],
+          "groups": [],
+          "routes": [
+            {"id": "investigate", "points": [[172,96],[172,200]]},
+            {"id": "validate", "points": [[172,280],[172,384]]},
+            {"id": "inspect", "points": [[172,464],[172,568]]},
+            {"id": "iterate", "points": [[104,608],[52,608],[52,56],[104,56]]}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "human-and-agent",
+      "kind": "custom",
+      "title": {"ja": "人が依頼し、AIが作業し、人が確認する"},
+      "caption": {"ja": "目標と権限、最後の採否は人が決めます。"},
+      "description": {"ja": "途中でも、追加の指示や停止ができます。"},
+      "legend": {"ja": "矢印は依頼と成果の受け渡しです。"},
+      "sourceIds": ["vscode-agents"],
+      "visibility": "public",
+      "nodes": [
+        {"id": "request", "label": {"ja": "人\n依頼する"}, "role": "emphasis"},
+        {"id": "work", "label": {"ja": "AI\n作業する"}},
+        {"id": "review", "label": {"ja": "人\n確認する"}, "role": "emphasis"}
+      ],
+      "edges": [
+        {"id": "assign", "from": "request", "to": "work", "label": {"ja": "目標・範囲"}, "directed": true, "style": "solid"},
+        {"id": "return", "from": "work", "to": "review", "label": {"ja": "差分・結果"}, "directed": true, "style": "solid"}
+      ],
+      "groups": [],
+      "layouts": [
+        {
+          "format": "presentation", "language": "ja", "variant": "wide", "width": 640, "height": 144,
+          "nodes": [
+            {"id": "request", "x": 16, "y": 16, "width": 132, "height": 112},
+            {"id": "work", "x": 252, "y": 16, "width": 132, "height": 112},
+            {"id": "review", "x": 488, "y": 16, "width": 132, "height": 112}
+          ],
+          "groups": [],
+          "routes": [
+            {"id": "assign", "points": [[148,72],[252,72]]},
+            {"id": "return", "points": [[384,72],[488,72]]}
+          ]
+        },
+        {
+          "format": "presentation", "language": "ja", "variant": "narrow", "width": 256, "height": 552,
+          "nodes": [
+            {"id": "request", "x": 16, "y": 16, "width": 224, "height": 104},
+            {"id": "work", "x": 16, "y": 224, "width": 224, "height": 104},
+            {"id": "review", "x": 16, "y": 432, "width": 224, "height": 104}
+          ],
+          "groups": [],
+          "routes": [
+            {"id": "assign", "points": [[128,120],[128,224]]},
+            {"id": "return", "points": [[128,328],[128,432]]}
+          ]
+        }
+      ]
+    },
+    {
+      "id": "cloud-to-review",
+      "kind": "custom",
+      "title": {"ja": "GitHubでの依頼から、クラウド作業とPRの確認へ"},
+      "caption": {"ja": "PRの作成まで依頼した場合の流れです。"},
+      "description": {"ja": "GitHub.comのCopilot cloud agentの例。"},
+      "legend": {"ja": "矢印は作業と変更案の受け渡しです。"},
+      "sourceIds": ["github-cloud"],
+      "visibility": "public",
+      "nodes": [
+        {"id": "task", "label": {"ja": "依頼"}},
+        {"id": "cloud", "label": {"ja": "クラウド\nで作業"}},
+        {"id": "pull-request", "label": {"ja": "PRで\nレビュー"}, "role": "emphasis"}
+      ],
+      "edges": [
+        {"id": "delegate", "from": "task", "to": "cloud", "label": {"ja": "委任"}, "directed": true, "style": "solid"},
+        {"id": "propose", "from": "cloud", "to": "pull-request", "label": {"ja": "変更案"}, "directed": true, "style": "solid"}
+      ],
+      "groups": [],
+      "layouts": [
+        {
+          "format": "presentation", "language": "ja", "variant": "wide", "width": 640, "height": 144,
+          "nodes": [
+            {"id": "task", "x": 16, "y": 16, "width": 132, "height": 112},
+            {"id": "cloud", "x": 252, "y": 16, "width": 132, "height": 112},
+            {"id": "pull-request", "x": 488, "y": 16, "width": 132, "height": 112}
+          ],
+          "groups": [],
+          "routes": [
+            {"id": "delegate", "points": [[148,72],[252,72]]},
+            {"id": "propose", "points": [[384,72],[488,72]]}
+          ]
+        },
+        {
+          "format": "presentation", "language": "ja", "variant": "narrow", "width": 256, "height": 552,
+          "nodes": [
+            {"id": "task", "x": 16, "y": 16, "width": 224, "height": 104},
+            {"id": "cloud", "x": 16, "y": 224, "width": 224, "height": 104},
+            {"id": "pull-request", "x": 16, "y": 432, "width": 224, "height": 104}
+          ],
+          "groups": [],
+          "routes": [
+            {"id": "delegate", "points": [[128,120],[128,224]]},
+            {"id": "propose", "points": [[128,328],[128,432]]}
+          ]
+        }
+      ]
+    }
+  ],
+  "units": [
+    {
+      "id": "start", "format": "presentation", "composition": "cover", "part": "main",
+      "title": {"ja": "GitHub Copilot入門"},
+      "sourceIds": ["gh-overview"], "visibility": "public",
+      "notes": {"ja": "この資料では、GitHub Copilotを初めて使う方に向けて、補完と対話から、エージェントに作業を任せる使い方までを説明します。最初から大きな仕事を丸ごと任せることを勧めるものではありません。何を任せ、どの結果を自分で確認するかを決められるようになることが目標です。中心となる例はVS Codeです。最後にCopilot CLIとGitHub上の利用も紹介します。公開公式資料を要約し、図と依頼例は学習用に構成しています。仮想例を実行済みのデモや測定結果として説明しないでください。"}
+    },
+    {
+      "id": "overview", "format": "presentation", "composition": "comparison", "part": "main",
+      "title": {"ja": "開発の各場面を支援するAI"},
+      "sourceIds": ["gh-overview"], "visibility": "public",
+      "notes": {"ja": "Copilotは、コードを入力するときの補完だけに限りません。知らないコードの説明、修正方針の相談、ファイルの変更、テストやレビューの支援まで、開発の流れの中で使えます。一方で、画面に見えている機能や利用できる範囲は、契約しているプラン、クライアント、組織のポリシーによって異なります。この資料では料金やモデルの比較は扱いません。リポジトリとは、コードとその変更履歴などをまとめて管理する場所です。すべての利用者が、すべての機能を同じように使えるとは説明しないでください。"}
+    },
+    {
+      "id": "inline-help", "format": "presentation", "composition": "claim", "part": "main",
+      "title": {"ja": "補完は、書いている途中を助ける"},
+      "sourceIds": ["gh-overview"], "visibility": "public",
+      "notes": {"ja": "入力中のコードや文脈に応じて、続きの候補が提案されます。候補をそのまま採用することも、書き直すことも、使わないこともできます。表示しているJavaScriptは、文字列の前後の空白を除いた長さで、空のタイトルかどうかを見る説明用の仮想例です。titleが文字列であることを前提にしており、すべての入力型やプロジェクトの要件を満たす完全な入力検証ではありません。実際にCopilotから得た応答のスクリーンショットではなく、説明用に書いた例です。提案の速さと、正しさの確認は分けて話してください。"}
+    },
+    {
+      "id": "chat-help", "format": "presentation", "composition": "comparison", "part": "main",
+      "title": {"ja": "対話は、理解と相談から始める"},
+      "sourceIds": ["vscode-agents"], "visibility": "public",
+      "notes": {"ja": "まずコードを理解するために使うと、自分が確認しながら進めやすくなります。説明を読んでも分からないところは、用語を説明してもらったり、対象を狭めて追加で質問したりできます。表示した二つの文章は学習用の依頼例であり、実行結果ではありません。プロジェクト内のどのファイルやエラーを指しているのかが曖昧なら、対象の情報も渡します。対話画面は、質問だけでなくエージェントに仕事を依頼する入口にもなります。チャットという画面の名前だけで、読み取り専用だと判断しないでください。"}
+    },
+    {
+      "id": "good-request", "format": "presentation", "composition": "matrix", "part": "main",
+      "title": {"ja": "目的と必要な情報をそろえる"},
+      "sourceIds": ["vscode-agents", "vscode-planning"], "visibility": "public",
+      "notes": {"ja": "長い文章にすればよいのではなく、判断に必要な情報をそろえます。何を実現したいのか、どの部分が対象なのか、何を変えてはいけないのか、どの状態なら完了なのかを伝えます。コンテキストとは、依頼を理解するための背景や関連情報です。コード、エラー、テスト結果も含まれます。必要な情報をエージェントが調べることもできますが、目的や守るべき条件を推測に任せないことが大切です。共有してよい情報かどうかは、所属組織のルールにも従って確認してください。"}
+    },
+    {
+      "id": "limits", "format": "presentation", "composition": "conclusion", "part": "main",
+      "title": {"ja": "提案は、そのまま正解とは限らない"},
+      "sourceIds": ["gh-overview", "vscode-security"], "visibility": "public",
+      "notes": {"ja": "Copilotは意図を取り違えたり、誤ったコードを生成したりすることがあります。見た目が自然でも、要件や安全性を満たしているとは限りません。差分は、変更前と変更後の違いです。テストは、意図した動作かどうかを確かめるための確認です。テストが通ることは重要な材料ですが、テストで見ていない動作まで正しいと保証するものではありません。業務上重要な変更ほど、既存のレビューや検証の仕組みを省かないでください。この資料の使い方の提案は、品質保証や安全性の保証ではありません。"}
+    },
+    {
+      "id": "agentic", "format": "presentation", "composition": "comparison", "part": "main",
+      "title": {"ja": "答えだけでなく、作業も任せる"},
+      "sourceIds": ["gh-overview"], "visibility": "public",
+      "notes": {"ja": "ここでいうAgenticは、独立した製品名や料金プラン名ではなく、目標を伝えると、AIが複数の手順を進める使い方です。対象のコードを調べ、変更し、必要なツールで結果を確認する、といった仕事を頼めます。補完や質問への回答は、その場の提案を人が受け取る使い方です。エージェントでは、提案だけでなく作業の進め方も一定の範囲で任せます。ただし、どちらが常に優れているという比較ではありません。短い質問で十分な仕事を、無理に自律的な作業へ広げる必要はありません。対話の中からエージェントに依頼することもできます。"}
+    },
+    {
+      "id": "loop", "format": "presentation", "composition": "process", "part": "main",
+      "title": {"ja": "調べる・変更する・確かめる"},
+      "sourceIds": ["vscode-agents"], "visibility": "public",
+      "notes": {"ja": "図は、調査、変更、テスト、結果の確認という反復を単純化しています。実際の順序や必要な手順は仕事によって変わります。ツールとは、ファイルを読む、編集する、コマンドを実行するなど、環境に働きかける機能です。E1からE3の実線はこの例での進行、E4の破線は必要に応じた再調査を表します。テストが失敗したときは、原因を読んで変更を見直します。実行環境がない、依頼の条件が曖昧などの理由で止まることもあります。図の「確認」はエージェントによる結果の読み取りです。人による最終レビューは、次のスライドで別に示します。"}
+    },
+    {
+      "id": "human-control", "format": "presentation", "composition": "process", "part": "main",
+      "title": {"ja": "目的・権限・採用は、人が決める"},
+      "sourceIds": ["vscode-agents", "vscode-security"], "visibility": "public",
+      "notes": {"ja": "人が最初に目的と範囲を伝え、エージェントが作業し、人が結果を見て採否を決める流れです。任せることは、責任をなくすことではありません。途中でも補足、方向修正、停止ができます。実行の承認と、成果物を採用する判断も別です。コマンドの実行を許可したからといって、生成された変更をそのまま取り込む必要はありません。図は責任分担を分かりやすく示すために受け渡しを二つに絞っています。人が終わるまで関与できないという意味ではありません。"}
+    },
+    {
+      "id": "vscode-start", "format": "presentation", "composition": "process", "part": "main",
+      "title": {"ja": "VS Codeで、相談から作業へ"},
+      "sourceIds": ["vscode-planning"], "visibility": "public",
+      "notes": {"ja": "このスライドは、公開公式資料にあるVS CodeのCopilotセッションでの手順を要約したもので、実機の画面を再現したものではありません。事前にVS CodeとCopilotのセットアップ、利用権限の確認が必要です。まず信頼できるプロジェクトを開き、ChatでCopilotのセッションを選びます。Planを選んで相談すると、実装前に計画を検討できます。公式資料では /plan による開始も説明されていますが、この資料では操作を覚えるより、計画を読んでずれを直すことを重視します。セッションの種類やバージョンによって表示や選択肢が異なります。計画への同意と、個々のツール操作の権限は別に考えてください。"}
+    },
+    {
+      "id": "small-task", "format": "presentation", "composition": "comparison", "part": "main",
+      "title": {"ja": "小さく、確かめやすい変更を選ぶ"},
+      "sourceIds": ["vscode-planning"], "visibility": "public",
+      "notes": {"ja": "ここからは、架空のタスク一覧アプリを題材にします。タスクとは、買い物や作業の項目のような短い文字列です。空白だけのタイトルが登録されてしまうことを困りごととし、空文字と空白だけのタイトルを拒否する変更を考えます。アプリ全体の作り直しやデザインの変更は含めません。有効なタイトルの登録動作は変えないことも条件です。この資料ではアプリそのものは実装せず、依頼と判断の流れを示します。実在のリポジトリや実測結果ではありません。小さい仕事でも、何をもって完了とするかを先に決める習慣を説明してください。"}
+    },
+    {
+      "id": "task-prompt", "format": "presentation", "composition": "claim", "part": "main",
+      "title": {"ja": "完了条件まで含めて依頼する"},
+      "sourceIds": ["vscode-planning"], "visibility": "public",
+      "notes": {"ja": "依頼文には、期待する変更だけでなく、変えてほしくない動作と確認方法も入れています。正常系は通常の有効な入力、境界値は空文字や空白だけなど、条件の境目にある入力です。既存の仕組みを使うという条件は、勝手に別のライブラリや設計を持ち込む範囲を抑えるためです。まず計画を示してもらい、必要な判断をしてから実装へ進みます。この依頼文は学習用の仮想例であり、そのまま実行すれば必ず安全に止まることを保証するものではありません。権限設定は別途確認します。実際の案件では、入力の型や空白の定義、エラー表示などをプロジェクトに合わせて具体化してください。"}
+    },
+    {
+      "id": "review-plan", "format": "presentation", "composition": "matrix", "part": "main",
+      "title": {"ja": "変更前に、計画のずれを見つける"},
+      "sourceIds": ["vscode-planning"], "visibility": "public",
+      "notes": {"ja": "計画は、もっともらしく見えるかではなく、自分の目的に合っているかを見ます。変更するファイルや範囲が特定されているか、既存の入力チェックやエラー表示を使うか、正常系と境界値をどう確かめるかを確認します。空白として扱う文字の範囲や、エラーをどこに出すかが分からない場合は、ここで確認すべき未決事項です。例として「今回はUIの作り直しを除き、入力チェックとテストに絞ってください」と修正を依頼できます。実際の計画は、そのプロジェクトのファイルや実装を調べたものにする必要があります。一般的な手順を並べただけの計画で十分とは説明しないでください。"}
+    },
+    {
+      "id": "review-results", "format": "presentation", "composition": "matrix", "part": "main",
+      "title": {"ja": "終了の報告より、差分と結果を見る"},
+      "sourceIds": ["vscode-agents", "vscode-instructions"], "visibility": "public",
+      "notes": {"ja": "ここにある表は、実行結果の報告ではなく、人が確認する観点です。どのファイルが変わったか、依頼と無関係な変更がないかを差分で見ます。テストは、何を実行し、どの入力を確かめ、どういう結果だったかを確認します。実行できなかった確認、失敗した確認、未解決の判断は、成功と一緒にまとめないようにします。AIが「完了」と返したことだけでは、変更が期待どおり動く証拠にはなりません。必要であれば自分で動作を確認し、問題があれば具体的な修正を依頼します。テストを通すためだけに期待値を変えていないかも、レビュー時の重要な観点です。"}
+    },
+    {
+      "id": "safe-permissions", "format": "presentation", "composition": "comparison", "part": "main",
+      "title": {"ja": "実行権限は、必要な範囲で与える"},
+      "sourceIds": ["vscode-security"], "visibility": "public",
+      "notes": {"ja": "エージェントは、ツールやコマンドを通じて実際に環境へ作用します。ファイルを書き換えるだけでなく、外部への送信や公開、環境への変更を伴うこともあるため、何を承認するのかを見てください。信頼していないリポジトリや外部ツールを安易に信頼しないこと、機密情報の扱いを組織ルールに従って確認することが基本です。権限の有効範囲や期間を必要以上に広げないようにします。サンドボックスは対応環境で有効な対策ですが、この資料では全環境に同じ機能があるとは説明しません。プロンプトに禁止事項を書くだけでは、権限や安全境界を置き換えられません。"}
+    },
+    {
+      "id": "project-guidance", "format": "presentation", "composition": "comparison", "part": "main",
+      "title": {"ja": "プロジェクトの約束を共有する"},
+      "sourceIds": ["vscode-instructions"], "visibility": "public",
+      "notes": {"ja": "プロジェクト全体に共通する構成や規約、正しいテストコマンドなどは、繰り返し説明する代わりに指示として共有できます。一回限りの要求は、今回の依頼に書きます。公式ガイドは、実際に困っていることに対して最小限の指示を追加し、指示が取り込まれているかと、結果が改善したかを別々に確認する方法を勧めています。指示ファイルが見つかったことと、すべての指示が守られたことは同じではありません。MCP、Skills、独自エージェントなどの拡張もありますが、初心者向けの本編では設定手順には立ち入りません。先に目的、規約、検証方法をそろえることを重視します。"}
+    },
+    {
+      "id": "terminal", "format": "presentation", "composition": "claim", "part": "main",
+      "title": {"ja": "Copilot CLIは、端末から使う"},
+      "sourceIds": ["copilot-cli"], "visibility": "public",
+      "notes": {"ja": "Copilot CLIは、コマンドを入力する端末からCopilotと対話する入口です。セットアップと利用権限の確認を済ませたうえで、対象のプロジェクトで copilot を起動します。質問、計画、コードの変更、検証などを依頼でき、実行するコマンドや変更内容を確認します。表示した文章は、最初に影響範囲とテストを相談する学習用の依頼例です。「まだ変更しないで」という指示は、権限設定そのものではありません。この資料は、全ツールの自動承認を勧めません。CLIにもクラウド等の選択肢があるため、端末から使うことと、実行場所やモデルの処理場所を同一視しないでください。"}
+    },
+    {
+      "id": "github-delegation", "format": "presentation", "composition": "process", "part": "main",
+      "title": {"ja": "GitHubで任せ、変更案をレビューする"},
+      "sourceIds": ["github-cloud"], "visibility": "public",
+      "notes": {"ja": "GitHub.comでは、Copilot cloud agentにリポジトリの調査、計画、変更を任せられます。クラウドの開発環境でファイルを編集し、テストなどを実行できます。Issueは作業や相談を記録する項目で、Issueや会話などから依頼を始められます。図は、PRの作成まで依頼した場合を表しています。Pull Requestは変更案を確認・相談する場です。必ず自動でPRが作られる、すべての変更が自動マージされるという意味ではありません。作業環境、プラン、組織やリポジトリの設定によって使える機能や権限が異なります。ログやAIのレビューは、人による内容確認と検証を置き換えません。"}
+    },
+    {
+      "id": "choose-work", "format": "presentation", "composition": "matrix", "part": "main",
+      "title": {"ja": "任せる仕事は、小さく区切って選ぶ"},
+      "sourceIds": ["vscode-agents", "vscode-planning"], "visibility": "public",
+      "notes": {"ja": "これは、学習を始めるときの選び方の目安です。コードの意味を知りたいだけなら、説明を求めるところから始めます。範囲が明確な修正なら、完了条件を決めて作業を依頼します。要件が曖昧だったり大きな変更だったりするなら、先に相談して分割します。表は機能の固定的な境界ではありません。同じ対話画面の中で、相談から計画、作業へと進むこともできます。重要なのは、自律性を最大にすることではなく、その仕事に必要な進め方を選ぶことです。"}
+    },
+    {
+      "id": "takeaway", "format": "presentation", "composition": "conclusion", "part": "main",
+      "title": {"ja": "小さな依頼と、確かな確認から"},
+      "sourceIds": ["vscode-agents"], "visibility": "public",
+      "notes": {"ja": "最後に、参加者が自分の作業に置き換えられる形で締めくくります。まず、確かめ方が分かる小さな変更を一つ選びます。目的と範囲、完了条件を伝え、計画のずれを直します。変更後は、差分と検証結果を確認してから採用します。GitHub Copilotの価値を補完だけに限定する必要はありませんが、いきなり全部を任せる必要もありません。何を任せ、どう確かめるかをセットで考えることが、Agenticな使い方の出発点です。補足には用語集、依頼テンプレート、利用前の確認事項と公式資料を用意しています。"}
+    },
+    {
+      "id": "appendix-terms", "format": "presentation", "composition": "comparison", "part": "appendix",
+      "title": {"ja": "補足：この資料で使う言葉"},
+      "sourceIds": ["gh-overview", "vscode-agents"], "visibility": "public",
+      "notes": {"ja": "初めて聞く用語が多い場合に使う補足です。厳密な用語集ではなく、この資料を読むための短い説明です。リポジトリにはコードだけでなく設定やドキュメントも含まれます。Issueはバグ報告だけではなく作業や相談にも使えます。Pull Requestは変更のレビューと議論を行う仕組みで、内容を確認してから取り込む判断につなげます。コンテキストは、AIの入力上限の説明ではなく、ここでは依頼の判断に必要な背景情報を指しています。"}
+    },
+    {
+      "id": "appendix-template", "format": "presentation", "composition": "claim", "part": "appendix",
+      "title": {"ja": "補足：依頼テンプレート"},
+      "sourceIds": ["vscode-planning"], "visibility": "public",
+      "notes": {"ja": "角括弧の部分を自分の作業に合わせて書き換えます。既存の仕様やプロジェクトのルールを確認してから使ってください。すべての項目を長く埋める必要はなく、曖昧なところを減らすことが目的です。実装前に質問してほしい判断があれば、明示しておきます。計画にずれがあったときは、全体をやり直すよう曖昧に頼むより、どの範囲を外すか、何を維持するかを具体的に伝えます。このテンプレートは作業許可や安全性を自動で保証するものではありません。"}
+    },
+    {
+      "id": "appendix-checklist", "format": "presentation", "composition": "conclusion", "part": "appendix",
+      "title": {"ja": "補足：始める前の確認"},
+      "sourceIds": ["gh-overview", "vscode-security"], "visibility": "public",
+      "notes": {"ja": "利用できる機能はプランだけで決まるわけではありません。クライアント、セッション、組織ポリシー、リポジトリの設定にも依存します。説明に出てきた選択肢が画面にない場合は、所属組織の管理者向け手順や公式セットアップ資料を確認してください。既存の変更を不用意に失わないよう、作業の保存状態と対象を確認します。機密情報と外部サービスへの接続を、単なる便利機能として扱わないでください。検証を実行できない環境なら、実行できていないことを明示し、別の確認手段を用意する必要があります。"}
+    },
+    {
+      "id": "appendix-reading", "format": "presentation", "composition": "claim", "part": "appendix",
+      "title": {"ja": "補足：次に読む公式資料"},
+      "sourceIds": [], "visibility": "public",
+      "notes": {"ja": "リンクは、この資料の作成時に該当部分を確認した公開公式資料です。出典パネルから元のURLを開けます。ページ全体のすべての記述や、未掲載の機能まで検証したことを意味するものではありません。GitHub DocsとVS Codeの公式情報を日本語で要約しており、依頼文や図は学習用に作成したものです。製品の利用条件やUIは変わり得るため、利用前には対象環境の公式情報を確認してください。HTMLにはノートも含まれます。GitHubの公式な推薦・認定を示す資料ではありません。"}
+    }
+  ]
+}
