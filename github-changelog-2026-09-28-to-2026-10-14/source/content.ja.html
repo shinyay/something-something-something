@@ -1,0 +1,602 @@
+<section data-unit="overview">
+  <p><strong>この期間は、エージェントの能力拡張と、実行・権限・費用を管理する仕組みの整備が同時に進みました。</strong>新モデルの名前を覚えるだけでは、既存のCIやAPI連携への影響を判断できません。本資料では、開発者とGitHub管理者が「何ができるようになったか」と「どの条件なら使えるか」を一緒に理解できるよう、関連する変更をまとめて解説します。</p>
+  <p>対象は、掲載日2026年9月28日〜10月14日について、10月14日12:17 JSTを基準に取得した全<span data-fact="article-count"></span>です。最新の掲載日は10月13日です。日付は原則としてChangelogの掲載日で、機能の実施日とは限りません。月次・週次まとめには、同じ変更への再言及や対象期間前の更新も含まれます。</p>
+  <div data-component="note"><p>公開記事を基にした非公式の技術解説です。「出典確認済み」は記事本文を取得・確認した意味であり、すべての機能を実アカウントで動作確認した意味ではありません。料金の具体的単価、記事にないAPI仕様、未公表の最低版や提供日は補っていません。GitHubの公式な推薦・認定を示す資料ではありません。</p></div>
+  <table>
+    <caption>7カテゴリと読みどころ</caption>
+    <thead><tr><th scope="col">カテゴリ</th><th scope="col">理解すること</th><th scope="col">主な読者</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">1. モデルと開発環境</th><td>モデルの役割・プラン、移行、IDEとappの変更</td><td>開発者・開発環境管理者</td></tr>
+      <tr><th scope="row">2. エージェントの実行</th><td>モデル調整、手順のコード化、GUI操作、ツールの隔離</td><td>自動化を設計する開発者・管理者</td></tr>
+      <tr><th scope="row">3. PRと共同作業</th><td>受付とマージ完了、スタック、レビュー、モデレーション</td><td>開発者・maintainer</td></tr>
+      <tr><th scope="row">4. ActionsとCI</th><td>ランナーの互換性、ARC、保存データ、coverageの条件</td><td>CI基盤・リポジトリ管理者</td></tr>
+      <tr><th scope="row">5. セキュリティと品質</th><td>検出と修復の観測、ライセンス、機密性、報告の品質</td><td>セキュリティ担当・maintainer</td></tr>
+      <tr><th scope="row">6. 供給網</th><td>依存更新の接続先、alertの取り下げ、npmの信頼と公開</td><td>パッケージ・依存関係の管理者</td></tr>
+      <tr><th scope="row">7. 企業ガバナンス</th><td>正本、認証主体、最小権限、設定強制、課金と利用計測</td><td>組織・企業管理者、API連携開発者</td></tr>
+    </tbody>
+  </table>
+  <h3>提供状態を読み分ける</h3>
+  <p><strong>GA</strong>は一般提供、<strong>公開プレビュー</strong>は仕様変更の可能性がある試行提供です。<strong>限定公開プレビュー</strong>は参加対象が限定され、<strong>Private preview</strong>は招待などの制限を伴います。<strong>Research preview</strong>は研究段階であることを残して読みます。「提供予定」「順次展開」は、利用中の環境で提供済みという意味ではありません。</p>
+  <p>本文の「運用上の提案」は、記事の条件から導いた確認方法です。製品の自動動作や新しい義務を意味しません。読みたいテーマは目次から選べます。出典リンクは末尾の出典へ移動し、そこから参照元へ戻れます。狭い画面の長い表は、その表の領域を横にスクロールして読めます。</p>
+</section>
+
+<section data-unit="urgent-changes">
+  <p><strong>新機能の評価より先に、既存の処理が止まる条件と、失われる記録を確認してください。</strong>下表の実施日が過ぎていることと、自分の環境で影響を確認済みであることは別です。対応済みかどうかは、対象の設定・バージョン・保存先ごとに判断します。</p>
+  <table>
+    <caption>優先して確認する互換性とデータの変更</caption>
+    <thead><tr><th scope="col">変更・出典</th><th scope="col">記事の実施日・期限</th><th scope="col">未対応の場合の論点</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><a data-source="cl-99144">自己ホスト型ランナー</a></th><td>9月29日から全面適用</td><td>登録最低版2.329.0と、より高いジョブ実行最低版を別々に確認する。GHESは対象外。</td></tr>
+      <tr><th scope="row"><a data-source="cl-98866">GHE.comのTLS</a></th><td>10月7日</td><td>X25519-onlyのHTTPSクライアントは接続不可。P-256を提示できるか確認する。SSHは対象外。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99219">macOS 14ランナー</a></th><td>11月2日廃止予定</td><td>廃止前にもbrownoutで失敗する。次回は10月16日14:00 UTC〜翌日00:00 UTC。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99255">旧モデル</a></th><td>10月2日非推奨化</td><td>固定したモデル名、代替モデルの利用資格とポリシーを確認する。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99283">installation token</a></th><td>新形式への移行完了。一時ヘッダーは11月30日終了予定</td><td>40文字固定の検証、DB列、ヘッダー制限、ログの秘匿処理が長い形式を扱えるか確認する。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99261">npmのtrust設定</a></th><td>未検証のまま48時間で失効</td><td>設定しただけでpublish権限が永続するわけではない。issue_comment由来のOIDCトークンも拒否される。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99440">JetBrains IDE</a></th><td>2025.1のサポート終了</td><td>Copilotプラグインには2025.2以降が必要。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99433">CodeQLのビルド解析</a></th><td>macOS・Xcodeの組合せに制約</td><td>macOS 27、またはmacOS 26＋Xcode 27では、コンパイル言語のautobuild／手動ビルド解析が非対応。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99215">Actionsの記録</a></th><td>保存期間の対象拡大を適用</td><td>checks・runs・statusesも期限で削除される。延長しても削除済みデータは戻らない。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99334">Copilot利用メトリクス</a></th><td>IDEごとに修正を展開</td><td>一部のagent活動が欠落・誤帰属。過去データは復元できず、課金とは別に解釈する。</td></tr>
+    </tbody>
+  </table>
+  <p>日付だけでなく、対象範囲も一緒に確認します。たとえばランナーの告知は通常のGHEC、TLSはデータレジデンシー対応GHECの変更です。同じ「Enterprise」でも適用先は同一ではありません。</p>
+</section>
+
+<section data-unit="models">
+  <p><strong>新しい4モデルはすべてGAですが、プランと対応する利用面は同一ではありません。</strong>選択の出発点はベンチマークの順位ではなく、作業の範囲、必要な推論、反復量、利用資格です。以下の用途は各記事の説明であり、本資料独自の性能測定ではありません。</p>
+  <table>
+    <caption>新モデルの用途と対象プラン</caption>
+    <thead><tr><th scope="col">モデル・出典</th><th scope="col">記事が想定する用途</th><th scope="col">対象プラン</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><a data-source="cl-99140">Claude Sonnet 5.5</a></th><td>範囲が明確な日常の機能実装・バグ修正。初期評価ではSonnet 5と同程度のコーディング作業を、少ないステップ・トークン・ツール呼び出しで完了。</td><td>Pro、Pro+、Max、Business、Enterprise</td></tr>
+      <tr><th scope="row"><a data-source="cl-99152">GPT-6.1 Sol</a></th><td>エージェントによる複数段階の開発・ターミナル作業。初期評価ではGPT-6／GPT-5.6系の先行モデルより少ないトークン・ステップで作業を完了。</td><td>Pro+、Max、Business、Enterprise</td></tr>
+      <tr><th scope="row"><a data-source="cl-99370">Claude Haiku 5.5</a></th><td>サブエージェント、素早い編集、ターミナルなど高頻度の作業。初期評価では多くの作業でSonnet 5相当の結果を少ないトークン・ステップで達成。</td><td>Pro、Pro+、Max、Business、Enterprise</td></tr>
+      <tr><th scope="row"><a data-source="cl-99479">Gemini 4 Argon</a></th><td>複雑なコーディング・エージェント・推論作業。GitHubの初期評価は従来のGeminiモデルに対する改善を報告し、特にCLIで大きな伸びを紹介。</td><td>Pro+、Max、Business、Enterprise</td></tr>
+    </tbody>
+  </table>
+  <p>GPT-6.1 SolとGemini 4 Argonの対象一覧に、Proは含まれていません。また、速度や消費量の改善は記事の初期評価です。すべてのリポジトリや依頼で同じ結果になるとは限らず、「軽量だから必ず総額が最安」とも断定できません。</p>
+  <h3>利用面と展開の確認</h3>
+  <p>Sonnet 5.5、GPT-6.1 Sol、Haiku 5.5の記事は、VS Code、Visual Studio、CLI、GitHub上のエージェント、Copilot app、github.com、GitHub Mobile、JetBrains、Xcode、Eclipseを挙げています。Gemini 4 Argonの記事の一覧にはgithub.comとMobileがありません。これは、その2面での提供を本資料から確認できないという意味であり、未掲載だけを根拠に永続的な非対応とは断定しません。</p>
+  <p>いずれも段階的展開です。モデルが見えない場合は、対象プラン、クライアント、展開状況、組織ポリシーを切り分けます。Business／Enterpriseの管理者はモデルポリシーを管理できます。新モデルは既定の有効化設定に従って自動で有効になり、管理者が全体の既定をoffにした場合や個別モデルを無効にした場合は利用できません。</p>
+  <h3>料金の読み方</h3>
+  <p>4記事とも、従量課金ではプロバイダーの定価に基づく料金であると説明しています。プランに表示されること、利用枠に収まること、追加の従量料金が発生しないことは別です。記事本文に具体的単価はないため、ここでは金額や通貨換算を示しません。</p>
+  <div data-component="note"><p>運用上の提案：標準の実装、短い反復作業、複雑な調査など、自分たちの代表タスクを分けて比較してください。モデル名だけの一括置換より、成功条件・ツール使用量・手戻りを同じ条件で見る方が移行判断に役立ちます。</p></div>
+</section>
+
+<section data-unit="model-migration-local">
+  <h3>非推奨モデルはワークフロー内の固定値も確認する</h3>
+  <p><a data-source="cl-99255">10月2日の告知</a>は、Chat、inline edits、ask／agent mode、code completionsを含むCopilot全体で、次のモデルを非推奨化しています。UIから消えるかどうかだけでなく、設定や連携に固定した識別子も対象として考えます。</p>
+  <table>
+    <caption>記事が示す推奨代替モデル</caption>
+    <thead><tr><th scope="col">非推奨モデル</th><th scope="col">推奨代替</th><th scope="col">確認すること</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Gemini 3.5 Flash</th><td>Gemini 3.8 Flash</td><td>設定・自動化の固定モデル名</td></tr>
+      <tr><th scope="row">Gemini 3.6 Flash</th><td>Gemini 3.8 Flash</td><td>利用面とプラン</td></tr>
+      <tr><th scope="row">Kimi K2.7 Code</th><td>Kimi K3</td><td>代替モデルのポリシー</td></tr>
+      <tr><th scope="row">Claude Opus 4.7</th><td>Claude Opus 5.5</td><td>移行後の作業結果と消費量</td></tr>
+    </tbody>
+  </table>
+  <p>古いモデルを削除するための操作は不要です。一方、Enterprise管理者は代替モデルを許可する必要がある場合があります。推奨代替は移行先の案内であり、料金・応答・すべての作業結果が以前と同一になるという約束ではありません。</p>
+  <h3>ローカルモデルの発見と追加は別の操作</h3>
+  <p><a data-source="cl-99338">CLI 1.0.94-0以降</a>では、<code>/model</code>から、起動中のローカルOllamaにある対応モデルを発見できます。発見したモデルは自動登録されません。プロバイダーとendpointを確認し、<code>Add and use for this session</code>か<code>Add without switching</code>を選びます。現在のセッションで使うためにCLIを再起動する必要はありません。</p>
+  <p>Ollamaとモデルは事前に導入しておく必要があり、この操作はランタイムのインストールやモデルのダウンロードを行いません。モデルはtool callingとstreamingに対応している必要があります。接続できないプロバイダーは理由付きでpickerに表示されるので、資格情報・endpoint・プロセス起動の問題をモデルの性能と混同しないでください。</p>
+  <div data-component="note"><p><strong>ローカルモデルを選ぶだけでは、オフライン利用やテレメトリ停止にはなりません。</strong>CLIのoffline modeは<code>COPILOT_OFFLINE=true</code>で明示的に選びます。それでも、リモートのモデルプロバイダーを設定していれば、プロンプトやコードcontextがそのプロバイダーへ送られ得ます。推論先、ネットワーク制御、テレメトリ、ツール隔離を別々に確認します。</p></div>
+  <p>Copilot appでは<code>Settings &gt; Model providers</code>から対応プロバイダーを追加します。同じ記事のintelligent routing with local modelsは発表段階で、提供開始待ちです。ローカルモデルの発見機能が使えることを、そのルーティングまで利用可能な証拠にはしません。</p>
+</section>
+
+<section data-unit="client-workflows">
+  <h3>VS Codeの9月まとめは「10月1日に全部追加」の意味ではない</h3>
+  <p><a data-source="cl-99218">10月1日掲載の月次まとめ</a>は、9月に提供されたVS Code 1.136〜1.140の更新です。対象期間前の変更も含むため、掲載日と個々の導入日を分けて読みます。中心は、実装の対話だけでなく、繰り返し作業・セッション整理・PRの準備までAgents windowで扱う流れです。</p>
+  <table>
+    <caption>Agents windowと開発contextの主な更新</caption>
+    <thead><tr><th scope="col">まとまり</th><th scope="col">できること</th><th scope="col">条件・読み方</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">定期作業とマージ準備</th><td>automationsを毎時・毎日・毎週または手動で実行。agent mergeでレビュー指摘、失敗check、競合、workflow再実行への対応を支援。</td><td>どちらもプレビュー。マージ準備の支援と、無条件にマージする権限は別。</td></tr>
+      <tr><th scope="row">PR作成</th><td>Copilot・Claude・Codexのセッションから作成フォームを開き、表題・説明・draftなどを確認。</td><td>フォームを開くことと、内容を確認してPRを作成することを分ける。</td></tr>
+      <tr><th scope="row">セッションの整理</th><td>関連chat／sessionの階層表示、元chatへの移動、マージ後のMark as Done候補、cleanup、注意を促すapp badge。</td><td>cleanupとbadgeはプレビュー。完了候補があることを作業結果の検証済みと読み替えない。</td></tr>
+      <tr><th scope="row">実行環境</th><td>Agents windowからDev Containerを使用。SSH・Tunnel・WSLのフォルダーも扱う。</td><td>プロジェクトの設定済みツールと依存を使うための入口。</td></tr>
+      <tr><th scope="row">会話とcontext</th><td>workspaceなしのchatへ後からローカルフォルダーを付与。ChatGPT appのCodex会話をVS Codeで継続。Issue／PRをAdd ContextやURLで添付。</td><td>別アプリや別workspaceへ移る際、何を引き継いだかを確認する。</td></tr>
+    </tbody>
+  </table>
+  <p>進行中chatへのエージェントからのメッセージが、アクティブなturnを中断しなくなったことも紹介されています。複数セッションを使う場合、通知が届くことと、そのセッションが今の作業へ割り込むことを分けて扱える改善です。</p>
+  <h3>週次まとめにしかない変更も拾う</h3>
+  <p><a data-source="cl-99239">9月28日週のまとめ</a>は、Azureのresource query、cost health check、Azure Functions hosted skillsを扱う3種類のcanvasを紹介しています。導入入口はCopilot appの<code>Customize &gt; Plugins</code>にあるAwesome Copilot marketplaceです。Azureリソースや費用を見る入口の拡張であり、必要なAzureアクセス権やサービス利用料が不要になるという説明ではありません。</p>
+  <p>同じまとめのVS Code 1.140では、1セッションで複数フォルダーを扱うmulti-folder sessionsと、worktree間でignored foldersを再利用する機能がexperimentalです。前者は作業対象を広げ、後者は依存の再インストールや生成物の重複を減らす用途です。運用上の提案として、再利用する領域がセッション間で変わるデータを含むかは確認してください。記事は全キャッシュの安全な共有を保証していません。</p>
+  <p><a data-source="cl-99436">10月5日週のまとめ</a>では、Copilot appのライセンス用アカウントとリポジトリ用アカウントを分けられるようになりました。企業提供のライセンスと別アカウントのリポジトリを組み合わせる用途です。認証主体が2つになるため、ライセンスの提供元とGit操作の対象アカウントを取り違えないことが重要です。</p>
+  <p>VS Code 1.141は、Agents windowのセッションをgridに並べて比較する表示と、<code>Open worktree cleanup</code>による未使用worktreeの容量確認・削除対象選択を追加します。前週までのモデル・サンドボックスの再紹介は、新しい機能として重複計上していません。</p>
+  <h3>JetBrainsは機能改善と最低版を一緒に確認</h3>
+  <p><a data-source="cl-99440">10月10日のJetBrains更新</a>では、企業管理の既定モデルを新しい会話に設定できます。ただし、ユーザーがpickerで明示的に選んだモデルは尊重されます。MCP設定ではCopilotとClaudeのサーバー自動起動を無効にでき、起動するツールを必要時に絞れます。</p>
+  <p>diagnosticsのintention menuに追加された<code>Fix</code>はinline chatを開き、可能ならagent mode、そうでなければask modeを使います。Chatはturnごとの移動、ユーザーメッセージのcopy／edit、サインイン表示、<code>Switch Account</code>を改善。language server起動、モデル切替、MCP設定、customization更新、worktreeの信頼性改善も含みます。</p>
+  <p><strong>JetBrains IDE 2025.1はサポート終了で、2025.2以降が必要です。</strong>また、この更新記事だけでは、利用メトリクス問題を修正したプラグイン版は特定できません。UI改善が届いたことと、計測修正が完了したことを一緒に判断しないでください。</p>
+</section>
+
+<section data-unit="orchestration">
+  <p><strong>モデルを選ぶ機能と、仕事の進め方を定義する機能を分けて考えます。</strong>Auto、HydraFusion、Dynamic workflows、<code>/fleet</code>は、名前が違うだけの同じ機能ではありません。</p>
+  <table>
+    <caption>モデル選択と処理手順の定義を比較する</caption>
+    <thead><tr><th scope="col">仕組み</th><th scope="col">決めること</th><th scope="col">向いている判断</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Auto</th><td>リクエストに使うモデルを選ぶ。</td><td>モデル選択を任せる。今回の記事では比較対象。</td></tr>
+      <tr><th scope="row">HydraFusion</th><td>同じturn内で、モデルとSingle／Cascade／Critiqueの処理方式を選ぶ。</td><td>作業に応じたモデル協調を試す。Research preview。</td></tr>
+      <tr><th scope="row">Dynamic workflows</th><td>直列・並列の手順、エージェント投入、構造化結果、checkpointをコードで定義する。</td><td>再現可能な手順・検査・再開位置を持つ処理。公開プレビュー。</td></tr>
+      <tr><th scope="row">/fleet</th><td>Copilotが仕事を分割し、並列サブエージェントを調整する。</td><td>エージェントによる分担。コードで固定した工程とは別。</td></tr>
+    </tbody>
+  </table>
+  <h3>HydraFusionは単一の新モデルではない</h3>
+  <p><a data-source="cl-99172">HydraFusionの記事</a>は、推論、コード生成、デバッグ、ツール使用などの能力シグナルから、品質基準を満たす効率的な処理方式を選ぶと説明します。Singleは選んだ1モデルが解く方式、Cascadeは効率的なモデルの草案を品質ゲートで採用または強いモデルへ引き上げる方式です。Critiqueは別モデルファミリーの読み取り専用criticが草案を評価し、起草側が一度修正します。</p>
+  <p>VS Code 1.140以降またはInsidersではpickerから選択します。表示されない場合の設定は<code>chat.copilot.hydraFusion.enabled</code>です。appは最新版のSettingsでHydraFusionを有効にします。記事の対象はPro、Pro+、Business、Enterpriseで、Business／Enterpriseは管理者によるpreview許可が必要です。Research previewのため、動作が将来も固定される前提の基盤にはしません。透明性と進捗通知の改善も今回の変更です。</p>
+  <h3>Dynamic workflowsは再利用する工程をコードにする</h3>
+  <p><a data-source="cl-99208">Dynamic workflows</a>はCopilot extension内のプログラムです。コマンドやツール、サービス呼び出し、複数エージェントを組み合わせ、結果を次の工程へ構造化して渡せます。チェックポイントで結果を確認してから再開したり、クライアントが対応する場合に入力を求めたりできます。</p>
+  <p>たとえば「release checkを実行 → 失敗を分析 → 人が結果を確認 → 次の処理へ進む」という工程を毎回同じ構造で再利用する用途です。この並びは記事に沿う説明例で、特定プロジェクトで実行した記録ではありません。単純な質問までworkflowにする必要はありません。長い並列処理では実行費用も確認します。</p>
+  <p>全Copilotプランが対象で、appでは設定不要、CLIは最新版で<code>--experimental</code>または<code>/experimental on</code>を使います。更新の入口は<code>/update</code>です。SDKにも対応します。<strong>公開プレビューであり、「全プランで利用可能」と「実行の消費が無料」は同じ意味ではありません。</strong></p>
+</section>
+
+<section data-unit="computer-use">
+  <p><a data-source="cl-99220">Computer use</a>は、API・CLI・MCPのないデスクトップアプリでも、画面の内容を読み、クリック、入力・編集、キー操作、スクロール、ドラッグなどで作業を進める機能です。macOS／WindowsのCopilot CLIとCopilot appで公開プレビューとして提供されます。</p>
+  <p>使いどころは、GUIだけで操作する既存ソフトウェアや、複数アプリ間で情報を移す作業です。一方、画面からの読み取りや操作を行うため、対象アプリ、望む結果、触れてよい範囲を依頼に含めます。利用できることを、送信・削除・権限変更など任意の操作が無条件に許可された意味にはしません。</p>
+  <table>
+    <caption>開始・状態確認・停止の入口</caption>
+    <thead><tr><th scope="col">利用面</th><th scope="col">操作</th><th scope="col">管理上の条件</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">CLI</th><td><code>/computer on</code>で有効化、<code>/computer show</code>で状態確認、<code>/computer off</code>で無効化。</td><td>アプリを制御する前に承認を求める。組織管理の設定で無効化可能。</td></tr>
+      <tr><th scope="row">Copilot app</th><td>SettingsのComputer UseからEnable Computer Useを有効化。同じslash commandも利用可能。</td><td>常時許可したアプリの見直し・リセットが可能。</td></tr>
+      <tr><th scope="row">macOSのOS権限</th><td>AccessibilityとScreen Recordingの許可を案内する。</td><td>機能の設定とOS権限は別に確認する。</td></tr>
+    </tbody>
+  </table>
+  <p>運用上の提案：初回は入力や送信を伴わない読み取りから、対象画面と出力を確かめると境界を把握しやすくなります。サンドボックスの有効化やローカルモデルの選択を、Computer useの有効化・アプリ承認の代わりにはしません。</p>
+</section>
+
+<section data-unit="sandboxing">
+  <p><a data-source="cl-99339">ローカルサンドボックス</a>はGAで、Copilotの追加料金なしで利用できます。対象はCLI、Copilot app、VS CodeのAgent Hostを使うセッションです。すべてのVS Code実行面へ一律に適用されるという表現は避けます。</p>
+  <p>Microsoft eXecution Container（MXC）が共通ポリシーをWindows、macOS、Linuxそれぞれのネイティブ制御へ変換します。制御の対象は、Copilotが起動するツールやコマンドのファイル読み書き、インターネット・ローカルネットワーク、Git／GitHub CLIの認証情報などです。対応するローカルMCP・language serverにも適用できます。</p>
+  <div data-diagram="model-and-isolation" data-occurrence="sandbox-control-comparison"></div>
+  <p><strong>モデルの実行場所と、ツールがアクセスできる範囲は独立しています。</strong>クラウドモデルでもローカルツールを隔離でき、ローカルモデルでもツールのアクセス制限は別に必要です。モデルを変えただけで安全なファイル境界や通信制限が生まれるわけではありません。<a data-source="cl-99338">ローカルモデルの記事</a>が示すoffline modeの注意とも組み合わせて読みます。</p>
+  <h3>企業が強制できる境界</h3>
+  <p>企業管理設定でサンドボックスを必須にし、開発者が弱められないポリシーを適用できます。さらに<a data-source="cl-99451">10月13日の管理設定更新</a>は、<code>sandbox</code>キーに最低クライアント版の強制を加えています。古いクライアントを固定して、新しい隔離設定だけ読み飛ばす運用を防ぐ方向の変更です。</p>
+  <p>運用上の提案：通常の作業に必要なファイル・接続先・認証情報を先に整理し、必要最小限の境界を検討します。「自律実行を許すか」と「実行できる対象をどこまで絞るか」は別の設計判断です。記事には全OS・全ツールの個別設定例まではないため、未掲載の設定値を本資料から推定して適用しないでください。</p>
+</section>
+
+<section data-unit="merge-stacks">
+  <h3>非同期マージでは受付と完了を別の状態にする</h3>
+  <p><a data-source="cl-99189">Async merge APIはGA</a>で、プログラムからPRをマージする際の推奨経路になりました。単独またはstacked PRの統合、merge queueへの追加、直接のマージを扱い、権限がある場合のrules bypassも指定できます。bypassの指定が新しい権限を与えるわけではありません。</p>
+  <p><code>PUT</code>で要求を送り、返されたrequest IDを使って<code>GET</code>で状態を確認します。複雑なマージを1リクエストの完了まで待つ必要がなくなる一方、クライアントは受付と完了を区別する必要があります。<strong>request IDを受け取っただけでは、PRがマージされたとは判定できません。</strong></p>
+  <div data-diagram="async-merge-states" data-occurrence="merge-acceptance-versus-completion"></div>
+  <p>運用上の提案：自動化の成功条件を「要求を送れた」ではなく「照会した結果が目的の完了状態になった」に置きます。処理中や失敗を成功ログにまとめず、返された状態を保存してください。記事本文には詳細なレスポンスschemaや再試行間隔がないため、ここで未確認のフィールド名や固定間隔を作りません。</p>
+  <p>このAPIはstacked PRをサポートする唯一のmerge APIです。一方、記事は同期REST endpointやGraphQL mutationの廃止を告知していません。「今後の推奨」と「既存処理が即日使用不能」は別です。</p>
+  <h3>Stacked PRはレビューの単位と統合の単位を分ける</h3>
+  <p><a data-source="cl-99315">Stacked PRは10月6日にGA</a>となりました。大きな変更を依存関係のある小さなPRに分け、個別にレビューし、まとまりとしてマージする仕組みです。github.comの全プランが対象で、GHESは将来のリリースに含まれる予定ですが、この記事には具体的な版がありません。</p>
+  <table>
+    <caption>GAに伴うスタック操作の改善</caption>
+    <thead><tr><th scope="col">操作</th><th scope="col">変わること</th><th scope="col">条件・注意</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Rebase stack</th><td>baseが進んだ際、コードが変わらないスタックの承認を維持。</td><td>stale approvalを無効化するrepoでも対象。どんな内容変更でも承認が残る、という意味ではない。</td></tr>
+      <tr><th scope="row">署名</th><td>GitHubが元の著者情報を保って署名付き置換commitを作成。</td><td>部分マージ後の自動rebaseは、署名必須のruleまたは元の署名commitがある場合にも署名する。</td></tr>
+      <tr><th scope="row">Merge queue</th><td>スタック全体を一つのmerge groupとして投入・統合。</td><td>merge commit方式では、グループ全体に1つではなくPRごとにmerge commitを作る。</td></tr>
+      <tr><th scope="row">Bypassとbase削除</th><td>権限を持つ人は最下段の未マージPRをbypassで統合。base削除時はスタックを自動retarget。</td><td>スタックから分岐するスタックを、bottom PRの自動closeで失わないための改善。</td></tr>
+      <tr><th scope="row">Auto-merge</th><td>選んだPR群がすべてreadyになればまとめて統合。</td><td><strong>今後数週間かけた順次展開</strong>。GA本体と同時に全環境で有効とは断定しない。</td></tr>
+    </tbody>
+  </table>
+  <p>PRの固定headerや一覧でstack contextを確認でき、<code>Shift+J</code>／<code>Shift+K</code>で移動できます。参加・離脱をtimelineに記録し、<code>pull_request</code> webhookへ<code>stacked</code> actionを追加。GitHub CLIの<code>gh stack</code> extensionはGit worktreesへの対応と初期化・checkout・移動の改善を含みます。</p>
+</section>
+
+<section data-unit="review-effort">
+  <p><a data-source="cl-99263">Copilot code reviewのAPI対応とeffort指定はGA</a>です。Pro、Pro+、Max、Business、Enterpriseから、REST／GraphQLでレビューを要求し、要求ごとにeffortを指定できます。既存の社内ツールやワークフローから起動できることが主な価値です。この記事にないAPI引数名を推定した実行コードは載せません。</p>
+  <h3>Defaultの意味が9月28日に変わった</h3>
+  <p><code>Default</code>は9月28日から<code>Balanced</code>を使います。新規だけでなく既存のリポジトリ・組織も対象ですが、<code>Lite</code>を明示的に選んでいた設定は維持されます。「何も変更していない」場合でも、Defaultに従っていたレビューの深度が変わることに注意してください。</p>
+  <table>
+    <caption>記事が案内するeffort設定の入口</caption>
+    <thead><tr><th scope="col">管理単位</th><th scope="col">設定場所</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Enterprise</th><td>AI controls → Agents → Copilot code review</td></tr>
+      <tr><th scope="row">Organization</th><td>Copilot → Code review</td></tr>
+      <tr><th scope="row">Repository</th><td>Copilot → Code review</td></tr>
+      <tr><th scope="row">Personal</th><td>プロフィール → Copilot settings → Copilot → Code review</td></tr>
+    </tbody>
+  </table>
+  <p>記事では各階層が上位のeffortをoverrideできると説明しています。これはeffortの設定の話で、企業のすべてのポリシーを下位から解除できるという意味ではありません。特に<a data-source="cl-99400">外部ライセンスのレビュー要求制限</a>は、組織で有効にするとrepoで解除できない別の設定です。</p>
+  <p>運用上の提案：レビュー起動のAPI化、深度の既定値、請求先、レビューを要求できる人を別々に記録します。Balancedへの変更だけを根拠に単価上昇を断定したり、API対応を無償利用と解釈したりしないでください。</p>
+</section>
+
+<section data-unit="collaboration">
+  <h3>ダッシュボードは「読むFeed」と「進める仕事」を分離</h3>
+  <p><a data-source="cl-99204">新しいdashboardが全員の既定表示</a>になりました。agent sessions、issues、pull requestsを一か所で確認し、各一覧は最大<span data-fact="dashboard-list-size"></span>でfilterを使えます。これは表示件数で、作成数や保持数の上限ではありません。Feedは別tabへ移り、Issueをcoding agentへ割り当てる、PRをCopilot Chatで開く、といった入口が加わります。</p>
+  <p>旧表示は<code>Preview</code>横のdropdownから選べます。新表示が既定になったことと、旧表示を即時撤去したことは同じではありません。</p>
+  <h3>PRの量を制御し、triage担当へ作業を委譲する</h3>
+  <p><a data-source="cl-99388">draft PRもユーザーのPR制限に含める</a>任意の設定が可能になりました。以前はdraftが計数対象外で、上限を設けても大量のdraftを作れる抜け道がありました。全repoへ一律の新上限を自動適用した告知ではありません。maintainerは通知やCI負荷を含め、既存の制限へdraftを含めるか判断します。</p>
+  <p><a data-source="cl-99398">PRのarchive／unarchiveはtriage以上</a>へ拡大しました。コードを変更する権限を渡さず、spam、重複、放置されたPRを整理する担当者へ委譲できます。archiveするとPRはcloseされ、会話はread-onlyになります。管理者の新規コメント、reaction、自動コメントも禁止されます。</p>
+  <p>archive済みPRはpublic表示から隠れますが、triage、write、maintain、adminの人は閲覧できます。unarchiveでコメント・reactionは再び可能になりますが、<strong>PRは再openしません</strong>。閉じる、会話を読み取り専用にする、公開表示から隠す、再openする、を同じ操作として扱わないことが重要です。</p>
+  <h3>アクセシビリティは声明と実際の操作の両方を改善</h3>
+  <p><a data-source="cl-99173">ACCESSIBILITY.md</a>をルート、<code>.github</code>、<code>docs</code>から検出し、リポジトリ概要で目立つように表示します。public repoのCommunity Standardsから追加・提案も可能です。github.comの全プランで利用でき、GHES 3.24に対応予定です。ファイルが表示されること自体は、その製品のアクセシビリティ適合の認証ではありません。</p>
+  <p><a data-source="cl-99366">screen readerのtimeline改善</a>は、イベントをlistとして読み上げ、件数、現在位置、移動方法を伝えます。<code>Load more</code>／<code>Load all</code>の後には追加イベント数も案内します。対象はIssue、PR、commit、secret scanning alert、license compliance alertのtimelineで、github.comとGHES 3.23に対応します。見た目を変える更新ではなく、長い履歴を非視覚的にたどりやすくする変更です。</p>
+</section>
+
+<section data-unit="runner-operations">
+  <h3>登録できる版とジョブを実行できる版を分ける</h3>
+  <p><a data-source="cl-99144">最低版強制の全面適用日は9月29日</a>へ変更されました。対象は通常のGHECです。2.329.0未満の自己ホスト型ランナーは登録・再登録できず、既存登録済みでも実行最低版を下回るものはジョブを実行しなくなります。<strong>実行最低版は登録最低版より高く、その具体値はこの記事にありません。</strong>2.329.0にすれば必ずジョブが動く、と解釈しないでください。</p>
+  <p>GHESは対象外で、データレジデンシー対応GHECでは7月31日から強制が始まっています。記事はrunner version deprecationsのREST APIによる、版ごとの登録・実行期限の確認も案内しています。運用上は、runnerの版、登録状態、実行可否、停止期限を別々に把握します。</p>
+  <h3>ARC 0.15.0は大きなrunner fleetの運用負荷を下げる</h3>
+  <p><a data-source="cl-99183">Actions Runner Controller 0.15.0</a>は、Kubernetes上のscale setsの信頼性・拡張性・観測を改善します。パッチ版の更新はリソースをin-placeで更新し、AutoscalingRunnerSetとEphemeralRunnerSetの間の中断を減らします。<code>terminationGracePeriodSeconds</code>を設定でき、controller managerの正常終了timeoutとの整合も改善しました。</p>
+  <ul>
+    <li>Actions service側のscale setがなくなっても再登録できるようにする。</li>
+    <li>full updateではなくpatch requestを使い、Kubernetes APIへのpayloadを減らす。</li>
+    <li>runner状態の集約をmetricsへ移し、status patch requestを減らす。</li>
+    <li>listenerのQPS／burst、全体・controller別の<code>max-concurrent-reconciles</code>を設定可能にする。</li>
+    <li>受信eventをfilterして不要なreconcileを減らす。</li>
+    <li>runner podが正常終了した場合のserver-side削除確認を省き、ephemeral runnerの削除を速める。</li>
+  </ul>
+  <p>これらはcontroller運用の変更であり、ランナー最低版の適用を免除するものではありません。運用上の提案として、更新時の停止、API request量、reconcileの混雑、終了の遅延を分けて確認すると効果を判断しやすくなります。</p>
+  <h3>macOS 14は廃止前からジョブが失敗する</h3>
+  <p><a data-source="cl-99219">macOS 14イメージは11月2日廃止予定</a>です。対象ラベルは<code>macos-14</code>、<code>macos-14-large</code>、<code>macos-14-xlarge</code>。廃止直前だけでなく、以下のbrownout中も意図的にジョブが失敗します。移行期間に供給容量を減らす可能性もあり、queue待ちの増加があり得ます。</p>
+  <details>
+    <summary>記事に掲載された全brownout日程を確認する</summary>
+    <p>以下はすべてUTCで14:00開始、翌日00:00終了です。JSTでは開始日23:00〜翌日09:00となります。</p>
+    <table>
+      <caption>macOS 14の計画的停止期間</caption>
+      <thead><tr><th scope="col">UTC開始日</th><th scope="col">UTC終了日</th><th scope="col">調査基準時点での位置づけ</th></tr></thead>
+      <tbody>
+        <tr><th scope="row">10月5日</th><td>10月6日</td><td>経過</td></tr>
+        <tr><th scope="row">10月12日</th><td>10月13日</td><td>経過</td></tr>
+        <tr><th scope="row">10月16日</th><td>10月17日</td><td>次回</td></tr>
+        <tr><th scope="row">10月19日</th><td>10月20日</td><td>予定</td></tr>
+        <tr><th scope="row">10月23日</th><td>10月24日</td><td>予定</td></tr>
+        <tr><th scope="row">10月26日</th><td>10月27日</td><td>予定</td></tr>
+        <tr><th scope="row">10月29日</th><td>10月30日</td><td>予定</td></tr>
+        <tr><th scope="row">10月30日</th><td>10月31日</td><td>予定</td></tr>
+      </tbody>
+    </table>
+  </details>
+  <p>記事の移行先はarm64の<code>macos-latest</code>（記事時点でmacos-26）、<code>macos-15</code>、<code>macos-latest-xlarge</code>（macos-26-xlarge）、<code>macos-15-xlarge</code>です。ラベル置換だけでなく、アーキテクチャ依存、導入ツール、Xcodeを確認します。CodeQLのビルド解析を使う場合は、macOSだけでなくXcode 27の非対応条件も合わせて判断してください。</p>
+</section>
+
+<section data-unit="ci-data">
+  <h3>保存期間はログだけの設定ではなくなった</h3>
+  <p><a data-source="cl-99215">Actions retention</a>は、checks、workflow runs、statusesにも適用されます。GitHub Actionsが作ったものだけでなく、第三者アプリのchecks／statusesも対象です。設定名は<code>Check, workflow run, status, artifact and log retention</code>になり、企業・組織・repoの設定期間を超えた記録は自動で削除されます。</p>
+  <p>public repoの上限は<span data-fact="public-retention-days"></span>で、これは既定値の説明ではありません。repoの設定は組織・企業の上限にも従います。後から期間を延ばしても削除済みデータは復元しません。外部の監査・分析基盤が古いcheckやstatusを必要とするなら、その参照可能期間を前提に取得・保存方針を見直すことが運用上の論点です。適用はgithub.comのActionsです。</p>
+  <h3>CI成功とcoverageのアップロード済みは違う</h3>
+  <p><a data-source="cl-99209">Code Qualityのupload-code-coverage action</a>は、まだopen PRがない非既定ブランチへのpushで、アップロードを失敗させずskipするようになりました。以前はPR番号を必須とするAPIのため、新しいbranchをpushしてPRを開く前の段階でもCIが失敗していました。</p>
+  <p>skipの理由はActions noticeとstep summaryに出ます。PRができるまでの後続pushも同様です。既定ブランチへのpushと、対応するPR eventのアップロードは従来どおりです。設定変更は必須ではありませんが、<strong>skipをアップロード成功と集計しない</strong>でください。</p>
+  <p>pushだけをtriggerにしている場合、PRを開いたこと自体では再実行されず、次のpushでcoverageが再開します。PRを開いた時点で送るには、workflowに<code>pull_request</code> triggerを加えることが記事の案内です。Team・GHEC（データレジデンシーを含む）で提供され、GHESは対象外です。</p>
+</section>
+
+<section data-unit="codeql">
+  <p><a data-source="cl-99433">CodeQL 2.27.2</a>は、言語・frameworkモデル、query、CLIの改善を含みます。Default suiteは<span data-fact="codeql-default-queries"></span>で<span data-fact="codeql-default-cwes"></span>をカバーし、Extended suiteはさらに<span data-fact="codeql-extended-queries"></span>と<span data-fact="codeql-extended-cwes"></span>を追加します。件数はその版の対象範囲であり、実プロジェクトの検出精度や全脆弱性の検出保証ではありません。</p>
+  <table>
+    <caption>解析モデル・queryの主な改善</caption>
+    <thead><tr><th scope="col">対象</th><th scope="col">改善</th><th scope="col">開発者への意味</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">C／C++</th><td>ECMAScript grammarの<code>std::regex</code>を解析。Comdb2 C APIのSQL injection sink、Bloomberg BDEのcodec・byte-stream deserializerをモデル化。</td><td>使っているAPIの入出力や正規表現の意味を、解析が認識する範囲を拡大。</td></tr>
+      <tr><th scope="row">Go</th><td><code>github.com/coder/websocket</code>を、従来の<code>nhooyr.io/websocket</code>に加えてモデル化。</td><td>移行後のimport pathでもデータフローを追いやすくする。</td></tr>
+      <tr><th scope="row">Rust</th><td>AnyAttr・DocComment、awaitするasync block、native-tls・async-native-tls・tokio-native-tlsを改善。</td><td>構文・非同期処理・TLSライブラリをまたぐflowの認識を拡大。</td></tr>
+      <tr><th scope="row">JavaScript／TypeScript</th><td>Workflow SDKの<code>"use workflow"</code>／<code>"use step"</code>、Hapiの独自route登録helper・高階関数経由の入力追跡を改善。</td><td>frameworkを包む関数を通ったroute・request入力の取りこぼしを減らす方向。</td></tr>
+      <tr><th scope="row">C#</th><td>clickjacking対策としてASP.NET Core headerとCSPのframe-ancestorsを認識。Razor tag-helperでWriteLiteralされた属性をXSS sink扱いしない。</td><td>既存対策や出力文脈を認識し、不要な指摘を抑える。</td></tr>
+      <tr><th scope="row">Actions</th><td><code>actions/unpinned-tag</code>の信頼するowner集合から、<code>!github</code>のような指定でownerを除外可能。</td><td>first-party ownerを含め、タグ固定の検査方針を厳しくできる。</td></tr>
+    </tbody>
+  </table>
+  <h3>macOS・Xcodeの制約はビルド方式に関係する</h3>
+  <p>macOS 27／Xcode 27でAppleがmulti-architecture x86-64／arm64 binariesの配布をやめたため、traced analysisに必要な条件を満たせません。コンパイル言語のautobuildとmanual buildは、macOS 27ではXcodeの版によらず非対応、macOS 26でもXcode 27を選ぶと非対応です。記事の案内はmacOS 26以下・Xcode 26以下です。build mode noneのmacOS対応改善は取り組み中で、完成済みの代替策とはしていません。</p>
+  <h3>独自Go queryはCFG変更の影響を見る</h3>
+  <p>Goのcontrol-flow graphは共通CFGライブラリへ移行しました。assignment、parameter／result、range、deferなどのnodeが増え、entryから到達不能のnodeが除外されます。node・edge・location・文字列表現・basic block境界へ依存する独自queryには変更が必要な場合があります。</p>
+  <p><code>BasicBlocks::Cfg</code>は削除され、<code>ControlFlow::EntryNode</code>／<code>ControlFlow::ExitNode</code>／<code>SwitchStmt.getExpr</code>が追加されます。<code>IfStmt.getCond</code>は非推奨で<code>IfStmt.getCondition</code>へ移行し、<code>IfStmt.getThen</code>と<code>LoopStmt.getBody</code>の戻り型は<code>Stmt</code>になります。IR instruction classの統合もあります。</p>
+  <details><summary>CLI出力を利用している連携の確認点</summary><p>query suiteの不正な<code>qlpack:</code>／<code>from:</code>を明確なエラーにし、YAML data extensionの符号付き32bit範囲外の整数を拒否します。stderrには<code>ERROR:</code>／<code>WARNING:</code>を付けますが、logsやSARIFなどの構造化出力は不変です。<code>codeql query compile</code>は<code>--dump-dil</code>と組み合わせる<code>--dil-constants</code>に対応。dataExtensionsのpatternは、いずれもファイルに一致しない場合だけ警告するようになります。</p></details>
+  <p>github.comのcode scanningへは新しいCodeQLが自動展開されます。GHESは将来の版への同梱予定で、古いGHESではCodeQLを手動更新する選択肢があります。Engineの提供と、独自queryの互換性確認は別に扱います。</p>
+</section>
+
+<section data-unit="ai-scan-quality">
+  <h3>有効化率と検出後の成果を分けて観測する</h3>
+  <p><a data-source="cl-99306">AI Scanのcoverage表示</a>は、組織・企業のSecurity overviewに、PR向けAI Scanの有効／無効repo数と各repoの実効状態を追加します。filterは<code>code-scanning-ai-scan-pr-scan:enabled</code>と<code>code-scanning-ai-scan-pr-scan:not-enabled</code>です。CSVには<code>Code Scanning AI Scan for pull requests</code>列が加わります。</p>
+  <p><a data-source="cl-99464">10月13日のmetricsは公開プレビュー</a>で、生成・解消したfindings、修復率、検出repo、期間中の傾向、autofixの適用状況を示します。ページ名は<code>CodeQL pull requests</code>から<code>Code scanning on pull requests</code>へ変わり、CodeQLとAI Scanのtabを分離します。AI Scan側ではautofix提案の有無も数えられます。</p>
+  <p>metricsはgithub.comのCode Security／GHAS購入者向けで、今回のGHES対応はありません。運用上は「何repoで有効にしたか」と「どれだけ検出・解消されたか」を別の指標として使います。有効化数の増加だけで修復が進んだと判断しないでください。</p>
+  <h3>初回scanだけで休眠repoの週次scanを始めない</h3>
+  <p><a data-source="cl-99211">default setupとCode Qualityの定期解析</a>は、初回の有効化や言語検出の変更ではなく、push／PRが起点の解析後に週次scanを始めます。初回のvalidation scanとfindingsの取得は引き続き実行されます。判定基準は有効化前のGit活動ではなく解析履歴で、code scanningとCode Qualityの活動情報は共有されます。</p>
+  <p>従来は、検証scanだけで休眠repoがさらに6か月active扱いとなることがありました。大量repoへのsecurity configuration適用で不要な週次scanが増える問題を抑える変更です。利用者の設定変更は不要で、GHECに提供され、GHES 3.24で対応予定です。「休眠repoは初回から何も解析しない」という変更ではありません。</p>
+  <h3>Code Qualityのdismiss／reopenを監査する</h3>
+  <p><a data-source="cl-99476">Code Qualityの監査eventはGA</a>です。<code>repo.code_quality_findings_dismissed</code>と<code>repo.code_quality_findings_reopened</code>で、実行者、時点、repo、rule、対象findingのID・件数を記録します。Code Quality有効repoは追加設定不要で、組織・企業のaudit logをfilterして確認でき、GHECではaudit log APIも使えます。</p>
+  <p>Team・GHEC（データレジデンシーを含む）が対象でGHESは非対応です。記事はPRのfindingにも言及しますが、追加eventの説明はbacklog findingsを対象としています。この説明だけを根拠に、PR上のすべての操作が同じeventへ記録されるとは断定しません。</p>
+  <h3>GitHub Teamの評価開始を簡単にする</h3>
+  <p><a data-source="cl-99176">GitHub TeamからGHASのself-serve trial</a>を始められます。組織のOverview、Billing and licensingのLicensing、Risk Assessment完了画面が入口です。Code SecurityとSecret Protectionを評価するための変更で、Teamプランへ恒久的に両製品を無償同梱した告知ではありません。本文にないtrial期間や終了後の課金条件は、ここで固定しません。</p>
+</section>
+
+<section data-unit="secret-protection">
+  <h3>形式を知る検出器と、文脈を見るAIモデルを分ける</h3>
+  <p>この期間は、サービス固有のシークレット形式への対応と、周辺コードから資格情報らしさを判断する専用AIモデルの両方が更新されました。形式の検出、partnerへの通知、pushの阻止、AI Credits課金は別の仕組みです。</p>
+  <table>
+    <caption>10月5日・13日に追加された検出・partner対応</caption>
+    <thead><tr><th scope="col">出典・provider</th><th scope="col">形式</th><th scope="col">追加内容</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><a data-source="cl-99303">Lovable Labs</a></th><td><code>lovable_api_key</code></td><td>検出器追加とpartner program参加。</td></tr>
+      <tr><th scope="row">Pydantic Services</th><td><code>logfire_token</code>、<code>pydantic_ai_gateway_api_key</code></td><td>新しいuser secret検出。</td></tr>
+      <tr><th scope="row">Supabase</th><td><code>supabase_oauth_access_token</code>、<code>supabase_scoped_personal_access_token</code></td><td>新しいuser secret検出。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99469">Anthropic</a></th><td><code>anthropic_service_api_key</code>、<code>anthropic_user_api_key</code></td><td>検出器追加と既定のpush protection対象への追加。</td></tr>
+      <tr><th scope="row">Cloudsmith</th><td><code>cloudsmith_api_key</code></td><td>検出器追加。</td></tr>
+      <tr><th scope="row">Salesforce</th><td><code>salesforce_marketing_cloud_api_oauth2_token</code></td><td>partner program参加。</td></tr>
+    </tbody>
+  </table>
+  <p>partner secretがpublic repoで見つかると、GitHubが発行元へ知らせ、発行元が失効・rotationなどに対応できるようにします。GitHubがすべてのキーを自動で失効したという意味ではありません。user secretsはpublic／private repoでalertを生成します。</p>
+  <p>新しいAnthropicの2形式は、secret scanningが有効なrepoで既定のpush protection対象となり、無料public repoも含みます。これは以下の新しいAIチェックをopt-inする話とは別です。形式検出の既定追加を、すべてのAI課金機能が自動有効になった意味にしないでください。</p>
+  <h3>専用モデルはコードを生成せず、資格情報を分類する</h3>
+  <p><a data-source="cl-99342">10月7日の専用モデル</a>は、周辺コードを読み、既知のtoken形式を持たないpasswordなども含め、漏えいが疑われる資格情報を識別します。コードや文章を生成するモデルではありません。既存のAI-detected Password alerts利用者は新モデルへ自動移行し、GHSP／GHASの追加料金はありません。</p>
+  <table>
+    <caption>提供状態・資格・料金を個別に読む</caption>
+    <thead><tr><th scope="col">機能</th><th scope="col">記事時点の状態</th><th scope="col">ライセンス・料金</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">既存AI-detected secret alerts</th><td>新モデルへ切替済み。</td><td>GHSP／GHASに含まれ、追加課金なし。</td></tr>
+      <tr><th scope="row">AI push protection</th><td>Private preview。</td><td>GHEC／TeamでGHSPまたはGHAS購入が必要。新しいopt-inチェックにAI Credits課金を予告。</td></tr>
+      <tr><th scope="row">security-reviewの追加secret checks</th><td>Private previewを予定。</td><td>GHSP／GHASライセンスは必須でない。既存レビューの使用量に加えAI Creditsを消費する予定。</td></tr>
+      <tr><th scope="row">GHESのAI alerts</th><td>GHES 3.23で公開プレビュー予定。</td><td>GHSP／GHASに含む。新しいAI push protectionやCopilotのsecurity-reviewを同じServerリリースへ含める告知ではない。</td></tr>
+    </tbody>
+  </table>
+  <p>個人Copilotプラン（Free／Studentを含む）やBusiness／Enterpriseでの追加security-reviewチェックも、アクセス制御、招待、管理ポリシー、creditsの条件に従います。対象資格があることと、今すぐ全員へ提供されていることは別です。GHE.comのAI push protectionも予定として記載されています。</p>
+  <h3>どこへ課金されるかと、止める設定を確認する</h3>
+  <p>AI push protectionはpushを阻止しなかった検査でもcreditsを消費し得ます。通常はrepo所有組織へ帰属し、特定メンバーの割当を使いません。ただしEMUのuser-namespace repoは例外で、pusherに帰属してその人の割当creditsを使います。追加security-reviewチェックは、アクティブなCopilotプランの請求アカウントへ課金され、AI usage insightsでGHSPとして報告される予定です。</p>
+  <p>新チェックは既定offです。通常の<code>/security-review</code>を実行しても有効になりません。記事は今後数週間の課金導入と、公開プレビューへopt-inして有効にした時点からの課金条件を説明しており、本資料では具体的な開始日を確定しません。Private preview参加者も、課金変更後に継続すれば消費対象になる点に注意します。</p>
+  <p>専用予算はBilling and licensingのBudgets and alertsで、Advanced Security製品の<code>Secret Protection AI Credits</code> SKUを選ぶ案内です。all AI Credits budgetは複数SKUをまとめられます。<strong>予算アラートだけでは使用量は止まりません。</strong>停止させたい場合は、対応する予算の<code>Stop usage when budget limit is reached</code>を確認してください。エージェントが管理者の承認なく新しい課金機能や予算を変更してよいという意味ではありません。</p>
+</section>
+
+<section data-unit="vulnerability-reports">
+  <h3>自由記述だけでなく、再現に必要な情報を先に求める</h3>
+  <p><a data-source="cl-99229">非公開脆弱性報告の構造化フォーム</a>は、summary、details、proof of concept、impactの4欄を既定で必須にします。PoCは最低<span data-fact="poc-minimum"></span>です。入力をまとめてadvisoryのdescriptionにするため、受け取った後のレビュー・編集の流れは引き続き使えます。AI生成や低品質な報告の中から再現可能な報告を判断しやすくする変更で、文字数が安全性や正しさを保証するわけではありません。</p>
+  <p>既定ブランチへ<code>.github/VULNERABILITY_REPORT.yml</code>を置くと独自フォームを使えます。組織・アカウントの<code>.github</code> repoに置いて所有repoへ適用する方法もあります。issue forms構文に対応し、fieldの<code>min_length</code>で詳細の下限を指定できます。不正なフォームは既定フォームへ戻るため、独自の必須項目が実際に適用されたかは確認が必要です。</p>
+  <p>Settings → Advanced Security → Private vulnerability reportingでCWEの選択を必須にでき、組織・企業のownerはpolicyで強制できます。SECURITY.mdがあれば提出前に案内bannerを出し、報告者はAI支援の使用も申告できます。これはAI使用を自動検出したという意味ではありません。</p>
+  <div data-component="note"><p><strong>既定フォームはREST APIには強制されません。</strong>既存連携はそのまま動きます。ただしカスタムフォームを設定した場合、REST経由の提出もそのフォームに一致する必要があります。不一致エラーは、適用中フォームを取得する新しいendpointを案内します。記事にないendpoint pathやYAMLの詳細をここで推定していません。</p></div>
+  <h3>新規報告の量と、既存調査の会話を分ける</h3>
+  <p><a data-source="cl-99231">日次rate limit</a>は、新規報告に対してアカウント単位でrepo別・GitHub全体の制限を適用します。上限に達した報告者には後で試す案内を表示します。既存advisoryへのコメントは対象外です。</p>
+  <p>repo管理者はrepo全体の1日あたり上限を設定し、信頼する報告者をrate limitしないallow listへ追加できます。具体的な既定件数は記事にありません。共有データでは<span data-fact="report-default-limit"></span>として未記載を残し、無制限や0件には置き換えていません。運用上は、濫用を抑える入口と、既存の正当な調査を継続する経路を別々に確認します。</p>
+  <p>両変更は、private vulnerability reportingを有効にしたpublic repoが対象で、Free、Pro、Team、GHECに提供されます。「private report」という名称をprivate repo限定の機能と取り違えないでください。</p>
+</section>
+
+<section data-unit="advisory-apis">
+  <h3>RESTで会話を扱えるが、すべてを取得できるわけではない</h3>
+  <p><a data-source="cl-99243">Repository security advisory comments APIは公開プレビュー</a>です。一覧、単一取得、追加、編集に対応し、一覧は更新時点以降に絞れます。advisoryへのtriage note付与、監査・移行のための会話取得を自動化しやすくなります。</p>
+  <p>repository advisory responseへコメント件数を追加し、global advisoryも関連repo advisoryの件数を含みます。数えるのは非機密コメントです。記事時点で削除APIは未対応で、機密コメントもRESTへ返しません。advisory自体の閲覧権限に加え、適切なread／write permissionまたはtoken scopeが必要です。非collaboratorは内部コメントを見られません。APIの存在を、認可を越えた情報取得の経路とは考えません。</p>
+  <h3>機密コメントは現在のwrite権限に従う</h3>
+  <p><a data-source="cl-99244">機密コメント</a>は、報告者や招待collaboratorに見せず、repoのwrite権限を持つチームで調査・濫用判断・調整を話すためのものです。投稿時にConfidentialを選び、timelineで明示されます。writeを失えば閲覧もできなくなり、writeのない報告者や招待者には通知されません。閲覧は監査ログへ記録されます。</p>
+  <p>投稿後に機密と通常を切り替えることはできません。GraphQLには対応しますがRESTには返りません。そのため、RESTで取得した会話だけで「全議論を保存できた」と判断しないでください。取得手段と閲覧資格を分ける必要があります。コメントREST APIの公開プレビューはpublic repoのFree・Pro・Team・GHEC向けで、機密コメントはprivate vulnerability reportingを有効にしたpublic repoで同じプラン群が対象です。</p>
+  <h3>GraphQLで脆弱性情報の往復を減らす</h3>
+  <p><a data-source="cl-99246">SecurityAdvisoryのGraphQL拡張</a>はread-onlyの追加で、既存queryを維持します。次の5 fieldにより、RESTへ取りに行っていた関連情報を同じqueryへ含めやすくなります。</p>
+  <table>
+    <caption>追加されたSecurityAdvisory field</caption>
+    <thead><tr><th scope="col">field</th><th scope="col">意味</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><code>cveId</code></th><td>CVE識別子。</td></tr>
+      <tr><th scope="row"><code>sourceCodeLocation</code></th><td>対象となる関連ソースコードへのリンク。</td></tr>
+      <tr><th scope="row"><code>githubReviewedAt</code></th><td>GitHubがreviewした時点。</td></tr>
+      <tr><th scope="row"><code>nvdPublishedAt</code></th><td>NVDがrecordを公開した時点。GitHubのreview時点とは別。</td></tr>
+      <tr><th scope="row"><code>repositoryAdvisoryUrl</code></th><td>関連するrepository advisoryがある場合のリンク。</td></tr>
+    </tbody>
+  </table>
+  <p><code>securityAdvisories</code> queryには<code>severities</code>と<code>isWithdrawn</code> filterを追加します。既存のclassification、identifier、EPSS、公開・更新時点によるfilterと併用できます。全件取得後の絞り込みを減らせますが、取り下げ情報と修復済み情報を同じ状態として扱わないでください。</p>
+</section>
+
+<section data-unit="dependabot">
+  <h3>依存更新を実行する環境をrepo単位で選ぶ</h3>
+  <p><a data-source="cl-99161">Dependabotのrepo別runner設定</a>は、組織レベルの設定に加え、version updatesとsecurity updatesのrunner type、任意のcustom label、任意のrunner groupをrepo管理者が選べる変更です。private registryへ到達できる環境や、専用の実行基盤を選ぶ用途があります。</p>
+  <p>github.comのprivate／internal repo限定で、publicとGHESにはcontrolを表示しません。Settings → Advanced Security → Dependency scanning → Dependabot version updatesからRunner typeを編集します。<code>Labeled runner</code>はself-hostedとlarger GitHub-hostedを対象にでき、labelを指定しない場合は<code>dependabot</code>を使います。<code>Standard GitHub runner</code>は既定のhosted環境です。<strong>Security configurationsは現在、このrunner設定を強制しません。</strong></p>
+  <h3>Anonymousは認証方式であって通信先の無制限許可ではない</h3>
+  <p><a data-source="cl-99425">組織private registryのAnonymous認証はGA</a>です。社内mirrorなど、資格情報なしで読めるregistryを登録できます。設定名がprivate registryでも、到達先が認証を要求するとは限りません。</p>
+  <p>github.comのDependabot update jobはegress allowlistと登録private registriesのhostへだけ到達できます。<code>.npmrc</code>や<code>nuget.config</code>へ書いただけの未登録hostはブロックされます。組織registryを許可したrepoには、<code>dependabot.yml</code>を置かずsecurity updatesだけを使うrepoも含められます。</p>
+  <p>入口は組織Settings → Secrets and variables → Private registries → New private registryです。既存registryの認証方式は変更できないため、placeholder tokenを使っていた場合は再作成してAnonymousへ移行します。資格情報を空にするだけの回避策とは異なります。GHES 3.24に対応予定です。</p>
+  <h3>withdrawnと「存在しないalert」を区別する</h3>
+  <p><a data-source="cl-99423">取り下げられたDependabot alert</a>は、根拠のadvisoryや脆弱性が有効でなくなった場合に削除されます。<code>dependabot_alert</code> webhookへ<code>withdrawn</code> actionが追加され、削除前に採取したalert番号、GHSA／CVE、package、manifest pathなどをpayloadで受け取れます。既にこのeventを購読していれば自動配信されます。</p>
+  <p>取り下げalertの取得・更新REST APIは<code>404 Not Found</code>ではなく<code>410 Gone</code>を返します。運用上は、未知のalert、取り下げ、修復によるcloseを分けて外部台帳へ反映し、取り下げたrecordを新規未対応として残し続けないことが論点です。github.comの全repoが対象で、GHES 3.24にも含まれる予定です。</p>
+</section>
+
+<section data-unit="npm-publishing">
+  <h3>dist-tagだけのために長期tokenを残さない</h3>
+  <p><a data-source="cl-99185">Allow npm dist-tag</a>はtrusted publishing設定ごとのopt-in権限です。OIDCの短期資格情報で、<code>latest</code>への昇格、<code>next</code>／<code>beta</code>の更新などを管理できるようになります。従来はpublishをtoken-freeにしても、tag操作のためだけにgranular access tokenを残す必要がありました。</p>
+  <p>新規・既存設定とも既定offです。direct publishingの権限とは独立しており、staging-only設定へも付与できます。incoming OIDC tokenが、権限を有効にしたいずれか一つの設定に一致すれば認可されます。既存のtokenによるdist-tag管理は変更されません。公開権限とtag変更権限を同時に一律拡張する変更ではありません。</p>
+  <h3>新しいパッケージもstageから作れる</h3>
+  <p><a data-source="cl-99259"><code>npm stage publish</code></a>で新規パッケージを作成できます。ローカルsessionまたはgranular access tokenを使い、stage-only tokenにも対応します。publicのscoped／unscopedと、privateのscoped packageが対象です。</p>
+  <div data-diagram="npm-stage-gate" data-occurrence="npm-first-version-approval"></div>
+  <p><strong>最初のversionはstaged queueに入り、maintainerがpromoteするまでinstallできません。</strong>パッケージ作成後に設定やtrusted publishingを構成できます。初回の手動publishをなくせることと、初回から既存trustなしでOIDCだけを使えることや、承認なく公開されることは同じではありません。</p>
+  <h3>48時間はtokenの寿命ではなく、trust設定の検証期間</h3>
+  <p><a data-source="cl-99261">未検証のtrusted publishing設定</a>は、作成から<span data-fact="npm-validation-hours"></span>後に失効し、publishを認可できなくなります。最初の正常なpublishで検証済みとなり、以降はこの失効対象から外れます。repository／project名の所有者が変わるリスクを抑える変更です。</p>
+  <p>repository／projectのidentityを変えるには新しいtrust関係が必要で、新たな検証期間が始まります。通常の編集では期限は更新されません。失効したら再作成して検証期間を取り直します。失効設定は画面には残りますが、packageごとの設定数制限に数えず、他の有効設定には影響しません。</p>
+  <p>GitHub Actionsの<code>issue_comment</code> event由来のtrusted publishing tokenも拒否されます。既存の<code>pull_request_target</code>制限と合わせ、影響するOIDC公開workflowは<code>push</code>、<code>release</code>、<code>workflow_dispatch</code>など許可されたeventへ移します。これはあらゆるnpm認証方式をissue_commentで禁止したという説明ではなく、trusted publishing tokenの認可条件です。</p>
+</section>
+
+<section data-unit="business-context-identity">
+  <h3>業務属性は「誰が正本を更新するか」を決める</h3>
+  <p><a data-source="cl-99157">外部custom propertiesは公開プレビュー</a>です。CMDB、internal developer portal、自社システムなどから、owner、service tier、lifecycle、complianceの情報を同期できます。外部を正本とし、GitHub UIを読み取り専用にすることで、両方から書き換えて競合することを避けます。</p>
+  <p>連携は専用namespaceのprefixで属性を管理し、専用APIで継続更新します。repository views、filter、ruleset targetingなど、通常のcustom propertiesを使う場所で利用できます。Port.ioが最初のpartnerですが、自社連携もfine-grained permissionsを使って作れます。</p>
+  <p>GitHub側で編集したい属性なら通常のcustom properties、外部が排他的に所有するなら外部custom properties、という使い分けです。運用上は同期の遅れや正本の更新責任も考慮します。記事は更新遅延の上限や、外部更新とruleset評価の即時一貫性を保証していません。</p>
+  <h3>commitの自己申告値と、認証されたpusherを分ける</h3>
+  <p><a data-source="cl-99428">Push attributionはEnterprise向けの限定公開プレビュー</a>です。従来のauthor／committerはクライアントが指定する文字列で、書き込み権限を得た人が別の氏名やメールを設定できます。新機能は、それとは独立して、認証されたpusherをcommitごとに永続記録し、UI・APIへ表示します。</p>
+  <p><code>Committer must match pusher</code> ruleは、committerのメールが認証pusherのverified emailのいずれかと一致しないpushを阻止します。誰が実際に送ったかを調査しやすくするもので、author・committer・pusherを一つの主体へ勝手に統合するものではありません。署名や原著者の判断とも別の観点です。</p>
+  <p>参加はaccount teamへの依頼が必要です。全github.com利用者へGAした機能とは扱いません。運用上は、履歴調査で自己申告の著者だけに依存しないための新しい根拠として位置づけます。</p>
+</section>
+
+<section data-unit="tokens-apps">
+  <h3>installation tokenは内部形式に依存せず扱う</h3>
+  <p><a data-source="cl-99283">stateless形式の段階展開は完了</a>し、新規発行の既定は<code>ghs_APPID_JWT</code>になりました。prefixは引き続き<code>ghs_</code>ですが、従来の<span data-fact="legacy-token-length"></span>から約<span data-fact="stateless-token-length"></span>へ長くなります。正確に520文字という新しい固定長検証を追加してはいけません。</p>
+  <p>権限、repo範囲、有効期間の<span data-fact="installation-token-hours"></span>、発行REST endpointは変わりません。旧形式で発行済みのtokenは期限まで使えます。確認対象は固定長regex、DB列・secret store・環境変数の上限、Authorization headerを切るproxy、旧形式だけに一致するログの秘匿処理です。移行中は両形式を扱えることを確認します。</p>
+  <p>一時的な<code>X-GitHub-Stateless-S2S-Token</code> request headerは11月30日から無視され、対象appは常にstateless形式を受け取る予定です。形式の切替確認を終えたら、それより前にproductionの一時header依存を外すのが記事の案内です。</p>
+  <h3>リポジトリ作成と管理を権限で分離</h3>
+  <p><a data-source="cl-99485">10月13日のGitHub Apps改善</a>は、classic PATや広い管理権限に頼る理由を減らします。GitHub Appsとfine-grained PATの両方へ、次の権限を追加しました。</p>
+  <table>
+    <caption>新しいfine-grained権限と権限の境界</caption>
+    <thead><tr><th scope="col">権限</th><th scope="col">許可すること</th><th scope="col">残る条件</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><code>repository_creation:write</code></th><td>許可されたaccountでrepoを作成する。削除・移管なども含む広いrepository_administrationを不要にする。</td><td>作成したapp／userにrepoへのアクセスを付与。appの導入には組織管理者の承認が引き続き必要。</td></tr>
+      <tr><th scope="row"><code>installation_repositories:write</code></th><td>権限を持つrepoを、組織内のinstallationへ追加・削除する。</td><td>userとして呼ぶ場合は、組織ownerまたは対象repoの管理者でもある必要がある。</td></tr>
+    </tbody>
+  </table>
+  <p>installationのrepo追加・削除APIがAppsとfine-grained PATに対応したため、従来の広い<code>repo</code> scopeを持つ管理者PATなしで自動化しやすくなります。新権限は、権限を与えたrepoやaccountの範囲を越える万能の管理権限ではありません。</p>
+  <h3>承認済みappをrepoへ追加しやすくする</h3>
+  <p>既に組織へinstallされ、組織レベルのアクセスを承認されたappには、repo管理者が自分のrepoを追加しやすくなります。新しい組織アクセスを増やす操作ではないためです。一方、組織レベル権限、repository administration、repository creationは、組織owner承認が必要なsensitive permission群として残ります。組織ownerだけにinstallationを制限するpolicyもあります。</p>
+  <h3>offline_accessはuser tokenの移行用</h3>
+  <p>GitHub Appsは<code>offline_access</code> scopeをサポートし、その認証にexpiring user access tokenとrefresh tokenを受け取れるようになります。有効期限を無効にしていたappが、すべての利用者を一斉切替せず、短期・回転tokenへ段階移行する用途です。作用するのはその認証で、将来の全sessionへ自動適用するものではありません。</p>
+  <p>appのpermissionsは引き続きregistrationで静的に選び、scopeによって追加repo権限を得るわけではありません。user access tokenと、前半の1時間のinstallation tokenを同一視しないでください。</p>
+  <h3>他appの情報取得も所有関係に制約がある</h3>
+  <table>
+    <caption>Get an app APIで読める対象</caption>
+    <thead><tr><th scope="col">対象app</th><th scope="col">許される所有関係</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">Public app</th><td>他のappから取得可能。従来からの範囲。</td></tr>
+      <tr><th scope="row">同じ組織のapp</th><td>同じownerならprivate／internalでも相互に取得可能。</td></tr>
+      <tr><th scope="row">同じenterpriseのinternal app</th><td>組織を越えて同じenterpriseのappから取得可能。</td></tr>
+      <tr><th scope="row">Enterprise配下の組織所有app</th><td>そのenterprise所有のappから取得可能。</td></tr>
+    </tbody>
+  </table>
+  <p>Credentialsは独立したtabへ移り、client secretsやkey pairsを管理しやすくなります。将来のworkload federationに備えた領域ですが、<strong>workload federation自体が今回提供されたわけではありません。</strong>GHESはoffline_accessが3.23、その他の改善が3.24対応予定と、機能ごとに版が分かれます。</p>
+</section>
+
+<section data-unit="governance-telemetry">
+  <h3>ポリシーを取得できなければ起動しない選択</h3>
+  <p><a data-source="cl-99451"><code>forceRemoteSettingsRefresh</code></a>をtrueにすると、CLI・VS Code・Copilot appは起動時に現在のserver-managed settingsを確認する必要があります。cacheは鮮度要件を満たせず、確認できない場合はfail closedです。通常のcacheによる素早い起動・一時障害への耐性と、現在のpolicyを必ず確認する統制はトレードオフになります。</p>
+  <p>server-managed値はクライアントが一度受信した後の起動から作用します。初回サインイン前から鮮度を要求するには、MDM-managedまたはfile-basedの配布が関係します。実行中sessionへあらゆる変更を即時反映する、という告知ではありません。<code>sandbox</code>キーの最低クライアント版も強制され、古い版を固定した人は利用再開のため更新を求められます。具体的な最低版はこの記事にはありません。</p>
+  <h3>利用者の帰属を得ることと、会話本文を収集することは別</h3>
+  <p><a data-source="cl-99450"><code>telemetry.capture.identity</code></a>は、OTelに<code>user.name</code>（認証Copilot accountのlogin）、<code>process.user.name</code>（OS account）、<code>host.name</code>（端末名）を加えます。既存の仮名化user identifierとは別で、identityは既定offです。CLI、app、VS Code Agent Hostが対象です。</p>
+  <table>
+    <caption>独立して制御できる5種類の内容収集</caption>
+    <thead><tr><th scope="col">capture class</th><th scope="col">含み得る情報</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><code>prompts</code></th><td>user・system・developer promptと対応input context。</td></tr>
+      <tr><th scope="row"><code>responses</code></th><td>assistant応答と対応する推論内容。</td></tr>
+      <tr><th scope="row"><code>toolArguments</code></th><td>生の引数・command、tool schema、tool・MCP・plugin・hookの識別子。</td></tr>
+      <tr><th scope="row"><code>toolOutput</code></th><td>tool結果と実行エラーの詳細。</td></tr>
+      <tr><th scope="row"><code>policyDetail</code></th><td>サンドボックスのfilesystem pathなど、生のpolicy詳細。</td></tr>
+    </tbody>
+  </table>
+  <p>5種類もすべて既定offです。明示されたmanaged値はローカル設定、SDK設定、環境変数に優先します。従来の<code>captureContent</code>は5種類の内容の一括指定として残りますが、identityは有効にしません。</p>
+  <p>コード、ファイル本文、tool結果、workspaceやprofileのpathを収集し得るため、必要なclassだけを選び、承認済みendpointへ送ることが記事の案内です。内容を収集せず帰属を得たい場合に、すべてのclassを有効にする必要はありません。このOTel設定は、GitHubの利用メトリクスの欠落を自動で遡及修復する機能ではありません。</p>
+</section>
+
+<section data-unit="costs-metrics">
+  <h3>エージェント利用の減少に見える計測欠落</h3>
+  <p><a data-source="cl-99334">10月6日の利用メトリクス告知</a>は、一部IDEがagent sessionをCopilot SDKへ移した際、IDE識別情報を送らなかった問題を説明します。大半の活動がレポートから漏れ、一部はCopilot CLIへ誤帰属しました。影響するのはSDKを使う版で、以前の版の利用者は引き続き数えられます。</p>
+  <p><strong>課金には影響していません。欠落した過去データは復元できません。</strong>enterprise・org・user、1日・28日レポートとも影響し、agent_editの<code>loc_added_sum</code>／<code>loc_deleted_sum</code>なども過少になります。CLIの過大値も本来のCLI活動と分離できず、過去分を補正できません。CLI利用者自身の更新は不要です。</p>
+  <table>
+    <caption>10月6日の記事が示す計測修正版の提供状態</caption>
+    <thead><tr><th scope="col">IDE</th><th scope="col">版</th><th scope="col">記事時点の状態</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">VS Code</th><td>1.139.0以降</td><td>提供済み。</td></tr>
+      <tr><th scope="row">Visual Studio</th><td>18.12</td><td>未提供、10月予定。</td></tr>
+      <tr><th scope="row">JetBrains</th><td>次回プラグイン</td><td>未提供、10月後半までを予定。</td></tr>
+      <tr><th scope="row">Eclipse・Xcode</th><td>次回プラグイン</td><td>未提供、11月までを予定。</td></tr>
+    </tbody>
+  </table>
+  <p>上記の予定を10月14日時点の提供完了へ読み替えていません。利用者が修正版へ移るにつれて数値は徐々に回復します。詳細な言語・モデル・行数・採用情報はclient telemetryに依存し、telemetryのoff、proxy・firewall、古いextension、未対応editorでも欠落し得ます。server側のactive user情報だけから、編集行数まで再現することはできません。</p>
+  <p>運用上は<code>totals_by_ide</code>内の<code>last_known_ide_version</code>と<code>last_known_plugin_version</code>で古い環境を探し、telemetry endpointの通信と設定も確認します。利用低下、計測欠落、課金を別々に説明できる状態にすることが重要です。</p>
+  <h3>レビューの請求先と、要求できる人を分ける</h3>
+  <p><a data-source="cl-99400">Code reviewの課金設定</a>は、Copilotライセンスを持つメンバーについて、既定の<code>Member</code>と新しい<code>Organization</code>を選べます。Memberは本人のCopilot entitlementを使い、quotaを使い切るとreviewは失敗します。Organizationはrepo所有組織へ課金し、組織のAI Credits paid usageが必要で、任意に予算を設定できます。組織設定のCopilot → Policiesが入口です。</p>
+  <p>外部ライセンスの制御は別です。既定ではrepoへアクセスできる有料Copilot利用者が自分のライセンスで要求できますが、<code>Only allow Copilot code review to be triggered by authorized users</code>を有効にすると、その組織・enterpriseが提供したライセンスが必要になります。組織で有効にした制限はrepoで解除できません。API要求・自動review・個人repoの細則を、この短い記事だけから一律に推定しないでください。</p>
+  <h3>予算を見つけやすくする改善であり、料金変更ではない</h3>
+  <p><a data-source="cl-99459">Budgets and alerts</a>は予算を一つの一覧にまとめ、scope・product・SKUで検索・filterできます。enterprise／orgではuserでも検索でき、Scope menuでorgやcost centerなどに絞れます。user-level budgetも同じ一覧で、どの予算が特定userへ適用されるか追えます。</p>
+  <p>これは一覧と検索の改善です。すべての予算が自動で使用量を止めるようになった、という告知ではありません。アラートと停止の設定、SKUごとの課金、レビューの請求先を別々に確認します。</p>
+</section>
+
+<section data-unit="ghe-connectivity">
+  <p><a data-source="cl-98866">10月7日からのTLS変更</a>は、データレジデンシー対応GHECのHTTPS endpointで、鍵共有候補としてX25519しか提示しないclientを受け付けなくするものです。P-256（secp256r1）とP-384（secp384r1）は引き続き対応します。</p>
+  <p>多くの現行browser、OS、GitHub CLI、一般的なTLS libraryはP-256に対応するため、全利用者に変更が必要なわけではありません。影響し得るのは、アプリ、proxy、security appliance、TLS libraryでX25519-onlyを明示設定しているケースです。</p>
+  <div data-component="steps"><ol><li>OS、runtime、CLI、proxy、TLS libraryをサポート版へ更新する。</li><li>X25519-only設定を外し、P-256を有効にする。P-384も選択肢。</li><li>対象HTTPS経路を確認し、認証失敗とTLS接続確立の失敗を切り分ける。</li></ol></div>
+  <p>この手順は記事に基づく対応案内で、ここで実際の顧客環境へ変更した記録ではありません。SSH接続は影響を受けません。GitHub.com全体のTLS廃止や、SSH keyの交換要求へ一般化しないでください。記事URLに<code>september-15</code>が残っていますが、題名・本文の実施日は10月7日です。</p>
+</section>
+
+<section data-unit="platform-matrix">
+  <p><strong>GitHubのhosting、Copilotのsubscription、セキュリティ製品の購入条件を別の軸で確認します。</strong>GitHub EnterpriseはGHECとGHESを含み、Copilot Enterpriseは別のsubscriptionです。Copilot Business／Enterpriseを持つだけで、GHSP購入が必要なAI push protectionまで使えるわけではありません。</p>
+  <table>
+    <caption>今回の記事が示すプラットフォームの主な境界</caption>
+    <thead><tr><th scope="col">変更</th><th scope="col">github.com・GHE.com</th><th scope="col">GHESの記事記載</th></tr></thead>
+    <tbody>
+      <tr><th scope="row"><a data-source="cl-99144">runner最低版の適用日</a></th><td>通常GHECは9月29日。データレジデンシーは7月31日から。</td><td>この適用日変更は対象外。</td></tr>
+      <tr><th scope="row"><a data-source="cl-98866">X25519-only TLS</a></th><td>GHE.comのデータレジデンシー対応GHECのみ。</td><td>この告知の対象外。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99161">Dependabot repo別runner</a></th><td>github.comのprivate／internal限定。</td><td>今回のcontrolは対象外。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99209">coverage uploadのskip</a></th><td>Team・GHEC、データレジデンシーを含む。</td><td>非対応。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99211">休眠repoのscan</a></th><td>GHECへ提供。</td><td>3.24対応予定。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99173">ACCESSIBILITY.md表示</a>／<a data-source="cl-99366">screen reader</a></th><td>github.comで提供。</td><td>声明表示は3.24予定、timeline改善は3.23対象。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99315">Stacked PR</a></th><td>github.com全プランでGA。</td><td>将来版。具体的版はこの記事にない。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99425">Anonymous registry</a>／<a data-source="cl-99423">withdrawn alerts</a></th><td>github.comで提供。</td><td>3.24対応予定。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99342">新AI secret model</a></th><td>既存AI alertsを更新。新push checkはpreview段階で、GHE.comも予定として記載。</td><td>3.23のAI alertsが公開プレビュー予定。新push check・Copilot security-reviewを同梱する告知ではない。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99464">AI Scan metrics</a>／<a data-source="cl-99476">Code Quality監査</a></th><td>前者はCode Security／GHAS向け公開プレビュー。後者はTeam・GHECでGA。</td><td>今回のリリースはどちらも非対応。</td></tr>
+      <tr><th scope="row"><a data-source="cl-99485">Appsの管理改善</a></th><td>機能を追加。</td><td>offline_accessは3.23、その他は3.24予定。</td></tr>
+    </tbody>
+  </table>
+  <p>この表は各記事の記述を比較したもので、すべてのGHES版の現在の提供状況を再調査した表ではありません。記事に版がないものへ推定の版番号を付けたり、CloudでのGAをServer同日提供と読み替えたりしないでください。</p>
+  <h3>購入と消費を分ける</h3>
+  <p>GitHub Team／GHEC／GHESはhosting・管理の軸、Copilot Pro／Pro+／Max／Business／EnterpriseはCopilotの利用資格、Code Security・Secret Protection・GHASはセキュリティ機能の購入条件です。さらにAI Creditsには、請求account、使用するSKU、含まれる枠、追加有料使用、予算の軸があります。どれか一つの名称だけで可否や無料を判断しないことが、今回の更新全体に共通する読み方です。</p>
+</section>
+
+<section data-unit="operations-checklist">
+  <p>以下は記事の条件を実務へ当てはめるための提案で、実際に設定を変更した記録ではありません。対象外と分かった項目は、その理由も残すと、後から同じ確認を繰り返さずに済みます。</p>
+  <table>
+    <caption>担当別に決める確認対象と成功条件</caption>
+    <thead><tr><th scope="col">担当</th><th scope="col">確認対象</th><th scope="col">判断を終えるための根拠</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">開発者・IDE管理者</th><td>モデル固定値、プラン、plugin／IDE版、preview、local provider。</td><td>対象作業でモデルを選べることと、必要な機能・計測が修正版で有効なことを分けて確認。</td></tr>
+      <tr><th scope="row">CI基盤担当</th><td>runnerの登録／実行最低版、macOSラベル・Xcode、ARC、保存期間。</td><td>既存登録だけでなくjob実行、移行先での依存、必要な記録を保持できる期間。</td></tr>
+      <tr><th scope="row">Maintainer・セキュリティ担当</th><td>scan有効化と解消状況、脆弱性報告フォーム、rate limit、機密コメント。</td><td>検出数と修復数、外部に見える情報と内部会話、APIで取得しない情報を区別。</td></tr>
+      <tr><th scope="row">パッケージ管理者</th><td>Dependabotの到達先、withdrawn処理、npmのtrust・event・stage承認。</td><td>更新jobが正しいhostへ到達し、取り下げを反映し、承認前versionを公開済みにしない。</td></tr>
+      <tr><th scope="row">API連携開発者</th><td>token長、秘匿処理、App permissions、非同期処理、RESTとGraphQLの取得差。</td><td>新旧tokenが切れず秘匿され、受付と完了、取り下げと不明、取得不能と空集合を分けられる。</td></tr>
+      <tr><th scope="row">企業管理者</th><td>policy鮮度、最低client版、OTel capture、請求先・SKU・予算。</td><td>必要な制御を適用し、必要最小限の情報だけを承認済み宛先へ送り、予算通知と停止を区別。</td></tr>
+    </tbody>
+  </table>
+  <p>特に、<a data-source="cl-99283">token形式</a>、<a data-source="cl-99261">npm trustの失効</a>、<a data-source="cl-99451">起動時のpolicy確認</a>は、これまで動いていた処理の前提を変えます。<a data-source="cl-99334">利用メトリクス</a>は、動作していても計測が欠ける例です。新しい<a data-source="cl-99342">AIチェックの課金</a>は、機能の有効化と費用管理を一緒に判断する例になります。</p>
+  <div data-component="note"><p>「エラーが出なかった」「要求を受け付けた」「候補が表示された」「CIが緑になった」を、必要な結果が保存・適用されたことの代わりにしないでください。非同期マージ、coverageのskip、npmのstage、利用計測は、それぞれ成功の意味が違います。</p></div>
+</section>
+
+<section data-unit="article-index">
+  <p>全57記事の主な解説先を示します。章の短い名前は目次と対応します。出典を開くと本文を確認した元記事へ進め、参照元への戻りリンクも使えます。月次・週次は一律の提供段階を付けず、含む機能ごとの状態を本文で説明しています。</p>
+  <table>
+    <caption>掲載日・元記事・カテゴリ別解説・提供状態の対応</caption>
+    <thead><tr><th scope="col">掲載日</th><th scope="col">記事</th><th scope="col">主な解説章</th><th scope="col">記事の状態</th></tr></thead>
+    <tbody>
+      <tr><th scope="row">9/28</th><td><a data-source="cl-99140">Claude Sonnet 5.5</a></td><td>1.1 モデル</td><td>GA・段階的展開</td></tr>
+      <tr><th scope="row">9/28</th><td><a data-source="cl-99144">Self-hosted runner version enforcement</a></td><td>4.1 ランナー</td><td>適用日変更</td></tr>
+      <tr><th scope="row">9/29</th><td><a data-source="cl-99152">GPT-6.1 Sol</a></td><td>1.1 モデル</td><td>GA・段階的展開</td></tr>
+      <tr><th scope="row">9/29</th><td><a data-source="cl-99157">External custom properties</a></td><td>7.1 外部属性</td><td>公開プレビュー</td></tr>
+      <tr><th scope="row">9/29</th><td><a data-source="cl-99161">Dependabot repository runner settings</a></td><td>6.1 Dependabot</td><td>設定追加</td></tr>
+      <tr><th scope="row">9/30</th><td><a data-source="cl-98866">X25519-only TLS</a></td><td>7.5 GHE.com接続</td><td>互換性変更</td></tr>
+      <tr><th scope="row">9/30</th><td><a data-source="cl-99172">HydraFusion in VS Code and app</a></td><td>2.1 自動化</td><td>Research preview</td></tr>
+      <tr><th scope="row">9/30</th><td><a data-source="cl-99176">Advanced Security trials for Team</a></td><td>5.2 セキュリティ運用</td><td>trialの入口追加</td></tr>
+      <tr><th scope="row">9/30</th><td><a data-source="cl-99185">npm dist-tag permissions</a></td><td>6.2 npm</td><td>opt-in追加</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99183">ARC 0.15.0</a></td><td>4.1 ランナー</td><td>リリース</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99189">Async merge API</a></td><td>3.1 PRの統合</td><td>GA</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99204">New dashboard</a></td><td>3.3 共同作業</td><td>既定表示の変更</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99208">Dynamic workflows</a></td><td>2.1 自動化</td><td>公開プレビュー</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99209">Coverage uploads for new branches</a></td><td>4.2 CIの記録</td><td>挙動改善</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99211">Scheduled scans for inactive repos</a></td><td>5.2 セキュリティ運用</td><td>定期解析の変更</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99215">Actions retention</a></td><td>4.2 CIの記録</td><td>対象拡大を適用</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99173">Accessibility statements</a></td><td>3.3 共同作業</td><td>表示改善</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99218">VS Code September releases</a></td><td>1.3 開発環境</td><td>月次・個別状態</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99219">macOS 14 retirement</a></td><td>4.1 ランナー</td><td>廃止予定</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99220">Computer use</a></td><td>2.2 GUI操作</td><td>公開プレビュー</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99229">Structured vulnerability forms</a></td><td>5.4 脆弱性報告</td><td>フォーム追加</td></tr>
+      <tr><th scope="row">10/1</th><td><a data-source="cl-99231">Vulnerability report rate limits</a></td><td>5.4 脆弱性報告</td><td>日次制限追加</td></tr>
+      <tr><th scope="row">10/2</th><td><a data-source="cl-99243">Advisory comments REST API</a></td><td>5.5 Advisory API</td><td>公開プレビュー</td></tr>
+      <tr><th scope="row">10/2</th><td><a data-source="cl-99244">Confidential advisory comments</a></td><td>5.5 Advisory API</td><td>機密コメント追加</td></tr>
+      <tr><th scope="row">10/2</th><td><a data-source="cl-99246">SecurityAdvisory GraphQL fields</a></td><td>5.5 Advisory API</td><td>read-only拡張</td></tr>
+      <tr><th scope="row">10/2</th><td><a data-source="cl-99239">Copilot weekly: September 28</a></td><td>1.3 開発環境</td><td>週次・個別状態</td></tr>
+      <tr><th scope="row">10/2</th><td><a data-source="cl-99255">Selected models deprecated</a></td><td>1.2 モデル移行</td><td>非推奨化</td></tr>
+      <tr><th scope="row">10/2</th><td><a data-source="cl-99259">npm new-package staging</a></td><td>6.2 npm</td><td>新規作成対応</td></tr>
+      <tr><th scope="row">10/2</th><td><a data-source="cl-99261">npm trust expiry</a></td><td>6.2 npm</td><td>失効・認可変更</td></tr>
+      <tr><th scope="row">10/2</th><td><a data-source="cl-99263">Code review API and effort</a></td><td>3.2 コードレビュー</td><td>GA・既定値変更</td></tr>
+      <tr><th scope="row">10/2</th><td><a data-source="cl-99283">Stateless installation tokens</a></td><td>7.2 API統合</td><td>既定形式の移行完了</td></tr>
+      <tr><th scope="row">10/5</th><td><a data-source="cl-99303">Lovable・Supabase secret detectors</a></td><td>5.3 シークレット保護</td><td>検出器追加</td></tr>
+      <tr><th scope="row">10/6</th><td><a data-source="cl-99306">AI Scan coverage status</a></td><td>5.2 セキュリティ運用</td><td>coverage表示追加</td></tr>
+      <tr><th scope="row">10/6</th><td><a data-source="cl-99315">Stacked PR</a></td><td>3.1 PRの統合</td><td>GA・追加機能は順次</td></tr>
+      <tr><th scope="row">10/6</th><td><a data-source="cl-99334">Agent usage metrics attribution</a></td><td>7.4 費用と効果</td><td>IDE別に修正</td></tr>
+      <tr><th scope="row">10/7</th><td><a data-source="cl-99338">CLI local model discovery</a></td><td>1.2 ローカルモデル</td><td>機能追加</td></tr>
+      <tr><th scope="row">10/7</th><td><a data-source="cl-99339">Local sandboxing</a></td><td>2.3 実行境界</td><td>GA・追加料金なし</td></tr>
+      <tr><th scope="row">10/7</th><td><a data-source="cl-99342">AI secret detection model</a></td><td>5.3 シークレット保護</td><td>既存更新・private／予定</td></tr>
+      <tr><th scope="row">10/7</th><td><a data-source="cl-99370">Claude Haiku 5.5</a></td><td>1.1 モデル</td><td>GA・段階的展開</td></tr>
+      <tr><th scope="row">10/8</th><td><a data-source="cl-99388">Draft PR limits</a></td><td>3.3 共同作業</td><td>任意設定追加</td></tr>
+      <tr><th scope="row">10/8</th><td><a data-source="cl-99366">Screen reader timeline lists</a></td><td>3.3 共同作業</td><td>アクセシビリティ改善</td></tr>
+      <tr><th scope="row">10/8</th><td><a data-source="cl-99398">PR archive by triagers</a></td><td>3.3 共同作業</td><td>権限・挙動変更</td></tr>
+      <tr><th scope="row">10/8</th><td><a data-source="cl-99400">Code review billing controls</a></td><td>7.4 費用と効果</td><td>設定追加</td></tr>
+      <tr><th scope="row">10/9</th><td><a data-source="cl-99433">CodeQL 2.27.2</a></td><td>5.1 静的解析</td><td>リリース・互換性制約</td></tr>
+      <tr><th scope="row">10/9</th><td><a data-source="cl-99436">Copilot weekly: October 5</a></td><td>1.3 開発環境</td><td>週次・個別状態</td></tr>
+      <tr><th scope="row">10/10</th><td><a data-source="cl-99440">Copilot for JetBrains</a></td><td>1.3 開発環境</td><td>改善・旧版終了</td></tr>
+      <tr><th scope="row">10/12</th><td><a data-source="cl-99425">Anonymous organization registries</a></td><td>6.1 Dependabot</td><td>GA</td></tr>
+      <tr><th scope="row">10/12</th><td><a data-source="cl-99428">Push attribution</a></td><td>7.1 認証された主体</td><td>限定公開プレビュー</td></tr>
+      <tr><th scope="row">10/12</th><td><a data-source="cl-99450">Telemetry attribution and capture</a></td><td>7.3 企業管理</td><td>設定追加</td></tr>
+      <tr><th scope="row">10/13</th><td><a data-source="cl-99464">AI Scan metrics</a></td><td>5.2 セキュリティ運用</td><td>公開プレビュー</td></tr>
+      <tr><th scope="row">10/13</th><td><a data-source="cl-99459">Budget search and filters</a></td><td>7.4 費用と効果</td><td>UI改善</td></tr>
+      <tr><th scope="row">10/13</th><td><a data-source="cl-99423">Withdrawn Dependabot alerts</a></td><td>6.1 Dependabot</td><td>Webhook・REST変更</td></tr>
+      <tr><th scope="row">10/13</th><td><a data-source="cl-99451">Managed settings enforcement</a></td><td>7.3 企業管理</td><td>設定強制追加</td></tr>
+      <tr><th scope="row">10/13</th><td><a data-source="cl-99469">Anthropic・Salesforce secret protection</a></td><td>5.3 シークレット保護</td><td>検出・既定block追加</td></tr>
+      <tr><th scope="row">10/13</th><td><a data-source="cl-99476">Code Quality findings audit</a></td><td>5.2 セキュリティ運用</td><td>GA</td></tr>
+      <tr><th scope="row">10/13</th><td><a data-source="cl-99479">Gemini 4 Argon</a></td><td>1.1 モデル</td><td>GA・段階的展開</td></tr>
+      <tr><th scope="row">10/13</th><td><a data-source="cl-99485">GitHub Apps permissions and management</a></td><td>7.2 API統合</td><td>改善・GHESは機能別</td></tr>
+    </tbody>
+  </table>
+  <p>同じ記事を関連章で再参照しても、記事数へ重複加算していません。分類と主要論点の対応は再生成入力のcoverage.jsonにも保持しています。元記事や将来の公開情報が更新された場合は、本資料の基準時点とは別に確認してください。</p>
+</section>
